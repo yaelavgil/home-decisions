@@ -95,6 +95,8 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .chip.st-no.on{background:var(--no-bg);border-color:var(--no);color:var(--no)}
 .whoami{font-size:12px;color:var(--ink-soft);text-align:end;line-height:1.5;flex-shrink:0}
 .whoami b{color:var(--ink)}
+.plannerlink{font-size:13px;font-weight:700;color:var(--brass-d);background:var(--brass-soft);border:1px solid var(--line-2);border-radius:99px;padding:8px 16px;text-decoration:none;white-space:nowrap;transition:.15s}
+.plannerlink:hover{background:var(--brass);color:#fff}
 .linkbtn{background:none;border:0;color:var(--brass-d);font:inherit;font-size:13px;cursor:pointer;text-decoration:underline;padding:0}
 .people{display:flex;flex-direction:column;gap:4px;margin:2px 0}
 .pmark{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
@@ -258,7 +260,10 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 <header>
   <div class="hrow">
     <div><div class="kicker">הבית שלנו · לוח משותף</div><h1>מה בוחרים לבית</h1></div>
-    <div class="whoami" id="whoami"></div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <a href="planner/" class="plannerlink">🛒 מתכנן קנייה חכם</a>
+      <div class="whoami" id="whoami"></div>
+    </div>
   </div>
 </header>
 
