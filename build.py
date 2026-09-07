@@ -282,6 +282,7 @@ tpl=r'''<!doctype html>
   --brass:#b08a54;--brass-d:#946f3c;--brass-soft:#f2ead9;
   --line:#eee7db;--line-2:#e6ddce;
   --yes:#5f8f5c;--yes-bg:#eef4ec;--maybe:#c39a4a;--maybe-bg:#f7efdd;--no:#b57468;--no-bg:#f5ebe8;
+  --ordered:#4d6f93;--ordered-bg:#e8eef4;
   --shadow:0 2px 6px rgba(95,72,40,.05),0 18px 40px -22px rgba(95,72,40,.30);
   --shadow-h:0 8px 18px rgba(95,72,40,.10),0 30px 60px -24px rgba(95,72,40,.40);
   --r:20px;--r-sm:13px;
@@ -325,6 +326,12 @@ h1{font-weight:700;font-size:clamp(21px,4vw,31px);letter-spacing:-.02em;margin:0
 .fbadge{background:var(--brass-d);color:#fff;border-radius:999px;font-size:10px;font-weight:800;min-width:16px;height:16px;display:none;align-items:center;justify-content:center;padding:0 4px;margin-inline-start:2px}
 .editb{position:absolute;top:9px;inset-inline-end:9px;z-index:4;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);background:rgba(255,255,255,.9);backdrop-filter:blur(4px);color:var(--ink-soft);font-size:13px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(60,40,15,.12);opacity:.55;transition:.15s}
 .card:hover .editb{opacity:1}
+.orderb{position:absolute;top:9px;inset-inline-start:9px;z-index:4;height:28px;padding:0 10px;border-radius:14px;border:1.5px solid var(--line);background:rgba(255,255,255,.92);backdrop-filter:blur(4px);color:var(--ink-soft);font-size:12px;font-weight:700;cursor:pointer;line-height:1;display:flex;align-items:center;gap:5px;box-shadow:0 2px 6px rgba(60,40,15,.12);opacity:.55;transition:.15s;white-space:nowrap}
+.card:hover .orderb{opacity:1}
+.orderb.on{opacity:1;border-color:var(--ordered);background:var(--ordered);color:#fff}
+.card.is-ordered{opacity:.72}
+.card.is-ordered .thumb::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.35)}
+.ordnote{position:absolute;bottom:9px;inset-inline-start:9px;z-index:4;background:var(--ordered);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:10px;box-shadow:0 2px 6px rgba(60,40,15,.18)}
 .editb:hover{color:var(--brass-d);transform:scale(1.08)}
 .search{flex:1;min-width:180px;position:relative}
 .search input{width:100%;border:1.5px solid var(--line-2);border-radius:var(--r-sm);padding:10px 38px 10px 14px;font:inherit;font-size:14px;background:var(--paper);transition:.18s}
@@ -515,6 +522,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
     <button class="vbtn on" data-v="all" onclick="setView('all')">הכל</button>
     <button class="vbtn" data-v="left" onclick="setView('left')">✅ מה שנשאר</button>
     <button class="vbtn" data-v="order" onclick="setView('order')">🛒 להזמנה</button>
+    <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 כבר הוזמן</button>
   </div>
   <div class="tools">
     <div class="search"><span class="i">🔍</span><input id="q" placeholder="חיפוש…" oninput="RE()"></div>
@@ -608,7 +616,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 const BITEMS=__DATA__, BCATS=__CATS__;
 const DB="__DBURL__";
 const KEY="ida-board-v1";
-let st=JSON.parse(localStorage.getItem(KEY)||"{}"); st.s=st.s||{}; st.custom=st.custom||{cats:[],items:[],seq:0};
+let st=JSON.parse(localStorage.getItem(KEY)||"{}"); st.s=st.s||{}; st.custom=st.custom||{cats:[],items:[],seq:0}; st.ord=st.ord||{};
 let me=JSON.parse(localStorage.getItem('ida-me')||'null'); // {pk,name}
 let remote={}; // {pk:{name,items:{id:{s,n,q}}}}
 let _psig="";
@@ -626,6 +634,7 @@ function rebuild(){
     return true; };
   st.custom.items.forEach(i=>{if(i&&i.id&&!dupOfBuiltin(i))im[i.id]={...(im[i.id]||{}),...i};});
   Object.values(shared.items||{}).forEach(i=>{if(i&&i.id&&!dupOfBuiltin(i))im[i.id]={...(im[i.id]||{}),...i};});
+  Object.entries(st.ord).forEach(([id,o])=>{if(im[id])im[id]={...im[id],...o};}); // this device's optimistic "ordered" toggle, until the server round-trip confirms it
   const cm={}; BCATS.forEach(c=>cm[c.key]={...c});
   st.custom.cats.forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
   Object.values(shared.cats||{}).forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
@@ -698,7 +707,8 @@ function passView(i){
   if(viewMode==='all') return true;
   const ms=marksFor(i.id);
   if(viewMode==='left') return !ms.some(m=>m.status==='no');
-  if(viewMode==='order') return personf!=='all' ? statusOfName(personf,i.id)==='yes' : ms.some(m=>m.status==='yes');
+  if(viewMode==='order') return (personf!=='all' ? statusOfName(personf,i.id)==='yes' : ms.some(m=>m.status==='yes')) && !i.ordered;
+  if(viewMode==='ordered') return !!i.ordered;
   return true;
 }
 function setView(v){ viewMode=v; document.querySelectorAll('.vbtn').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); RE(); }
@@ -743,12 +753,15 @@ function cardEl(it){
     :(it.price!=null?`<div class="price">${nis(it.price)}</div>`:`<div class="price muted">המחיר בחשבון שלך בחנות</div>`);
   const qty=it.type==='product'
     ?`<div class="qty"><span class="ql">כמות</span><span class="stp"><button title="הפחת" onclick="setQ('${it.id}',-1)">−</button><span class="qv">1</span><button title="הוסף" onclick="setQ('${it.id}',1)">+</button></span></div>`:'';
-  c.innerHTML=`<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button>${media}
+  c.innerHTML=`<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button>
+    ${it.type==='product'?`<button class="orderb" title="סמנו כשהמוצר הוזמן בפועל" onclick="event.stopPropagation();toggleOrdered('${it.id}')">📦 <span class="ol">הוזמן</span></button>`:''}
+    ${media}
     <div class="body">
       ${nameEl}
       ${sub}
       ${it.desc?`<div class="desc">${it.desc}</div>`:''}
       ${it.type==='product'&&(it.link||it.zap)?`<div class="shoprow">${it.link?`<a class="shopbtn" href="${it.link}" target="_blank" rel="noopener">🏪 לחנות המומלצת</a>`:''}${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div>`:''}
+      <div class="ordinfo" style="display:none"></div>
       <div class="people" style="display:none"></div>
       ${qty}
       <div class="seg">
@@ -762,11 +775,23 @@ function cardEl(it){
   els.set(it.id,c); grid.appendChild(c); paint(it.id,c); return c;
 }
 function paint(id,c){
-  c=c||els.get(id); if(!c)return; const s=S(id);
-  c.className="card"+(s.status!=='none'?" s-"+s.status:"");
+  c=c||els.get(id); if(!c)return; const s=S(id); const it=byId[id]||{};
+  c.className="card"+(s.status!=='none'?" s-"+s.status:"")+(it.ordered?" is-ordered":"");
   c.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.classList.contains(s.status)));
   const ta=c.querySelector('textarea'); if(ta&&ta.value!==s.note)ta.value=s.note;
   const qv=c.querySelector('.qv'); if(qv)qv.textContent=s.qty||1;
+  const ob=c.querySelector('.orderb'); if(ob)ob.classList.toggle('on',!!it.ordered);
+  const oi=c.querySelector('.ordinfo');
+  if(oi){ if(it.ordered){oi.style.display='';oi.innerHTML=`<span class="ordnote" style="position:static;display:inline-flex">📦 הוזמן${it.orderedBy?' ע״י '+it.orderedBy:''}${it.orderedAt?' · '+new Date(it.orderedAt).toLocaleDateString('he-IL'):''}</span>`;}
+    else{oi.style.display='none';oi.innerHTML='';} }
+}
+function toggleOrdered(id){
+  const it=byId[id]; if(!it)return;
+  const val=!it.ordered;
+  const o={ordered:val,orderedBy:val?((me&&me.name)||'מישהו'):null,orderedAt:val?Date.now():null};
+  Object.assign(it,o); st.ord[id]=o; save();
+  fbPushOrdered(id,o); paint(id);
+  if(viewMode==='ordered')RE();
 }
 function RE(animate){
   ITEMS.forEach(it=>cardEl(it));
@@ -830,7 +855,7 @@ function openSummary(){
     const yes=its.filter(i=>statusOfName(who,i.id)==='yes'), maybe=its.filter(i=>statusOfName(who,i.id)==='maybe');
     if(!yes.length&&!maybe.length)return;
     out+=`\n${c.icon} ${c.label}\n`+"—".repeat(22)+"\n";
-    const line=i=>{const mk=markOf(who,i.id)||{}; const q=mk.q||1; let l="• "+i.name; if(i.type==='color'&&i.code)l+="  ("+i.code+")"; if(i.price!=null){l+=(q>1?"  ×"+q:"")+"  —  "+nis((i.price||0)*q); sum+=(i.price||0)*q;} else if(q>1){l+="  ×"+q;} if(mk.n&&mk.n.trim())l+="\n   ↳ "+mk.n.trim(); return l;};
+    const line=i=>{const mk=markOf(who,i.id)||{}; const q=mk.q||1; let l="• "+i.name; if(i.type==='color'&&i.code)l+="  ("+i.code+")"; if(i.price!=null){l+=(q>1?"  ×"+q:"")+"  —  "+nis((i.price||0)*q); if(!i.ordered)sum+=(i.price||0)*q;} else if(q>1){l+="  ×"+q;} if(i.ordered)l+="  📦 כבר הוזמן"; if(mk.n&&mk.n.trim())l+="\n   ↳ "+mk.n.trim(); return l;};
     if(yes.length){out+="✓ להזמין:\n"+yes.map(line).join("\n")+"\n";}
     if(maybe.length){out+="\n? אולי (להחליט):\n"+maybe.map(line).join("\n")+"\n";}
   });
@@ -844,7 +869,7 @@ function copyOut(){const o=document.getElementById('out');o.select();
   navigator.clipboard?navigator.clipboard.writeText(o.value).then(d,()=>{document.execCommand('copy');d();}):(document.execCommand('copy'),d());}
 function cartRow(i,q,note,isMaybe,editable){
   const media=i.type==='color'?`<span class="cthumb" style="background:${i.hex}"></span>`:(i.img?`<img loading="lazy" src="${i.img}" alt="">`:`<span class="cthumb"></span>`);
-  const nameEl=i.link?`<a class="cn" href="${i.link}" target="_blank" rel="noopener">${i.name}</a>`:`<span class="cn">${i.name}</span>`;
+  const nameEl=(i.link?`<a class="cn" href="${i.link}" target="_blank" rel="noopener">${i.name}</a>`:`<span class="cn">${i.name}</span>`)+(i.ordered?' <span class="ordnote" style="position:static;display:inline-flex">📦 הוזמן</span>':'');
   const noteHtml=note&&note.trim()?`<div class="cnote">↳ ${note.trim().replace(/</g,'&lt;')}</div>`:'';
   const right=isMaybe
     ? (editable?`<button class="tbtn addcart" onclick="promoteToCart('${i.id}')">➕ לעגלה</button>`:`<span class="cp">${i.price!=null?nis(i.price):''}</span>`)
@@ -860,7 +885,7 @@ function openCart(){
   let chosenHtml='', total=0, anyChosen=false, cnt=0;
   cats.forEach(c=>{ const chosen=ITEMS.filter(i=>i.cat===c.key&&inView(i)&&statusOfName(who,i.id)==='yes');
     if(!chosen.length)return; anyChosen=true; chosenHtml+=`<div class="csec">${c.icon} ${c.label}</div>`;
-    chosen.forEach(i=>{const mk=markOf(who,i.id)||{};const q=mk.q||1;total+=(i.price||0)*q;cnt++;chosenHtml+=cartRow(i,q,mk.n,false,editable);}); });
+    chosen.forEach(i=>{const mk=markOf(who,i.id)||{};const q=mk.q||1;if(!i.ordered)total+=(i.price||0)*q;cnt++;chosenHtml+=cartRow(i,q,mk.n,false,editable);}); });
   let maybeHtml='', anyMaybe=false;
   cats.forEach(c=>{ const mb=ITEMS.filter(i=>i.cat===c.key&&inView(i)&&statusOfName(who,i.id)==='maybe');
     if(!mb.length)return; anyMaybe=true; maybeHtml+=`<div class="csec">${c.icon} ${c.label}</div>`;
@@ -948,6 +973,7 @@ function fbPushAll(){ if(!me)return; const items={};
   fetch(`${DB}/picks/${me.pk}/items.json`,{method:'PATCH',body:JSON.stringify(items)}).catch(()=>{}); }
 function fbPushName(){ if(!me)return; fetch(`${DB}/picks/${me.pk}/name.json`,{method:'PUT',body:JSON.stringify(me.name)}).catch(()=>{}); }
 function fbPushCatalogItem(it){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(it.id)}.json`,{method:'PUT',body:JSON.stringify(it)}).catch(()=>{}); }
+function fbPushOrdered(id,o){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,...o})}).catch(()=>{}); }
 function fbPushCatalogCat(c){ fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(c.key)}.json`,{method:'PUT',body:JSON.stringify(c)}).catch(()=>{}); }
 function fbDelCatalogItem(id){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'DELETE'}).catch(()=>{}); }
 function fbPoll(){ fetch(`${DB}/picks.json`).then(r=>r.json()).then(d=>{
@@ -1051,12 +1077,16 @@ function copyOrderLink(){
 function renderOrder(ids){
   const items=ids.map(id=>byId[id]).filter(Boolean);
   let total=0, missing=0;
-  const rows=items.map(i=>{ if(i.price!=null)total+=i.price; else missing++;
-    return `<div class="orow">${i.img?`<img loading="lazy" src="${i.img}" alt="">`:''}<div class="oi"><div class="on2">${i.name}</div>${i.link?`<a href="${i.link}" target="_blank" rel="noopener">לעמוד המוצר בחנות</a>`:''}${i.zap?` · <a href="${i.zap}" target="_blank" rel="noopener">השוואת מחירים בזאפ</a>`:''}</div><div class="op">${i.price!=null?nis(i.price):''}</div></div>`; }).join('');
-  document.body.innerHTML=`<div class="ordersheet"><h1>🧾 מכשירי חשמל להזמנה · הבית שלנו</h1><p class="osub">רשימת הדגמים שנבחרו — מחירים לפי החנות המומלצת לכל מוצר (אוגוסט 2026, עשויים להשתנות)</p>${rows}<div class="ototal">סה״כ משוער: ${nis(total)}${missing?` (+${missing} פריטים ללא מחיר)`:''}</div><button class="tbtn" onclick="window.print()">🖨 הדפסה / שמירה כ-PDF</button></div>`;
+  const rows=items.map(i=>{ if(i.price!=null&&!i.ordered)total+=i.price; else if(i.price==null) missing++;
+    const ord=i.ordered?`<span class="ordnote" style="position:static;display:inline-flex;margin-inline-start:8px">📦 כבר הוזמן${i.orderedBy?' ע״י '+i.orderedBy:''}</span>`:'';
+    return `<div class="orow">${i.img?`<img loading="lazy" src="${i.img}" alt="">`:''}<div class="oi"><div class="on2">${i.name}${ord}</div>${i.link?`<a href="${i.link}" target="_blank" rel="noopener">לעמוד המוצר בחנות</a>`:''}${i.zap?` · <a href="${i.zap}" target="_blank" rel="noopener">השוואת מחירים בזאפ</a>`:''}</div><div class="op">${i.price!=null?nis(i.price):''}</div></div>`; }).join('');
+  document.body.innerHTML=`<div class="ordersheet"><h1>🧾 מכשירי חשמל להזמנה · הבית שלנו</h1><p class="osub">רשימת הדגמים שנבחרו — מחירים לפי החנות המומלצת לכל מוצר (אוגוסט 2026, עשויים להשתנות). פריטים שכבר הוזמנו מסומנים ואינם נכללים בסה״כ.</p>${rows}<div class="ototal">סה״כ שנותר להזמין: ${nis(total)}${missing?` (+${missing} פריטים ללא מחיר)`:''}</div><button class="tbtn" onclick="window.print()">🖨 הדפסה / שמירה כ-PDF</button></div>`;
 }
 const _oids=orderIdsFromHash();
-if(_oids){ rebuild(); renderOrder(_oids); }
+if(_oids){
+  rebuild(); renderOrder(_oids);
+  fetch(`${DB}/picks.json`).then(r=>r.json()).then(d=>{ shared=(d&&d._catalog)||{items:{},cats:{}}; rebuild(); renderOrder(_oids); }).catch(()=>{});
+}
 else{
 rebuild(); applyHash(); tabsHTML(); buildChips(); RE(true);
 if(me){ me.pk=pkFromName(me.name); localStorage.setItem('ida-me',JSON.stringify(me)); fbPushName(); startSync(); } else openMe();
