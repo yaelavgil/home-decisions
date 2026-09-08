@@ -1,4 +1,4 @@
-<title>שבעה גוונים לארון הכניסה</title>
+<title>11 גוונים לארון הכניסה</title>
 <style>
   :root{
     --bg:#f5f1ea; --paper:#fffefb; --ink:#332c25; --ink-soft:#645a4f; --line:#eee7db;
@@ -25,6 +25,10 @@
 
   .grid{display:grid; grid-template-columns:1fr 1fr; gap:20px}
   @media (max-width:680px){.grid{grid-template-columns:1fr}}
+  .famGrid{margin-bottom:34px}
+  .famHeader{margin:0 0 12px; padding-top:6px}
+  .famTitle{font-size:1.05rem; font-weight:800; color:var(--ink)}
+  .famNote{font-size:.82rem; color:var(--ink-soft); margin-top:2px; max-width:640px}
   .mockbtn svg{max-width:100%; height:auto}
   .card{background:var(--paper); border:1px solid var(--line); border-radius:20px; overflow:hidden; box-shadow:0 2px 14px rgba(0,0,0,.06); display:flex; flex-direction:column}
   .tag{font-size:11px; font-weight:800; letter-spacing:.05em; padding:6px 13px; display:inline-block; margin:15px 0 0 15px; border-radius:99px; align-self:start}
@@ -65,16 +69,15 @@
 <div class="wrap" dir="rtl" lang="he">
   <a href="../" class="backlink">← חזרה ללוח ההחלטות</a>
   <div class="kicker">טמבור · ארון כניסה</div>
-  <h1>שבעה גוונים — להתייעצות עם נופר</h1>
-  <p class="sub">מתוך ה-13 גוונים השמורים ברשת, גוון אחד שנבחר פיזית מהמניפה בשטח, ושני מועמדים נוספים — שבעה גוונים שנותנים טווח אמיתי לתגובה: מהעמוק (בשתי גרסאות — טורקיזי וזית-אדמתי) ועד הבהיר והרך, דרך ניטרלי-אפרפר וירוק-מנטה רווי. לחיצה על האיור מגדילה אותו למסך מלא.</p>
+  <h1>11 גוונים — מאורגנים ב-5 משפחות</h1>
+  <p class="sub">כל הגוונים שדיברנו עליהם, מאורגנים לפי משפחת גוון ולא רק לפי בהירות: בכל משפחה יש 2-3 גוונים קרובים מאוד זה לזה, כדי שתוכלו קודם לבחור את המשפחה (עם נופר), ואז לדייק בין האחים הקרובים בתוכה. לחיצה על האיור מגדילה אותו למסך מלא.</p>
   <div class="disclaimer">🎨 האיור מבוסס על תוכנית הארון של נופר: 4 מודולים × 2 דלתות, ידיות אנכיות שחורות בין כל זוג, קשתות אסימטריות בדלתות הקצה והמרכז, ולוחות מפוספסים למעלה ולמטה. כולל את הפינות המעוגלות לפי התוכנית הנוכחית — אלו עשויות להשתנות לדלתות מרובעות בהמשך אם יוחלט לחסוך בעלות.</div>
 
   <div class="grid" id="grid"></div>
 
   <div class="noteBox">
-    💬 <b>הטווח שנבחר:</b> LRV 16 → 17 → 28 → 41 → 43 → 47 → 58 — משתי אפשרויות עמוקות (טורקיזי מול זית-אדמתי, כמעט אותה עומק) ועד לבהיר ביותר, דרך קריר-אפרפר, ניטרלי (הגוון שנבחר פיזית), ומנטה רווי. ככה נופר יכולה להצביע על כיוון כללי לפני שמבקשים דוגמה פיזית מהנגר.
-    <p style="font-size:.85rem;margin-top:10px">🗑 <b>לא נכללו (כפילויות שנבדקו):</b> Shady (0949T/A) — קרוב מדי ל-Abstract Aqua שכבר בפנים; Chic Shade (0880A) — כמעט זהה ל-New Lawn השמור; Green Moor (0934T) — נופל בדיוק בין Cloverdale ל-Nature's Abundance, לא מוסיף כיוון חדש. שלושתם נבדקו ונפסלו כי לא הוסיפו מגוון אמיתי.</p>
-    <div class="carpenterLine">7 המועמדים: Tambour 0951A · 0937A · 0963T/A · 0975T · 0885T · 0851T · 0836P/T</div>
+    💬 <b>איך להשתמש בעמוד:</b> קודם עברו על 5 המשפחות עם נופר ותנו לה להצביע על הכיוון הכללי (עמוק/בינוני-קריר/בינוני-זית/ניטרלי/בהיר). ברגע שיש משפחה מועדפת — תשוו בין 2-3 האחים בתוכה (למשל New Lawn מול Chic Shade) כדי לדייק את הגוון הסופי לפני שמבקשים דוגמה פיזית מהנגר.
+    <div class="carpenterLine">11 הגוונים: Tambour 0951A · 0937A · 0963T/A · 0949T/A · 0935T/A · 0880A · 0934T · 0975T · 0885T · 0851T · 0836P/T</div>
   </div>
 </div>
 
@@ -89,28 +92,52 @@
 </div>
 
 <script>
+const FAMILIES = [
+  {key:"deep",    label:"🌲 משפחה 1 — עמוק ודרמטי",        note:"שני הגוונים הכהים ביותר, כמעט אותה רמת בהירות — ההבדל הוא הכיוון: קריר-טורקיזי מול חם-אדמתי."},
+  {key:"mid1",    label:"🌊 משפחה 2 — בינוני-כהה, מעומעם",  note:"אותה בהירות בערך (LRV 28), שני גוני-ביניים: אפרפר-כחלחל מול ירקרק-חם יותר."},
+  {key:"mid2",    label:"🍃 משפחה 3 — בינוני-כהה, זית",     note:"כמעט זהים (LRV 30) — לצורך דיוק עדין בין שתי גרסאות זית-שמנת שכמעט חופפות."},
+  {key:"neutral", label:"⚪ משפחה 4 — ניטרלי-אפור עד ירקרק בהיר-בינוני", note:"מדרג הדרגתי משלוש נקודות: הכי אפור (Green Moor) → הגוון שנבחר פיזית (Cloverdale) → הכי ירוק בבהירות הזו (Nature's Abundance)."},
+  {key:"light",   label:"☀️ משפחה 5 — בהיר ורענן",          note:"שני הבהירים ביותר: מנטה רווי מול סאלווי פסטלי ורך."},
+];
+
 const COLORS = [
-  {name:"Aloe Vera Leaf", code:"0836P/T", hex:"#B9CFB2", rgb:[185,207,178], lrv:58, tagLabel:"בהיר ורך",
-   why:'מהבהירים בפלטה <b>(LRV 58)</b> אך עדיין לא דהוי כמו Mint Touch (שנפסל — קרוב מדי ללבן). פותח חלל כניסה קטן וחשוך, מרגיש טרי ואוורירי.',
-   url:"https://tambour.co.il/hue/aloe-vera-leaf-0836p-t/"},
-  {name:"Nature's Abundance", code:"0885T", hex:"#A2B6A0", rgb:[162,182,160], lrv:43, tagLabel:"מאוזן",
-   why:'בדיוק אמצע הפלטה <b>(LRV 43)</b>. רגוע ומזמין, משתלב עם רוב גווני קיר, עדיין מספיק עשיר לריהוט. הבחירה הבטוחה אם רוצים שהארון ישתלב ולא יבלוט.',
-   url:"https://tambour.co.il/hue/natures-abundance-0885t/"},
-  {name:"Abstract Aqua", code:"0963T/A", hex:"#7C9591", rgb:[124,149,145], lrv:28, tagLabel:"קריר ואפרפר",
-   why:'היחיד עם נטייה כחולה-אפרפרה <b>(LRV 28)</b>, לא ירוק טהור כמו שאר השלושה. בודק כיוון צבע שונה — אולי דווקא הוא ישתלב הכי טוב עם הרצפה/הקיר בכניסה.',
-   url:"https://tambour.co.il/hue/abstract-aqua-0963t-a/"},
-  {name:"Forest Found", code:"0951A", hex:"#597667", rgb:[89,118,103], lrv:16, tagLabel:"עמוק · טורקיז-אלגנטי",
-   why:'הכי כהה מבין 13 הגוונים <b>(LRV 16)</b>. נטייה טורקיזית-כחלחלה, אלגנטי ועל-זמני. סיכון: עלול "לבלוע" אור בכניסה חשוכה.',
+  {name:"Forest Found", code:"0951A", hex:"#597667", rgb:[89,118,103], lrv:16, family:"deep", tagLabel:"טורקיז-אלגנטי",
+   why:'הכי כהה מבין הגוונים <b>(LRV 16)</b>. נטייה טורקיזית-כחלחלה, אלגנטי ועל-זמני. סיכון: עלול "לבלוע" אור בכניסה חשוכה.',
    url:"https://tambour.co.il/hue/forest-found-0951a/"},
-  {name:"Western Meadow", code:"0937A", hex:"#687960", rgb:[104,121,96], lrv:17, tagLabel:"עמוק · זית-אדמתי",
-   why:'כמעט אותה עומק כמו Forest Found <b>(LRV 17)</b> אבל כיוון גוון שונה לגמרי — זית כהה וחם, לא טורקיזי. אם רוצים "עמוק" אבל מרגישים ש-Forest Found קריר מדי, זו האלטרנטיבה.',
+  {name:"Western Meadow", code:"0937A", hex:"#687960", rgb:[104,121,96], lrv:17, family:"deep", tagLabel:"זית-אדמתי",
+   why:'כמעט אותה עומק כמו Forest Found <b>(LRV 17)</b> אבל כיוון גוון שונה לגמרי — זית כהה וחם, לא טורקיזי. אם "עמוק" כן, אבל Forest Found מרגיש קריר מדי — זו האלטרנטיבה.',
    url:"https://tambour.co.il/hue/western-meadow-0937a/"},
-  {name:"Clover Tint", code:"0851T", hex:"#92C1AB", rgb:[146,193,171], lrv:47, tagLabel:"ירוק-מנטה רענן",
-   why:'היחיד עם רוויה גבוהה — כל שאר הגוונים כאן מעומעמים/אפרפרים <b>(LRV 47)</b>, זה מנטה טרי ובהיר. שווה לבדוק כניגוד נועז אם רוצים שהארון "יקפוץ" ולא רק ישתלב.',
-   url:"https://tambour.co.il/hue/clover-tint-0851t/"},
-  {name:"Cloverdale", code:"0975T", hex:"#A7ACA3", rgb:[167,172,163], lrv:41, tagLabel:"נבחר פיזית מהמניפה",
-   why:'הגוון שבחרתם בפועל מהמניפה הפיזית של טמבור <b>(LRV 41)</b>. הכי ניטרלי-אפרפר מכל השישה — כמעט אפור עם רמז ירוק בלבד, לא "ירוק" באופן מובהק כמו האחרים. נכלל כי כבר ראיתם אותו באור אמיתי.',
+
+  {name:"Abstract Aqua", code:"0963T/A", hex:"#7C9591", rgb:[124,149,145], lrv:28, family:"mid1", tagLabel:"קריר-כחלחל",
+   why:'נטייה כחולה-אפרפרה <b>(LRV 28)</b>, לא ירוק טהור. בודק כיוון קריר — אולי ישתלב הכי טוב עם הרצפה/הקיר בכניסה.',
+   url:"https://tambour.co.il/hue/abstract-aqua-0963t-a/"},
+  {name:"Shady", code:"0949T/A", hex:"#81968B", rgb:[129,150,139], lrv:28, family:"mid1", tagLabel:"חם יותר מ-Abstract Aqua",
+   why:'אותה בהירות בדיוק כמו Abstract Aqua <b>(LRV 28)</b>, אך עם פחות כחול ויותר ירוק — גרסה מעט חמה יותר של אותה משפחה. שמור אצלכם כבר ב-13.',
+   url:"https://tambour.co.il/hue/shady-0949t-a/"},
+
+  {name:"New Lawn", code:"0935T/A", hex:"#8B9988", rgb:[139,153,136], lrv:30, family:"mid2", tagLabel:"זית בהיר, שמור אצלכם",
+   why:'זית-שמנת מאוזן <b>(LRV 30)</b>, שמור כבר ב-13 הגוונים שלכם. גוון "בטוח" למי שרוצה כהות בינונית בלי ליפול לכיוון ירוק בולט.',
+   url:"https://tambour.co.il/hue/new-lawn-0935t-a/"},
+  {name:"Chic Shade", code:"0880A", hex:"#8A9974", rgb:[138,153,116], lrv:30, family:"mid2", tagLabel:"כמעט זהה ל-New Lawn",
+   why:'כמעט חופף ל-New Lawn באותה בהירות בדיוק <b>(LRV 30)</b> — ההבדל היחיד הוא טיפה פחות כחול, טיפה יותר צהוב-זית. שווה להשוות זה מול זה בעין כדי לדייק.',
+   url:"https://tambour.co.il/hue/chic-shade-0880a/"},
+
+  {name:"Green Moor", code:"0934T", hex:"#9DA99A", rgb:[157,169,154], lrv:38, family:"neutral", tagLabel:"הכי אפור מהשלושה",
+   why:'נופל בדיוק בין Cloverdale ל-Nature\'s Abundance <b>(LRV 38)</b> — גרסת גישור: פחות אפור מ-Cloverdale, פחות ירוק מ-Nature\'s Abundance.',
+   url:"https://tambour.co.il/hue/green-moor-0934t/"},
+  {name:"Cloverdale", code:"0975T", hex:"#A7ACA3", rgb:[167,172,163], lrv:41, family:"neutral", tagLabel:"נבחר פיזית מהמניפה",
+   why:'הגוון שנבחר בפועל מהמניפה הפיזית של טמבור <b>(LRV 41)</b>. הכי ניטרלי-אפרפר מהמשפחה — כמעט אפור עם רמז ירוק בלבד. כבר נראה באור אמיתי.',
    url:"https://tambour.co.il/hue/cloverdale-0975t/"},
+  {name:"Nature's Abundance", code:"0885T", hex:"#A2B6A0", rgb:[162,182,160], lrv:43, family:"neutral", tagLabel:"הכי ירוק מהשלושה",
+   why:'בדיוק אמצע הפלטה הכללית <b>(LRV 43)</b>. רגוע ומזמין, הכי ברור-ירוק מבין שלושת הגוונים הניטרליים באותה משפחה.',
+   url:"https://tambour.co.il/hue/natures-abundance-0885t/"},
+
+  {name:"Clover Tint", code:"0851T", hex:"#92C1AB", rgb:[146,193,171], lrv:47, family:"light", tagLabel:"מנטה רווי",
+   why:'הרוויה הגבוהה ביותר מכל הגוונים כאן <b>(LRV 47)</b> — מנטה טרי ובהיר. ניגוד נועז אם רוצים שהארון "יקפוץ" ולא רק ישתלב.',
+   url:"https://tambour.co.il/hue/clover-tint-0851t/"},
+  {name:"Aloe Vera Leaf", code:"0836P/T", hex:"#B9CFB2", rgb:[185,207,178], lrv:58, family:"light", tagLabel:"סאלווי פסטלי רך",
+   why:'הכי בהיר מכולם <b>(LRV 58)</b>, אך עדיין לא דהוי כמו Mint Touch. פותח חלל כניסה קטן וחשוך, מרגיש טרי ואוורירי.',
+   url:"https://tambour.co.il/hue/aloe-vera-leaf-0836p-t/"},
 ];
 
 function shade(hex, percent){ // percent negative = darker
@@ -237,8 +264,8 @@ function cabinetSVG(hex, size){
   </svg>`;
 }
 
-function render(){
-  document.getElementById('grid').innerHTML = COLORS.map((c,i)=>`
+function cardHTML(c,i){
+  return `
     <div class="card">
       <div class="tag" style="background:${c.hex}; color:${c.lrv>35?'#3b4a3a':'#fff'}">${c.tagLabel}</div>
       <button class="mockbtn" onclick="openZoom(${i})">${cabinetSVG(c.hex,340)}</button>
@@ -256,8 +283,22 @@ function render(){
         <p class="why">${c.why}</p>
         <a class="viewlink" href="${c.url}" target="_blank" rel="noopener">לצפייה בטמבור ↗</a>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+}
+
+function render(){
+  const html = FAMILIES.map(fam=>{
+    const members = COLORS.map((c,i)=>({c,i})).filter(x=>x.c.family===fam.key);
+    if(!members.length) return '';
+    return `
+      <div class="famHeader">
+        <div class="famTitle">${fam.label}</div>
+        <div class="famNote">${fam.note}</div>
+      </div>
+      <div class="grid famGrid">${members.map(x=>cardHTML(x.c,x.i)).join('')}</div>
+    `;
+  }).join('');
+  document.getElementById('grid').outerHTML = `<div id="grid">${html}</div>`;
 }
 render();
 
