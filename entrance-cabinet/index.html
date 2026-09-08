@@ -1,0 +1,272 @@
+<title>שישה גוונים לארון הכניסה</title>
+<style>
+  :root{
+    --bg:#f5f1ea; --paper:#fffefb; --ink:#332c25; --ink-soft:#645a4f; --line:#eee7db;
+    --brass:#b08a54; --brass-d:#946f3c; --brass-soft:#f2ead9;
+    --mono: "SF Mono","Menlo","Consolas",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#211c16; --paper:#2a231b; --ink:#f0e9da; --ink-soft:#c2b5a0; --line:#3d3427;
+      --brass:#d6a75e; --brass-d:#e4b563; --brass-soft:#372c1e; }
+  }
+  :root[data-theme="light"]{ --bg:#f5f1ea; --paper:#fffefb; --ink:#332c25; --ink-soft:#645a4f; --line:#eee7db; --brass:#b08a54; --brass-d:#946f3c; --brass-soft:#f2ead9; }
+  :root[data-theme="dark"]{ --bg:#211c16; --paper:#2a231b; --ink:#f0e9da; --ink-soft:#c2b5a0; --line:#3d3427; --brass:#d6a75e; --brass-d:#e4b563; --brass-soft:#372c1e; }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; margin:0}
+  .wrap{max-width:960px; margin:0 auto; padding:40px 22px 70px}
+  .kicker{font-size:11.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--brass-d); display:flex; align-items:center; gap:9px}
+  .kicker::before{content:""; width:22px; height:2px; border-radius:2px; background:var(--brass)}
+  .backlink{display:inline-block; font-size:13px; font-weight:600; color:var(--ink-soft); text-decoration:none; margin-bottom:14px}
+  .backlink:hover{color:var(--brass-d)}
+  h1{font-size:1.9rem; font-weight:800; margin:8px 0 6px; text-wrap:balance}
+  .sub{color:var(--ink-soft); max-width:660px; line-height:1.55; margin:0 0 8px}
+  .disclaimer{font-size:.8rem; color:var(--ink-soft); background:var(--brass-soft); border-radius:10px; padding:9px 14px; display:inline-block; margin:10px 0 28px}
+
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:20px}
+  @media (max-width:680px){.grid{grid-template-columns:1fr}}
+  .mockbtn svg{max-width:100%; height:auto}
+  .card{background:var(--paper); border:1px solid var(--line); border-radius:20px; overflow:hidden; box-shadow:0 2px 14px rgba(0,0,0,.06); display:flex; flex-direction:column}
+  .tag{font-size:11px; font-weight:800; letter-spacing:.05em; padding:6px 13px; display:inline-block; margin:15px 0 0 15px; border-radius:99px; align-self:start}
+  .mockbtn{background:none; border:none; padding:18px 30px 6px; cursor:zoom-in; display:flex; justify-content:center; width:100%}
+  .mockbtn:hover svg{filter:brightness(1.04)}
+  .zoomhint{font-size:10.5px; color:var(--ink-soft); text-align:center; margin-top:-2px}
+  .body{padding:8px 20px 22px}
+  .name{font-size:1.15rem; font-weight:800; margin:2px 0 2px}
+  .code{font-family:var(--mono); direction:ltr; unicode-bidi:isolate; color:var(--ink-soft); font-size:.8rem; margin-bottom:10px}
+  .swrow{display:flex; gap:6px; margin-bottom:12px}
+  .swatchmini{width:20px; height:20px; border-radius:6px; flex:none; box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+  .codes{display:flex; flex-direction:column; gap:3px}
+  .hex,.rgb{font-family:var(--mono); direction:ltr; unicode-bidi:isolate; font-weight:700; font-size:.76rem; line-height:1.3}
+  .hex{color:var(--brass-d)}
+  .rgb{color:var(--ink-soft); font-weight:600}
+  .why{font-size:.86rem; line-height:1.5; color:var(--ink)}
+  .why b{color:var(--brass-d)}
+  a.viewlink{font-size:.78rem; font-weight:650; color:var(--brass-d); text-decoration:none; display:inline-block; margin-top:10px}
+  a.viewlink:hover{text-decoration:underline}
+
+  .noteBox{margin-top:30px; background:var(--brass-soft); border-radius:16px; padding:18px 22px; font-size:.9rem; line-height:1.6}
+  .noteBox b{color:var(--brass-d)}
+  .carpenterLine{font-family:var(--mono); direction:ltr; unicode-bidi:isolate; margin-top:8px; font-weight:700}
+
+  /* zoom overlay */
+  .overlay{position:fixed; inset:0; background:rgba(20,16,10,.72); display:none; align-items:center; justify-content:center; z-index:50; padding:30px}
+  .overlay.on{display:flex}
+  .overlayCard{background:var(--paper); border-radius:22px; padding:30px 40px; max-width:640px; width:100%; text-align:center; position:relative}
+  .closeBtn{position:absolute; top:14px; inset-inline-end:16px; background:none; border:none; font-size:22px; cursor:pointer; color:var(--ink-soft); line-height:1}
+  .closeBtn:hover{color:var(--ink)}
+  .overlayName{font-size:1.3rem; font-weight:800; margin-top:16px}
+  .overlayCode{font-family:var(--mono); direction:ltr; unicode-bidi:isolate; color:var(--ink-soft); margin-bottom:10px}
+  .overlayCodes{display:flex; gap:16px; justify-content:center; font-family:var(--mono); direction:ltr; unicode-bidi:isolate; font-size:.9rem; font-weight:700}
+  .overlayCodes .hx{color:var(--brass-d)}
+  .overlayCodes .rg{color:var(--ink-soft)}
+</style>
+
+<div class="wrap" dir="rtl" lang="he">
+  <a href="../" class="backlink">← חזרה ללוח ההחלטות</a>
+  <div class="kicker">טמבור · ארון כניסה</div>
+  <h1>שישה גוונים — להתייעצות עם נופר</h1>
+  <p class="sub">מתוך ה-13 גוונים השמורים ברשת, גוון אחד שנבחר פיזית מהמניפה בשטח, ומועמד רענן נוסף — שישה גוונים שנותנים טווח אמיתי לתגובה: מהעמוק והדרמטי ועד הבהיר והרך, דרך ניטרלי-אפרפר וירוק-מנטה רווי. לחיצה על האיור מגדילה אותו למסך מלא.</p>
+  <div class="disclaimer">🎨 האיור מבוסס על תוכנית הארון של נופר: 4 מודולים × 2 דלתות, ידיות אנכיות שחורות בין כל זוג, קשתות אסימטריות בדלתות הקצה והמרכז, ולוחות מפוספסים למעלה ולמטה. כולל את הפינות המעוגלות לפי התוכנית הנוכחית — אלו עשויות להשתנות לדלתות מרובעות בהמשך אם יוחלט לחסוך בעלות.</div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="noteBox">
+    💬 <b>הטווח שנבחר:</b> LRV 16 → 28 → 41 → 43 → 47 → 58 — מהעמוק ביותר לבהיר ביותר, עם עצירה ב"קריר-אפרפר", עצירה ב"ניטרלי" (הגוון שנבחר פיזית), ועצירה ב"ירוק-מנטה רווי". ככה נופר יכולה להצביע על כיוון כללי לפני שמבקשים דוגמה פיזית מהנגר.
+    <p style="font-size:.85rem;margin-top:10px">🗑 <b>לא נכללו (כפילויות):</b> Chic Shade (0880A) — כמעט זהה ל-New Lawn שכבר שמור; Green Moor (0934T) — קרוב מדי ל-Nature's Abundance. לא הוסיפו כיוון חדש אמיתי.</p>
+    <div class="carpenterLine">6 המועמדים: Tambour 0951A · 0963T/A · 0975T · 0885T · 0851T · 0836P/T</div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeZoom()">
+  <div class="overlayCard">
+    <button class="closeBtn" onclick="closeZoom()">×</button>
+    <div id="overlaySvg"></div>
+    <div class="overlayName" id="overlayName"></div>
+    <div class="overlayCode" id="overlayCode"></div>
+    <div class="overlayCodes"><span class="hx" id="overlayHex"></span><span class="rg" id="overlayRgb"></span></div>
+  </div>
+</div>
+
+<script>
+const COLORS = [
+  {name:"Aloe Vera Leaf", code:"0836P/T", hex:"#B9CFB2", rgb:[185,207,178], lrv:58, tagLabel:"בהיר ורך",
+   why:'מהבהירים בפלטה <b>(LRV 58)</b> אך עדיין לא דהוי כמו Mint Touch (שנפסל — קרוב מדי ללבן). פותח חלל כניסה קטן וחשוך, מרגיש טרי ואוורירי.',
+   url:"https://tambour.co.il/hue/aloe-vera-leaf-0836p-t/"},
+  {name:"Nature's Abundance", code:"0885T", hex:"#A2B6A0", rgb:[162,182,160], lrv:43, tagLabel:"מאוזן",
+   why:'בדיוק אמצע הפלטה <b>(LRV 43)</b>. רגוע ומזמין, משתלב עם רוב גווני קיר, עדיין מספיק עשיר לריהוט. הבחירה הבטוחה אם רוצים שהארון ישתלב ולא יבלוט.',
+   url:"https://tambour.co.il/hue/natures-abundance-0885t/"},
+  {name:"Abstract Aqua", code:"0963T/A", hex:"#7C9591", rgb:[124,149,145], lrv:28, tagLabel:"קריר ואפרפר",
+   why:'היחיד עם נטייה כחולה-אפרפרה <b>(LRV 28)</b>, לא ירוק טהור כמו שאר השלושה. בודק כיוון צבע שונה — אולי דווקא הוא ישתלב הכי טוב עם הרצפה/הקיר בכניסה.',
+   url:"https://tambour.co.il/hue/abstract-aqua-0963t-a/"},
+  {name:"Forest Found", code:"0951A", hex:"#597667", rgb:[89,118,103], lrv:16, tagLabel:"עמוק ודרמטי",
+   why:'הכי כהה מבין 13 הגוונים <b>(LRV 16)</b>. נוכחות של רהיט אמיתי, מסתיר סימני שימוש, מתאים למגמת ריהוט כניסה בירוק-יער עשיר. סיכון: עלול "לבלוע" אור בכניסה חשוכה.',
+   url:"https://tambour.co.il/hue/forest-found-0951a/"},
+  {name:"Clover Tint", code:"0851T", hex:"#92C1AB", rgb:[146,193,171], lrv:47, tagLabel:"ירוק-מנטה רענן",
+   why:'היחיד עם רוויה גבוהה — כל שאר הגוונים כאן מעומעמים/אפרפרים <b>(LRV 47)</b>, זה מנטה טרי ובהיר. שווה לבדוק כניגוד נועז אם רוצים שהארון "יקפוץ" ולא רק ישתלב.',
+   url:"https://tambour.co.il/hue/clover-tint-0851t/"},
+  {name:"Cloverdale", code:"0975T", hex:"#A7ACA3", rgb:[167,172,163], lrv:41, tagLabel:"נבחר פיזית מהמניפה",
+   why:'הגוון שבחרתם בפועל מהמניפה הפיזית של טמבור <b>(LRV 41)</b>. הכי ניטרלי-אפרפר מכל השישה — כמעט אפור עם רמז ירוק בלבד, לא "ירוק" באופן מובהק כמו האחרים. נכלל כי כבר ראיתם אותו באור אמיתי.',
+   url:"https://tambour.co.il/hue/cloverdale-0975t/"},
+];
+
+function shade(hex, percent){ // percent negative = darker
+  const n = parseInt(hex.slice(1),16);
+  let r=(n>>16)&255, g=(n>>8)&255, b=n&255;
+  const f = percent/100;
+  r = Math.round(r + (f<0 ? r*f : (255-r)*f));
+  g = Math.round(g + (f<0 ? g*f : (255-g)*f));
+  b = Math.round(b + (f<0 ? b*f : (255-b)*f));
+  return "#"+[r,g,b].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('');
+}
+
+// asymmetric arched-top door: flat top on one side, curving down to the vertical edge on 'side'
+function archDoorPath(x,y,w,h,side){
+  const drop = h*0.24;
+  if(side==='left'){
+    return `M ${x+w} ${y} L ${x+w*0.32} ${y} Q ${x} ${y} ${x} ${y+drop} L ${x} ${y+h} L ${x+w} ${y+h} Z`;
+  }
+  return `M ${x} ${y} L ${x+w*0.68} ${y} Q ${x+w} ${y} ${x+w} ${y+drop} L ${x+w} ${y+h} L ${x} ${y+h} Z`;
+}
+
+function flutedPanel(x,y,w,h,base,lineC){
+  const n = Math.round(w/9);
+  let lines='';
+  for(let i=1;i<n;i++){ const lx=x+(w/n)*i; lines+=`<line x1="${lx}" y1="${y+5}" x2="${lx}" y2="${y+h-5}" stroke="${lineC}" stroke-width="1.4" opacity=".55"/>`; }
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${base}" stroke="rgba(0,0,0,.18)" stroke-width="1"/>${lines}`;
+}
+
+let _uidSeq = 0;
+
+function cabinetSVG(hex, size){
+  const uid = 'c'+(_uidSeq++);
+  const w = size, h = 900*(size/940);
+  const dark = shade(hex,-16);    // fluting lines / subtle shading
+  const light = shade(hex, 20);   // highlight tint
+  const black = "#1c1c1c";        // handles, matching the real drawing
+
+  const modules = [ [60,250], [260,450], [470,660], [670,860] ]; // [x,xEnd] per module
+  const doorGap = 6, doorY = 112, doorH = 466;
+
+  let doors = '', handles = '';
+  modules.forEach((m,mi)=>{
+    const mx = m[0], mw = m[1]-m[0];
+    const dW = (mw-doorGap)/2;
+    const aX = mx, bX = mx+dW+doorGap;
+    const aArch = (mi===0) ? 'left' : (mi===2) ? 'left' : null;
+    const bArch = (mi===1) ? 'right' : (mi===3) ? 'right' : null;
+    const doorFace = (x,arch)=> arch
+      ? `<path d="${archDoorPath(x,doorY,dW,doorH,arch)}" fill="${hex}" stroke="rgba(0,0,0,.22)" stroke-width="1.2"/>`
+      : `<rect x="${x}" y="${doorY}" width="${dW}" height="${doorH}" fill="${hex}" stroke="rgba(0,0,0,.22)" stroke-width="1.2"/>`;
+    doors += doorFace(aX,aArch) + doorFace(bX,bArch);
+    doors += `<rect x="${aX+9}" y="${doorY+9}" width="${dW-18}" height="${doorH-18}" fill="none" stroke="${dark}" stroke-width="1" opacity=".5"/>`;
+    doors += `<rect x="${bX+9}" y="${doorY+9}" width="${dW-18}" height="${doorH-18}" fill="none" stroke="${dark}" stroke-width="1" opacity=".5"/>`;
+    const hx = mx+dW - 2, hy = doorY + doorH*0.42, hh = doorH*0.14;
+    handles += `<rect x="${hx-1}" y="${hy}" width="8" height="${hh}" rx="2" fill="rgba(0,0,0,.35)"/>`;
+    handles += `<rect x="${hx}" y="${hy}" width="6" height="${hh}" rx="1.5" fill="${black}"/>`;
+    handles += `<rect x="${hx+1}" y="${hy+2}" width="1.4" height="${hh-4}" fill="rgba(255,255,255,.18)"/>`;
+  });
+
+  const topPanels = flutedPanel(60,20,395,65,hex,dark) + flutedPanel(465,20,395,65,hex,dark);
+  const bottomPanels = modules.map(m=>{
+    const mx=m[0], mw=m[1]-m[0];
+    const bar = `<rect x="${mx+mw*0.18}" y="600" width="${mw*0.55}" height="4" rx="2" fill="${black}"/>`;
+    return flutedPanel(mx,590,mw,85,hex,dark) + bar;
+  }).join('');
+
+  const cabY = 40; // vertical offset to make room for floor/reflection below
+  const cabBottom = cabY + 678;
+  const floorY = cabBottom + 34;
+
+  return `<svg width="${w}" height="${h}" viewBox="0 0 940 900" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="wall-${uid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f7f3ea"/>
+        <stop offset="1" stop-color="#eae3d3"/>
+      </linearGradient>
+      <linearGradient id="floor-${uid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#cdbfa4"/>
+        <stop offset="1" stop-color="#a99878"/>
+      </linearGradient>
+      <linearGradient id="sheen-${uid}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity=".22"/>
+        <stop offset=".35" stop-color="#ffffff" stop-opacity="0"/>
+        <stop offset="1" stop-color="#000000" stop-opacity=".16"/>
+      </linearGradient>
+      <linearGradient id="refl-${uid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${hex}" stop-opacity=".38"/>
+        <stop offset="1" stop-color="${hex}" stop-opacity="0"/>
+      </linearGradient>
+      <radialGradient id="shadow-${uid}" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#000" stop-opacity=".35"/>
+        <stop offset="1" stop-color="#000" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="grain-${uid}" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .05 0"/>
+        <feComposite operator="over" in2="SourceGraphic"/>
+      </filter>
+      <filter id="blur-${uid}" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="7"/>
+      </filter>
+      <filter id="dshadow-${uid}" x="-20%" y="-20%" width="140%" height="160%">
+        <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000" flood-opacity=".22"/>
+      </filter>
+    </defs>
+
+    <rect x="0" y="0" width="940" height="${floorY+6}" fill="url(#wall-${uid})"/>
+    <rect x="0" y="${floorY}" width="940" height="${900-floorY}" fill="url(#floor-${uid})"/>
+    <rect x="0" y="${floorY}" width="940" height="3" fill="#000" opacity=".08"/>
+
+    <ellipse cx="470" cy="${floorY+16}" rx="360" ry="20" fill="url(#shadow-${uid})" filter="url(#blur-${uid})"/>
+    <rect x="90" y="${floorY+2}" width="760" height="70" fill="url(#refl-${uid})" filter="url(#blur-${uid})"/>
+
+    <g transform="translate(0,${cabY})" filter="url(#dshadow-${uid})">
+      <g filter="url(#grain-${uid})">
+        <rect x="52" y="12" width="836" height="666" fill="none" stroke="rgba(0,0,0,.28)" stroke-width="2"/>
+        ${topPanels}
+        ${doors}
+        ${handles}
+        ${bottomPanels}
+      </g>
+      <rect x="52" y="12" width="836" height="666" fill="url(#sheen-${uid})" style="mix-blend-mode:overlay" pointer-events="none"/>
+    </g>
+  </svg>`;
+}
+
+function render(){
+  document.getElementById('grid').innerHTML = COLORS.map((c,i)=>`
+    <div class="card">
+      <div class="tag" style="background:${c.hex}; color:${c.lrv>35?'#3b4a3a':'#fff'}">${c.tagLabel}</div>
+      <button class="mockbtn" onclick="openZoom(${i})">${cabinetSVG(c.hex,340)}</button>
+      <div class="zoomhint">⤢ להגדלה</div>
+      <div class="body">
+        <div class="name">${c.name}</div>
+        <div class="code">${c.code}</div>
+        <div class="swrow">
+          <span class="swatchmini" style="background:${c.hex}"></span>
+          <div class="codes">
+            <span class="hex">${c.hex}</span>
+            <span class="rgb">RGB ${c.rgb.join(', ')}</span>
+          </div>
+        </div>
+        <p class="why">${c.why}</p>
+        <a class="viewlink" href="${c.url}" target="_blank" rel="noopener">לצפייה בטמבור ↗</a>
+      </div>
+    </div>
+  `).join('');
+}
+render();
+
+function openZoom(i){
+  const c = COLORS[i];
+  document.getElementById('overlaySvg').innerHTML = cabinetSVG(c.hex, 560);
+  document.getElementById('overlayName').textContent = c.name;
+  document.getElementById('overlayCode').textContent = c.code;
+  document.getElementById('overlayHex').textContent = c.hex;
+  document.getElementById('overlayRgb').textContent = 'RGB '+c.rgb.join(', ');
+  document.getElementById('overlay').classList.add('on');
+}
+function closeZoom(){ document.getElementById('overlay').classList.remove('on'); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeZoom(); });
+</script>
