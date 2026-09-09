@@ -38,13 +38,21 @@
   @media (max-width:680px){.grid{grid-template-columns:1fr}}
   .famGrid{margin-bottom:34px}
   .famHeader{margin:0 0 12px; padding-top:6px}
-  .famTitle{font-size:1.05rem; font-weight:800; color:var(--ink)}
+  .famTitle{font-size:1.05rem; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:10px; flex-wrap:wrap}
   .famNote{font-size:.82rem; color:var(--ink-soft); margin-top:2px; max-width:640px}
+  .lessLikelyBadge{font-size:.72rem; font-weight:700; color:#8a6a2f; background:#f5e8cc; border:1px solid #e6d3a3; padding:3px 10px; border-radius:99px}
+  .dimmedGrid{opacity:.8}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .lessLikelyBadge{color:#e8cf8f; background:#453a24; border-color:#5c4d2c} }
+  :root[data-theme="dark"] .lessLikelyBadge{color:#e8cf8f; background:#453a24; border-color:#5c4d2c}
   .mockbtn svg{max-width:100%; height:auto}
   .card{background:var(--paper); border:1px solid var(--line); border-radius:20px; overflow:hidden; box-shadow:0 2px 14px rgba(0,0,0,.06); display:flex; flex-direction:column}
   .tag{font-size:11px; font-weight:800; letter-spacing:.05em; padding:6px 13px; display:inline-block; margin:15px 0 0 15px; border-radius:99px; align-self:start}
-  .mockbtn{background:none; border:none; padding:18px 30px 6px; cursor:zoom-in; display:flex; justify-content:center; width:100%}
-  .mockbtn:hover svg{filter:brightness(1.04)}
+  .mockbtn{background:none; border:none; padding:14px 16px 6px; cursor:zoom-in; display:flex; justify-content:center; width:100%}
+  .mockbtn:hover .realImg{filter:brightness(1.03)}
+  .mockWrap{position:relative; width:100%; border-radius:14px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.15)}
+  .realImg{width:100%; display:block}
+  .svgThumb{position:absolute; left:8px; bottom:8px; width:74px; background:rgba(255,255,255,.88); border-radius:8px; padding:5px; box-shadow:0 1px 6px rgba(0,0,0,.2)}
+  .svgThumb svg{width:100%; height:auto; display:block}
   .zoomhint{font-size:10.5px; color:var(--ink-soft); text-align:center; margin-top:-2px}
   .body{padding:8px 20px 22px}
   .name{font-size:1.15rem; font-weight:800; margin:2px 0 2px}
@@ -63,9 +71,13 @@
   /* zoom overlay */
   .overlay{position:fixed; inset:0; background:rgba(20,16,10,.72); display:none; align-items:center; justify-content:center; z-index:50; padding:30px}
   .overlay.on{display:flex}
-  .overlayCard{background:var(--paper); border-radius:22px; padding:30px 40px; max-width:640px; width:100%; text-align:center; position:relative}
-  .closeBtn{position:absolute; top:14px; inset-inline-end:16px; background:none; border:none; font-size:22px; cursor:pointer; color:var(--ink-soft); line-height:1}
+  .overlayCard{background:var(--paper); border-radius:22px; padding:30px 40px; max-width:480px; width:100%; max-height:92vh; overflow-y:auto; text-align:center; position:relative}
+  .closeBtn{position:absolute; top:14px; inset-inline-end:16px; background:none; border:none; font-size:22px; cursor:pointer; color:var(--ink-soft); line-height:1; z-index:2}
   .closeBtn:hover{color:var(--ink)}
+  .overlayImg{width:100%; border-radius:16px; display:block; box-shadow:0 2px 10px rgba(0,0,0,.18)}
+  .overlaySvgRow{display:flex; align-items:center; justify-content:center; gap:8px; margin-top:12px}
+  .overlaySvgRow svg{width:100px; height:auto}
+  .overlaySvgLabel{font-size:.74rem; color:var(--ink-soft)}
   .overlayName{font-size:1.3rem; font-weight:800; margin-top:16px}
   .overlayCode{font-family:var(--mono); direction:ltr; unicode-bidi:isolate; color:var(--ink-soft); margin-bottom:10px}
   .overlayCodes{display:flex; gap:16px; justify-content:center; font-family:var(--mono); direction:ltr; unicode-bidi:isolate; font-size:.9rem; font-weight:700}
@@ -80,7 +92,7 @@
   <div class="kicker">טמבור · ארון כניסה</div>
   <h1>8 גוונים — מאורגנים ב-4 משפחות</h1>
   <p class="sub">כל הגוונים שדיברנו עליהם, מאורגנים לפי משפחת גוון ולא רק לפי בהירות: בכל משפחה יש 2-3 גוונים קרובים מאוד זה לזה, כדי שתוכלו קודם לבחור את המשפחה (עם נופר), ואז לדייק בין האחים הקרובים בתוכה. לחיצה על האיור מגדילה אותו למסך מלא.</p>
-  <div class="disclaimer">🎨 האיור מבוסס על תוכנית הארון של נופר: 4 מודולים × 2 דלתות, ידיות אנכיות שחורות בין כל זוג, קשתות אסימטריות בדלתות הקצה והמרכז, ולוחות מפוספסים למעלה ולמטה. כולל את הפינות המעוגלות לפי התוכנית הנוכחית — אלו עשויות להשתנות לדלתות מרובעות בהמשך אם יוחלט לחסוך בעלות.</div>
+  <div class="disclaimer">🎨 התמונה הראשית בכל כרטיס היא הדמיית הארון האמיתית של נופר, צבועה מחדש בגוון המדויק של כל מועמד — לצדה איור סכמטי קטן לפי תוכנית הנגרות: 4 מודולים × 2 דלתות, ידיות אנכיות שחורות בין כל זוג, קשתות אסימטריות בדלתות הקצה והמרכז, ולוחות מפוספסים למעלה ולמטה. כולל את הפינות המעוגלות לפי התוכנית הנוכחית — אלו עשויות להשתנות לדלתות מרובעות בהמשך אם יוחלט לחסוך בעלות.</div>
 
   <div class="grid" id="grid"></div>
 
@@ -93,7 +105,11 @@
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeZoom()">
   <div class="overlayCard">
     <button class="closeBtn" onclick="closeZoom()">×</button>
-    <div id="overlaySvg"></div>
+    <img class="overlayImg" id="overlayImg" alt="">
+    <div class="overlaySvgRow">
+      <span class="overlaySvgLabel">איור סכמטי לפי תוכנית הנגרות:</span>
+      <div id="overlaySvg"></div>
+    </div>
     <div class="overlayName" id="overlayName"></div>
     <div class="overlayCode" id="overlayCode"></div>
     <div class="overlayCodes"><span class="hx" id="overlayHex"></span><span class="rg" id="overlayRgb"></span></div>
@@ -105,35 +121,35 @@ const FAMILIES = [
   {key:"deep",    label:"🌲 משפחה 1 — עמוק ודרמטי",        note:"שני הגוונים הכהים ביותר, כמעט אותה רמת בהירות — ההבדל הוא הכיוון: קריר-טורקיזי מול חם-אדמתי."},
   {key:"mid",     label:"🌊 משפחה 2 — בינוני-כהה",         note:"אותו טווח בהירות בקירוב (LRV 28–30) — קריר-אפרפר יותר (Shady) מול חם-זית יותר (New Lawn)."},
   {key:"neutral", label:"⚪ משפחה 3 — ניטרלי-אפור עד ירקרק בהיר-בינוני", note:"שני קצוות אותו טווח ניטרלי: הכי אפור (Green Moor, LRV 38) מול הכי ירוק (Nature's Abundance, LRV 43)."},
-  {key:"light",   label:"☀️ משפחה 4 — בהיר ורענן",          note:"שני הבהירים ביותר: מנטה רווי מול סאלווי פסטלי ורך."},
+  {key:"light",   label:"☀️ משפחה 4 — בהיר ורענן",          note:"שני הבהירים ביותר: מנטה רווי מול סאלווי פסטלי ורך.", lessLikely:true},
 ];
 
 const COLORS = [
-  {name:"Forest Found", code:"0951A", hex:"#597667", rgb:[89,118,103], lrv:16, family:"deep", tagLabel:"טורקיז-אלגנטי",
+  {name:"Forest Found", code:"0951A", hex:"#597667", rgb:[89,118,103], lrv:16, family:"deep", tagLabel:"טורקיז-אלגנטי", render:"forest-found",
    why:'הכי כהה מבין הגוונים <b>(LRV 16)</b>. נטייה טורקיזית-כחלחלה, אלגנטי ועל-זמני. סיכון: עלול "לבלוע" אור בכניסה חשוכה.',
    url:"https://tambour.co.il/hue/forest-found-0951a/"},
-  {name:"Western Meadow", code:"0937A", hex:"#687960", rgb:[104,121,96], lrv:17, family:"deep", tagLabel:"זית-אדמתי",
+  {name:"Western Meadow", code:"0937A", hex:"#687960", rgb:[104,121,96], lrv:17, family:"deep", tagLabel:"זית-אדמתי", render:"western-meadow",
    why:'כמעט אותה עומק כמו Forest Found <b>(LRV 17)</b> אבל כיוון גוון שונה לגמרי — זית כהה וחם, לא טורקיזי. אם "עמוק" כן, אבל Forest Found מרגיש קריר מדי — זו האלטרנטיבה.',
    url:"https://tambour.co.il/hue/western-meadow-0937a/"},
 
-  {name:"Shady", code:"0949T/A", hex:"#81968B", rgb:[129,150,139], lrv:28, family:"mid", tagLabel:"קריר-אפרפר יותר",
+  {name:"Shady", code:"0949T/A", hex:"#81968B", rgb:[129,150,139], lrv:28, family:"mid", tagLabel:"קריר-אפרפר יותר", render:"shady",
    why:'אפרפר-ירקרק מעודן <b>(LRV 28)</b>, קריר יותר מ-New Lawn. שמור אצלכם כבר ב-13.',
    url:"https://tambour.co.il/hue/shady-0949t-a/"},
-  {name:"New Lawn", code:"0935T/A", hex:"#8B9988", rgb:[139,153,136], lrv:30, family:"mid", tagLabel:"זית בהיר, שמור אצלכם",
+  {name:"New Lawn", code:"0935T/A", hex:"#8B9988", rgb:[139,153,136], lrv:30, family:"mid", tagLabel:"זית בהיר, שמור אצלכם", render:"new-lawn",
    why:'זית-שמנת מאוזן <b>(LRV 30)</b>, שמור כבר ב-13 הגוונים שלכם. חם ואדמתי יותר מ-Shady, אך עדיין "בטוח" — לא נופל לכיוון ירוק בולט.',
    url:"https://tambour.co.il/hue/new-lawn-0935t-a/"},
 
-  {name:"Green Moor", code:"0934T", hex:"#9DA99A", rgb:[157,169,154], lrv:38, family:"neutral", tagLabel:"הכי אפור מהשניים",
+  {name:"Green Moor", code:"0934T", hex:"#9DA99A", rgb:[157,169,154], lrv:38, family:"neutral", tagLabel:"הכי אפור מהשניים", render:"green-moor",
    why:'ניטרלי-אפרפר, כמעט אפור עם רמז ירוק בלבד <b>(LRV 38)</b> — פחות ירוק מ-Nature\'s Abundance.',
    url:"https://tambour.co.il/hue/green-moor-0934t/"},
-  {name:"Nature's Abundance", code:"0885T", hex:"#A2B6A0", rgb:[162,182,160], lrv:43, family:"neutral", tagLabel:"הכי ירוק מהשניים",
+  {name:"Nature's Abundance", code:"0885T", hex:"#A2B6A0", rgb:[162,182,160], lrv:43, family:"neutral", tagLabel:"הכי ירוק מהשניים", render:"natures-abundance",
    why:'בדיוק אמצע הפלטה הכללית <b>(LRV 43)</b>. רגוע ומזמין, ברור-ירוק יותר מ-Green Moor.',
    url:"https://tambour.co.il/hue/natures-abundance-0885t/"},
 
-  {name:"Clover Tint", code:"0851T", hex:"#92C1AB", rgb:[146,193,171], lrv:47, family:"light", tagLabel:"מנטה רווי",
+  {name:"Clover Tint", code:"0851T", hex:"#92C1AB", rgb:[146,193,171], lrv:47, family:"light", tagLabel:"מנטה רווי", render:"clover-tint",
    why:'הרוויה הגבוהה ביותר מכל הגוונים כאן <b>(LRV 47)</b> — מנטה טרי ובהיר. ניגוד נועז אם רוצים שהארון "יקפוץ" ולא רק ישתלב.',
    url:"https://tambour.co.il/hue/clover-tint-0851t/"},
-  {name:"Aloe Vera Leaf", code:"0836P/T", hex:"#B9CFB2", rgb:[185,207,178], lrv:58, family:"light", tagLabel:"סאלווי פסטלי רך",
+  {name:"Aloe Vera Leaf", code:"0836P/T", hex:"#B9CFB2", rgb:[185,207,178], lrv:58, family:"light", tagLabel:"סאלווי פסטלי רך", render:"aloe-vera-leaf",
    why:'הכי בהיר מכולם <b>(LRV 58)</b>, אך עדיין לא דהוי כמו Mint Touch. פותח חלל כניסה קטן וחשוך, מרגיש טרי ואוורירי.',
    url:"https://tambour.co.il/hue/aloe-vera-leaf-0836p-t/"},
 ];
@@ -266,7 +282,12 @@ function cardHTML(c,i){
   return `
     <div class="card">
       <div class="tag" style="background:${c.hex}; color:${c.lrv>35?'#3b4a3a':'#fff'}">${c.tagLabel}</div>
-      <button class="mockbtn" onclick="openZoom(${i})">${cabinetSVG(c.hex,340)}</button>
+      <button class="mockbtn" onclick="openZoom(${i})">
+        <div class="mockWrap">
+          <img class="realImg" src="renders/${c.render}.jpg" alt="הדמיה של ${c.name} על ארון הכניסה" loading="lazy">
+          <div class="svgThumb" title="איור סכמטי לפי תוכנית הנגרות">${cabinetSVG(c.hex,90)}</div>
+        </div>
+      </button>
       <div class="zoomhint">⤢ להגדלה</div>
       <div class="body">
         <div class="name">${c.name}</div>
@@ -284,11 +305,11 @@ function render(){
     const members = COLORS.map((c,i)=>({c,i})).filter(x=>x.c.family===fam.key);
     if(!members.length) return '';
     return `
-      <div class="famHeader">
-        <div class="famTitle">${fam.label}</div>
+      <div class="famHeader${fam.lessLikely?' lessLikely':''}">
+        <div class="famTitle">${fam.label}${fam.lessLikely?' <span class="lessLikelyBadge">פחות סביר שנבחר — אך שווה להראות לנופר</span>':''}</div>
         <div class="famNote">${fam.note}</div>
       </div>
-      <div class="grid famGrid">${members.map(x=>cardHTML(x.c,x.i)).join('')}</div>
+      <div class="grid famGrid${fam.lessLikely?' dimmedGrid':''}">${members.map(x=>cardHTML(x.c,x.i)).join('')}</div>
     `;
   }).join('');
   document.getElementById('grid').outerHTML = `<div id="grid">${html}</div>`;
@@ -297,7 +318,9 @@ render();
 
 function openZoom(i){
   const c = COLORS[i];
-  document.getElementById('overlaySvg').innerHTML = cabinetSVG(c.hex, 560);
+  document.getElementById('overlayImg').src = 'renders/'+c.render+'.jpg';
+  document.getElementById('overlayImg').alt = 'הדמיה של '+c.name+' על ארון הכניסה';
+  document.getElementById('overlaySvg').innerHTML = cabinetSVG(c.hex, 100);
   document.getElementById('overlayName').textContent = c.name;
   document.getElementById('overlayCode').textContent = c.code;
   document.getElementById('overlayHex').textContent = c.hex;
