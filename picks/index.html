@@ -1,21 +1,21 @@
 <!doctype html>
 <html lang="he" dir="rtl">
 <head>
-<base href="https://yaelavgil.github.io/wishlist-ida/">
+<base href="https://yaelavgil.github.io/home-decisions/">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>לוח החלטות · הבית שלנו</title>
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://yaelavgil.github.io/wishlist-ida/picks/">
+<meta property="og:url" content="https://yaelavgil.github.io/home-decisions/picks/">
 <meta property="og:title" content="מה בוחרים לבית — לוח החלטות משותף">
 <meta property="og:description" content="בוחרים יחד לבית — מוצרים מכל חנות. כל אחד מסמן ✓/?/✕ וכולם רואים, בזמן אמת.">
 <meta property="og:site_name" content="הבית שלנו">
-<meta property="og:image" content="https://yaelavgil.github.io/wishlist-ida/og.jpg">
+<meta property="og:image" content="https://yaelavgil.github.io/home-decisions/og.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="לוח החלטות — תאורה, צבעים וידיות מטבח">
 <meta property="og:locale" content="he_IL">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://yaelavgil.github.io/wishlist-ida/og.jpg">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://yaelavgil.github.io/home-decisions/og.jpg">
 <meta name="theme-color" content="#b08a54">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -812,7 +812,7 @@ function checkIncomingAdd(){
     setFetchStatus('ok','✨ המוצר הגיע מהחנות — בחרו קטגוריה ואשרו');
   }catch(e){}
 }
-(function(){ const code="(function(){var d=document,q=function(p){var m=d.querySelector('meta[property=\"'+p+'\"]');return m?m.content:''};var n=q('og:title')||d.title;n=n.split(/\\s*[|\\u2013-]\\s*(?=[^|\\u2013-]*$)/)[0].trim();var i=q('og:image');var pm=(d.body.innerText.match(/\\u20aa\\s*([\\d,]+(?:\\.\\d+)?)/)||[])[1]||'';var pl={u:location.href,n:n,i:i,p:pm.replace(/,/g,'')};window.open('https://yaelavgil.github.io/wishlist-ida/picks/#add='+btoa(unescape(encodeURIComponent(JSON.stringify(pl)))));})()";
+(function(){ const code="(function(){var d=document,q=function(p){var m=d.querySelector('meta[property=\"'+p+'\"]');return m?m.content:''};var n=q('og:title')||d.title;n=n.split(/\\s*[|\\u2013-]\\s*(?=[^|\\u2013-]*$)/)[0].trim();var i=q('og:image');var pm=(d.body.innerText.match(/\\u20aa\\s*([\\d,]+(?:\\.\\d+)?)/)||[])[1]||'';var pl={u:location.href,n:n,i:i,p:pm.replace(/,/g,'')};window.open('https://yaelavgil.github.io/home-decisions/picks/#add='+btoa(unescape(encodeURIComponent(JSON.stringify(pl)))));})()";
   const el=document.getElementById('bookmarklet'); if(el){ el.href='javascript:'+encodeURIComponent(code); el.addEventListener('click',e=>e.preventDefault()); }
 })();
 document.getElementById('a_url').addEventListener('paste',()=>{ setTimeout(()=>{ if(!document.getElementById('a_name').value.trim()) fetchMeta(); },150); });

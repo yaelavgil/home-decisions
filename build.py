@@ -1,7 +1,7 @@
 import json,os,sys
 
-REPO="/Users/home/פרוייקטים/wishlist-ida"
-BASE="https://yaelavgil.github.io/wishlist-ida/"
+REPO="/Users/home/פרוייקטים/home-decisions"
+BASE="https://yaelavgil.github.io/home-decisions/"
 DBURL="https://home-picks-47450-default-rtdb.europe-west1.firebasedatabase.app"
 
 def tags(n):
