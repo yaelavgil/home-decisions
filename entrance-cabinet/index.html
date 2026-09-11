@@ -26,15 +26,25 @@
   :root[data-theme="dark"]{ --bg:#211c16; --paper:#2a231b; --ink:#f0e9da; --ink-soft:#c2b5a0; --line:#3d3427; --brass:#d6a75e; --brass-d:#e4b563; --brass-soft:#372c1e; }
 
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; margin:0}
   .wrap{max-width:960px; margin:0 auto; padding:40px 22px 70px}
+  @keyframes fadeSlideUp{ from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)} }
+  .backlink, .kicker, h1, .sub, .disclaimer{ animation:fadeSlideUp .7s cubic-bezier(.2,.7,.3,1) both }
+  .kicker{animation-delay:.04s}
+  h1{animation-delay:.1s}
+  .sub{animation-delay:.17s}
+  .disclaimer{animation-delay:.24s}
   .kicker{font-size:11.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--brass-d); display:flex; align-items:center; gap:9px}
   .kicker::before{content:""; width:22px; height:2px; border-radius:2px; background:var(--brass)}
-  .backlink{display:inline-block; font-size:13px; font-weight:600; color:var(--ink-soft); text-decoration:none; margin-bottom:14px}
+  .backlink{display:inline-block; font-size:13px; font-weight:600; color:var(--ink-soft); text-decoration:none; margin-bottom:14px; transition:color .2s ease}
   .backlink:hover{color:var(--brass-d)}
   h1{font-size:1.9rem; font-weight:800; margin:8px 0 6px; text-wrap:balance}
   .sub{color:var(--ink-soft); max-width:660px; line-height:1.55; margin:0 0 8px}
   .disclaimer{font-size:.8rem; color:var(--ink-soft); background:var(--brass-soft); border-radius:10px; padding:9px 14px; display:inline-block; margin:10px 0 28px}
+
+  .reveal{opacity:0; transform:translateY(22px); transition:opacity .65s cubic-bezier(.2,.7,.3,1), transform .65s cubic-bezier(.2,.7,.3,1)}
+  .reveal.visible{opacity:1; transform:translateY(0)}
 
   .grid{display:grid; grid-template-columns:1fr 1fr; gap:20px}
   @media (max-width:680px){.grid{grid-template-columns:1fr}}
@@ -47,19 +57,28 @@
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .lessLikelyBadge{color:#e8cf8f; background:#453a24; border-color:#5c4d2c} }
   :root[data-theme="dark"] .lessLikelyBadge{color:#e8cf8f; background:#453a24; border-color:#5c4d2c}
   .mockbtn svg{max-width:100%; height:auto}
-  .card{background:var(--paper); border:1px solid var(--line); border-radius:20px; overflow:hidden; box-shadow:0 2px 14px rgba(0,0,0,.06); display:flex; flex-direction:column}
-  .tag{font-size:11px; font-weight:800; letter-spacing:.05em; padding:6px 13px; display:inline-block; margin:15px 0 0 15px; border-radius:99px; align-self:start}
+  .card{
+    background:
+      linear-gradient(175deg, color-mix(in srgb, var(--tint) 16%, var(--paper)) 0%, var(--paper) 62%),
+      var(--paper);
+    border:1px solid var(--line); border-radius:20px; overflow:hidden;
+    box-shadow:0 2px 14px rgba(0,0,0,.06); display:flex; flex-direction:column;
+    transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s cubic-bezier(.2,.8,.2,1);
+  }
+  .card:hover{transform:translateY(-6px); box-shadow:0 18px 36px rgba(0,0,0,.14), 0 2px 8px color-mix(in srgb, var(--tint) 30%, transparent)}
+  .tag{position:absolute; top:10px; right:10px; z-index:2; font-size:11px; font-weight:800; letter-spacing:.05em; padding:6px 13px; border-radius:99px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:0 2px 8px rgba(0,0,0,.18)}
   .mockbtn{background:none; border:none; padding:14px 16px 6px; cursor:zoom-in; display:flex; justify-content:center; width:100%}
-  .mockbtn:hover .realImg{filter:brightness(1.03)}
+  .mockbtn:hover .realImg{filter:brightness(1.04); transform:scale(1.045)}
   .mockWrap{position:relative; width:100%; border-radius:14px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.15)}
-  .realImg{width:100%; display:block}
+  .realImg{width:100%; display:block; transition:transform .5s cubic-bezier(.2,.8,.2,1), filter .5s ease}
   .svgThumb{position:absolute; left:8px; bottom:8px; width:74px; background:rgba(255,255,255,.88); border-radius:8px; padding:5px; box-shadow:0 1px 6px rgba(0,0,0,.2)}
   .svgThumb svg{width:100%; height:auto; display:block}
   .zoomhint{font-size:10.5px; color:var(--ink-soft); text-align:center; margin-top:-2px}
   .body{padding:8px 20px 22px}
   .name{font-size:1.15rem; font-weight:800; margin:2px 0 2px}
   .code{font-family:var(--mono); direction:ltr; unicode-bidi:isolate; color:var(--ink-soft); font-size:.8rem; margin-bottom:10px}
-  .swatchbar{width:100%; height:48px; border-radius:10px; margin:4px 0 12px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.14); display:flex; align-items:center; justify-content:center; font-family:var(--mono); direction:ltr; unicode-bidi:isolate; font-weight:800; font-size:1rem; letter-spacing:.02em}
+  .swatchbar{position:relative; overflow:hidden; width:100%; height:48px; border-radius:10px; margin:4px 0 12px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.14); display:flex; align-items:center; justify-content:center; font-family:var(--mono); direction:ltr; unicode-bidi:isolate; font-weight:800; font-size:1rem; letter-spacing:.02em}
+  .swatchbar::after{content:""; position:absolute; inset:0; background:linear-gradient(135deg, rgba(255,255,255,.35), transparent 55%); mix-blend-mode:overlay; pointer-events:none}
   .rgb{font-family:var(--mono); direction:ltr; unicode-bidi:isolate; font-weight:600; font-size:.78rem; color:var(--ink-soft); display:block; margin:0 0 12px}
   .why{font-size:.86rem; line-height:1.5; color:var(--ink)}
   .why b{color:var(--brass-d)}
@@ -282,11 +301,11 @@ function cabinetSVG(hex, size){
 
 function cardHTML(c,i){
   return `
-    <div class="card">
-      <div class="tag" style="background:${c.hex}; color:${c.lrv>35?'#3b4a3a':'#fff'}">${c.tagLabel}</div>
+    <div class="card reveal" style="--tint:${c.hex}">
       <button class="mockbtn" onclick="openZoom(${i})">
         <div class="mockWrap">
           <img class="realImg" src="renders/${c.render}.jpg" alt="הדמיה של ${c.name} על ארון הכניסה" loading="lazy">
+          <div class="tag" style="background:${c.hex}E6; color:${c.lrv>35?'#3b4a3a':'#fff'}">${c.tagLabel}</div>
           <div class="svgThumb" title="איור סכמטי לפי תוכנית הנגרות">${cabinetSVG(c.hex,90)}</div>
         </div>
       </button>
@@ -307,7 +326,7 @@ function render(){
     const members = COLORS.map((c,i)=>({c,i})).filter(x=>x.c.family===fam.key);
     if(!members.length) return '';
     return `
-      <div class="famHeader${fam.lessLikely?' lessLikely':''}">
+      <div class="famHeader reveal${fam.lessLikely?' lessLikely':''}">
         <div class="famTitle">${fam.label}${fam.lessLikely?' <span class="lessLikelyBadge">פחות סביר שנבחר — אך שווה להראות לנופר</span>':''}</div>
         <div class="famNote">${fam.note}</div>
       </div>
@@ -315,8 +334,26 @@ function render(){
     `;
   }).join('');
   document.getElementById('grid').outerHTML = `<div id="grid">${html}</div>`;
+  initReveal();
 }
 render();
+
+function initReveal(){
+  const els = document.querySelectorAll('.reveal:not(.visible)');
+  if(!('IntersectionObserver' in window)){ els.forEach(el=>el.classList.add('visible')); return; }
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+  els.forEach((el,i)=>{
+    el.style.transitionDelay = (Math.min(i%2,1)*90) + 'ms';
+    io.observe(el);
+  });
+}
 
 function openZoom(i){
   const c = COLORS[i];
