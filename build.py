@@ -467,7 +467,26 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .form input[type=color]{padding:4px;height:46px;cursor:pointer}
 .fstatus{font-size:12.5px;line-height:1.5;display:none}
 .fstatus.show{display:block}
-.fstatus.working{color:var(--ink-soft)}.fstatus.ok{color:var(--yes)}.fstatus.fail{color:var(--no)}
+.fstatus.working{color:var(--ink-soft)}.fstatus.ok{color:var(--yes)}.fstatus.fail{color:var(--no)}.fstatus.partial{color:var(--maybe)}
+.addStep{background:var(--bg2);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.addStepTitle{font-weight:700;font-size:14px;color:var(--ink);display:flex;align-items:center;gap:8px}
+.addStepNum{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--brass);color:#fff;font-size:11.5px;font-weight:800;flex:none}
+.addStep input{border:1.5px solid var(--line-2);border-radius:11px;padding:10px 12px;font:inherit;font-size:14px;background:var(--paper);color:var(--ink)}
+.addStep input:focus{outline:none;border-color:var(--brass);box-shadow:0 0 0 3px var(--brass-soft)}
+.tbtn.ghost{background:transparent;border:1.5px dashed var(--line-2);color:var(--ink-soft)}
+.tbtn.ghost:hover{border-color:var(--brass);color:var(--brass-d)}
+.tbtn.sm{align-self:flex-start;padding:6px 12px;font-size:12.5px}
+.addPreviewRow{display:flex;gap:12px}
+.addImgPreview{width:84px;height:84px;flex:none;border-radius:14px;border:1.5px dashed var(--line-2);background:var(--paper);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;transition:.15s;text-align:center}
+.addImgPreview .addImgPh{font-size:11px;color:var(--muted);line-height:1.4}
+.addImgPreview img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.addImgPreview.has-img{border-style:solid;border-color:var(--yes)}
+.addImgPreview.broken{border-style:solid;border-color:var(--no)}
+.addImgPreview.broken .addImgPh::after{content:"⚠️ הקישור לא מציג תמונה תקינה";display:block;color:var(--no);margin-top:2px}
+.addPreviewFields{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.addMore{border:1.5px solid var(--line);border-radius:14px;padding:10px 14px}
+.addMore summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--ink-soft)}
+.addMore[open] summary{margin-bottom:4px}
 .spinner{display:inline-block;width:12px;height:12px;border:2px solid var(--brass-soft);border-top-color:var(--brass-d);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-inline-end:5px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .form input.flash{animation:flashf .9s ease}
@@ -632,33 +651,63 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 
 <dialog id="addDlg"><div class="dh">➕ הוספת פריט מכל חנות</div>
   <div class="db"><div class="form">
-    <div id="a_prodFields2" class="form" style="gap:8px">
-      <label>קישור למוצר (הדביקו — הפרטים יישלפו ✨)<input id="a_url" type="url" placeholder="https://… מכל חנות" dir="ltr"></label>
-      <button type="button" class="tbtn" id="a_fetch" onclick="fetchMeta()" style="align-self:flex-start">✨ שליפת פרטים אוטומטית</button>
+
+    <label>סוג<select id="a_type" onchange="addToggle()"><option value="product">מוצר (תמונה)</option><option value="color">צבע / גוון</option></select></label>
+
+    <div id="a_prodFields2">
+    <div class="addStep">
+      <div class="addStepTitle"><span class="addStepNum">1</span> הדביקו קישור למוצר</div>
+      <input id="a_url" type="url" placeholder="https://… כתובת עמוד המוצר, מכל חנות" dir="ltr" oninput="onUrlInput()" onpaste="setTimeout(onUrlInput,30)">
       <div id="a_fstatus" class="fstatus"></div>
+      <button type="button" class="tbtn ghost sm" id="a_fetch" onclick="fetchMeta()">✨ נסו לשלוף שוב</button>
     </div>
-    <label>קטגוריה<select id="a_sec" onchange="addToggle()"></select></label>
+    </div>
+
+    <div class="addStep">
+      <div class="addStepTitle"><span class="addStepNum">2</span> בדקו ואשרו את הפרטים</div>
+      <div class="addPreviewRow">
+        <div class="addImgPreview" id="a_imgPreview" onclick="document.getElementById('a_img').focus()">
+          <span class="addImgPh">📷<br>אין תמונה עדיין</span>
+          <img id="a_imgPreviewImg" alt="" hidden>
+        </div>
+        <div class="addPreviewFields">
+          <label>שם הפריט<input id="a_name" placeholder="שם המוצר"></label>
+          <div class="row2">
+            <label style="flex:1">מחיר ₪<input id="a_price" type="number" min="0" inputmode="numeric" placeholder="לא חובה"></label>
+            <label style="flex:1">קטגוריה<select id="a_sec" onchange="addToggle()"></select></label>
+          </div>
+        </div>
+      </div>
+      <div id="a_prodFields">
+        <label>קישור לתמונה<input id="a_img" placeholder="https://…/image.jpg" dir="ltr" oninput="updateImgPreview()"></label>
+        <p class="tip">💡 אם לא נמצאה תמונה אוטומטית: לכו לעמוד המוצר, לחצו קליק ימני על התמונה ובחרו <b>"העתק כתובת התמונה"</b> — והדביקו כאן. תראו תצוגה מקדימה מיד כשהיא תקינה.</p>
+      </div>
+      <div id="a_colorFields" style="display:none">
+        <div class="row2">
+          <label style="flex:1">גוון<input id="a_hex" type="color" value="#c8bdae"></label>
+          <label style="flex:2">קוד (לא חובה)<input id="a_code" placeholder="IS 0000"></label>
+        </div>
+      </div>
+    </div>
+
     <div id="a_newFields" class="row2" style="display:none">
       <label style="flex:2">שם קטגוריה חדשה<input id="a_secNew" placeholder="למשל: כלים סניטריים"></label>
       <label style="flex:1">אייקון<input id="a_secIcon" value="📌" maxlength="2" style="text-align:center"></label>
     </div>
-    <label>סוג<select id="a_type" onchange="addToggle()"><option value="product">מוצר (תמונה)</option><option value="color">צבע / גוון</option></select></label>
-    <label>שם<input id="a_name" placeholder="שם הפריט"></label>
-    <div id="a_prodFields">
-      <div class="row2">
-        <label>מחיר ₪ (לא חובה)<input id="a_price" type="number" min="0" inputmode="numeric"></label>
-        <label>תגית לסינון (לא חובה)<input id="a_tag" placeholder="למשל: תלוי"></label>
+
+    <details class="addMore">
+      <summary>עוד אפשרויות — תגית, קישור לזאפ</summary>
+      <div class="form" style="gap:12px;margin-top:12px">
+        <div id="a_prodFields3">
+          <div class="row2">
+            <label>תגית לסינון (לא חובה)<input id="a_tag" placeholder="למשל: תלוי"></label>
+            <label>קישור להשוואת מחירים בזאפ (לא חובה)<input id="a_zap" type="url" placeholder="https://www.zap.co.il/model.aspx?…" dir="ltr"></label>
+          </div>
+        </div>
       </div>
-      <label>קישור לתמונה (לא חובה)<input id="a_img" placeholder="https://…/image.jpg" dir="ltr"></label>
-      <label>קישור להשוואת מחירים בזאפ (לא חובה)<input id="a_zap" type="url" placeholder="https://www.zap.co.il/model.aspx?…" dir="ltr"></label>
-    </div>
-    <div id="a_colorFields" style="display:none">
-      <div class="row2">
-        <label style="flex:1">גוון<input id="a_hex" type="color" value="#c8bdae"></label>
-        <label style="flex:2">קוד (לא חובה)<input id="a_code" placeholder="IS 0000"></label>
-      </div>
-    </div>
-    <p class="tip">💡 גררו את <a id="bookmarklet" href="#">➕ הוסף לבית</a> לסרגל הסימניות. בכל חנות — לחצו עליו כדי לשלוף את המוצר לכאן (עוקף חסימות).</p>
+    </details>
+
+    <p class="tip">💡 גררו את <a id="bookmarklet" href="#">➕ הוסף לבית</a> לסרגל הסימניות — לחיצה עליו כשאתם בעמוד מוצר בכל חנות תפתח את הטופס הזה ממולא אוטומטית (עוקף חסימות אתרים).</p>
     <p style="margin:2px 0 0;font-size:12px;color:var(--muted)">הפריט מתווסף ל<b>לוח המשותף</b> — כולם יראו אותו.</p>
   </div></div>
   <div class="df"><button class="tbtn primary" onclick="submitAdd()">הוסף</button><button class="tbtn" onclick="document.getElementById('addDlg').close()">ביטול</button></div>
@@ -847,6 +896,7 @@ function toggleOrdered(id){
 }
 function RE(animate){
   ITEMS.forEach(it=>cardEl(it));
+  ITEMS.forEach(it=>paint(it.id)); // re-apply ordered/status classes — cardEl() only paints once, at creation
   const vis=visible(), visSet=new Set(vis.map(v=>v.id));
   // FLIP: measure first
   const first=new Map();
@@ -956,6 +1006,7 @@ function addToggle(){
   const t=document.getElementById('a_type').value;
   document.getElementById('a_prodFields').style.display=t==='product'?'':'none';
   document.getElementById('a_prodFields2').style.display=t==='product'?'':'none';
+  document.getElementById('a_prodFields3').style.display=t==='product'?'':'none';
   document.getElementById('a_colorFields').style.display=t==='color'?'':'none';
 }
 function openAdd(){
@@ -967,7 +1018,7 @@ function openAdd(){
   if(selCats.size===1)sel.value=[...selCats][0];
   ['a_name','a_price','a_img','a_url','a_zap','a_tag','a_code','a_secNew'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('a_type').value='product'; document.getElementById('a_hex').value='#c8bdae';
-  document.getElementById('a_secIcon').value='📌'; setFetchStatus('');
+  document.getElementById('a_secIcon').value='📌'; setFetchStatus(''); updateImgPreview();
   addToggle(); document.getElementById('addDlg').showModal();
 }
 function editItem(id){ const it=byId[id]; if(!it)return; openAdd();
@@ -976,7 +1027,7 @@ function editItem(id){ const it=byId[id]; if(!it)return; openAdd();
   const sec=document.getElementById('a_sec'); if([...sec.options].some(o=>o.value===it.cat)) sec.value=it.cat;
   document.getElementById('a_name').value=it.name||'';
   if(it.type==='color'){ if(it.hex)document.getElementById('a_hex').value=it.hex; document.getElementById('a_code').value=it.code||''; }
-  else{ document.getElementById('a_price').value=(it.price!=null?it.price:''); document.getElementById('a_img').value=it.img||''; document.getElementById('a_tag').value=(it.tags&&it.tags[0])||''; document.getElementById('a_url').value=it.link||''; document.getElementById('a_zap').value=it.zap||''; }
+  else{ document.getElementById('a_price').value=(it.price!=null?it.price:''); document.getElementById('a_img').value=it.img||''; document.getElementById('a_tag').value=(it.tags&&it.tags[0])||''; document.getElementById('a_url').value=it.link||''; document.getElementById('a_zap').value=it.zap||''; updateImgPreview(); }
   addToggle();
 }
 function submitAdd(){
@@ -1095,12 +1146,34 @@ async function fetchMeta(){
     if(!price){const m=(doc.body?.textContent||'').match(/₪\s*([\d,]+(?:\.\d+)?)/);if(m)price=m[1].replace(/,/g,'');}
     const flash=id=>{const el=document.getElementById(id);el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');};
     if(name){document.getElementById('a_name').value=name;flash('a_name');}
-    if(img){document.getElementById('a_img').value=img;flash('a_img');}
+    if(img){document.getElementById('a_img').value=img;updateImgPreview();flash('a_img');}
     if(price){document.getElementById('a_price').value=Math.round(parseFloat(price));flash('a_price');}
-    if(name) setFetchStatus('ok',`✅ נשלפו: ${[name&&'שם',price&&'מחיר',img&&'תמונה'].filter(Boolean).join(', ')} — בדקו ואשרו`);
-    else setFetchStatus('fail','😕 העמוד נטען בלי פרטי מוצר — מלאו ידנית');
-  }catch(e){ setFetchStatus('fail','🚫 החנות חוסמת שליפה — מלאו ידנית, או השתמשו ב-➕ שבטיפ'); }
-  fetching=false; const b=document.getElementById('a_fetch'); b.disabled=false; b.textContent='✨ שליפת פרטים אוטומטית';
+    const found=[name&&'שם',price&&'מחיר',img&&'תמונה'].filter(Boolean);
+    const missing=[!name&&'שם',!price&&'מחיר',!img&&'תמונה'].filter(Boolean);
+    if(name){
+      let msg=`✅ נשלפו: ${found.join(', ')}`;
+      if(missing.length) msg+=` — <b>${missing.join(' ו')} לא נמצא${missing.length>1?'ו':''}</b>, השלימו ידנית למטה`;
+      else msg+=' — בדקו ואשרו';
+      setFetchStatus(missing.length?'partial':'ok',msg);
+    }
+    else setFetchStatus('fail','😕 העמוד נטען בלי פרטי מוצר — מלאו ידנית למטה');
+  }catch(e){ setFetchStatus('fail','🚫 החנות הזו חוסמת שליפה אוטומטית — מלאו ידנית למטה, או השתמשו בסימנייה "➕ הוסף לבית" (ראו למטה)'); }
+  fetching=false; const b=document.getElementById('a_fetch'); b.disabled=false; b.textContent='✨ נסו לשלוף שוב';
+}
+let _urlTimer=null;
+function onUrlInput(){
+  clearTimeout(_urlTimer);
+  const url=document.getElementById('a_url').value.trim();
+  if(!/^https?:\/\/.+\..+/.test(url))return;
+  _urlTimer=setTimeout(()=>{ if(!fetching) fetchMeta(); }, 500);
+}
+function updateImgPreview(){
+  const url=document.getElementById('a_img').value.trim();
+  const box=document.getElementById('a_imgPreview'), img=document.getElementById('a_imgPreviewImg');
+  if(!url){ img.hidden=true; box.classList.remove('has-img','broken'); return; }
+  img.onload=()=>{ img.hidden=false; box.classList.add('has-img'); box.classList.remove('broken'); };
+  img.onerror=()=>{ img.hidden=true; box.classList.remove('has-img'); box.classList.add('broken'); };
+  img.src=url;
 }
 function checkIncomingAdd(){
   const m=location.hash.match(/#add=([A-Za-z0-9+/=\-_]+)/); if(!m)return;
