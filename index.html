@@ -129,7 +129,7 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .card.s-yes::before{background:var(--yes)}.card.s-maybe::before{background:var(--maybe)}.card.s-no::before{background:var(--no)}
 .card.s-no{opacity:.6}
 .thumb{position:relative;aspect-ratio:4/3.4;overflow:hidden;background:transparent;display:block;cursor:zoom-in}
-.thumb img{width:100%;height:100%;object-fit:contain;padding:6px;display:block;mix-blend-mode:multiply;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.thumb img{width:100%;height:100%;object-fit:contain;padding:6px;display:block;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
 .card:hover .thumb img{transform:scale(1.05)}
 .tag{position:absolute;top:11px;inset-inline-end:11px;background:rgba(255,255,255,.86);backdrop-filter:blur(4px);color:var(--ink-soft);font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px}
 .body{padding:13px 14px 15px;display:flex;flex-direction:column;gap:9px;flex:1}
@@ -179,7 +179,7 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .addPreviewRow{display:flex;gap:12px}
 .addImgPreview{width:84px;height:84px;flex:none;border-radius:14px;border:1.5px dashed var(--line-2);background:var(--paper);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;transition:.15s;text-align:center}
 .addImgPreview .addImgPh{font-size:11px;color:var(--muted);line-height:1.4}
-.addImgPreview img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.addImgPreview img{width:100%;height:100%;object-fit:contain}
 .addImgPreview.has-img{border-style:solid;border-color:var(--yes)}
 .addImgPreview.broken{border-style:solid;border-color:var(--no)}
 .addImgPreview.broken .addImgPh::after{content:"⚠️ הקישור לא מציג תמונה תקינה";display:block;color:var(--no);margin-top:2px}
@@ -238,7 +238,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 .csec{font-size:12px;font-weight:700;color:var(--brass-d);margin:11px 0 2px}
 .cartrow{display:flex;gap:11px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
 .cartrow img,.cartrow .cthumb{width:48px;height:48px;border-radius:10px;flex-shrink:0;border:1px solid var(--line);object-fit:contain}
-.cartrow img{mix-blend-mode:multiply;background:transparent;padding:2px}
+.cartrow img{background:transparent;padding:2px}
 .cartrow .ci{flex:1;min-width:0}
 .cartrow .cn{font-weight:600;font-size:14px;line-height:1.25;text-decoration:none;color:var(--ink)}
 .cartrow a.cn:hover{color:var(--brass-d);text-decoration:underline}
