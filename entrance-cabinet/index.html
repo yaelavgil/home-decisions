@@ -43,6 +43,16 @@
   .sub{color:var(--ink-soft); max-width:660px; line-height:1.55; margin:0 0 8px}
   .disclaimer{font-size:.8rem; color:var(--ink-soft); background:var(--brass-soft); border-radius:10px; padding:9px 14px; display:inline-block; margin:10px 0 28px}
 
+  .finalistsSection{background:linear-gradient(175deg, var(--brass-soft), transparent 140%); border:1px solid color-mix(in srgb, var(--brass) 35%, var(--line)); border-radius:22px; padding:22px 22px 26px; margin:0 0 40px}
+  .finalistsTitle{font-size:1.15rem; font-weight:800; color:var(--ink)}
+  .finalistsIntro{font-size:.86rem; color:var(--ink-soft); max-width:640px; line-height:1.5; margin:4px 0 18px}
+  .finalistsGrid{margin:0}
+  .finalistWrap{position:relative; display:flex; flex-direction:column}
+  .finalistWrap .card{box-shadow:0 4px 20px rgba(0,0,0,.08), 0 0 0 2px color-mix(in srgb, var(--tint) 55%, var(--brass) 20%)}
+  .finalistWrap .card:hover{box-shadow:0 18px 36px rgba(0,0,0,.16), 0 0 0 2px color-mix(in srgb, var(--tint) 65%, var(--brass) 25%)}
+  .finalistRibbon{position:absolute; top:-11px; right:18px; z-index:3; background:linear-gradient(135deg, var(--brass), var(--brass-d)); color:#fff; font-size:.76rem; font-weight:800; padding:5px 14px; border-radius:99px; box-shadow:0 3px 8px rgba(0,0,0,.22)}
+  .finalistReason{font-size:.82rem; line-height:1.5; color:var(--ink-soft); background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-top:10px}
+
   .reveal{opacity:0; transform:translateY(22px); transition:opacity .65s cubic-bezier(.2,.7,.3,1), transform .65s cubic-bezier(.2,.7,.3,1)}
   .reveal.visible{opacity:1; transform:translateY(0)}
 
@@ -115,6 +125,12 @@
   <p class="sub">כל הגוונים שדיברנו עליהם, מאורגנים לפי משפחת גוון ולא רק לפי בהירות: בכל משפחה יש 2-3 גוונים קרובים מאוד זה לזה, כדי שתוכלו קודם לבחור את המשפחה (עם נופר), ואז לדייק בין האחים הקרובים בתוכה. לחיצה על האיור מגדילה אותו למסך מלא.</p>
   <div class="disclaimer">🎨 התמונה הראשית בכל כרטיס היא הדמיית הארון האמיתית של נופר, צבועה מחדש בגוון המדויק של כל מועמד — לצדה איור סכמטי קטן לפי תוכנית הנגרות: 4 מודולים × 2 דלתות, ידיות אנכיות שחורות בין כל זוג, קשתות אסימטריות בדלתות הקצה והמרכז, ולוחות מפוספסים למעלה ולמטה. כולל את הפינות המעוגלות לפי התוכנית הנוכחית — אלו עשויות להשתנות לדלתות מרובעות בהמשך אם יוחלט לחסוך בעלות.</div>
 
+  <div class="finalistsSection">
+    <div class="finalistsTitle">🏆 הנבחרים — מה לבקש לראות בתנור על החומר</div>
+    <p class="finalistsIntro">מתוך תשעת הגוונים, אלו שממליצים לבקש כדוגמאות פיזיות אמיתיות: אחד "בטוח" ואחד "נועז", כדי לקבל את הניגוד הכי משמעותי בהשוואה בפועל.</p>
+    <div class="grid finalistsGrid" id="finalists"></div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="noteBox">
@@ -151,11 +167,13 @@ const COLORS = [
    url:"https://tambour.co.il/hue/forest-found-0951a/"},
   {name:"Western Meadow", code:"0937A", hex:"#687960", rgb:[104,121,96], lrv:17, family:"deep", tagLabel:"זית-אדמתי", render:"western-meadow",
    why:'כמעט אותה עומק כמו Forest Found <b>(LRV 17)</b> אבל כיוון גוון שונה לגמרי — זית כהה וחם, לא טורקיזי. אם "עמוק" כן, אבל Forest Found מרגיש קריר מדי — זו האלטרנטיבה.',
-   url:"https://tambour.co.il/hue/western-meadow-0937a/"},
+   url:"https://tambour.co.il/hue/western-meadow-0937a/",
+   finalist:{rank:3, label:"🥉 גיבוי", reason:'אם קשה להשיג דוגמה פיזית מנירלט — זו האלטרנטיבה הכי קרובה ל-Mountain Meadow באותה משפחת עומק, אבל בטמבור וחמה יותר (פחות מסוכנת לבליעת אור).'}},
 
   {name:"Mountain Meadow", code:"IS 0703", hex:"#6E8D80", rgb:[110,141,128], lrv:24, family:"mid", tagLabel:"מנירלט, הכי עמוק מהשלושה", render:"mountain-meadow", brand:"נירלט",
    why:'גוון של <b>נירלט</b> (לא טמבור) שהתבקש להשוואה <b>(LRV 24)</b> — קרוב מאוד ל-Shady מבחינת גוון וכיוון, אך עמוק ורווי יותר. שווה להשוות בעין מול Shady לפני החלטה בין המותגים.',
-   url:"https://nirlat.com/fan/#/category/wall/family//color-fan/hue/IS_0703"},
+   url:"https://nirlat.com/fan/#/category/wall/family//color-fan/hue/IS_0703",
+   finalist:{rank:2, label:"🥈 הנועז", reason:'הכי שונה מ-Nature\'s Abundance מבין המועמדים — משווה קצה מול קצה. חדש לגמרי, לא ראיתם אותו עדיין בעולם האמיתי (בניגוד ל-New Lawn/Shady שכבר מוכרים לכם).'}},
   {name:"Shady", code:"0949T/A", hex:"#81968B", rgb:[129,150,139], lrv:28, family:"mid", tagLabel:"קריר-אפרפר יותר", render:"shady",
    why:'אפרפר-ירקרק מעודן <b>(LRV 28)</b>, קריר יותר מ-New Lawn. הכי קרוב ל-Mountain Meadow מנירלט, אך בהיר ורך יותר. שמור אצלכם כבר ב-13.',
    url:"https://tambour.co.il/hue/shady-0949t-a/"},
@@ -168,7 +186,8 @@ const COLORS = [
    url:"https://tambour.co.il/hue/green-moor-0934t/"},
   {name:"Nature's Abundance", code:"0885T", hex:"#A2B6A0", rgb:[162,182,160], lrv:43, family:"neutral", tagLabel:"הכי ירוק מהשניים", render:"natures-abundance",
    why:'בדיוק אמצע הפלטה הכללית <b>(LRV 43)</b>. רגוע ומזמין, ברור-ירוק יותר מ-Green Moor.',
-   url:"https://tambour.co.il/hue/natures-abundance-0885t/"},
+   url:"https://tambour.co.il/hue/natures-abundance-0885t/",
+   finalist:{rank:1, label:"🥇 הבטוח", reason:'הכי אלגנטי ורגוע מבין כל תשעת הגוונים — ה"quiet luxury" הירוק שמסתדר כמעט עם כל רצפה/קיר. הכי פחות סיכוי שתתחרטו עליו.'}},
 
   {name:"Clover Tint", code:"0851T", hex:"#92C1AB", rgb:[146,193,171], lrv:47, family:"light", tagLabel:"מנטה רווי", render:"clover-tint",
    why:'הרוויה הגבוהה ביותר מכל הגוונים כאן <b>(LRV 47)</b> — מנטה טרי ובהיר. ניגוד נועז אם רוצים שהארון "יקפוץ" ולא רק ישתלב.',
@@ -324,6 +343,21 @@ function cardHTML(c,i){
     </div>`;
 }
 
+function finalistCardHTML(c,i){
+  const f = c.finalist;
+  return `
+    <div class="finalistWrap reveal">
+      <div class="finalistRibbon">${f.label}</div>
+      ${cardHTML(c,i)}
+      <div class="finalistReason">${f.reason}</div>
+    </div>`;
+}
+
+function renderFinalists(){
+  const finalists = COLORS.map((c,i)=>({c,i})).filter(x=>x.c.finalist).sort((a,b)=>a.c.finalist.rank-b.c.finalist.rank);
+  document.getElementById('finalists').innerHTML = finalists.map(x=>finalistCardHTML(x.c,x.i)).join('');
+}
+
 function render(){
   const html = FAMILIES.map(fam=>{
     const members = COLORS.map((c,i)=>({c,i})).filter(x=>x.c.family===fam.key);
@@ -337,6 +371,7 @@ function render(){
     `;
   }).join('');
   document.getElementById('grid').outerHTML = `<div id="grid">${html}</div>`;
+  renderFinalists();
   initReveal();
 }
 render();
