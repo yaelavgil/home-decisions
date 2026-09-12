@@ -92,8 +92,13 @@
   .rgb{font-family:var(--mono); direction:ltr; unicode-bidi:isolate; font-weight:600; font-size:.78rem; color:var(--ink-soft); display:block; margin:0 0 12px}
   .why{font-size:.86rem; line-height:1.5; color:var(--ink)}
   .why b{color:var(--brass-d)}
-  a.viewlink{font-size:.78rem; font-weight:650; color:var(--brass-d); text-decoration:none; display:inline-block; margin-top:10px}
+  a.viewlink{font-size:.78rem; font-weight:650; color:var(--brass-d); text-decoration:none; display:inline-block}
   a.viewlink:hover{text-decoration:underline}
+  .cardActions{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:10px}
+  .finToggle{font-size:.74rem; font-weight:700; padding:6px 12px; border-radius:99px; border:1px solid color-mix(in srgb, var(--tint) 45%, var(--line)); background:var(--paper); color:var(--ink-soft); cursor:pointer; transition:all .2s ease; white-space:nowrap}
+  .finToggle:hover{border-color:var(--brass); color:var(--brass-d)}
+  .finToggle.active{background:linear-gradient(135deg, var(--brass), var(--brass-d)); border-color:transparent; color:#fff}
+  .finalistsEmpty{font-size:.86rem; color:var(--ink-soft); padding:20px; text-align:center}
 
   .noteBox{margin-top:30px; background:var(--brass-soft); border-radius:16px; padding:18px 22px; font-size:.9rem; line-height:1.6}
   .noteBox b{color:var(--brass-d)}
@@ -127,7 +132,7 @@
 
   <div class="finalistsSection">
     <div class="finalistsTitle">🏆 הנבחרים — מה לבקש לראות בתנור על החומר</div>
-    <p class="finalistsIntro">מתוך תשעת הגוונים, אלו שממליצים לבקש כדוגמאות פיזיות אמיתיות: אחד "בטוח" ואחד "נועז", כדי לקבל את הניגוד הכי משמעותי בהשוואה בפועל.</p>
+    <p class="finalistsIntro">ההמלצה שלנו לדוגמאות פיזיות: אחד "בטוח" ואחד "נועז", כדי לקבל את הניגוד הכי משמעותי בהשוואה בפועל. אפשר לשנות — לחצו "☆ הוסף לנבחרים" על כל גוון למטה כדי להוסיף אותו לכאן, או "★ הסר" כדי להוריד גוון קיים.</p>
     <div class="grid finalistsGrid" id="finalists"></div>
   </div>
 
@@ -321,6 +326,37 @@ function cabinetSVG(hex, size){
   </svg>`;
 }
 
+let finalistOverrides = {};
+try{ finalistOverrides = JSON.parse(localStorage.getItem('cabinetFinalists')||'{}'); }catch(e){}
+
+function isFinalist(i){
+  const ov = finalistOverrides[i];
+  if(ov===true) return true;
+  if(ov===false) return false;
+  return !!COLORS[i].finalist;
+}
+function finalistMeta(i){
+  const c = COLORS[i];
+  if(c.finalist && finalistOverrides[i]!==false) return c.finalist;
+  return {rank:99+i, label:'⭐ נוסף ידנית', reason:'נוסף ידנית לרשימת הנבחרים דרך העמוד.'};
+}
+function toggleFinalist(i){
+  finalistOverrides[i] = !isFinalist(i);
+  localStorage.setItem('cabinetFinalists', JSON.stringify(finalistOverrides));
+  document.querySelectorAll(`[data-idx="${i}"]`).forEach(btn=>{
+    const on = isFinalist(i);
+    btn.classList.toggle('active', on);
+    btn.innerHTML = on ? '★ בנבחרים — הסר' : '☆ הוסף לנבחרים';
+  });
+  renderFinalists();
+  document.querySelectorAll('#finalists .reveal:not(.visible)').forEach(el=>el.classList.add('visible'));
+}
+
+function finToggleHTML(i){
+  const on = isFinalist(i);
+  return `<button class="finToggle${on?' active':''}" data-idx="${i}" onclick="toggleFinalist(${i})">${on?'★ בנבחרים — הסר':'☆ הוסף לנבחרים'}</button>`;
+}
+
 function cardHTML(c,i){
   return `
     <div class="card reveal" style="--tint:${c.hex}">
@@ -338,13 +374,16 @@ function cardHTML(c,i){
         <div class="swatchbar" style="background:${c.hex}; color:${c.lrv>35?'#3b4a3a':'#fff'}">${c.hex}</div>
         <span class="rgb">RGB ${c.rgb.join(', ')}</span>
         <p class="why">${c.why}</p>
-        <a class="viewlink" href="${c.url}" target="_blank" rel="noopener">לצפייה ב${c.brand||'טמבור'} ↗</a>
+        <div class="cardActions">
+          <a class="viewlink" href="${c.url}" target="_blank" rel="noopener">לצפייה ב${c.brand||'טמבור'} ↗</a>
+          ${finToggleHTML(i)}
+        </div>
       </div>
     </div>`;
 }
 
 function finalistCardHTML(c,i){
-  const f = c.finalist;
+  const f = finalistMeta(i);
   return `
     <div class="finalistWrap reveal">
       <div class="finalistRibbon">${f.label}</div>
@@ -354,8 +393,13 @@ function finalistCardHTML(c,i){
 }
 
 function renderFinalists(){
-  const finalists = COLORS.map((c,i)=>({c,i})).filter(x=>x.c.finalist).sort((a,b)=>a.c.finalist.rank-b.c.finalist.rank);
-  document.getElementById('finalists').innerHTML = finalists.map(x=>finalistCardHTML(x.c,x.i)).join('');
+  const finalists = COLORS.map((c,i)=>i).filter(i=>isFinalist(i)).map(i=>({i, f:finalistMeta(i)})).sort((a,b)=>a.f.rank-b.f.rank);
+  const el = document.getElementById('finalists');
+  if(!finalists.length){
+    el.innerHTML = `<div class="finalistsEmpty">אין עדיין נבחרים — לחצו "☆ הוסף לנבחרים" על כל גוון למטה כדי להוסיף אותו לכאן.</div>`;
+    return;
+  }
+  el.innerHTML = finalists.map(x=>finalistCardHTML(COLORS[x.i],x.i)).join('');
 }
 
 function render(){
