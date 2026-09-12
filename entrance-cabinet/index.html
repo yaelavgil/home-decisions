@@ -153,9 +153,9 @@ const COLORS = [
    why:'כמעט אותה עומק כמו Forest Found <b>(LRV 17)</b> אבל כיוון גוון שונה לגמרי — זית כהה וחם, לא טורקיזי. אם "עמוק" כן, אבל Forest Found מרגיש קריר מדי — זו האלטרנטיבה.',
    url:"https://tambour.co.il/hue/western-meadow-0937a/"},
 
-  {name:"Mountain Meadow", code:"IS 0703", hex:"#6E8D80", rgb:[110,141,128], lrv:24, family:"mid", tagLabel:"מנירלט, הכי עמוק מהשלושה", render:"mountain-meadow",
+  {name:"Mountain Meadow", code:"IS 0703", hex:"#6E8D80", rgb:[110,141,128], lrv:24, family:"mid", tagLabel:"מנירלט, הכי עמוק מהשלושה", render:"mountain-meadow", brand:"נירלט",
    why:'גוון של <b>נירלט</b> (לא טמבור) שהתבקש להשוואה <b>(LRV 24)</b> — קרוב מאוד ל-Shady מבחינת גוון וכיוון, אך עמוק ורווי יותר. שווה להשוות בעין מול Shady לפני החלטה בין המותגים.',
-   url:"https://nirlat.com/hue/mountain-meadow"},
+   url:"https://nirlat.com/fan/#/category/wall/family//color-fan/hue/IS_0703"},
   {name:"Shady", code:"0949T/A", hex:"#81968B", rgb:[129,150,139], lrv:28, family:"mid", tagLabel:"קריר-אפרפר יותר", render:"shady",
    why:'אפרפר-ירקרק מעודן <b>(LRV 28)</b>, קריר יותר מ-New Lawn. הכי קרוב ל-Mountain Meadow מנירלט, אך בהיר ורך יותר. שמור אצלכם כבר ב-13.',
    url:"https://tambour.co.il/hue/shady-0949t-a/"},
@@ -319,7 +319,7 @@ function cardHTML(c,i){
         <div class="swatchbar" style="background:${c.hex}; color:${c.lrv>35?'#3b4a3a':'#fff'}">${c.hex}</div>
         <span class="rgb">RGB ${c.rgb.join(', ')}</span>
         <p class="why">${c.why}</p>
-        <a class="viewlink" href="${c.url}" target="_blank" rel="noopener">לצפייה בטמבור ↗</a>
+        <a class="viewlink" href="${c.url}" target="_blank" rel="noopener">לצפייה ב${c.brand||'טמבור'} ↗</a>
       </div>
     </div>`;
 }
