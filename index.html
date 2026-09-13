@@ -782,7 +782,14 @@ function fbDelCatalogItem(id){ fetch(`${DB}/picks/_catalog/items/${encodeURIComp
 function fbPoll(){ fetch(`${DB}/picks.json`).then(r=>r.json()).then(d=>{
   d=d||{}; const cat=d._catalog||{items:{},cats:{}}; delete d._catalog; remote=d;
   const changed=JSON.stringify(cat)!==JSON.stringify(shared); shared=cat;
-  if(changed){ rebuild(); tabsHTML(); RE(); }
+  // once the server has its own "ordered" value for an id, this device's local
+  // optimistic override (from the moment of clicking, before the round-trip
+  // confirmed) has served its purpose — drop it, or it would shadow the
+  // server's value forever, even after later corrections server-side.
+  let ordChanged=false;
+  Object.keys(st.ord).forEach(id=>{ if(shared.items&&shared.items[id]&&('ordered' in shared.items[id])){ delete st.ord[id]; ordChanged=true; } });
+  if(ordChanged) save();
+  if(changed||ordChanged){ rebuild(); tabsHTML(); RE(); }
   const psig=namesList().join('|'); if(changed||psig!==_psig){ _psig=psig; buildChips(); }
   renderPeople();
 }).catch(()=>{}); }
