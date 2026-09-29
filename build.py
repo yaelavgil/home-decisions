@@ -311,6 +311,16 @@ BEDS_LILY=[
   "https://babysleep.shop/wp-content/uploads/2024/06/generation-abd9379a-8c6d-4c72-b45a-d03e735d6a18.png",
   ["🛏️ נפתחת לגובה זהה","😊 4.54/5 · 140 ביקורות"],
   "מנגנון שונה מ-Twins: כאן המיטה לא נפרדת לשתי מיטות יחיד, אלא הופכת ממיטת יחיד למיטה זוגית רחבה אחת — הכול באותו גובה מדויק, מתאים לילדים בכל גיל\n⭐ פיצ'ר מיוחד: דירוג 4.54/5 מבוסס על 140 ביקורות לקוחות אמיתיות — נתון נדיר לרהיטי ילדים בוטיקיים\n✔ יש: אחריות לכל החיים, ייצור בישראל, עץ ליבד ליבנה עם גימור מדויק, ליווי אישי בוואטסאפ\n✘ אין: מזרנים/מעקה/שידה בתוספת תשלום נפרדת (לא כלולים בבסיס) — יש לבחור בקפידה בתהליך ההזמנה (5 שלבים: צבע/מזרנים/תוספות/שידות/התקנה)\n💰 ₪2,550 (מבצע נטען כ-'פעם בשנה' באתר עד ₪2,167.50 — שימו לב שזה טיימר דחיפות שיווקי נפוץ, לא בהכרח חד-פעמי באמת)"),
+ ("BL20","Roli Design · יחיד נפתחת לזוגית 190×170 באותו גובה",2090,
+  "https://www.roli-design.com/product/%D7%9E%D7%99%D7%98%D7%94-%D7%A0%D7%A4%D7%AA%D7%97%D7%AA-%D7%9C%D7%96%D7%95%D7%92%D7%99%D7%AA-%D7%91%D7%90%D7%95%D7%AA%D7%95-%D7%92%D7%95%D7%91%D7%94",
+  "https://4wrmzhvx6pipxnri.public.blob.vercel-storage.com/products/1789938854875-%D7%99%D7%90%D7%99%D7%A8%202.png",
+  ["🛏️ מיטת חבר","🛏️ נפתחת לגובה זהה"],
+  "שלישית מבין המועמדות עם מנגנון \"אותו גובה\", ומנגנון שונה משתי האחרות: יש מיטה נשלפת אמיתית מתחת (כמו Twins), אבל היא לא נפרדת לשתי מיטות זהות — היא נפתחת יחד עם הראשית למיטה זוגית רחבה אחת 190×170 (כמו Coral)\n⭐ פיצ'ר מיוחד: המחיר הזול ביותר מבין שלוש אופציות \"אותו גובה\" (Twins ₪2,500, Coral ₪2,550, כאן ₪2,090)\n✔ יש: עץ טבעי, אחריות יצרן, הרכבה מקצועית זמינה\n✘ אין: מזרנים כלולים (+₪850 לכל מזרן) · המיטה הראשית 190×90 בלבד, הנשלפת 190×80 (לא זהות ברוחב, רק בגובה)\n📐 גובה מיטה 45 ס״מ · פתוח: 190×170 ס״מ · 💰 ₪2,090 (מ-₪2,650)"),
+ ("BL21","Roli Design מילי · יחיד עץ ליבנה, גובה 5 ס״מ בלבד",1290,
+  "https://www.roli-design.com/product/%D7%9E%D7%99%D7%98%D7%AA-%D7%99%D7%97%D7%99%D7%93-%D7%93%D7%92%D7%9D-%D7%9E%D7%99%D7%9C%D7%99-%D7%A4%D7%9C%D7%99%D7%A4",
+  "https://4wrmzhvx6pipxnri.public.blob.vercel-storage.com/products/1776281479318-fe14ad_a407d63e9687447bb720e7b0c7b3714c~mv2.jpg",
+  ["הכי נמוכה מכל הרשימה","4 מידות"],
+  "מיטת רצפה כמעט לגמרי — גובה בסיס המזרן רק 5 ס״מ, הנמוכה ביותר מבין כל המועמדות\n⭐ פיצ'ר מיוחד: עבודת יד בעץ ליבנה, ניתן להזמין ב-4 מידות (140×70 עד 190×120) כולל התאמה אישית ביצירת קשר\n✔ יש: עיצוב מינימליסטי נקי, אפשרות מעקה נשלף (+₪250)\n✘ אין: מזרן לא כלול (+₪850–1,000 לפי מידה) · אין מעקה מובנה כברירת מחדל\n📐 4 מידות: 140×70 / 190×80 / 190×90 / 190×120 · גובה בסיס 5 ס״מ · 💰 ₪1,290 (מ-₪1,690)"),
 ]
 for k in BEDS_LILY:
     DATA.append({"id":k[0],"cat":"מיטת לילי","type":"product","name":k[1],
@@ -461,6 +471,11 @@ h1{font-weight:700;font-size:clamp(21px,4vw,31px);letter-spacing:-.02em;margin:0
 .card:hover .orderb{opacity:1}
 .orderb.on{opacity:1;border-color:var(--ordered);background:var(--ordered);color:#fff}
 .card.is-ordered{opacity:.72}
+.hideb{margin-top:6px;align-self:flex-start;background:none;border:0;color:var(--muted);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;padding:2px 0}
+.hideb:hover{color:var(--no); text-decoration:underline}
+.hideb.restore{color:var(--yes)}
+.hideb.restore:hover{color:var(--yes); text-decoration:underline}
+.card.is-hidden{opacity:.6}
 .card.is-ordered .thumb::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.35)}
 .ordnote{position:absolute;bottom:9px;inset-inline-start:9px;z-index:4;background:var(--ordered);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:10px;box-shadow:0 2px 6px rgba(60,40,15,.18)}
 .editb:hover{color:var(--brass-d);transform:scale(1.08)}
@@ -522,6 +537,10 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .name:hover{color:var(--brass-d)}
 .price{font-weight:700;font-size:18px;color:var(--brass-d)}
 .desc{font-size:12.5px;line-height:1.45;color:var(--ink-soft);background:var(--brass-soft);border-radius:9px;padding:7px 9px;white-space:pre-line}
+.featBadges{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px}
+.featBadge{font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:99px;white-space:nowrap;line-height:1.3}
+.featBadge.fb-trundle{background:#eaf1ff;color:#2f4f9e;border:1px solid #c3d5f7}
+.featBadge.fb-sameheight{background:#fff0e2;color:#9a5518;border:1px solid #f2cea0}
 .shoprow{display:flex;gap:6px;flex-wrap:wrap}
 .shopbtn{font-size:12px;padding:5px 10px;border:1.5px solid var(--line-2);border-radius:9px;text-decoration:none;color:var(--ink-soft);font-weight:650;background:var(--paper)}
 .shopbtn:hover{border-color:var(--brass);color:var(--brass-d)}
@@ -679,6 +698,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
     <button class="vbtn" data-v="left" onclick="setView('left')">✅ מה שנשאר</button>
     <button class="vbtn" data-v="order" onclick="setView('order')">🛒 להזמנה</button>
     <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 כבר הוזמן</button>
+    <button class="vbtn" data-v="hidden" onclick="setView('hidden')">🙈 הוסתרו<span class="c" id="hiddenCount" style="display:none"></span></button>
   </div>
   <div class="tools">
     <div class="search"><span class="i">🔍</span><input id="q" placeholder="חיפוש…" oninput="RE()"></div>
@@ -688,6 +708,8 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
       <option value="pd">מחיר ↓</option>
       <option value="name">א׳→ת׳</option>
       <option value="status">נבחרו קודם</option>
+      <option value="trundle">🛏️ עם מיטת חבר קודם</option>
+      <option value="sameheight">📏 נפתח לאותו גובה קודם</option>
     </select>
     <button class="tbtn fbtn" id="filterBtn" onclick="toggleFilters()" title="סינון מתקדם">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M3 5h18l-7 8.2V19l-4 2v-7.8z"/></svg>סינון<span class="fbadge" id="fbadge"></span></button>
@@ -861,8 +883,9 @@ function setCat(k){
 window.addEventListener('hashchange',()=>{applyHash();buildChips();tabsHTML();RE(true);});
 function tabsHTML(){
   const t=document.getElementById('tabs'); t.innerHTML="";
+  updateHiddenCount();
   CATS.forEach(c=>{
-    const n=c.key==='all'?ITEMS.length:ITEMS.filter(i=>i.cat===c.key).length;
+    const n=c.key==='all'?ITEMS.filter(i=>!i.hidden).length:ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length;
     const b=document.createElement('button'); b.className="tab"+((c.key==='all'?selCats.size===0:selCats.has(c.key))?" on":"");
     b.innerHTML=`<span>${c.icon}</span>${c.label}<span class="c">${n}</span>`;
     b.onclick=()=>setCat(c.key);
@@ -890,6 +913,8 @@ function buildChips(){
   updateFilterBadge();
 }
 function passView(i){
+  if(viewMode==='hidden') return !!i.hidden;
+  if(i.hidden) return false;
   if(viewMode==='all') return true;
   const ms=marksFor(i.id);
   if(viewMode==='left') return !ms.some(m=>m.status==='no');
@@ -923,6 +948,8 @@ function visible(){
   else if(s==='pd')a.sort((x,y)=>(y.price||0)-(x.price||0));
   else if(s==='name')a.sort((x,y)=>x.name.localeCompare(y.name,'he'));
   else if(s==='status')a.sort((x,y)=>rank[so(x.id)]-rank[so(y.id)]);
+  else if(s==='trundle')a.sort((x,y)=>((y.tags||[]).includes('🛏️ מיטת חבר')?1:0)-((x.tags||[]).includes('🛏️ מיטת חבר')?1:0));
+  else if(s==='sameheight')a.sort((x,y)=>((y.tags||[]).includes('🛏️ נפתחת לגובה זהה')?1:0)-((x.tags||[]).includes('🛏️ נפתחת לגובה זהה')?1:0));
   return a;
 }
 function cardEl(it){
@@ -937,6 +964,10 @@ function cardEl(it){
   const nameEl=it.link?`<a class="name" href="${it.link}" target="_blank" rel="noopener">${it.name}</a>`:`<span class="name">${it.name}</span>`;
   const sub=it.type==='color'?`<div class="code">${it.code||''}</div>`
     :(it.price!=null?`<div class="price">${nis(it.price)}</div>`:`<div class="price muted">המחיר בחשבון שלך בחנות</div>`);
+  const featList=[];
+  if((it.tags||[]).includes('🛏️ מיטת חבר')) featList.push('<span class="featBadge fb-trundle">🛏️ מיטת חבר</span>');
+  if((it.tags||[]).includes('🛏️ נפתחת לגובה זהה')) featList.push('<span class="featBadge fb-sameheight">📏 נפתח לאותו גובה</span>');
+  const featRow=featList.length?`<div class="featBadges">${featList.join('')}</div>`:'';
   const qty=it.type==='product'
     ?`<div class="qty"><span class="ql">כמות</span><span class="stp"><button title="הפחת" onclick="setQ('${it.id}',-1)">−</button><span class="qv">1</span><button title="הוסף" onclick="setQ('${it.id}',1)">+</button></span></div>`:'';
   c.innerHTML=`<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button>
@@ -945,6 +976,7 @@ function cardEl(it){
     <div class="body">
       ${nameEl}
       ${sub}
+      ${featRow}
       ${it.desc?`<div class="desc">${it.desc}</div>`:''}
       ${it.type==='product'&&(it.link||it.zap)?`<div class="shoprow">${it.link?`<a class="shopbtn" href="${it.link}" target="_blank" rel="noopener">🏪 לחנות המומלצת</a>`:''}${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div>`:''}
       <div class="ordinfo" style="display:none"></div>
@@ -956,17 +988,20 @@ function cardEl(it){
         <button class="no" title="לא" onclick="setS('${it.id}','no')">✕</button>
       </div>
       <div class="note"><textarea placeholder="הערה: גוון / גודל / וריאציה…" oninput="setN('${it.id}',this.value)"></textarea></div>
-      ${it.custom?`<button class="rmc" onclick="removeCustom('${it.id}')">🗑 הסר פריט</button>`:''}
+      <button class="hideb" onclick="toggleHidden('${it.id}')">${it.hidden?'↩️ שחזר ללוח':'🗑️ הסר מהלוח'}</button>
     </div>`;
   els.set(it.id,c); grid.appendChild(c); paint(it.id,c); return c;
 }
 function paint(id,c){
   c=c||els.get(id); if(!c)return; const s=S(id); const it=byId[id]||{};
-  c.className="card"+(s.status!=='none'?" s-"+s.status:"")+(it.ordered?" is-ordered":"");
+  c.className="card"+(s.status!=='none'?" s-"+s.status:"")+(it.ordered?" is-ordered":"")+(it.hidden?" is-hidden":"");
   c.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.classList.contains(s.status)));
   const ta=c.querySelector('textarea'); if(ta&&ta.value!==s.note)ta.value=s.note;
   const qv=c.querySelector('.qv'); if(qv)qv.textContent=s.qty||1;
   const ob=c.querySelector('.orderb'); if(ob)ob.classList.toggle('on',!!it.ordered);
+  const hb=c.querySelector('.hideb');
+  if(hb){ hb.classList.toggle('restore',!!it.hidden);
+    hb.textContent=it.hidden?'↩️ שחזר ללוח':'🗑️ הסר מהלוח'; }
   const oi=c.querySelector('.ordinfo');
   if(oi){ if(it.ordered){oi.style.display='';oi.innerHTML=`<span class="ordnote" style="position:static;display:inline-flex">📦 הוזמן${it.orderedBy?' ע״י '+it.orderedBy:''}${it.orderedAt?' · '+new Date(it.orderedAt).toLocaleDateString('he-IL'):''}</span>`;}
     else{oi.style.display='none';oi.innerHTML='';} }
@@ -979,6 +1014,17 @@ function toggleOrdered(id){
   fbPushOrdered(id,o); paint(id);
   if(viewMode==='ordered')RE();
 }
+function toggleHidden(id){
+  const it=byId[id]; if(!it)return;
+  const val=!it.hidden;
+  if(val && !confirm('להסיר את "'+it.name+'" מהלוח?\nהפריט לא נמחק — אפשר תמיד לשחזר אותו מתצוגת "🙈 הוסתרו".')) return;
+  Object.assign(it,{hidden:val});
+  fbPushHidden(id,val); paint(id);
+  updateHiddenCount();
+  RE(true);
+}
+function fbPushHidden(id,val){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,hidden:val})}).catch(()=>{}); }
+function updateHiddenCount(){ const n=ITEMS.filter(i=>i.hidden).length; const el=document.getElementById('hiddenCount'); if(el){el.textContent=n||''; el.style.display=n?'inline-flex':'none';} }
 function RE(animate){
   ITEMS.forEach(it=>cardEl(it));
   ITEMS.forEach(it=>paint(it.id)); // re-apply ordered/status classes — cardEl() only paints once, at creation
