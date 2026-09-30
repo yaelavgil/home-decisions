@@ -147,6 +147,9 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .name:hover{color:var(--brass-d)}
 .price{font-weight:700;font-size:18px;color:var(--brass-d)}
 .desc{font-size:12.5px;line-height:1.45;color:var(--ink-soft);background:var(--brass-soft);border-radius:9px;padding:7px 9px;white-space:pre-line}
+.desc.clamped{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.descToggle{font-size:11.5px;font-weight:700;color:var(--brass-d);cursor:pointer;margin:3px 0 0;display:inline-block;background:none;border:0;padding:0}
+.descToggle:hover{text-decoration:underline}
 .featBadges{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px}
 .featBadge{font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:99px;white-space:nowrap;line-height:1.3;background:#eef3ff;color:#33499e;border:1px solid #c7d3f5}
 .stars{display:flex;align-items:center;gap:2px;margin:0 0 9px;direction:ltr}
@@ -617,7 +620,7 @@ function cardEl(it){
       ${sub}
       ${featRow}
       ${stars}
-      ${it.desc?`<div class="desc">${it.desc}</div>`:''}
+      ${it.desc?`<div class="desc clamped" id="desc-${it.id}">${it.desc}</div><button type="button" class="descToggle" onclick="toggleDesc('${it.id}')">הצג פרטים ⌄</button>`:''}
       ${it.type==='product'&&(it.link||it.zap)?`<div class="shoprow">${it.link?`<a class="shopbtn" href="${it.link}" target="_blank" rel="noopener">🏪 לחנות המומלצת</a>`:''}${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div>`:''}
       <div class="ordinfo" style="display:none"></div>
       <div class="people" style="display:none"></div>
@@ -666,6 +669,12 @@ function setRating(id,n){
   if(document.getElementById('sort').value==='rating')RE();
 }
 function fbPushRating(id,o){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,...o})}).catch(()=>{}); }
+function toggleDesc(id){
+  const el=document.getElementById('desc-'+id); if(!el)return;
+  const nowClamped=el.classList.toggle('clamped');
+  const btn=el.nextElementSibling;
+  if(btn) btn.textContent=nowClamped?'הצג פרטים ⌄':'הסתר ⌃';
+}
 function toggleHidden(id){
   const it=byId[id]; if(!it)return;
   const val=!it.hidden;
