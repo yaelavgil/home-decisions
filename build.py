@@ -368,6 +368,37 @@ for k in BEDS_GUEST:
                  "price":k[2],"link":k[3],"img":k[4],"tags":k[5],
                  "featTags":[t for t in k[5] if t in FEATURABLE],"desc":k[6]})
 
+# --- Kitchen touch bin — wanted: dark blue, well-designed. Checked 2.10.2026: no Israeli
+# retailer (Brabantia's own importer, specialist sensor-bin stores, electronics-bin stores)
+# currently stocks a genuine dark-blue touch/sensor bin — Brabantia does make one (Mineral
+# Powerful Blue) but only in UK outlet clearance, not a reliable buy. Picked the closest
+# refined dark/cool tones instead, all from Brabantia's official Israeli importer.
+BINS=[
+ ("TR1","Brabantia BO Touch 36L · שחור מט",1359,
+  "https://www.brassbrands.co.il/brabantia-bins/bo-kitchen-waste-bins/brabantia-bo-touch-bins/bo-touch-bins-36-litre/bo-touch-bin-36-litre-matt-black.html",
+  "https://www.brassbrands.co.il/media/catalog/product/cache/1/small_image/600x600/9df78eab33525d08d6e5fb8d27136e95/y/-/y-315824_bo-touch-bin-black-001.jpg",
+  ["הכי משתלם","36 ליטר, עם רגליים"],
+  "⚠️ לגבי כחול כהה: נבדק 2.10.2026 מול 3 ספקים ישראליים (היבואן הרשמי של Brabantia, חנויות התמחות לפחי חיישן/טאץ') — אין היום בישראל פח טאץ בכחול כהה אמיתי. ברבנטיה כן מייצרים גוון כזה (Mineral Powerful Blue) אך רק בחיסול מלאי באאוטלט הבריטי, לא זמין להזמנה סדירה. הדגם הזה הוא האלטרנטיבה הכי מעוצבת וזולה בשחור מט\n✔ יש: פתיחה/סגירה בנגיעה רכה ושקטה, גב שטוח לקיר/פינה, רגליים מתכווננות, פח פנימי נשלף, 10 שנות אחריות, ייצור בלגיה\n✘ אין: גוון כחול (ראה הערה למעלה)\n📐 36 ליטר · גובה סגור 68 ס״מ / פתוח 93 ס״מ · רוחב 54 ס״מ · עומק 31.2 ס״מ"),
+ ("TR2","Brabantia BO Touch 60L · אפור בטון מינרלי",1799,
+  "https://www.brassbrands.co.il/brabantia-bins/bo-kitchen-waste-bins/brabantia-bo-touch-bins/bo-touch-bins-60/bo-touch-bin-60-litre-mineral-concrete-grey.html",
+  "https://www.brassbrands.co.il/media/catalog/product/cache/1/image/680x680/040ec09b1e35df139433887a97daa66f/b/r/brabantia-bo-touch-bin-hi-60l-mineral-concrete-grey-12-y-130281.jpg",
+  ["הכי קרוב לכחול כהה","קולקציית Mineral"],
+  "הגוון הכי קרוב במצב הנוכחי לכחול כהה-מינרלי — חלק מקולקציית ה-Mineral החדשה של ברבנטיה (אותה קולקציה שבה קיים גם הכחול, רק שהוא לא יובא ארצה)\n⭐ פיצ'ר מיוחד: נפח גדול (60 ל׳) למשפחה, מכסה שנשאר פתוח לפי בחירה, ידיות אחיזה נוחות\n✔ יש: פתיחה/סגירה בנגיעה רכה, יציב על רגליים מתכווננות נגד החלקה, פח פנימי נשלף, 10 שנות אחריות\n✘ אין: גוון כחול אמיתי — זה אפור קריר, לא כחול\n📐 60 ליטר · גובה סגור 81.5 ס״מ / פתוח 103.9 ס״מ · רוחב 54.5 ס״מ · עומק 31.2 ס״מ · מתכת+פלסטיק, בלגיה"),
+ ("TR3","Brabantia BO Touch 36L · נירוסטה מט FPP (ללא טביעות אצבע)",1459,
+  "https://www.brassbrands.co.il/brabantia-bins/bo-kitchen-waste-bins/brabantia-bo-touch-bins/bo-touch-bins-36-litre/bo-touch-bin-36-litre-matt-steel-fingerprint-proof.html",
+  "https://www.brassbrands.co.il/media/catalog/product/cache/1/small_image/600x600/9df78eab33525d08d6e5fb8d27136e95/y/-/y-315848_bo-touch-bin-fpp-003.jpg",
+  ["נירוסטה איכותית","ללא טביעות אצבע"],
+  "גימור נירוסטה מט ייעודי (FPP — Fingerprint Proof) שלא משאיר טביעות אצבע — הכי \"נקי\" ויוקרתי מבין הגימורים לשימוש יומיומי אינטנסיבי\n✔ יש: פתיחה/סגירה בנגיעה רכה, גב שטוח, רגליים מתכווננות, פח פנימי נשלף, 10 שנות אחריות, ייצור בלגיה\n✘ אין: גוון כחול · יקרה מהשחור המט באותו גודל בכ-₪100\n📐 36 ליטר · גובה סגור 68 ס״מ / פתוח 93 ס״מ · רוחב 54 ס״מ · עומק 31.2 ס״מ · חומר: נירוסטה+פלסטיק"),
+ ("TR4","Brabantia BO Touch הפרדה 11+23L · שחור מט",1459,
+  "https://www.brassbrands.co.il/brabantia-bins/bo-kitchen-waste-bins/bo-separation-bins/bo-touch-separation-bin-23-11-litre-matt-black.html",
+  "https://www.brassbrands.co.il/media/catalog/product/cache/1/small_image/600x600/9df78eab33525d08d6e5fb8d27136e95/b/r/brabantia-bo-separation-touch-bin-11-23l-matt-black-front-open-y-316203-1200.jpg",
+  ["מחולק למיחזור","11+23 ליטר"],
+  "פח מחולק לשני תאים (11+23 ליטר) — לאשפה רגילה והפרדה למיחזור/אורגני בפח אחד, אותו עיצוב טאץ ואותה רמת גימור\n⭐ פיצ'ר מיוחד: שני תאים נפרדים לגמרי (דלתות/שקיות נפרדות) בתוך גוף אחד מעוצב\n✔ יש: פתיחה/סגירה בנגיעה, 10 שנות אחריות, ייצור בלגיה\n✘ אין: גוון כחול\n📐 11+23 ליטר · מתכת+פלסטיק"),
+]
+for k in BINS:
+    DATA.append({"id":k[0],"cat":"פח","type":"product","name":k[1],
+                 "price":k[2],"link":k[3],"img":k[4],"tags":k[5],"desc":k[6]})
+
 # zap price-comparison link per appliance (link = recommended store, zap = comparison)
 ZAP={
  "P4":"https://www.zap.co.il/model.aspx?modelid=1235119",
@@ -406,7 +437,8 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"מדיח","label":"מדיח","icon":"🫧","slug":"dishwasher"},
       {"key":"מקרר","label":"מקרר","icon":"🧊","slug":"fridge"},
       {"key":"מיטת לילי","label":"מיטת לילי","icon":"🧸","slug":"lily-bed"},
-      {"key":"מיטת אורחים","label":"מיטת אורחים","icon":"🛏️","slug":"guest-bed"}]
+      {"key":"מיטת אורחים","label":"מיטת אורחים","icon":"🛏️","slug":"guest-bed"},
+      {"key":"פח","label":"פח","icon":"🗑️","slug":"bin"}]
 
 tpl=r'''<!doctype html>
 <html lang="he" dir="rtl">
