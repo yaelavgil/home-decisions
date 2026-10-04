@@ -1082,6 +1082,7 @@ function visible(){
   else if(s==='status')a.sort((x,y)=>rank[so(x.id)]-rank[so(y.id)]);
   else if(s==='rating')a.sort((x,y)=>(y.rating||0)-(x.rating||0));
   else if(featSort)a.sort((x,y)=>((y.featTags||[]).includes(featSort)?1:0)-((x.featTags||[]).includes(featSort)?1:0));
+  else a.sort((x,y)=>(y.ordered?1:0)-(x.ordered?1:0)); // default order: ordered items first (sort is stable, so the rest keep catalog order)
   return a;
 }
 function cardEl(it){
