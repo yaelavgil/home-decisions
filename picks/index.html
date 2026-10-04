@@ -73,9 +73,16 @@ h1{font-weight:700;font-size:clamp(21px,4vw,31px);letter-spacing:-.02em;margin:0
 .fbadge{background:var(--brass-d);color:#fff;border-radius:999px;font-size:10px;font-weight:800;min-width:16px;height:16px;display:none;align-items:center;justify-content:center;padding:0 4px;margin-inline-start:2px}
 .editb{position:absolute;top:9px;inset-inline-end:9px;z-index:4;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);background:rgba(255,255,255,.9);backdrop-filter:blur(4px);color:var(--ink-soft);font-size:13px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(60,40,15,.12);opacity:.55;transition:.15s}
 .card:hover .editb{opacity:1}
-.orderb{position:absolute;top:9px;inset-inline-start:9px;z-index:4;height:28px;padding:0 10px;border-radius:14px;border:1.5px solid var(--line);background:rgba(255,255,255,.92);backdrop-filter:blur(4px);color:var(--ink-soft);font-size:12px;font-weight:700;cursor:pointer;line-height:1;display:flex;align-items:center;gap:5px;box-shadow:0 2px 6px rgba(60,40,15,.12);opacity:.55;transition:.15s;white-space:nowrap}
-.card:hover .orderb{opacity:1}
-.orderb.on{opacity:1;border-color:var(--ordered);background:var(--ordered);color:#fff}
+.orderb{display:none;position:absolute;top:9px;inset-inline-start:9px;z-index:4;padding:5px 12px 4px;border-radius:14px;background:var(--ordered);color:#fff;font-size:12.5px;font-weight:700;line-height:1.2;flex-direction:column;align-items:center;box-shadow:0 2px 6px rgba(60,40,15,.18);pointer-events:none;white-space:nowrap}
+.card.is-ordered .orderb{display:flex}
+.orderb .od{font-size:10px;font-weight:500;opacity:.92}
+.cardActions{display:flex;gap:16px;align-items:center;margin-top:6px;align-self:flex-start}
+.cardActions .hideb{margin-top:0}
+.markOrd,.ordAct{background:none;border:0;padding:2px 0;font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
+.markOrd:hover,.ordAct:hover{color:var(--ordered);text-decoration:underline}
+.ordbox{margin-top:8px;padding:8px 10px;background:var(--ordered-bg);border-radius:10px;font-size:12px;color:var(--ink-soft);line-height:1.7}
+.ordbox a{color:var(--ordered);font-weight:700;text-decoration:none}
+.ordbox a:hover{text-decoration:underline}
 .card.is-ordered{opacity:.72}
 .hideb{margin-top:6px;align-self:flex-start;background:none;border:0;color:var(--muted);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;padding:2px 0}
 .hideb:hover{color:var(--no); text-decoration:underline}
@@ -615,7 +622,7 @@ function cardEl(it){
   const qty=it.type==='product'
     ?`<div class="qty"><span class="ql">כמות</span><span class="stp"><button title="הפחת" onclick="setQ('${it.id}',-1)">−</button><span class="qv">1</span><button title="הוסף" onclick="setQ('${it.id}',1)">+</button></span></div>`:'';
   c.innerHTML=`<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button>
-    ${it.type==='product'?`<button class="orderb" title="סמנו כשהמוצר הוזמן בפועל" onclick="event.stopPropagation();toggleOrdered('${it.id}')">📦 <span class="ol">הוזמן</span></button>`:''}
+    ${it.type==='product'?`<span class="orderb"><span class="ol">✓ הוזמן</span><span class="od"></span></span>`:''}
     ${media}
     <div class="body">
       ${nameEl}
@@ -633,7 +640,7 @@ function cardEl(it){
         <button class="no" title="לא" onclick="setS('${it.id}','no')">✕</button>
       </div>
       <div class="note"><textarea placeholder="הערה: גוון / גודל / וריאציה…" oninput="setN('${it.id}',this.value)"></textarea></div>
-      <button class="hideb" onclick="toggleHidden('${it.id}')">${it.hidden?'↩️ שחזר ללוח':'🗑️ הסר מהלוח'}</button>
+      <div class="cardActions">${it.type==='product'?`<button class="markOrd" onclick="toggleOrdered('${it.id}')">📦 סמן כהוזמן</button>`:''}<button class="hideb" onclick="toggleHidden('${it.id}')">${it.hidden?'↩️ שחזר ללוח':'🗑️ הסר מהלוח'}</button></div>
     </div>`;
   els.set(it.id,c); grid.appendChild(c); paint(it.id,c); return c;
 }
@@ -643,13 +650,22 @@ function paint(id,c){
   c.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.classList.contains(s.status)));
   const ta=c.querySelector('textarea'); if(ta&&ta.value!==s.note)ta.value=s.note;
   const qv=c.querySelector('.qv'); if(qv)qv.textContent=s.qty||1;
-  const ob=c.querySelector('.orderb'); if(ob)ob.classList.toggle('on',!!it.ordered);
+  const od=c.querySelector('.orderb .od'); if(od)od.textContent=it.orderedAt?new Date(it.orderedAt).toLocaleDateString('he-IL'):'';
+  const mo=c.querySelector('.markOrd'); if(mo)mo.style.display=it.ordered?'none':'';
   const hb=c.querySelector('.hideb');
   if(hb){ hb.classList.toggle('restore',!!it.hidden);
     hb.textContent=it.hidden?'↩️ שחזר ללוח':'🗑️ הסר מהלוח'; }
   const oi=c.querySelector('.ordinfo');
-  if(oi){ if(it.ordered){oi.style.display='';oi.innerHTML=`<span class="ordnote" style="position:static;display:inline-flex">📦 הוזמן${it.orderedBy?' ע״י '+it.orderedBy:''}${it.orderedAt?' · '+new Date(it.orderedAt).toLocaleDateString('he-IL'):''}</span>`;}
-    else{oi.style.display='none';oi.innerHTML='';} }
+  if(oi){ oi.innerHTML='';
+    if(it.ordered){ oi.style.display='';
+      const box=document.createElement('div'); box.className='ordbox';
+      const meta=document.createElement('div'); meta.textContent='הוזמן'+(it.orderedBy?' ע״י '+it.orderedBy:''); box.appendChild(meta);
+      const row=document.createElement('div');
+      if(it.orderLink&&/^https?:\/\//i.test(it.orderLink)){ const a=document.createElement('a'); a.href=it.orderLink; a.target='_blank'; a.rel='noopener'; a.textContent='אישור הזמנה ↗'; row.appendChild(a); row.append(' · '); }
+      const b1=document.createElement('button'); b1.type='button'; b1.className='ordAct'; b1.textContent=it.orderLink?'ערוך קישור':'הוסף קישור להזמנה'; b1.onclick=()=>setOrderLink(id); row.appendChild(b1); row.append(' · ');
+      const b2=document.createElement('button'); b2.type='button'; b2.className='ordAct'; b2.textContent='בטל סימון'; b2.onclick=()=>toggleOrdered(id); row.appendChild(b2);
+      box.appendChild(row); oi.appendChild(box);
+    } else { oi.style.display='none'; } }
   const starEl=c.querySelector('.stars');
   if(starEl){ const r=it.rating||0;
     starEl.querySelectorAll('.star').forEach(b=>b.classList.toggle('on',Number(b.dataset.n)<=r));
@@ -658,10 +674,19 @@ function paint(id,c){
 function toggleOrdered(id){
   const it=byId[id]; if(!it)return;
   const val=!it.ordered;
-  const o={ordered:val,orderedBy:val?((me&&me.name)||'מישהו'):null,orderedAt:val?Date.now():null};
+  if(!val&&!confirm('לבטל את הסימון "הוזמן"?'))return;
+  const o={ordered:val,orderedBy:val?((me&&me.name)||'מישהו'):null,orderedAt:val?Date.now():null,orderLink:val?(it.orderLink||null):null};
   Object.assign(it,o); st.ord[id]=o; save();
   fbPushOrdered(id,o); paint(id);
   if(viewMode==='ordered')RE();
+}
+function setOrderLink(id){
+  const it=byId[id]; if(!it)return;
+  let v=prompt('קישור להזמנה או לאישור ההזמנה (ריק = ללא קישור):',it.orderLink||''); if(v===null)return; v=v.trim();
+  if(v&&!/^https?:\/\//i.test(v)){ alert('הקישור צריך להתחיל ב-https://'); return; }
+  const o={orderLink:v||null};
+  Object.assign(it,o); st.ord[id]={...(st.ord[id]||{ordered:it.ordered,orderedBy:it.orderedBy||null,orderedAt:it.orderedAt||null}),...o}; save();
+  fbPushOrdered(id,o); paint(id);
 }
 function setRating(id,n){
   const it=byId[id]; if(!it)return;
