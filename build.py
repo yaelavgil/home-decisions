@@ -505,6 +505,32 @@ for k in HANGING:
     DATA.append({"id":k[0],"cat":"תליה זמנית","type":"product","name":k[1],
                  "price":k[2],"link":k[3],"img":k[4],"tags":k[5],"desc":k[6]})
 
+DESKS=[
+ ("DK1","KUALA HARALD · שולחן עבודה עם מגירה ומדפים 120",3950,
+  "https://kualastyle.com/collections/%D7%A9%D7%95%D7%9C%D7%97%D7%A0%D7%95%D7%AA-%D7%95%D7%9B%D7%A1%D7%90%D7%95%D7%AA-%D7%A2%D7%91%D7%95%D7%93%D7%94/products/harald",
+  "https://kualastyle.com/cdn/shop/files/36392231-AMALFI-DESK_1_1ec440f6-2330-4c07-82bd-f76dd095bf1c.jpg",
+  ["120 ס״מ","מגירה + מדפים","⚠️ לא עץ מלא"],
+  "✔ יש: מגירה, שני תאי מדף ומדף נסתר מובנים (אחסון בתוך השולחן עצמו), תוצרת ישראל\n✘ אין: לא עץ מלא — \"עץ תעשייתי\" עם פורנייר אלון וצבע אפוי לבן · אחריות 12 חודשים בלבד · הזמנה מראש עד 30 ימי עסקים · הרכבה עצמית, משלוח והרכבה בתוספת\n📐 120×60 ס״מ · גובה 90 (משטח 78) · 💰 ₪3,950"),
+ ("DK2","Nature Furniture ROBI · שולחן כתיבה אלון מלא עם מגירה",2690,
+  "https://naturefurniture.co.il/products/robi-shulchan-ktiva",
+  "https://naturefurniture.co.il/cdn/shop/files/robi_front.png?v=1790755192&width=720",
+  ["🪵 עץ מלא ✓","מגירה","קווים רכים"],
+  "✔ יש: אלון מלא, מגירה אחת, קווים מעוגלים בסגנון סקנדינבי, משלוח והרכבה כלולים במחיר, אחריות 12 חודשים\n✘ אין: המידות לא מופיעות בעמוד — חובה לוודא רוחב מול ה-120 לפני הזמנה · אספקה עד 21 ימי עסקים · גוון יחיד\n💰 ₪2,690 (מ-₪2,990)"),
+ ("DK3","Nature Furniture Classic Oak · שולחן כתיבה אלון מלא 120",2520,
+  "https://naturefurniture.co.il/products/classic-oak-desk",
+  "https://naturefurniture.co.il/cdn/shop/files/H6767.png?v=1790842657&width=720",
+  ["🪵 עץ מלא ✓","120 ס״מ","אזל במלאי"],
+  "✔ יש: אלון מלא בלכה איכותית, זמין ברוחב 120 (או 140), משלוח חינם, אחריות 12 חודשים\n✘ אין: מגירות לא מצוינות בעמוד · בעת הבדיקה אזל במלאי · אספקה עד 21 ימי עסקים · הרכבה עצמית\n📐 120×60 ס״מ · גובה 75 · 💰 מ-₪2,520"),
+ ("DK4","Nature Furniture MAGIC · שולחן כתיבה אלון מלא עם מדפים מובנים",2150,
+  "https://naturefurniture.co.il/products/solid-oak-wood-desk-magic",
+  "https://naturefurniture.co.il/cdn/shop/files/56H565.png?v=1790843045&width=720",
+  ["🪵 עץ מלא ✓","מדפים מובנים","אזל במלאי"],
+  "✔ יש: אלון מלא בגימור שמן ושעווה, יחידת מדפים מובנית מעל השולחן (מדף תחתון 25 ס״מ עומק, עליון 20), שתי מידות רוחב, משלוח חינם, החזרה חינם עד 14 יום\n✘ אין: רחב מ-84 או 104 בלבד — כלומר קטן מ-120, אין מקום לשידה לידו · בעת הבדיקה אזל במלאי · גובה כולל 182 ס״מ\n📐 84 או 104 ס״מ רוחב · משטח 75 · עומק שולחן 50 · 💰 מ-₪2,150"),
+]
+for k in DESKS:
+    DATA.append({"id":k[0],"cat":"שולחן לדני","type":"product","name":k[1],
+                 "price":k[2],"link":k[3],"img":k[4],"tags":k[5],"desc":k[6]})
+
 # zap price-comparison link per appliance (link = recommended store, zap = comparison)
 ZAP={
  "P4":"https://www.zap.co.il/model.aspx?modelid=1235119",
@@ -546,7 +572,8 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"מיטת אורחים","label":"מיטת אורחים","icon":"🛏️","slug":"guest-bed"},
       {"key":"פח","label":"פח","icon":"🗑️","slug":"bin"},
       {"key":"מקרר פרגולה","label":"מקרר פרגולה","icon":"🍦","slug":"pergola-fridge"},
-      {"key":"תליה זמנית","label":"תליה זמנית","icon":"🧥","slug":"hanging"}]
+      {"key":"תליה זמנית","label":"תליה זמנית","icon":"🧥","slug":"hanging"},
+      {"key":"שולחן לדני","label":"שולחן לדני","icon":"🖥️","slug":"danny-desk"}]
 
 tpl=r'''<!doctype html>
 <html lang="he" dir="rtl">
