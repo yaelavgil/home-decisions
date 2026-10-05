@@ -526,6 +526,17 @@ DESKS=[
   "https://naturefurniture.co.il/cdn/shop/files/56H565.png?v=1790843045&width=720",
   ["🪵 עץ מלא ✓","מדפים מובנים","אזל במלאי"],
   "✔ יש: אלון מלא בגימור שמן ושעווה, יחידת מדפים מובנית מעל השולחן (מדף תחתון 25 ס״מ עומק, עליון 20), שתי מידות רוחב, משלוח חינם, החזרה חינם עד 14 יום\n✘ אין: רחב מ-84 או 104 בלבד — כלומר קטן מ-120, אין מקום לשידה לידו · בעת הבדיקה אזל במלאי · גובה כולל 182 ס״מ\n📐 84 או 104 ס״מ רוחב · משטח 75 · עומק שולחן 50 · 💰 מ-₪2,150"),
+
+ ("DK5","Tomik · שולחן עבודה עם מגירות מעץ אלון מלא",4850,
+  "https://tomik.co.il/products/%D7%A9%D7%95%D7%9C%D7%97%D7%9F-%D7%A2%D7%91%D7%95%D7%93%D7%94-%D7%A2%D7%9D-%D7%9E%D7%92%D7%99%D7%A8%D7%95%D7%AA-%D7%9E%D7%A2%D7%A5-%D7%90%D7%9C%D7%95%D7%9F",
+  "https://tomik.co.il/cdn/shop/files/f857cc_c55c7e94819f47d7916b5b0a5ab3ea92_mv2.jpg",
+  ["🪵 עץ מלא ✓","120 ס״מ","מגירות","עבודת יד"],
+  "✔ יש: \"עשוי כולו מעץ מלא מסוג אלון מבוקע\", מגירות, עבודת יד, שלושה גוונים (אלון טבעי / חום / שקוף), אפשרות למידות מותאמות\n✘ אין: הזמנה לפי דרישה — כ-45–50 ימי עסקים · משלוח והרכבה בתוספת לפי מרחק וקומה · אחריות לא מצוינת בעמוד\n📐 120×60 ס״מ · גובה 77 · 💰 ₪4,850"),
+ ("DK6","Tomik · שולחן עבודה שוודי עץ מלא",4250,
+  "https://tomik.co.il/products/%D7%A9%D7%95%D7%9C%D7%97%D7%9F-%D7%A2%D7%91%D7%95%D7%93%D7%94-%D7%A9%D7%95%D7%95%D7%93%D7%99",
+  "https://tomik.co.il/cdn/shop/files/e2115734b7c676d0743c681ecf944a98.png?v=1771507400&width=1080",
+  ["🪵 עץ מלא ✓","120 ס״מ","אלון או אגוז","קווים רכים"],
+  "✔ יש: עץ מלא (אלון או אגוז), קווים נקיים ומעוגלים, עבודת יד, חמישה גוונים (אלון שקוף / חום / טבעי, אגוז שקוף / כהה), אפשרות למידות מותאמות\n✘ אין: בלי מגירות או מדפים · הזמנה לפי דרישה, 45–50 ימי עסקים · גובה לא מצוין בעמוד · משלוח והרכבה בתוספת · אחריות לא מצוינת\n📐 120×60 ס״מ · 💰 ₪4,250"),
 ]
 for k in DESKS:
     DATA.append({"id":k[0],"cat":"שולחן לדני","type":"product","name":k[1],
@@ -629,7 +640,16 @@ h1{font-weight:700;font-size:clamp(21px,4vw,31px);letter-spacing:-.02em;margin:0
 /* sticky control deck */
 .deck{position:sticky;top:0;z-index:30;margin:8px 0 0;padding:7px 0 7px;
   background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.15) blur(12px);border-bottom:1.5px solid var(--line)}
-.tabs{display:flex;flex-wrap:wrap;gap:6px;padding:2px 2px 6px}
+.tabs{display:flex;flex-wrap:nowrap;gap:6px;padding:2px 2px 6px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%)}
+.tabs::-webkit-scrollbar{display:none}
+@media(min-width:1000px){.tabs{flex-wrap:wrap;overflow:visible;-webkit-mask-image:none;mask-image:none}}
+/* narrow screens: only the category row stays pinned; search/sort/filters scroll away so the content keeps the screen */
+@media(max-width:999px){
+  .deck{display:contents}
+  .tabs{position:sticky;top:0;z-index:30;margin-top:8px;padding:8px 2px 8px;background:var(--bg);border-bottom:1.5px solid var(--line)}
+  .tools{padding-top:10px}
+}
 .tab{position:relative;flex:0 0 auto;border:1.5px solid var(--line-2);background:var(--paper);border-radius:999px;
   padding:9px 17px;font:inherit;font-weight:600;font-size:14px;color:var(--ink-soft);cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:8px}
 .tab .c{font-size:12px;color:var(--muted);background:var(--brass-soft);border-radius:999px;padding:1px 8px;font-weight:700}
@@ -870,8 +890,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   .kicker{display:none}
   .hrow{align-items:center;gap:8px}
   h1{font-size:19px}
-  .deck{margin-top:6px;padding:5px 0 6px}
-  .tabs{padding:2px 2px 5px}
+  .tabs{margin-top:6px;padding:6px 2px 6px}
   .tools{gap:7px;padding:5px 2px 0}
   .whoami{font-size:11px}
   .summ{font-size:11.5px;gap:9px;padding:5px 4px 0}
@@ -1095,7 +1114,7 @@ function setCat(k){
 }
 window.addEventListener('hashchange',()=>{applyHash();buildChips();tabsHTML();RE(true);});
 function tabsHTML(){
-  const t=document.getElementById('tabs'); t.innerHTML="";
+  const t=document.getElementById('tabs'); const keepScroll=t.scrollLeft; t.innerHTML="";
   updateHiddenCount();
   CATS.forEach(c=>{
     const n=c.key==='all'?ITEMS.filter(i=>!i.hidden).length:ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length;
@@ -1104,7 +1123,17 @@ function tabsHTML(){
     b.onclick=()=>setCat(c.key);
     t.appendChild(b);
   });
+  // single scrolling row on narrow screens: keep position across rebuilds and keep the active tab in view
+  t.scrollLeft=keepScroll;
+  const on=t.querySelector('.tab.on');
+  if(on&&t.scrollWidth>t.clientWidth){
+    const r=on.getBoundingClientRect(), tr=t.getBoundingClientRect(), pad=28;
+    if(r.left<tr.left+pad) t.scrollLeft-=(tr.left+pad-r.left);
+    else if(r.right>tr.right-pad) t.scrollLeft+=(r.right-(tr.right-pad));
+  }
 }
+(function(){const t=document.getElementById('tabs'); if(!t||t._wheel) return; t._wheel=1;
+  t.addEventListener('wheel',e=>{ if(t.scrollWidth>t.clientWidth && Math.abs(e.deltaY)>Math.abs(e.deltaX)){ t.scrollLeft+=e.deltaY; e.preventDefault(); }},{passive:false});})();
 function buildChips(){
   if(personf!=='all' && !namesList().includes(personf)) personf='all';
   const pc=document.getElementById('pplchips');
