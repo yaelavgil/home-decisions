@@ -15,7 +15,8 @@
   "name": "מנורת קיר סילו",
   "price": 263,
   "link": "https://store.ida-home.co.il/product/wall-light-silo",
-  "img": "silo_1.webp"
+  "img": "silo_1.webp",
+  "loc": "מקלחת אורחים (קיר)"
  },
  {
   "name": "גוף תאורה אניקה",
@@ -135,7 +136,8 @@
   "name": "הלנה",
   "price": 273,
   "link": "https://store.ida-home.co.il/product/%d7%94%d7%9c%d7%a0%d7%94",
-  "img": "product-1265.jpg"
+  "img": "product-1265.jpg",
+  "loc": "מעל מראת הכניסה"
  },
  {
   "name": "אלה",
@@ -171,7 +173,8 @@
   "name": "ואלרי",
   "price": 257,
   "link": "https://store.ida-home.co.il/product/%d7%95%d7%90%d7%9c%d7%a8%d7%99-2",
-  "img": "product-786.jpg"
+  "img": "product-786.jpg",
+  "loc": "מעל האי במטבח · 3 יח׳ (חובק בקבוק)"
  },
  {
   "name": "ג'ייד פסים",
@@ -213,18 +216,21 @@
   "name": "גוף תאורה צמוד תקרה AM832 הוטם · פליז וזכוכית מצולעת",
   "price": 843,
   "link": "https://www.hootam.co.il/products/%D7%9E%D7%A0%D7%95%D7%A8%D7%AA-%D7%AA%D7%A7%D7%A8%D7%94-%D7%93%D7%92%D7%9D-am832",
-  "img": "hootam-am832.jpg"
+  "img": "hootam-am832.jpg",
+  "loc": "מיועד: סלון / פינת אוכל"
  },
  {
   "name": "גוף תאורה צמוד תקרה AM873 הוטם · קוטר 40, זכוכית וגימור פליז",
   "price": 544,
   "link": "https://www.hootam.co.il/products/%D7%9E%D7%A0%D7%95%D7%A8%D7%AA-%D7%AA%D7%A7%D7%A8%D7%94-%D7%93%D7%92%D7%9D-am873",
-  "img": "hootam-am873.jpg"
+  "img": "hootam-am873.jpg",
+  "loc": "מיועד: סלון / פינת אוכל"
  },
  {
   "name": "גוף תאורה צמוד תקרה AM872 הוטם · קוטר 40, זכוכית חצובה, 3 בתי נורה",
   "price": 541,
   "link": "https://www.hootam.co.il/products/%D7%9E%D7%A0%D7%95%D7%A8%D7%AA-%D7%AA%D7%A7%D7%A8%D7%94-%D7%A6%D7%A4%D7%94-3-%D7%91%D7%AA%D7%99-%D7%9E%D7%A0%D7%95%D7%A8%D7%94-am872",
-  "img": "hootam-am872.jpg"
+  "img": "hootam-am872.jpg",
+  "loc": "מיועד: סלון / פינת אוכל"
  }
 ]

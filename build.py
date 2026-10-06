@@ -16,7 +16,7 @@ items=json.load(open(os.path.join(REPO,"lighting.json"),encoding="utf-8"))
 DATA=[]
 for k,it in enumerate(items):
     DATA.append({"id":"l"+str(k+1),"cat":"תאורה","type":"product","name":it["name"],"price":it["price"],
-                 "link":it["link"],"img":"img/"+it["img"],"tags":tags(it["name"])})
+                 "link":it["link"],"img":"img/"+it["img"],"tags":tags(it["name"]),"loc":it.get("loc","")})
 
 # --- Kitchen handles (Domicile) — pulled from home-picks ---
 HANDLES=[
@@ -856,7 +856,12 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .lb .info{padding:16px 20px 20px}
 .lb .info h3{margin:0 0 4px;font-size:20px}
 .lb .info .p{color:var(--brass-d);font-weight:700;font-size:20px}
-.lb .x{position:absolute;top:18px;inset-inline-start:18px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.9);font-size:18px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.lb .box{position:relative}
+.lb .x{position:absolute;top:12px;left:12px;z-index:2;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.92);font-size:17px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.loc{font-size:12.5px;color:var(--ink-soft);margin:-2px 0 2px;line-height:1.45}
+.lb .loc{font-size:13.5px;margin:6px 0 0}
+.lbord{margin-top:12px;font-size:13px;color:var(--ink-soft)}
+.lbord .ordAct,.lbord .markOrd{font-size:13px}
 .lb a.store{display:inline-block;margin-top:12px;color:var(--brass-d);font-weight:600;text-decoration:none;border-bottom:1.5px solid var(--brass-soft)}
 
 .fab{position:fixed;bottom:20px;inset-inline-start:50%;transform:translateX(-50%);z-index:40}
@@ -956,9 +961,9 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 <div id="grid" class="grid"></div>
 </div>
 
-<div class="lb" id="lb" onclick="if(event.target===this)closeLB()"><button class="x" onclick="closeLB()">✕</button>
-  <div class="box"><div class="im"><img id="lbimg" src="" alt=""></div>
-  <div class="info"><h3 id="lbname"></h3><div class="p" id="lbprice"></div><a class="store" id="lbstore" target="_blank" rel="noopener">לצפייה בחנות ↗</a></div></div>
+<div class="lb" id="lb" onclick="if(event.target===this)closeLB()">
+  <div class="box"><button class="x" onclick="closeLB()" aria-label="סגירה">✕</button><div class="im"><img id="lbimg" src="" alt=""></div>
+  <div class="info"><h3 id="lbname"></h3><div class="p" id="lbprice"></div><div class="loc" id="lbloc"></div><a class="store" id="lbstore" target="_blank" rel="noopener">לצפייה בחנות ↗</a><div class="lbord" id="lbord"></div></div></div>
 </div>
 
 <dialog id="cartDlg"><div class="dh" id="cartTitle">🛒 עגלה</div>
@@ -1232,6 +1237,7 @@ function cardEl(it){
     <div class="body">
       ${nameEl}
       ${sub}
+      ${it.loc?`<div class="loc">📍 ${it.loc}</div>`:''}
       ${featRow}
       ${stars}
       ${it.desc?`<div class="desc clamped" id="desc-${it.id}">${it.desc}</div><button type="button" class="descToggle" onclick="toggleDesc('${it.id}')">הצג פרטים ⌄</button>`:''}
@@ -1368,7 +1374,25 @@ function openLB(id){const it=byId[id];
   document.getElementById('lbname').textContent=it.name;
   document.getElementById('lbprice').textContent=it.type==='color'?(it.code||''):(it.price!=null?nis(it.price):'');
   const stEl=document.getElementById('lbstore'); if(it.link){stEl.style.display='';stEl.href=it.link;stEl.textContent=it.type==='color'?'לגוון באתר נירלט ↗':'לצפייה בחנות ↗';}else{stEl.style.display='none';}
+  const le=document.getElementById('lbloc'); if(le)le.textContent=it.loc?('📍 '+it.loc):'';
+  lbId=id; renderLbOrd();
   document.getElementById('lb').classList.add('on');}
+let lbId=null;
+function renderLbOrd(){
+  const box=document.getElementById('lbord'); if(!box)return; box.innerHTML='';
+  const it=byId[lbId]; if(!it||it.type==='color')return;
+  const mk=(txt,fn,cls)=>{const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=txt;b.onclick=()=>{fn();renderLbOrd();};return b;};
+  if(it.ordered){
+    const meta=document.createElement('div'); meta.textContent='📦 הוזמן'+(it.orderedBy?' ע״י '+it.orderedBy:'')+(it.orderedAt?' · '+new Date(it.orderedAt).toLocaleDateString('he-IL'):''); box.appendChild(meta);
+    const row=document.createElement('div');
+    if(it.orderLink&&/^https?:\/\//i.test(it.orderLink)){const a=document.createElement('a');a.href=it.orderLink;a.target='_blank';a.rel='noopener';a.textContent='אישור הזמנה ↗';row.appendChild(a);row.append(' · ');}
+    row.appendChild(mk(it.orderLink?'ערוך קישור':'הוסף קישור להזמנה',()=>setOrderLink(lbId),'ordAct')); row.append(' · ');
+    row.appendChild(mk('בטל סימון',()=>toggleOrdered(lbId),'ordAct'));
+    box.appendChild(row);
+  } else {
+    box.appendChild(mk('📦 סמן כהוזמן',()=>toggleOrdered(lbId),'markOrd'));
+  }
+}
 function closeLB(){document.getElementById('lb').classList.remove('on');}
 function resetAll(){if(confirm("לאפס את כל הבחירות וההערות?")){st.s={};save();els.forEach((c,id)=>paint(id));RE();}}
 function openSummary(){
