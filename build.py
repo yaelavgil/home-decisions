@@ -15,8 +15,8 @@ def tags(n):
 items=json.load(open(os.path.join(REPO,"lighting.json"),encoding="utf-8"))
 DATA=[]
 for k,it in enumerate(items):
-    DATA.append({"id":"l"+str(k+1),"cat":"תאורה","type":"product","name":it["name"],"price":it["price"],
-                 "link":it["link"],"img":("img/"+it["img"]) if it.get("img") else "","tags":tags(it["name"]),"loc":it.get("loc","")})
+    DATA.append({"id":"l"+str(k+1),"cat":it.get("cat","תאורה"),"type":"product","name":it["name"],"price":it["price"],
+                 "link":it["link"],"img":("img/"+it["img"]) if it.get("img") else "","tags":it.get("tags") or tags(it["name"]),"loc":it.get("loc","")})
 
 # --- Kitchen handles (Domicile) — pulled from home-picks ---
 HANDLES=[
@@ -571,6 +571,7 @@ for it in DATA:
     if it["id"] in ZAP: it["zap"]=ZAP[it["id"]]
 CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"תאורה","label":"תאורה","icon":"💡","slug":"lighting"},
+      {"key":"תאורת חוץ","label":"תאורת חוץ","icon":"🏮","slug":"outdoor-lighting"},
       {"key":"צבעים","label":"צבעים","icon":"🎨","slug":"colors"},
       {"key":"ידיות","label":"ידיות","icon":"🔩","slug":"handles"},
       {"key":"מכונות קפה","label":"מכונות קפה","icon":"☕","slug":"coffee"},
@@ -1079,6 +1080,9 @@ function rebuild(){
     return true; };
   st.custom.items.forEach(i=>{if(i&&i.id&&!dupOfBuiltin(i))im[i.id]={...(im[i.id]||{}),...i};});
   Object.values(shared.items||{}).forEach(i=>{if(i&&i.id&&!dupOfBuiltin(i))im[i.id]={...(im[i.id]||{}),...i};});
+  // image safety net: a product-page URL pasted into the image field (or a stale local copy) must never win over a real image
+  const IMGFIX={cust_fabrizio1:'img/fabrizio1.webp'};
+  Object.values(im).forEach(i=>{ if(IMGFIX[i.id]) i.img=IMGFIX[i.id]; else if(i.img&&/^https?:/i.test(i.img)&&!/\.(jpe?g|png|webp|avif|gif|svg)(\?|#|$)/i.test(i.img)&&!/(cdn-cgi|\/images?\/|media|uploads)/i.test(i.img)) i.img=''; });
   Object.entries(st.ord).forEach(([id,o])=>{if(im[id])im[id]={...im[id],...o};}); // this device's optimistic "ordered" toggle, until the server round-trip confirms it
   const cm={}; BCATS.forEach(c=>cm[c.key]={...c});
   st.custom.cats.forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});

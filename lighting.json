@@ -3,392 +3,630 @@
   "name": "גוף תאורה שניקה",
   "price": 299,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%a9%d7%a0%d7%99%d7%a7%d7%94",
-  "img": "product-2419.jpg"
+  "img": "product-2419.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "מנורת קיר פאולינה",
   "price": 383,
   "link": "https://store.ida-home.co.il/product/wall-light-paulina",
-  "img": "k2.webp"
+  "img": "k2.webp",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "מנורת קיר סילו",
   "price": 263,
   "link": "https://store.ida-home.co.il/product/wall-light-silo",
   "img": "silo_1.webp",
-  "loc": "מקלחת אורחים (קיר)"
+  "loc": "מקלחת אורחים (קיר)",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "גוף תאורה אניקה",
   "price": 306,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%90%d7%a0%d7%99%d7%a7%d7%94",
-  "img": "product-2415.jpg"
+  "img": "product-2415.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "מנורת קיר מריסה",
   "price": 273,
   "link": "https://store.ida-home.co.il/product/%d7%9b%d7%95%d7%91%d7%a2-%d7%a0%d7%96%d7%99%d7%a8-%d7%a9%d7%97%d7%95%d7%a8-5",
-  "img": "product-5954.jpg"
+  "img": "product-5954.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "גוף תאורה פרנסי",
   "price": 372,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%a4%d7%a8%d7%a0%d7%a1%d7%99",
-  "img": "product-2411.jpg"
+  "img": "product-2411.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "מנורת קיר מיכאלה",
   "price": 273,
   "link": "https://store.ida-home.co.il/product/%d7%9b%d7%95%d7%91%d7%a2-%d7%a0%d7%96%d7%99%d7%a8-%d7%a9%d7%97%d7%95%d7%a8-2",
-  "img": "product-5949.jpg"
+  "img": "product-5949.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "גוף תאורה פלורה",
   "price": 306,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%a4%d7%9c%d7%95%d7%a8%d7%94",
-  "img": "product-2412.jpg"
+  "img": "product-2412.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "גוף תאורה יוהנה",
   "price": 238,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%99%d7%95%d7%94%d7%a0%d7%94",
-  "img": "light_4.webp"
+  "img": "light_4.webp",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "גוף תאורה מארס",
   "price": 533,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%9e%d7%90%d7%a8%d7%a1",
-  "img": "product-2046.jpg"
+  "img": "product-2046.jpg",
+  "tags": [
+   "מנורת קיר",
+   "פנס"
+  ]
  },
  {
   "name": "גוף תאורה טומאזו",
   "price": 382,
   "link": "https://store.ida-home.co.il/product/tomazzo-lamp",
-  "img": "tomazo-1.webp"
+  "img": "tomazo-1.webp",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "גוף תאורה בריאן",
   "price": 263,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%91%d7%a8%d7%99%d7%90%d7%9f",
-  "img": "product-2098.jpg"
+  "img": "product-2098.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "גוף תאורה אלי",
   "price": 351,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%90%d7%9c%d7%99",
-  "img": "product-2053.jpg"
+  "img": "product-2053.jpg",
+  "tags": [
+   "מנורת קיר",
+   "תאורת תמונה"
+  ]
  },
  {
   "name": "גוף תאורה קרמן",
   "price": 289,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%a7%d7%a8%d7%9e%d7%9f",
-  "img": "product-2032.jpg"
+  "img": "product-2032.jpg",
+  "tags": [
+   "תלויה"
+  ]
  },
  {
   "name": "גוף תאורה לסלי",
   "price": 476,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%9c%d7%a1%d7%9c%d7%99",
-  "img": "product-2015.jpg"
+  "img": "product-2015.jpg",
+  "tags": [
+   "תלויה"
+  ]
  },
  {
   "name": "גוף תאורה מרקורי",
   "price": 533,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%9e%d7%a8%d7%a7%d7%95%d7%a8%d7%99",
-  "img": "product-1963.jpg"
+  "img": "product-1963.jpg",
+  "tags": [
+   "מנורת קיר",
+   "פנס"
+  ]
  },
  {
   "name": "גוף תאורה טדי",
   "price": 271,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%98%d7%93%d7%99",
-  "img": "product-1727.jpg"
+  "img": "product-1727.jpg",
+  "tags": [
+   "מנורת קיר",
+   "ספוט"
+  ]
  },
  {
   "name": "מנורה תלויה מקסין",
   "price": 332,
   "link": "https://store.ida-home.co.il/product/%d7%9e%d7%a0%d7%95%d7%a8%d7%94-%d7%aa%d7%9c%d7%95%d7%99%d7%94-%d7%9e%d7%a7%d7%a1%d7%99%d7%9f",
-  "img": "product-1641.jpg"
+  "img": "product-1641.jpg",
+  "tags": [
+   "תלויה"
+  ]
  },
  {
   "name": "גוסטבו פליז",
   "price": 383,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a1%d7%98%d7%91%d7%95-%d7%a4%d7%9c%d7%99%d7%96",
-  "img": "product-6327.jpg"
+  "img": "product-6327.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "לייני",
   "price": 282,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%9c%d7%99%d7%99%d7%a0%d7%99",
-  "img": "product-1404.jpg"
+  "img": "product-1404.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "לואיס",
   "price": 297,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%9c%d7%95%d7%90%d7%99%d7%a1",
-  "img": "product-1392.jpg"
+  "img": "product-1392.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "מייקל",
   "price": 273,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%9e%d7%99%d7%99%d7%a7%d7%9c",
-  "img": "product-1390.jpg"
+  "img": "product-1390.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "הלנה",
   "price": 273,
   "link": "https://store.ida-home.co.il/product/%d7%94%d7%9c%d7%a0%d7%94",
   "img": "product-1265.jpg",
-  "loc": "מעל מראת הכניסה"
+  "loc": "מעל מראת הכניסה",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "אלה",
   "price": 273,
   "link": "https://store.ida-home.co.il/product/%d7%90%d7%9c%d7%94-2",
-  "img": "product-1256.jpg"
+  "img": "product-1256.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "דונה",
   "price": 286,
   "link": "https://store.ida-home.co.il/product/%d7%93%d7%95%d7%a0%d7%94-2",
-  "img": "product-1238.jpg"
+  "img": "product-1238.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "אדל",
   "price": 286,
   "link": "https://store.ida-home.co.il/product/%d7%90%d7%93%d7%9c-2",
-  "img": "product-1195.jpg"
+  "img": "product-1195.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "מקס",
   "price": 273,
   "link": "https://store.ida-home.co.il/product/%d7%9e%d7%a7%d7%a1",
-  "img": "product-1151.jpg"
+  "img": "product-1151.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "דיון",
   "price": 286,
   "link": "https://store.ida-home.co.il/product/%d7%93%d7%99%d7%95%d7%9f-2",
-  "img": "product-797.jpg"
+  "img": "product-797.jpg",
+  "tags": [
+   "מנורת קיר"
+  ]
  },
  {
   "name": "ואלרי",
   "price": 257,
   "link": "https://store.ida-home.co.il/product/%d7%95%d7%90%d7%9c%d7%a8%d7%99-2",
   "img": "product-786.jpg",
-  "loc": "מעל האי במטבח · 3 יח׳ (חובק בקבוק)"
+  "loc": "מעל האי במטבח · 3 יח׳ (חובק בקבוק)",
+  "tags": [
+   "מנורת קיר",
+   "ספוט"
+  ]
  },
  {
   "name": "ג'ייד פסים",
   "price": 356,
   "link": "https://store.ida-home.co.il/product/%d7%92-%d7%99%d7%99%d7%93-%d7%a4%d7%a1%d7%99%d7%9d",
-  "img": "jade.webp"
+  "img": "jade.webp",
+  "tags": [
+   "תלויה"
+  ]
  },
  {
   "name": "ויולה",
   "price": 281,
   "link": "https://store.ida-home.co.il/product/%d7%95%d7%99%d7%95%d7%9c%d7%94-2",
-  "img": "product-6995.jpg"
+  "img": "product-6995.jpg",
+  "tags": [
+   "תלויה"
+  ]
  },
  {
   "name": "רזי",
   "price": 267,
   "link": "https://store.ida-home.co.il/product/%d7%a8%d7%96%d7%99",
-  "img": "product-15.png"
+  "img": "product-15.png",
+  "tags": [
+   "תלויה"
+  ]
  },
  {
   "name": "צמודת תקרה מתכווננת ג'ולי",
   "price": 297,
   "link": "https://store.ida-home.co.il/product/%d7%92-%d7%95%d7%9c%d7%99-2",
-  "img": "product-10840.jpg"
+  "img": "product-10840.jpg",
+  "tags": [
+   "צמודת תקרה",
+   "ספוט"
+  ]
  },
  {
   "name": "גוף תאורה תלוי קרולין",
   "price": 416,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%aa%d7%9c%d7%95%d7%99-%d7%a7%d7%a8%d7%95%d7%9c%d7%99%d7%9f",
-  "img": "product-5753.jpg"
+  "img": "product-5753.jpg",
+  "tags": [
+   "תלויה"
+  ]
  },
  {
   "name": "גוף תאורה תלוי ליסה",
   "price": 680,
   "link": "https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%aa%d7%9c%d7%95%d7%99-%d7%9c%d7%99%d7%a1%d7%94",
-  "img": "product-321.jpg"
+  "img": "product-321.jpg",
+  "tags": [
+   "תלויה"
+  ]
  },
  {
   "name": "גוף תאורה צמוד תקרה AM832 הוטם · פליז וזכוכית מצולעת",
   "price": 843,
   "link": "https://www.hootam.co.il/products/%D7%9E%D7%A0%D7%95%D7%A8%D7%AA-%D7%AA%D7%A7%D7%A8%D7%94-%D7%93%D7%92%D7%9D-am832",
   "img": "hootam-am832.jpg",
-  "loc": "מיועד: סלון / פינת אוכל"
+  "loc": "מיועד: סלון / פינת אוכל",
+  "tags": [
+   "צמודת תקרה"
+  ]
  },
  {
   "name": "גוף תאורה צמוד תקרה AM873 הוטם · קוטר 40, זכוכית וגימור פליז",
   "price": 544,
   "link": "https://www.hootam.co.il/products/%D7%9E%D7%A0%D7%95%D7%A8%D7%AA-%D7%AA%D7%A7%D7%A8%D7%94-%D7%93%D7%92%D7%9D-am873",
   "img": "hootam-am873.jpg",
-  "loc": "מיועד: סלון / פינת אוכל"
+  "loc": "מיועד: סלון / פינת אוכל",
+  "tags": [
+   "צמודת תקרה"
+  ]
  },
  {
   "name": "גוף תאורה צמוד תקרה AM872 הוטם · קוטר 40, זכוכית חצובה, 3 בתי נורה",
   "price": 541,
   "link": "https://www.hootam.co.il/products/%D7%9E%D7%A0%D7%95%D7%A8%D7%AA-%D7%AA%D7%A7%D7%A8%D7%94-%D7%A6%D7%A4%D7%94-3-%D7%91%D7%AA%D7%99-%D7%9E%D7%A0%D7%95%D7%A8%D7%94-am872",
   "img": "hootam-am872.jpg",
-  "loc": "מיועד: סלון / פינת אוכל"
+  "loc": "מיועד: סלון / פינת אוכל",
+  "tags": [
+   "צמודת תקרה"
+  ]
  },
  {
   "name": "מחסני תאורה · מאוורר תקרה פסיפיק סטרונג \"CCT 42 לבן + שלט LED",
   "price": 399,
   "link": "https://www.lighting.co.il/75372014",
   "img": "mt-75372014.jpg",
-  "loc": "חדרי שינה בקומת קרקע (שנה 2 / ממ\"ד / הורים) - לפי המפה; מקור-האמת: 3x42 לקרקע · 3 יח׳"
+  "loc": "חדרי שינה בקומת קרקע (שנה 2 / ממ\"ד / הורים) - לפי המפה; מקור-האמת: 3x42 לקרקע · 3 יח׳",
+  "tags": [
+   "מאוורר תקרה"
+  ]
  },
  {
   "name": "מחסני תאורה · מאוורר תקרה פסיפיק מונסון \"CCT 52+שלט עמעום LED IP44",
   "price": 750,
   "link": "https://www.lighting.co.il/75372006",
   "img": "mt-75372006.jpg",
-  "loc": "פרגולה (חוץ) - 2x52 IP44 · 2 יח׳"
+  "loc": "פרגולה (חוץ) - 2x52 IP44 · 2 יח׳",
+  "tags": [
+   "מאוורר תקרה",
+   "חוץ IP44"
+  ]
  },
  {
   "name": "מחסני תאורה · לאמדן שחור פרופיל 3 מטר",
   "price": 220,
   "link": "",
   "img": "",
-  "loc": "מסלול ספוטים שחור 3 מ' בסלון/מטבח (מסומן 'שחור 3מ'' במפה)"
+  "loc": "מסלול ספוטים שחור 3 מ' בסלון/מטבח (מסומן 'שחור 3מ'' במפה)",
+  "tags": [
+   "מסלול ספוטים"
+  ]
  },
  {
   "name": "מחסני תאורה · לאמדן פרופיל 1 מטר",
   "price": 90,
   "link": "https://www.lighting.co.il/75436075",
   "img": "mt-75436075.jpg",
-  "loc": "מסלול ספוטים לבן (1 מ' + 2 מ' + מחבר = 3 מ')"
+  "loc": "מסלול ספוטים לבן (1 מ' + 2 מ' + מחבר = 3 מ')",
+  "tags": [
+   "מסלול ספוטים"
+  ]
  },
  {
   "name": "מחסני תאורה · לאמדן פרופיל 2 מטר",
   "price": 160,
   "link": "https://www.lighting.co.il/75436077",
   "img": "mt-75436077.jpg",
-  "loc": "מסלול ספוטים לבן"
+  "loc": "מסלול ספוטים לבן",
+  "tags": [
+   "מסלול ספוטים"
+  ]
  },
  {
   "name": "מחסני תאורה · לאמדן מחבר ביניים",
   "price": 15,
   "link": "https://www.lighting.co.il/75436087",
   "img": "mt-75436087.jpg",
-  "loc": "מסלול ספוטים לבן (חיבור 1 מ' + 2 מ')"
+  "loc": "מסלול ספוטים לבן (חיבור 1 מ' + 2 מ')",
+  "tags": [
+   "מסלול ספוטים"
+  ]
  },
  {
   "name": "מחסני תאורה · לאמדן ספוט LED CCT",
   "price": 220,
   "link": "https://www.lighting.co.il/75436054",
   "img": "mt-75436054.jpg",
-  "loc": "מסלול ספוטים שחור (פס צבירה) · 5 יח׳"
+  "loc": "מסלול ספוטים שחור (פס צבירה) · 5 יח׳",
+  "tags": [
+   "ספוט למסלול"
+  ]
  },
  {
   "name": "מחסני תאורה · לאמדן ספוט LED CCT",
   "price": 220,
   "link": "https://www.lighting.co.il/75436055",
   "img": "mt-75436055.jpg",
-  "loc": "מסלול ספוטים לבן (פס צבירה) · 5 יח׳"
+  "loc": "מסלול ספוטים לבן (פס צבירה) · 5 יח׳",
+  "tags": [
+   "ספוט למסלול"
+  ]
  },
  {
   "name": "מחסני תאורה · לאמדן דרייבר + הזנה  200W",
   "price": 250,
   "link": "https://www.lighting.co.il/75436102",
   "img": "mt-75436102.jpg",
-  "loc": "מסלול שחור"
+  "loc": "מסלול שחור",
+  "tags": [
+   "מסלול ספוטים"
+  ]
  },
  {
   "name": "מחסני תאורה · 200W  לאמדן דרייבר + הזנה",
   "price": 250,
   "link": "https://www.lighting.co.il/75436103",
   "img": "mt-75436103.jpg",
-  "loc": "מסלול לבן"
+  "loc": "מסלול לבן",
+  "tags": [
+   "מסלול ספוטים"
+  ]
  },
  {
   "name": "מחסני תאורה · אקולייט IP65 CCT",
   "price": 250,
   "link": "https://www.lighting.co.il/75225177",
   "img": "mt-75225177.jpg",
-  "loc": "עמודי חוץ בשביל (אקליפט x3 לפי מקור-האמת) · 3 יח׳"
+  "loc": "עמודי חוץ בשביל (אקליפט x3 לפי מקור-האמת) · 3 יח׳",
+  "tags": [
+   "עמוד תאורה"
+  ],
+  "cat": "תאורת חוץ"
  },
  {
   "name": "מחסני תאורה · מוריס שקוע LED IP54 CCT",
   "price": 90,
   "link": "https://www.lighting.co.il/75170318",
   "img": "mt-75170318.jpg",
-  "loc": "שקועים: חדר רחצה הורים + פינת המשפחה (מפה/מקור-האמת); בצ'אט ב-17.5 דובר על 6 שקועים לפרגולה - לא חד-משמעי · 6 יח׳"
+  "loc": "שקועים: חדר רחצה הורים + פינת המשפחה (מפה/מקור-האמת); בצ'אט ב-17.5 דובר על 6 שקועים לפרגולה - לא חד-משמעי · 6 יח׳",
+  "tags": [
+   "שקוע"
+  ]
  },
  {
   "name": "מחסני תאורה · אופטו פרוז’קטור+חיישן LED",
   "price": 80,
   "link": "https://www.lighting.co.il/75355055",
   "img": "mt-75355055.jpg",
-  "loc": "תאורת חוץ - פנס חיישן (לא צוין מיקום)"
+  "loc": "תאורת חוץ - פנס חיישן (לא צוין מיקום)",
+  "tags": [
+   "פרוז'קטור"
+  ],
+  "cat": "תאורת חוץ"
  },
  {
   "name": "מחסני תאורה · לומנס L2640 צמוד 1 מטר לבן WW 25W",
   "price": 367,
   "link": "",
-  "img": ""
+  "img": "",
+  "tags": [
+   "צמוד"
+  ]
  },
  {
   "name": "מחסני תאורה · רוג'ר - חיתוך גרונג/זווית 90 מעלות",
   "price": 50,
   "link": "",
-  "img": ""
+  "img": "",
+  "tags": [
+   "אביזר"
+  ]
  },
  {
   "name": "מחסני תאורה · IP44 USB  TYPE-C לבן חם LED גרילנדה 25 נורות מיני",
   "price": 120,
   "link": "https://www.lighting.co.il/75235119",
   "img": "mt-75235119.jpg",
-  "loc": "תאורת חוץ - גרילנדה (⌀25 x2) · 2 יח׳"
+  "loc": "תאורת חוץ - גרילנדה (⌀25 x2) · 2 יח׳",
+  "tags": [
+   "גרילנדה"
+  ],
+  "cat": "תאורת חוץ"
  },
  {
   "name": "מחסני תאורה · גרלנדה ל-10 נורות E27",
   "price": 0,
   "link": "https://www.lighting.co.il/75323002",
-  "img": "mt-75323002.jpg"
+  "img": "mt-75323002.jpg",
+  "tags": [
+   "גרילנדה"
+  ],
+  "cat": "תאורת חוץ"
  },
  {
   "name": "מחסני תאורה · קטלין עמוד",
   "price": 199.9,
   "link": "https://www.lighting.co.il/75172117",
-  "img": "mt-75172117.jpg"
+  "img": "mt-75172117.jpg",
+  "tags": [
+   "עמוד תאורה"
+  ],
+  "cat": "תאורת חוץ"
  },
  {
   "name": "מחסני תאורה · קטלין קיר",
   "price": 119.9,
   "link": "https://www.lighting.co.il/75172115",
-  "img": "mt-75172115.jpg"
+  "img": "mt-75172115.jpg",
+  "tags": [
+   "צמוד קיר"
+  ],
+  "cat": "תאורת חוץ"
  },
  {
   "name": "מחסני תאורה · קטלין עמוד שלישיה",
   "price": 599.9,
   "link": "https://www.lighting.co.il/75172118",
-  "img": "mt-75172118.jpg"
+  "img": "mt-75172118.jpg",
+  "tags": [
+   "עמוד תאורה"
+  ],
+  "cat": "תאורת חוץ"
  },
  {
   "name": "מחסני תאורה · קטלין מעקה",
   "price": 119.9,
   "link": "https://www.lighting.co.il/75172116",
-  "img": "mt-75172116.jpg"
+  "img": "mt-75172116.jpg",
+  "tags": [
+   "מעקה"
+  ],
+  "cat": "תאורת חוץ"
  },
  {
   "name": "מחסני תאורה · גרלנדה ל-25 נורות E27",
   "price": 149.9,
   "link": "https://www.lighting.co.il/75323003",
-  "img": "mt-75323003.jpg"
+  "img": "mt-75323003.jpg",
+  "tags": [
+   "גרילנדה"
+  ],
+  "cat": "תאורת חוץ"
  },
  {
   "name": "מחסני תאורה · מאוורר תקרה פסיפיק בריז \"CCT 48 + שלט",
   "price": 0,
   "link": "https://www.lighting.co.il/75360000",
-  "img": "mt-75360000.jpg"
+  "img": "mt-75360000.jpg",
+  "tags": [
+   "מאוורר תקרה"
+  ]
  },
  {
   "name": "מחסני תאורה · סאמר שקוע LED CCT",
   "price": 19.9,
   "link": "https://www.lighting.co.il/summeri",
-  "img": "mt-summeri.jpg"
+  "img": "mt-summeri.jpg",
+  "tags": [
+   "שקוע"
+  ]
+ },
+ {
+  "name": "פנס קיר חיצוני משושה קלאסי · E27, IP54 (AliExpress)",
+  "price": 26,
+  "link": "https://he.aliexpress.com/item/1005006758611745.html",
+  "img": "ali-hex.jpg",
+  "cat": "תאורת חוץ",
+  "tags": [
+   "צמוד קיר",
+   "פנס"
+  ],
+  "loc": "מיועד: חצר / פרגולה"
+ },
+ {
+  "name": "מנורת קיר חיצונית 'אסם' זרוע אווז · ברונזה, IP65 לפי המוכר (AliExpress)",
+  "price": 52,
+  "link": "https://he.aliexpress.com/item/1005008936422414.html",
+  "img": "ali-barn.jpg",
+  "cat": "תאורת חוץ",
+  "tags": [
+   "צמוד קיר",
+   "פנס"
+  ],
+  "loc": "מיועד: חצר / פרגולה"
+ },
+ {
+  "name": "פנס בולקהד אובלי · פליז-נחושת וזכוכית מצולעת (AliExpress)",
+  "price": 27,
+  "link": "https://he.aliexpress.com/item/1005004570152153.html",
+  "img": "ali-bulkhead.jpg",
+  "cat": "תאורת חוץ",
+  "tags": [
+   "צמוד קיר",
+   "פנס"
+  ],
+  "loc": "מיועד: חצר / פרגולה"
  }
 ]
