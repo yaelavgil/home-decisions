@@ -592,6 +592,31 @@ HEATERS=[
 for k in HEATERS:
     DATA.append({"id":k[0],"cat":"תנורי פרגולה","type":"product","name":k[1],"price":k[2],"link":k[3],"img":k[4],"tags":k[5],"desc":k[6],"loc":"מיועדים: אחד מעל הטלוויזיה בפרגולה ואחד באזור פינת האוכל בפרגולה · 2 יח׳"})
 
+TOWEL=[
+ ("TW1","Conex · מחמם מגבות 8 שלבים · רוז גולד מט",970,
+  "https://conex.co.il/product/%D7%9E%D7%97%D7%9E%D7%9D-%D7%9E%D7%92%D7%91%D7%95%D7%AA-%D7%97%D7%A9%D7%9E%D7%9C%D7%99-8-%D7%A9%D7%9C%D7%91%D7%99%D7%9D-%D7%9C%D7%97%D7%93%D7%A8-%D7%A8%D7%97%D7%A6%D7%94-%D7%A8%D7%95%D7%96-%D7%92/",
+  ["img/tw-conex1.png"],
+  ["סולם","הכי זול","80W"],
+  "✔ יש: רוז גולד מט, 8 שלבים, נירוסטה 304, הכי חזק מבין הרוז גולד שנמצאו (80W), מחיר מבצע נמוך מאוד (מחיר מקורי ₪2,290)\n✘ אין: אחריות רק 12 חודשים על ציפוי שאינו ניקל · יבואן ותקן לא מצוינים · טיימר/תרמוסטט לא מצוינים · אין מדף · דירוג IPX1 (רק מרחק מהמקלחת) · התמונה בעמוד לא אומתה כתמונת המוצר · המחיר ייתכן שזמני\n📐 80×52 ס״מ · כבל 1.2 מ׳ · 💰 ₪970"),
+ ("TW2","ebath TH008RG · סולם 9 שלבים + מדף מתקפל + מסך LED · רוז גולד",1190,
+  "https://www.ebath.co.il/product/%D7%9E%D7%97%D7%9E%D7%9D-%D7%9E%D7%92%D7%91%D7%95%D7%AA-%D7%A8%D7%95%D7%96-%D7%92%D7%95%D7%9C%D7%93-%D7%A2%D7%9D-%D7%9E%D7%93%D7%A3-%D7%9E%D7%92%D7%91%D7%95%D7%AA-%D7%9E%D7%AA%D7%A7%D7%A4%D7%9C-%D7%95%D7%9E%D7%A1%D7%9A-%D7%9C%D7%93",
+  ["img/tw-ebath1.jpg","img/tw-ebath2.jpg","img/tw-ebath3.jpg"],
+  ["סולם + מדף","מומלץ","אחריות 3 שנים","76W"],
+  "✔ יש: גימור PVD רוז גולד, 9 שלבים, מדף מגבות מתקפל, מסך טמפרטורה (תרמוסטט 45–70°C) וטיימר כיבוי, חיבור לאפליקציה, חיבור ישיר לחשמל מימין או משמאל, אחריות 3 שנים, באישור מכון התקנים, נירוסטה 304\n✘ אין: 76W — מייבש מגבות ולא מחמם את החדר · דירוג IPX1 בלבד · יבואן לא מצוין · צריך נקודת חשמל מוסתרת בקיר\n📐 פתוח 50×75×85 ס״מ (רוחב×גובה×עומק) · מקופל 50×24×62 · 💰 ₪1,190"),
+ ("TW3","קיורים (גינזבורג) · מחמם מגבות 84/55 · רוז גולד + מדף + LED",1450,
+  "https://www.kiorim.co.il/product/%D7%9E%D7%97%D7%9E%D7%9D-%D7%9E%D7%92%D7%91%D7%95%D7%AA-8455-%D7%A8%D7%95%D7%96-%D7%92%D7%95%D7%9C%D7%93-%D7%9E%D7%AA%D7%9B%D7%95%D7%95%D7%A0%D7%9F-%D7%9B%D7%95%D7%9C%D7%9C-%D7%9E%D7%93%D7%A3",
+  ["img/tw-kiorim1.jpg","img/tw-kiorim2.jpg"],
+  ["סולם + מדף","חנות ותיקה","אחריות 12 חודשים"],
+  "✔ יש: 7 שלבים + מדף עליון למגבות מקופלות, שני שלבים אמצעיים מתכווננים, מסך LED עם טיימר וקביעת טמפרטורה, כבל חשמל מימין או משמאל, גימור רוז גולד, יבואן/מפיץ ותיק ומוכר (גינזבורג)\n✘ אין: הספק, דירוג IP וחומר לא מצוינים בעמוד — לברר · אחריות 12 חודשים בלבד · אספקה עד 7 ימי עסקים · עדיין לא מחמם את החדר\n📐 84×55 ס״מ · 💰 ₪1,450"),
+ ("TW4","בוטיק לאמבט · Mario Ray · מוט אנכי · זהב מוברש",2599,
+  "https://bathboutique.co.il/product/%D7%9E%D7%97%D7%9E%D7%9D-%D7%9E%D7%92%D7%91%D7%95%D7%AA-%D7%93%D7%92%D7%9D-ray-%D7%96%D7%94%D7%91-%D7%9E%D7%95%D7%91%D7%A8%D7%A9/",
+  ["img/tw-ray1.jpg","img/tw-ray2.jpg","img/tw-ray3.jpg"],
+  ["מוט אנכי","זהב מוברש","מינימלי"],
+  "✔ יש: מוט אנכי דק ויוקרתי (לא סולם) של Mario האירופית, נירוסטה 304, זהב מוברש (פליז) — הכי קרוב לסגנון בוטיק, תרמוסטט 45–55°C, טיימר 3/6 שעות, אפשרות התקנה נסתרת או תקע, IP44, באישור מכון התקנים, במלאי, אספקה 5 ימי עסקים\n✘ אין: זהב מוברש ולא רוז גולד (גוון אחר, חם יותר) · 80W ולא מחמם את החדר · מתאים לכמה מגבות בודדות בלבד (3 קרסים) · התקנה בתוספת ₪350 · תמונת האווירה היא דגם שחור מאותה סדרה\n📐 3×110 ס״מ · 💰 ₪2,599"),
+]
+for k in TOWEL:
+    DATA.append({"id":k[0],"cat":"מחמם מגבות","type":"product","name":k[1],"price":k[2],"link":k[3],"img":k[4][0],"imgs":k[4],"tags":k[5],"desc":k[6],"loc":"חדר רחצה (≈9.4 מ״ר) · מייבש מגבות בלבד — לחימום החדר צריך תנור נפרד"})
+
 for k in DESKS:
     DATA.append({"id":k[0],"cat":"שולחן לדני","type":"product","name":k[1],
                  "price":k[2],"link":k[3],"img":k[4],"tags":k[5],"desc":k[6]})
@@ -640,7 +665,8 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"מקרר פרגולה","label":"מקרר פרגולה","icon":"🍦","slug":"pergola-fridge"},
       {"key":"תליה זמנית","label":"תליה זמנית","icon":"🧥","slug":"hanging"},
       {"key":"שולחן לדני","label":"שולחן לדני","icon":"🖥️","slug":"danny-desk"},
-      {"key":"תנורי פרגולה","label":"תנורי פרגולה","icon":"🌡️","slug":"pergola-heater"}]
+      {"key":"תנורי פרגולה","label":"תנורי פרגולה","icon":"🌡️","slug":"pergola-heater"},
+      {"key":"מחמם מגבות","label":"מחמם מגבות","icon":"🧖","slug":"towel-warmer"}]
 
 tpl=r'''<!doctype html>
 <html lang="he" dir="rtl">
@@ -909,6 +935,11 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .lb.on .box{transform:scale(1)}
 .lb .im{aspect-ratio:16/11;background:#fbf8f2;display:flex;align-items:center;justify-content:center}
 .lb .im img{max-width:100%;max-height:100%;object-fit:contain;padding:18px}
+.lb .thumbs{display:flex;gap:6px;padding:8px 20px 0;overflow-x:auto;direction:rtl}
+.lb .thumbs:empty{display:none}
+.lb .thumbs img{width:58px;height:58px;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer;flex:none;background:#fbf8f2}
+.lb .thumbs img.on{border-color:var(--brass-d)}
+.badge-n{position:absolute;bottom:8px;left:8px;background:rgba(255,255,255,.92);border-radius:10px;padding:2px 8px;font-size:12px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
 .lb .info{padding:16px 20px 20px}
 .lb .info h3{margin:0 0 4px;font-size:20px}
 .lb .info .p{color:var(--brass-d);font-weight:700;font-size:20px}
@@ -1018,7 +1049,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 </div>
 
 <div class="lb" id="lb" onclick="if(event.target===this)closeLB()">
-  <div class="box"><button class="x" onclick="closeLB()" aria-label="סגירה">✕</button><div class="im"><img id="lbimg" src="" alt=""></div>
+  <div class="box"><button class="x" onclick="closeLB()" aria-label="סגירה">✕</button><div class="im"><img id="lbimg" src="" alt=""></div><div class="thumbs" id="lbthumbs"></div>
   <div class="info"><h3 id="lbname"></h3><div class="p" id="lbprice"></div><div class="loc" id="lbloc"></div><a class="store" id="lbstore" target="_blank" rel="noopener">לצפייה בחנות ↗</a><div class="lbord" id="lbord"></div></div></div>
 </div>
 
@@ -1281,7 +1312,7 @@ function cardEl(it){
   const media=it.type==='color'
     ?`<div class="thumb swatch" style="background:${it.hex}" onclick="openLB('${it.id}')">${badge}</div>`
     :it.img
-      ?`<div class="thumb" onclick="openLB('${it.id}')">${badge}<img src="${it.img}" alt="${it.name}"></div>`
+      ?`<div class="thumb" onclick="openLB('${it.id}')">${badge}<img src="${it.img}" alt="${it.name}">${it.imgs&&it.imgs.length>1?`<span class="badge-n">📷 ${it.imgs.length}</span>`:''}</div>`
       :`<div class="thumb ph" onclick="openLB('${it.id}')">${badge}<span class="phico">${(CATS.find(x=>x.key===it.cat)||{}).icon||'📦'}</span></div>`;
   const nameEl=it.link?`<a class="name" href="${it.link}" target="_blank" rel="noopener">${it.name}</a>`:`<span class="name">${it.name}</span>`;
   const sub=it.type==='color'?`<div class="code">${it.code||''}</div>`
@@ -1430,6 +1461,8 @@ function openLB(id){const it=byId[id];
   const im=document.querySelector('.lb .im'), img=document.getElementById('lbimg');
   if(it.type==='color'){img.style.display='none';im.style.background=it.hex;}
   else if(it.img){img.style.display='';im.style.background='';img.src=it.img;}
+  const th=document.getElementById('lbthumbs'); th.innerHTML='';
+  if(it.imgs&&it.imgs.length>1){it.imgs.forEach((u,i)=>{const t=document.createElement('img');t.src=u;t.loading='lazy';if(i===0)t.className='on';t.onclick=()=>{img.src=u;th.querySelectorAll('img').forEach(x=>x.classList.toggle('on',x===t));};th.appendChild(t);});}
   else{img.style.display='none';im.style.background='linear-gradient(135deg,#faf6ee,#efe7d9)';}
   document.getElementById('lbname').textContent=it.name;
   document.getElementById('lbprice').textContent=it.type==='color'?(it.code||''):(it.price!=null?nis(it.price):'');
