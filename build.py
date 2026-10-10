@@ -15,7 +15,8 @@ def tags(n):
 items=json.load(open(os.path.join(REPO,"lighting.json"),encoding="utf-8"))
 DATA=[]
 for k,it in enumerate(items):
-    DATA.append({"id":"l"+str(k+1),"cat":it.get("cat","תאורה"),"type":"product","name":it["name"],"price":it["price"],
+    _c0=it.get("cat","תאורה")
+    DATA.append({"id":"l"+str(k+1),"cat":"תאורה","sub":it.get("sub") or ("תאורת חוץ" if _c0=="תאורת חוץ" else ""),"type":"product","name":it["name"],"price":it["price"],
                  "link":it["link"],"img":("img/"+it["img"]) if it.get("img") else "","tags":it.get("tags") or tags(it["name"]),"loc":it.get("loc","")})
 
 # --- Kitchen handles (Domicile) — pulled from home-picks ---
@@ -903,7 +904,6 @@ for _f in sorted(glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__
                 if _k in _x: it[_k]=_x[_k]
 CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"תאורה","label":"תאורה","icon":"💡","slug":"lighting"},
-      {"key":"תאורת חוץ","label":"תאורת חוץ","icon":"🏮","slug":"outdoor-lighting"},
       {"key":"צבעים","label":"צבעים","icon":"🎨","slug":"colors"},
       {"key":"ידיות","label":"ידיות","icon":"🔩","slug":"handles"},
       {"key":"מכונות קפה","label":"מכונות קפה","icon":"☕","slug":"coffee"},
@@ -926,6 +926,20 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"ארון לחדר אורחים","label":"ארון לחדר אורחים","icon":"🚪","slug":"guest-wardrobe"},
       {"key":"ארונות לחדרי הילדים","label":"ארונות לחדרי הילדים","icon":"🚪","slug":"kids-wardrobes"},
       {"key":"זרועות לטלוויזיה","label":"זרועות לטלוויזיה","icon":"📺","slug":"tv-arms"}]
+
+GROUPS={"תאורה":"תאורה","מכונות קפה":"מטבח","מיקרוגל":"מטבח","תנור":"מטבח","כיריים":"מטבח","מדיח":"מטבח","מקרר":"מטבח","פח":"מטבח",
+ "מיטת לילי":"חדרי שינה וילדים","מיטת אורחים":"חדרי שינה וילדים","ארונות לחדרי הילדים":"חדרי שינה וילדים","ארון לחדר אורחים":"חדרי שינה וילדים",
+ "שולחן לדני":"חדרי שינה וילדים","שולחן לימודים לדני":"חדרי שינה וילדים","תליה זמנית":"חדרי שינה וילדים",
+ "ספות לפינת משפחה":"סלון ומשפחה","זרועות לטלוויזיה":"סלון ומשפחה","מראה לכניסה":"כניסה ונגרות","ידיות":"כניסה ונגרות",
+ "מחמם מגבות":"אמבטיה","תנורי פרגולה":"חוץ ופרגולה","מקרר פרגולה":"חוץ ופרגולה","צבעים":"גימור וצבעים"}
+SUBS={"תאורה":["תאורת קיר","תאורת תקרה","תאורה למטבח","מאווררי תקרה עם תאורה","תאורת חוץ"]}
+MULTI={"תאורה","צבעים","ידיות","תליה זמנית"}
+for _c in CATS:
+    if _c["key"]=="all": continue
+    _c.setdefault("group",GROUPS.get(_c["key"],"אחר"))
+    if _c["key"] in SUBS: _c.setdefault("subs",SUBS[_c["key"]])
+    if _c["key"] in MULTI: _c.setdefault("multi",True)
+    if _c["key"]=="תאורה": _c["needsLoc"]=True
 
 tpl=r'''<!doctype html>
 <html lang="he" dir="rtl">
@@ -1087,6 +1101,35 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .sgr{margin:6px 0;font-size:13px}.sgr select{max-width:100%;padding:4px 8px;border-radius:8px;border:1.5px solid var(--line-2);font:inherit}
 .sgb{display:flex;gap:6px;flex-wrap:wrap}
 @media(max-width:560px){.sgcard{flex-direction:column}.sgcard>img{width:100%;height:150px}}
+
+.catrow{position:relative}
+.catMenu{position:absolute;top:calc(100% + 6px);inset-inline:0;z-index:60;background:var(--paper);border:1.5px solid var(--line-2);border-radius:16px;box-shadow:0 24px 60px -20px rgba(40,28,12,.45);padding:12px 14px;max-height:72vh;overflow:auto}
+.catMenu[hidden]{display:none}
+.cmTop{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.cmTop input{flex:1;min-width:160px;padding:9px 12px;border:1.5px solid var(--line-2);border-radius:11px;font:inherit}
+.cmTop .seg2{display:inline-flex;border:1.5px solid var(--line-2);border-radius:99px;overflow:hidden}
+.cmTop .seg2 button{border:0;background:var(--paper);padding:7px 14px;font:inherit;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink-soft)}
+.cmTop .seg2 button.on{background:var(--brass-d);color:#fff}
+.cmCols{columns:3 230px;column-gap:18px}
+.cmg{break-inside:avoid;margin:0 0 14px}
+.cmg h5{margin:0 0 5px;font-size:13px;color:var(--brass-d);letter-spacing:.02em;border-bottom:1.5px solid var(--line);padding-bottom:3px}
+.cmi{display:flex;align-items:center;gap:7px;width:100%;text-align:start;background:none;border:0;padding:6px 6px;border-radius:9px;font:inherit;font-size:14px;font-weight:650;color:var(--ink);cursor:pointer}
+.cmi:hover{background:var(--brass-soft)}
+.cmi small{margin-inline-start:auto;color:var(--muted);font-weight:700}
+.cmi .dot{width:8px;height:8px;border-radius:50%;background:#d98b7c;flex:none}.cmi .dot.pick{background:#d9b24f}.cmi .dot.done{background:#5f8f5c}
+.cmsubs{display:flex;flex-wrap:wrap;gap:4px;padding:0 6px 6px 6px}
+.cmsubs button{font:inherit;font-size:12px;border:1px solid var(--line-2);background:var(--paper);border-radius:99px;padding:2px 9px;cursor:pointer;color:var(--ink-soft)}
+.cmsubs button:hover{border-color:var(--brass);color:var(--brass-d)}
+.subRow{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:8px 0 0;padding:2px}
+.subRow::-webkit-scrollbar{display:none}
+.subRow button{flex:none;font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:6px 13px;cursor:pointer;color:var(--ink-soft)}
+.subRow button.on{background:var(--brass-d);border-color:var(--brass-d);color:#fff}
+.subRow button.warn{border-color:#e2b94f;color:#8a6a1f}
+.subRow button small{margin-inline-start:5px;opacity:.8}
+.loc.warn{color:#b5701a;font-weight:700}
+.subtag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:99px;background:var(--brass-soft);color:var(--brass-d);margin-inline-end:6px}
+.moreSel{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px}
+.moreSel select{padding:4px 8px;border:1.5px solid var(--line-2);border-radius:8px;font:inherit}
 .keySpecs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
 .ks{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--brass-soft);font-weight:700;white-space:nowrap}
 .ks i{font-style:normal;font-weight:500;color:var(--ink-soft)}
@@ -1414,7 +1457,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 </header>
 
 <div class="deck">
-  <div class="catrow"><button type="button" class="allcats" onclick="openCatPanel()">☰ <span>קטגוריות</span><span class="doneN" id="doneN"></span></button><div class="tabs" id="tabs"></div></div>
+  <div class="catrow"><button type="button" class="allcats" onclick="toggleCatMenu()">☰ <span>קטגוריות</span><span class="doneN" id="doneN"></span></button><div class="tabs" id="tabs"></div><div class="catMenu" id="catMenu" hidden></div></div>
   <div class="tools">
     <div class="views" id="views">
     <button class="vbtn on" data-v="active" onclick="setView('active')">פעילים<span class="vc" data-c="active"></span></button>
@@ -1449,6 +1492,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 </div>
 
 <div class="catStrip" id="catStrip" style="display:none"></div>
+<div class="subRow" id="subRow" style="display:none"></div>
 <div class="history" id="history" style="display:none"></div>
 <div class="specBar" id="specBar"></div>
 <div id="grid" class="grid"></div>
@@ -1591,7 +1635,7 @@ let st=JSON.parse(localStorage.getItem(KEY)||"{}"); st.s=st.s||{}; st.custom=st.
 let me=JSON.parse(localStorage.getItem('ida-me')||'null'); // {pk,name}
 let remote={}; // {pk:{name,items:{id:{s,n,q}}}}
 let _psig="";
-let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="active", featSort=null;
+let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="active", featSort=null, subf=null;
 let ITEMS=[],CATS=[],byId={};
 let shared={items:{},cats:{}}; // shared catalog from Firebase (/picks/_catalog)
 function modelKey(s){ if(!s)return''; const m=String(s).toUpperCase().match(/[A-Z]{2,4}-? ?\d{3}[A-Z0-9]*/); return m?m[0].replace(/[- ]/g,''):''; }
@@ -1614,6 +1658,7 @@ function rebuild(){
   st.custom.cats.forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
   Object.values(shared.cats||{}).forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
   ITEMS=Object.values(im); CATS=Object.values(cm);
+  ITEMS.forEach(i=>{ if(i.cat==='תאורת חוץ'){ i.cat='תאורה'; i.sub=i.sub||'תאורת חוץ'; } });
   ITEMS.forEach(i=>{ if(i.stores&&i.stores.length){ const r=i.stores.find(x=>x.rec)||i.stores[0]; if(r&&r.p!=null) i.price=r.p; if(r&&r.l) i.link=r.l; } });
   byId=Object.fromEntries(ITEMS.map(x=>[x.id,x]));
   computeScores();
@@ -1638,12 +1683,14 @@ function applyHash(){
   const found=new Set();
   raw.split('+').forEach(part=>{
     let h; try{h=decodeURIComponent(part);}catch(e){h=part;}
+    if(h==='outdoor-lighting'){ found.add('תאורה'); subf='תאורת חוץ'; return; }
     const c=CATS.find(x=>slugOf(x)===h||x.key===h);
     if(c&&c.key!=='all') found.add(c.key);
   });
   if(found.size){selCats=found;tagf.clear();}
 }
 function setCat(k){
+  subf=null;
   if(k==='all') selCats.clear();
   else if(selCats.has(k)) selCats.delete(k);
   else selCats.add(k);
@@ -1716,7 +1763,7 @@ function catState(c){
   const its=ITEMS.filter(i=>i.cat===c.key&&!i.hidden);
   const ord=its.filter(i=>i.ordered).length, ch=its.filter(i=>!i.ordered&&i.decision==='chosen').length;
   if(c.closed===true) return 'done';
-  if(c.closed===false) return ch?'pick':'open';
+  if(c.closed===false||c.multi) return ch?'pick':'open';
   if(ord>0) return 'done';
   return ch?'pick':'open';
 }
@@ -1904,6 +1951,7 @@ function openCatSettings(key){
   const c=CATS.find(x=>x.key===key); if(!c) return;
   const pool=[...new Set(['יעל','רועי','נופר',...namesList()])];
   let h=`<div class="csf"><label>שם <input id="csLabel" value="${esc(c.label)}"></label><label>אייקון <input id="csIcon" value="${esc(c.icon||'')}" maxlength="4" style="width:70px"></label></div>
+  <div class="csf"><label>נושא (קבוצה בתפריט) <input id="csGroup" list="csGroups" value="${esc(c.group||'')}" style="width:200px"><datalist id="csGroups">${GROUP_ORDER.map(g=>`<option value="${esc(g)}">`).join('')}</datalist></label><label>תתי־נושאים (מופרדים בפסיק) <input id="csSubs" value="${esc((c.subs||[]).join(', '))}" style="width:300px"></label></div>
   <div class="csf"><label>יעד קנייה <input type="date" id="csDue" value="${esc(c.due||'')}"></label><label><input type="checkbox" id="csWish" ${c.wishlist&&!c.due?'checked':''}> Wishlist (בלי תאריך)</label></div>
   <h4>🔎 פרמטרים לחיפוש מוצרים בקטגוריה</h4>
   <p class="docnote">שינוי כאן מציע חיפוש מחדש: Claude יחפש פריטים שמתאימים להגדרות החדשות ויציע להוסיף או להחליף.</p>
@@ -1933,7 +1981,7 @@ function saveCatSettings(forceSearch){
   const due=document.getElementById('csDue').value||null, wish=document.getElementById('csWish').checked&&!due;
   const cl=document.getElementById('csClosed').value;
   const oldSearch=normSearch((CATS.find(x=>x.key===key)||{}).search), newSearch=normSearch(readSearchForm());
-  setCatMeta(key,{label:document.getElementById('csLabel').value.trim()||undefined,icon:document.getElementById('csIcon').value.trim()||undefined,due,wishlist:wish,perms,multi:document.getElementById('csMulti').checked,closed:cl==='closed'?true:(cl==='open'?false:null),search:newSearch});
+  setCatMeta(key,{label:document.getElementById('csLabel').value.trim()||undefined,icon:document.getElementById('csIcon').value.trim()||undefined,due,wishlist:wish,perms,multi:document.getElementById('csMulti').checked,closed:cl==='closed'?true:(cl==='open'?false:null),search:newSearch,group:document.getElementById('csGroup').value.trim()||undefined,subs:document.getElementById('csSubs').value.split(',').map(x=>x.trim()).filter(Boolean)});
   document.getElementById('catSetDlg').close();
   if(forceSearch===true) askResearch(key,oldSearch,newSearch,true);
   else if(JSON.stringify(oldSearch)!==JSON.stringify(newSearch)) askResearch(key,oldSearch,newSearch,false);
@@ -1948,29 +1996,58 @@ function renderHistory(){
     return `<tr><td>${i.orderedAt?fmtDate(i.orderedAt):'—'}</td><td class="n">${esc(i.name)}</td><td>${esc(catLab(i.cat))}</td><td class="p">${i.price!=null?nis(i.price):''}</td><td>${esc(i.orderedBy||'')}</td><td><button type="button" class="docBtn" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎${n?' ('+n+')':''}</button></td></tr>`; }).join('')+`</table><div class="tot">סה״כ: ${nis(tot)}</div>`:'<p class="docnote">עוד לא סומן שום פריט כמוזמן.</p>');
   el.style.display='block';
 }
-function openCatPanel(){
-  const body=document.getElementById('catBody'); body.innerHTML='';
-  const groups=[['open','🔴 ממתין להחלטה'],['pick','🟡 נבחר — צריך להזמין'],['done','🟢 הוזמן / סגור']];
-  const cats=CATS.filter(c=>c.key!=='all');
-  groups.forEach(([g,title])=>{
-    const list=cats.filter(c=>catState(c)===g); if(!list.length) return;
-    const wrap=document.createElement(g==='done'?'details':'div'); wrap.className='cg';
-    const hd=document.createElement(g==='done'?'summary':'h4'); hd.textContent=title+' ('+list.length+')'; wrap.appendChild(hd);
-    list.sort((a,b)=>(a.due||'9999')<(b.due||'9999')?-1:((a.due||'9999')>(b.due||'9999')?1:0));
-    list.forEach(c=>{
-      const its=ITEMS.filter(i=>i.cat===c.key&&!i.hidden), ord=its.filter(i=>i.ordered).length;
-      const row=document.createElement('div'); row.className='crow';
-      const go=document.createElement('button'); go.type='button'; go.className='go'; go.innerHTML=`<span>${c.icon}</span>${c.label}`;
-      go.onclick=()=>{ selCats=new Set([c.key]); tagf.clear(); if(g==='done'&&viewMode==='active') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true); document.getElementById('catDlg').close(); window.scrollTo({top:0,behavior:'smooth'}); };
-      const pg=document.createElement('span'); pg.className='pg'; const chn=its.filter(i=>!i.ordered&&i.decision==='chosen').length; pg.textContent=its.length+' פריטים'+(ord?' · '+ord+' הוזמנו':'')+(chn>1&&!c.multi?' · ⚠ '+chn+' נבחרו':'')+(c.due?' · 🎯 '+fmtDate(c.due):(c.wishlist?' · 💭':''));
-      const tg=document.createElement('button'); tg.type='button'; tg.className='tg'; tg.textContent=g==='done'?'↩ פתחי מחדש':'✓ סגרנו';
-      tg.onclick=()=>setCatClosed(c.key,g!=='done');
-      row.append(go,pg,tg); wrap.appendChild(row);
-    });
-    body.appendChild(wrap);
-  });
-  document.getElementById('catDlg').showModal();
+const GROUP_ORDER=['תאורה','מטבח','חדרי שינה וילדים','סלון ומשפחה','כניסה ונגרות','אמבטיה','חוץ ופרגולה','גימור וצבעים','אחר'];
+let menuMode='topic', menuQ='';
+function toggleCatMenu(force){
+  const m=document.getElementById('catMenu'); const open=force!==undefined?force:m.hidden; m.hidden=!open;
+  if(open){ renderCatMenu(); setTimeout(()=>{const q=document.getElementById('cmQ'); if(q&&matchMedia('(min-width:700px)').matches)q.focus();},60); }
 }
+function pickCat(key,sub){
+  selCats=key==='all'?new Set():new Set([key]); subf=sub||null; tagf.clear();
+  const c=CATS.find(x=>x.key===key); if(c&&catState(c)==='done'&&viewMode==='active') setView('all');
+  syncHash(); buildChips(); tabsHTML(); RE(true); toggleCatMenu(false); window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderCatMenu(){
+  const m=document.getElementById('catMenu'), q=menuQ.trim();
+  const cats=CATS.filter(c=>c.key!=='all').filter(c=>!q||c.label.includes(q)||(c.group||'').includes(q)||(c.subs||[]).some(x=>x.includes(q)));
+  const item=c=>{ const n=ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length, stt=catState(c), sg=catSuggs?catSuggs(c.key).length:0;
+    const subs=(c.subs||[]).filter(x=>!q||c.label.includes(q)||x.includes(q));
+    return `<div><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span>${esc(c.label)}${sg?' 💡':''}<small>${stt==='done'?'✓ ':''}${n}</small></button>`
+      +(subs.length?`<div class="cmsubs">${subs.map(x=>`<button type="button" onclick="pickCat('${esc(c.key)}','${esc(x)}')">${esc(x)}</button>`).join('')}</div>`:'')+`</div>`; };
+  let body='';
+  if(menuMode==='topic'){
+    const groups={}; cats.forEach(c=>{ (groups[c.group||'אחר']=groups[c.group||'אחר']||[]).push(c); });
+    const order=[...GROUP_ORDER,...Object.keys(groups).filter(g=>!GROUP_ORDER.includes(g))];
+    body=order.filter(g=>groups[g]).map(g=>`<div class="cmg"><h5>${esc(g)}</h5>${groups[g].map(item).join('')}</div>`).join('');
+  } else {
+    const sorted=[...cats].sort((a,b)=>a.label.localeCompare(b.label,'he')); const byL={};
+    sorted.forEach(c=>{ const L=c.label.trim()[0]||'#'; (byL[L]=byL[L]||[]).push(c); });
+    body=Object.keys(byL).map(L=>`<div class="cmg"><h5>${esc(L)}</h5>${byL[L].map(item).join('')}</div>`).join('');
+  }
+  if(!cats.length) body='<p class="docnote">לא נמצאה קטגוריה בשם הזה.</p>';
+  m.innerHTML=`<div class="cmTop"><input id="cmQ" placeholder="🔍 חיפוש קטגוריה או נושא…" value="${esc(menuQ)}" oninput="menuQ=this.value;renderCatMenu();document.getElementById('cmQ').focus();"><span class="seg2"><button type="button" class="${menuMode==='topic'?'on':''}" onclick="menuMode='topic';renderCatMenu()">🗂 לפי נושא</button><button type="button" class="${menuMode==='alpha'?'on':''}" onclick="menuMode='alpha';renderCatMenu()">א–ת</button></span><button type="button" class="cmi" style="width:auto" onclick="pickCat('all')">✦ הכל</button></div><div class="cmCols">${body}</div>`;
+  const qi=document.getElementById('cmQ'); if(qi&&document.activeElement===document.body) {}
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') toggleCatMenu(false); });
+document.addEventListener('click',e=>{ const m=document.getElementById('catMenu'); if(m&&!m.hidden&&!e.target.closest('#catMenu')&&!e.target.closest('.allcats')) toggleCatMenu(false); });
+function openCatPanel(){ toggleCatMenu(true); }
+function renderSubRow(){
+  const el=document.getElementById('subRow'); if(!el) return;
+  const cat=selCats.size===1?CATS.find(c=>selCats.has(c.key)):null;
+  const its=cat?ITEMS.filter(i=>i.cat===cat.key&&!i.hidden):[];
+  const subs=cat?[...new Set([...(cat.subs||[]),...its.map(i=>i.sub).filter(Boolean)])]:[];
+  if(!cat||!subs.length){ el.style.display='none'; el.innerHTML=''; return; }
+  const cnt=k=>its.filter(i=>i.sub===k).length, none=its.filter(i=>!i.sub).length;
+  el.innerHTML=`<button type="button" class="${!subf?'on':''}" onclick="subf=null;renderSubRow();RE()">הכל<small>${its.length}</small></button>`
+    +subs.map(k=>`<button type="button" class="${subf===k?'on':''}" onclick="subf='${esc(k)}';renderSubRow();RE()">${esc(k)}<small>${cnt(k)}</small></button>`).join('')
+    +(none?`<button type="button" class="warn ${subf==='__none'?'on':''}" onclick="subf='__none';renderSubRow();RE()">⚠ ללא שיוך<small>${none}</small></button>`:'');
+  el.style.display='flex';
+}
+function setSub(id,val){ const it=byId[id]; if(!it) return; it.sub=val||''; shared.items=shared.items||{}; shared.items[id]={...(shared.items[id]||{}),id,sub:val||''};
+  fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,sub:val||''})}).catch(()=>{}); renderSubRow(); RE(); }
+function setLoc(id){ const it=byId[id]; if(!it) return; const v=prompt('לאיזה חלל / מיקום בבית הפריט משויך? (למשל: מדרגות, חדר רחצה הורים…)',it.loc||''); if(v===null) return;
+  it.loc=v.trim(); shared.items=shared.items||{}; shared.items[id]={...(shared.items[id]||{}),id,loc:it.loc};
+  fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,loc:it.loc})}).catch(()=>{}); const c=els.get(id); if(c){ const l=c.querySelector('.locLine'); if(l){ l.className='loc locLine'+(it.loc?'':' warn'); l.textContent=it.loc?('📍 '+it.loc):'📍 ⚠ חסר שיוך לחלל'; } } }
 function setCatClosed(key,val){
   shared.cats=shared.cats||{}; shared.cats[key]={...(shared.cats[key]||{}),key,closed:val};
   fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(key)}.json`,{method:'PATCH',body:JSON.stringify({key,closed:val})}).catch(()=>{});
@@ -2044,6 +2121,7 @@ function visible(){
   let a=ITEMS.filter(i=>inCats(i)
     &&(!q||i.name.includes(q))
     &&(tagf.size===0||(i.tags||[]).some(t=>tagf.has(t)))
+    &&(!subf||(subf==='__none'?!i.sub:i.sub===subf))
     &&passView(i)&&passPerson(i)&&passSpec(i));
   const s=document.getElementById('sort').value, rank={yes:0,maybe:1,none:2,no:3};
   const who=personf==='all'?(me&&me.name):personf;
@@ -2179,8 +2257,8 @@ function cardEl(it){
   const descHTML=it.desc?`<div class="desc${hasPts?'':' clamped'}" id="desc-${it.id}">${it.desc}</div>${hasPts?'':`<button type="button" class="descToggle" onclick="toggleDesc('${it.id}')">הצג פרטים ⌄</button>`}`:'';
   const moreInner=`${hasPts?specRowsHTML(it,true):''}
         ${ptsRest.length?`<ol class="pts" start="4">${ptsRest.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
-        ${it.loc?`<div class="loc">📍 ${it.loc}</div>`:''}
         ${featRow}
+        ${(()=>{ const cc=CATS.find(x=>x.key===it.cat)||{}; return (it.type==='color')?'':`<div class="moreSel">${(cc.subs&&cc.subs.length)?`תת־נושא: <select onchange="setSub('${it.id}',this.value)"><option value="">— לא משויך</option>${cc.subs.map(x=>`<option ${it.sub===x?'selected':''}>${esc(x)}</option>`).join('')}</select>`:''}<button type="button" class="docBtn" onclick="setLoc('${it.id}')">✎ שיוך לחלל</button></div>`; })()}
         ${stars}
         ${hasPts?descHTML:''}
         ${qty}
@@ -2198,6 +2276,8 @@ function cardEl(it){
       ${hasPts?keySpecsHTML(it):''}
       ${hasPts?`<ol class="pts">${ptsTop.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
       ${hasPts?'':descHTML}
+      ${(()=>{ const cc=CATS.find(x=>x.key===it.cat)||{}; return it.type==='color'?'':`<div class="loc locLine${(!it.loc&&cc.needsLoc)?' warn':''}" ${(!it.loc&&!cc.needsLoc)?'style="display:none"':''}>${it.loc?'📍 '+it.loc:'📍 ⚠ חסר שיוך לחלל'}</div>`; })()}
+      ${it.sub?`<div><span class="subtag">${esc(it.sub)}</span></div>`:''}
       <div class="ordinfo" style="display:none"></div>
       <div class="people" style="display:none"></div>
       <div class="seg">
@@ -2318,7 +2398,7 @@ function RE(animate){
       :(viewMode==='active'&&ITEMS.some(i=>inCats(i)&&i.ordered)?`<div class="big">📦</div><h3>כל מה שבקטגוריה הזו כבר הוזמן</h3><p>אפשר לראות מה נקנה ומתי תחת "היסטוריית הזמנות" או "הכל".</p>`:`<div class="big">🔍</div><h3>אין תוצאות לסינון הנוכחי</h3><p>נסי לנקות חלק מהמסננים או החיפוש.</p>`);
     grid.appendChild(d);}
   updateSumm(vis);
-  renderCatStrip(); renderHistory(); updateViewCounts(); renderRejNote();
+  renderCatStrip(); renderHistory(); updateViewCounts(); renderRejNote(); renderSubRow();
 }
 function updateSumm(vis){
   document.getElementById('summ').innerHTML=`מוצג: <b>${vis.length}</b> פריטים`;
