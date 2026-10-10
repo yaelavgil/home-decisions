@@ -1195,6 +1195,16 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .subtag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:99px;background:var(--brass-soft);color:var(--brass-d);margin-inline-end:6px}
 .moreSel{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px}
 .moreSel select{padding:4px 8px;border:1.5px solid var(--line-2);border-radius:8px;font:inherit}
+
+.subRow .mgr{border-style:dashed;color:var(--brass-d)}
+.subRow select{flex:none;font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:5px 12px;color:var(--ink-soft)}
+.subrow-e{display:flex;gap:8px;align-items:center;margin:5px 0}
+.subrow-e input{flex:1;padding:6px 10px;border:1.5px solid var(--line-2);border-radius:9px;font:inherit}
+.subrow-e small{color:var(--muted);min-width:60px}
+.subrow-e button{background:none;border:0;cursor:pointer;font-size:16px}
+.placeGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px 10px;margin:6px 0}
+.placeGrid label{display:flex;gap:6px;align-items:center;font-weight:600;font-size:13.5px}
+.loc .addloc{background:none;border:0;color:var(--brass-d);font:inherit;font-size:12.5px;font-weight:650;cursor:pointer;padding:0}
 .keySpecs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
 .ks{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--brass-soft);font-weight:700;white-space:nowrap}
 .ks i{font-style:normal;font-weight:500;color:var(--ink-soft)}
@@ -1569,6 +1579,16 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="info"><h3 id="lbname"></h3><div class="p" id="lbprice"></div><div class="loc" id="lbloc"></div><a class="store" id="lbstore" target="_blank" rel="noopener">לצפייה בחנות ↗</a><div class="lbord" id="lbord"></div></div></div>
 </div>
 
+<dialog id="subDlg" class="catdlg"><div class="dh" id="subTitle">✎ תתי־קטגוריות</div>
+  <div class="db" id="subBody"></div>
+  <div class="df"><button class="tbtn primary" onclick="saveSubMgr()">שמירה</button><button class="tbtn" onclick="document.getElementById('subDlg').close()">ביטול</button></div>
+</dialog>
+
+<dialog id="placeDlg" class="catdlg"><div class="dh" id="placeTitle">📍 מיקום בבית</div>
+  <div class="db" id="placeBody"></div>
+  <div class="df"><button class="tbtn primary" onclick="savePlaceDlg()">שמירה</button><button class="tbtn" onclick="document.getElementById('placeDlg').close()">ביטול</button></div>
+</dialog>
+
 <dialog id="rsDlg" class="catdlg"><div class="dh">🔎 חיפוש מחדש</div>
   <div class="db" id="rsBody"></div>
   <div class="df" id="rsBtns"></div>
@@ -1700,7 +1720,7 @@ let st=JSON.parse(localStorage.getItem(KEY)||"{}"); st.s=st.s||{}; st.custom=st.
 let me=JSON.parse(localStorage.getItem('ida-me')||'null'); // {pk,name}
 let remote={}; // {pk:{name,items:{id:{s,n,q}}}}
 let _psig="";
-let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="active", featSort=null, subf=null;
+let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="active", featSort=null, subf=null, placef=null;
 let ITEMS=[],CATS=[],byId={};
 let shared={items:{},cats:{}}; // shared catalog from Firebase (/picks/_catalog)
 function modelKey(s){ if(!s)return''; const m=String(s).toUpperCase().match(/[A-Z]{2,4}-? ?\d{3}[A-Z0-9]*/); return m?m[0].replace(/[- ]/g,''):''; }
@@ -1755,7 +1775,7 @@ function applyHash(){
   if(found.size){selCats=found;tagf.clear();}
 }
 function setCat(k){
-  subf=null;
+  subf=null; placef=null;
   if(k==='all') selCats.clear();
   else if(selCats.has(k)) selCats.delete(k);
   else selCats.add(k);
@@ -2068,7 +2088,7 @@ function toggleCatMenu(force){
   if(open){ renderCatMenu(); setTimeout(()=>{const q=document.getElementById('cmQ'); if(q&&matchMedia('(min-width:700px)').matches)q.focus();},60); }
 }
 function pickCat(key,sub){
-  selCats=key==='all'?new Set():new Set([key]); subf=sub||null; tagf.clear();
+  selCats=key==='all'?new Set():new Set([key]); subf=sub||null; placef=null; tagf.clear();
   const c=CATS.find(x=>x.key===key); if(c&&catState(c)==='done'&&viewMode==='active') setView('all');
   syncHash(); buildChips(); tabsHTML(); RE(true); toggleCatMenu(false); window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -2096,23 +2116,110 @@ function renderCatMenu(){
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') toggleCatMenu(false); });
 document.addEventListener('click',e=>{ const m=document.getElementById('catMenu'); if(m&&!m.hidden&&!e.target.closest('#catMenu')&&!e.target.closest('.allcats')) toggleCatMenu(false); });
 function openCatPanel(){ toggleCatMenu(true); }
+const DEFAULT_PLACES=[
+ {n:'סלון'},{n:'מטבח'},{n:'פינת אוכל'},{n:'פינת משפחה'},{n:'כניסה',alias:['כניסה']},{n:'מדרגות'},{n:'מסדרון'},
+ {n:'חדר אורחים',alias:['אורחים']},{n:'ממ״ד',alias:['ממ"ד','ממ״ד']},{n:'חדר שינה הורים',alias:['שינה הורים','חדרי שינה (הורים']},{n:'חדר ארונות הורים',alias:['ארונות הורים']},
+ {n:'חדר רחצה הורים',alias:['רחצה הורים']},{n:'חדר ילדים — לילי',alias:['לילי']},{n:'חדר ילדים — דני',alias:['דני']},{n:'חדר רחצה ילדים',alias:['רחצה ילדים']},
+ {n:'מקלחת אורחים'},{n:'חדר עבודה'},{n:'פרגולה'},{n:'גינה / חצר',alias:['חצר','גינה']},{n:'חזית וחניה',alias:['חניה']},{n:'מרפסת'}];
+function placesList(){ const p=shared&&shared.places; return (p&&Object.keys(p).length)?Object.values(p):DEFAULT_PLACES; }
+function detectPlaces(loc){ if(!loc) return []; const out=[]; placesList().forEach(pl=>{ const keys=[pl.n,...(pl.alias||[])]; if(keys.some(k=>loc.includes(k))) out.push(pl.n); }); return out; }
+function itemPlaces(it){ return (it.places&&it.places.length)?Object.values(it.places):detectPlaces(it.loc); }
+function locText(it){ const pl=itemPlaces(it); if(it.places&&it.places.length&&it.loc&&pl.every(x=>it.loc.includes(x))) return it.loc; const base=(it.places&&it.places.length)?pl.join(' · ')+(it.loc?' — '+it.loc:''):(it.loc||''); return base; }
+function paintLoc(c,it){
+  const l=c&&c.querySelector('.locLine'); if(!l||!it) return; const cc=CATS.find(x=>x.key===it.cat)||{}; const t=locText(it);
+  l.className='loc locLine'+((!t&&cc.needsLoc)?' warn':''); 
+  l.innerHTML=t?('📍 '+esc(t)+' <button type="button" class="addloc" onclick="openPlaceDlg(\''+it.id+'\')">✎</button>'):('<button type="button" class="addloc" onclick="openPlaceDlg(\''+it.id+'\')">'+(cc.needsLoc?'⚠ חסר שיוך לחלל — ':'')+'＋ מיקום בבית</button>');
+}
 function renderSubRow(){
   const el=document.getElementById('subRow'); if(!el) return;
   const cat=selCats.size===1?CATS.find(c=>selCats.has(c.key)):null;
-  const its=cat?ITEMS.filter(i=>i.cat===cat.key&&!i.hidden):[];
-  const subs=cat?[...new Set([...(cat.subs||[]),...its.map(i=>i.sub).filter(Boolean)])]:[];
-  if(!cat||!subs.length){ el.style.display='none'; el.innerHTML=''; return; }
+  if(!cat){ el.style.display='none'; el.innerHTML=''; return; }
+  const its=ITEMS.filter(i=>i.cat===cat.key&&!i.hidden);
+  const subs=[...new Set([...(cat.subs||[]),...its.map(i=>i.sub).filter(Boolean)])];
   const cnt=k=>its.filter(i=>i.sub===k).length, none=its.filter(i=>!i.sub).length;
-  el.innerHTML=`<button type="button" class="${!subf?'on':''}" onclick="subf=null;renderSubRow();RE()">הכל<small>${its.length}</small></button>`
-    +subs.map(k=>`<button type="button" class="${subf===k?'on':''}" onclick="subf='${esc(k)}';renderSubRow();RE()">${esc(k)}<small>${cnt(k)}</small></button>`).join('')
-    +(none?`<button type="button" class="warn ${subf==='__none'?'on':''}" onclick="subf='__none';renderSubRow();RE()">⚠ ללא שיוך<small>${none}</small></button>`:'');
-  el.style.display='flex';
+  const usedPlaces=[...new Set(its.flatMap(i=>itemPlaces(i)))];
+  let h='';
+  if(subs.length){
+    h+=`<button type="button" class="${!subf?'on':''}" onclick="subf=null;renderSubRow();RE()">הכל<small>${its.length}</small></button>`
+      +subs.map(k=>`<button type="button" class="${subf===k?'on':''}" onclick="subf='${esc(k)}';renderSubRow();RE()">${esc(k)}<small>${cnt(k)}</small></button>`).join('')
+      +(none?`<button type="button" class="warn ${subf==='__none'?'on':''}" onclick="subf='__none';renderSubRow();RE()">⚠ ללא שיוך<small>${none}</small></button>`:'');
+  }
+  h+=`<button type="button" class="mgr" onclick="openSubMgr('${esc(cat.key)}')">${subs.length?'✎ ניהול תתי־קטגוריות':'＋ הוספת תת־קטגוריה'}</button>`;
+  if(usedPlaces.length) h+=`<select onchange="placef=this.value||null;renderSubRow();RE()"><option value="">📍 כל המקומות</option>${usedPlaces.map(n=>`<option value="${esc(n)}" ${placef===n?'selected':''}>${esc(n)}</option>`).join('')}<option value="__none" ${placef==='__none'?'selected':''}>ללא מיקום</option></select>`;
+  el.innerHTML=h; el.style.display='flex';
 }
-function setSub(id,val){ const it=byId[id]; if(!it) return; it.sub=val||''; shared.items=shared.items||{}; shared.items[id]={...(shared.items[id]||{}),id,sub:val||''};
-  fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,sub:val||''})}).catch(()=>{}); renderSubRow(); RE(); }
-function setLoc(id){ const it=byId[id]; if(!it) return; const v=prompt('לאיזה חלל / מיקום בבית הפריט משויך? (למשל: מדרגות, חדר רחצה הורים…)',it.loc||''); if(v===null) return;
-  it.loc=v.trim(); shared.items=shared.items||{}; shared.items[id]={...(shared.items[id]||{}),id,loc:it.loc};
-  fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,loc:it.loc})}).catch(()=>{}); const c=els.get(id); if(c){ const l=c.querySelector('.locLine'); if(l){ l.className='loc locLine'+(it.loc?'':' warn'); l.textContent=it.loc?('📍 '+it.loc):'📍 ⚠ חסר שיוך לחלל'; } } }
+let _subKey=null;
+function openSubMgr(key){
+  _subKey=key; const c=CATS.find(x=>x.key===key); if(!c) return;
+  const its=ITEMS.filter(i=>i.cat===key&&!i.hidden);
+  const subs=[...new Set([...(c.subs||[]),...its.map(i=>i.sub).filter(Boolean)])];
+  document.getElementById('subTitle').textContent='✎ תתי־קטגוריות — '+c.label;
+  const body=document.getElementById('subBody');
+  body.innerHTML='<p class="docnote">שינוי שם מעדכן את כל הפריטים בתת־הקטגוריה. מחיקה משאירה את הפריטים בלי שיוך. אפשר להוסיף תת־קטגוריה חדשה בשורה האחרונה.</p><div id="subList"></div><div><button type="button" class="tbtn" onclick="addSubRow()">＋ תת־קטגוריה חדשה</button></div>';
+  subs.forEach(n=>addSubRow(n,its.filter(i=>i.sub===n).length));
+  if(!subs.length) addSubRow('',0);
+  document.getElementById('subDlg').showModal();
+}
+function addSubRow(name,count){
+  if(typeof name!=='string') name='';
+  const d=document.createElement('div'); d.className='subrow-e'; d.dataset.orig=name;
+  d.innerHTML=`<input value="${esc(name)}" placeholder="שם תת־קטגוריה"><small>${count?count+' פריטים':''}</small><button type="button" title="מחיקה" onclick="this.parentNode.remove()">🗑</button>`;
+  document.getElementById('subList').appendChild(d);
+}
+function patchItem(id,o){ shared.items=shared.items||{}; shared.items[id]={...(shared.items[id]||{}),id,...o};
+  fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,...o})}).catch(()=>{}); }
+function saveSubMgr(){
+  const key=_subKey; const rows=[...document.querySelectorAll('#subList .subrow-e')].map(r=>({orig:r.dataset.orig,name:r.querySelector('input').value.trim()})).filter(r=>r.name||r.orig);
+  const keep=rows.filter(r=>r.name); const names=[...new Set(keep.map(r=>r.name))];
+  const its=ITEMS.filter(i=>i.cat===key);
+  keep.forEach(r=>{ if(r.orig&&r.orig!==r.name) its.filter(i=>i.sub===r.orig).forEach(i=>{ i.sub=r.name; patchItem(i.id,{sub:r.name}); }); });
+  const keptOrig=new Set(keep.map(r=>r.orig).filter(Boolean));
+  rows.forEach(r=>{ if(r.orig&&!keptOrig.has(r.orig)) its.filter(i=>i.sub===r.orig).forEach(i=>{ i.sub=''; patchItem(i.id,{sub:''}); }); });
+  setCatMeta(key,{subs:names});
+  if(subf&&!names.includes(subf)) subf=null;
+  document.getElementById('subDlg').close(); renderSubRow(); RE();
+}
+function setSub(id,val){ const it=byId[id]; if(!it) return; it.sub=val||''; patchItem(id,{sub:val||''}); renderSubRow(); RE(); }
+/* ----- places ----- */
+let _placeId=null;
+function openPlaceDlg(id){
+  _placeId=id; const it=byId[id]; if(!it) return; const cur=new Set(itemPlaces(it));
+  document.getElementById('placeTitle').textContent='📍 מיקום בבית — '+(it.name||'').slice(0,50);
+  document.getElementById('placeBody').innerHTML=`<div class="placeGrid">${placesList().map(pl=>`<label><input type="checkbox" value="${esc(pl.n)}" ${cur.has(pl.n)?'checked':''}> ${esc(pl.n)}</label>`).join('')}</div>
+  <div class="csf"><label>מקום אחר <input id="plNew" placeholder="למשל: חדר כביסה" style="width:200px"></label><label><input type="checkbox" id="plAdd" checked> הוסיפי לרשימה הקבועה</label></div>
+  <div class="csf"><label>פירוט / כמות <input id="plNote" value="${esc(it.loc||'')}" placeholder="למשל: 2 יח׳, מעל הכיור" style="width:320px"></label></div>
+  <p class="docnote">אפשר לבחור כמה מקומות. הרשימה אחת לכל הקטגוריות — לעריכת השמות: <button type="button" class="addloc" onclick="openPlacesMgr()">✎ ניהול רשימת המקומות</button></p>`;
+  const d=document.getElementById('placeDlg'); if(!d.open) d.showModal();
+}
+function savePlaceDlg(){
+  const id=_placeId, it=byId[id]; if(!it) return;
+  const sel=[...document.querySelectorAll('#placeBody .placeGrid input:checked')].map(x=>x.value);
+  const extra=document.getElementById('plNew').value.trim();
+  if(extra){ sel.push(extra); if(document.getElementById('plAdd').checked&&!placesList().some(p=>p.n===extra)){ const list=[...placesList(),{n:extra}]; savePlacesList(list); } }
+  const note=document.getElementById('plNote').value.trim();
+  it.places=sel; it.loc=note; patchItem(id,{places:sel.length?sel:null,loc:note});
+  document.getElementById('placeDlg').close(); paintLoc(els.get(id),it); renderSubRow(); RE();
+}
+function savePlacesList(list){ shared.places=Object.fromEntries(list.map((p,i)=>['p'+String(i).padStart(3,'0'),{n:p.n,alias:p.alias||undefined}]));
+  fetch(`${DB}/picks/_catalog/places.json`,{method:'PUT',body:JSON.stringify(shared.places)}).catch(()=>{}); }
+function openPlacesMgr(){
+  _subKey='__places__'; document.getElementById('subTitle').textContent='📍 רשימת המקומות בבית';
+  const body=document.getElementById('subBody');
+  body.innerHTML='<p class="docnote">שינוי שם מעדכן את המקומות המשויכים בפריטים. מחיקה מסירה את המקום מהפריטים.</p><div id="subList"></div><div><button type="button" class="tbtn" onclick="addSubRow()">＋ מקום חדש</button></div>';
+  placesList().forEach(pl=>addSubRow(pl.n,ITEMS.filter(i=>itemPlaces(i).includes(pl.n)).length));
+  document.getElementById('placeDlg').close(); document.getElementById('subDlg').showModal();
+}
+const _saveSubMgr=saveSubMgr;
+saveSubMgr=function(){
+  if(_subKey!=='__places__') return _saveSubMgr();
+  const rows=[...document.querySelectorAll('#subList .subrow-e')].map(r=>({orig:r.dataset.orig,name:r.querySelector('input').value.trim()}));
+  const keep=rows.filter(r=>r.name); const old=placesList();
+  keep.forEach(r=>{ if(r.orig&&r.orig!==r.name) ITEMS.filter(i=>(i.places||[]).includes(r.orig)).forEach(i=>{ i.places=Object.values(i.places).map(x=>x===r.orig?r.name:x); patchItem(i.id,{places:i.places}); }); });
+  const keptOrig=new Set(keep.map(r=>r.orig).filter(Boolean));
+  rows.forEach(r=>{ if(r.orig&&!keptOrig.has(r.orig)) ITEMS.filter(i=>(i.places||[]).includes(r.orig)).forEach(i=>{ i.places=Object.values(i.places).filter(x=>x!==r.orig); patchItem(i.id,{places:i.places.length?i.places:null}); }); });
+  savePlacesList(keep.map(r=>{ const o=old.find(p=>p.n===(r.orig||r.name)); return {n:r.name,alias:(o&&o.alias)||undefined}; }));
+  _subKey=null; document.getElementById('subDlg').close(); ITEMS.forEach(i=>paintLoc(els.get(i.id),i)); renderSubRow(); RE();
+};
 function setCatClosed(key,val){
   shared.cats=shared.cats||{}; shared.cats[key]={...(shared.cats[key]||{}),key,closed:val};
   fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(key)}.json`,{method:'PATCH',body:JSON.stringify({key,closed:val})}).catch(()=>{});
@@ -2187,6 +2294,7 @@ function visible(){
     &&(!q||i.name.includes(q))
     &&(tagf.size===0||(i.tags||[]).some(t=>tagf.has(t)))
     &&(!subf||(subf==='__none'?!i.sub:i.sub===subf))
+    &&(!placef||(placef==='__none'?!itemPlaces(i).length:itemPlaces(i).includes(placef)))
     &&passView(i)&&passPerson(i)&&passSpec(i));
   const s=document.getElementById('sort').value, rank={yes:0,maybe:1,none:2,no:3};
   const who=personf==='all'?(me&&me.name):personf;
@@ -2323,7 +2431,7 @@ function cardEl(it){
   const moreInner=`${hasPts?specRowsHTML(it,true):''}
         ${ptsRest.length?`<ol class="pts" start="4">${ptsRest.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
         ${featRow}
-        ${(()=>{ const cc=CATS.find(x=>x.key===it.cat)||{}; return (it.type==='color')?'':`<div class="moreSel">${(cc.subs&&cc.subs.length)?`תת־נושא: <select onchange="setSub('${it.id}',this.value)"><option value="">— לא משויך</option>${cc.subs.map(x=>`<option ${it.sub===x?'selected':''}>${esc(x)}</option>`).join('')}</select>`:''}<button type="button" class="docBtn" onclick="setLoc('${it.id}')">✎ שיוך לחלל</button></div>`; })()}
+        ${(()=>{ const cc=CATS.find(x=>x.key===it.cat)||{}; return (it.type==='color')?'':`<div class="moreSel">${(cc.subs&&cc.subs.length)?`תת־נושא: <select onchange=\"setSub('${it.id}',this.value)\"><option value=\"\">— לא משויך</option>${cc.subs.map(x=>`<option ${it.sub===x?'selected':''}>${esc(x)}</option>`).join('')}</select> <button type=\"button\" class=\"docBtn\" onclick=\"openSubMgr('${esc(it.cat)}')\">✎</button>`:`<button type=\"button\" class=\"docBtn\" onclick=\"openSubMgr('${esc(it.cat)}')\">＋ תת־נושא</button>`}<button type=\"button\" class=\"docBtn\" onclick=\"openPlaceDlg('${it.id}')\">📍 מיקום בבית</button></div>`; })()}
         ${stars}
         ${hasPts?descHTML:''}
         ${qty}
@@ -2341,7 +2449,7 @@ function cardEl(it){
       ${hasPts?keySpecsHTML(it):''}
       ${hasPts?`<ol class="pts">${ptsTop.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
       ${hasPts?'':descHTML}
-      ${(()=>{ const cc=CATS.find(x=>x.key===it.cat)||{}; return it.type==='color'?'':`<div class="loc locLine${(!it.loc&&cc.needsLoc)?' warn':''}" ${(!it.loc&&!cc.needsLoc)?'style="display:none"':''}>${it.loc?'📍 '+it.loc:'📍 ⚠ חסר שיוך לחלל'}</div>`; })()}
+      ${it.type==='color'?'':'<div class="loc locLine"></div>'}
       ${it.sub?`<div><span class="subtag">${esc(it.sub)}</span></div>`:''}
       <div class="ordinfo" style="display:none"></div>
       <div class="people" style="display:none"></div>
@@ -2369,7 +2477,7 @@ function paint(id,c){
   const qv=c.querySelector('.qv'); if(qv)qv.textContent=s.qty||1;
   const sb=c.querySelector('.scoreB'); if(sb){ if(it.score!=null){ sb.style.display=''; sb.textContent='התאמה '+it.score+'/100'; sb.className='scoreB '+(it.score>=75?'':(it.score>=50?'mid':'low')); sb.title='ציון התאמה לפי הקריטריונים של הקטגוריה (מפורט בסרגל "מה חשוב בקטגוריה")'; } else sb.style.display='none'; }
   const pim=c.querySelector('.thumb img'); if(pim&&it.img&&pim.getAttribute('src')!==it.img){pim.src=it.img;} // card is built once; follow later image fixes (e.g. from the shared catalog)
-  paintStatus(c,id);
+  paintStatus(c,id); paintLoc(c,it);
   const od=c.querySelector('.orderb .od'); if(od)od.textContent=it.orderedAt?new Date(it.orderedAt).toLocaleDateString('he-IL'):'';
   const mo=c.querySelector('.markOrd'); if(mo)mo.style.display=it.ordered?'none':'';
   const hb=c.querySelector('.hideb');
