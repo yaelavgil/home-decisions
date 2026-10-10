@@ -146,6 +146,19 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .csperm b{min-width:130px}
 .csperm .nm{font-weight:600}
 .csform h4{margin:12px 0 4px}
+
+.rsB{background:#eef3ff;border:1.5px solid #c7d3f5;border-radius:10px;padding:7px 11px;font-size:13px;font-weight:650;color:#33499e;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.rsB.ready{background:#fff4d6;border-color:#e2b94f;color:#6f520d}
+.rsB button{font:inherit;font-size:12.5px;border:1.5px solid currentColor;background:transparent;border-radius:99px;padding:2px 11px;cursor:pointer;color:inherit;font-weight:700}
+.sgdlg{max-width:760px}
+.sgcard{display:flex;gap:12px;padding:10px;border:1.5px solid var(--line-2);border-radius:12px;margin:8px 0;background:var(--paper)}
+.sgcard>img{width:110px;height:110px;object-fit:contain;border-radius:10px;background:#fbf8f2;flex:none}
+.sgm{flex:1;min-width:0}
+.sgp{font-weight:800;color:var(--brass-d)}
+.sgw{font-size:12.5px;color:var(--ink-soft);margin:3px 0}
+.sgr{margin:6px 0;font-size:13px}.sgr select{max-width:100%;padding:4px 8px;border-radius:8px;border:1.5px solid var(--line-2);font:inherit}
+.sgb{display:flex;gap:6px;flex-wrap:wrap}
+@media(max-width:560px){.sgcard{flex-direction:column}.sgcard>img{width:100%;height:150px}}
 .keySpecs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
 .ks{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--brass-soft);font-weight:700;white-space:nowrap}
 .ks i{font-style:normal;font-weight:500;color:var(--ink-soft)}
@@ -519,6 +532,16 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="info"><h3 id="lbname"></h3><div class="p" id="lbprice"></div><div class="loc" id="lbloc"></div><a class="store" id="lbstore" target="_blank" rel="noopener">לצפייה בחנות ↗</a><div class="lbord" id="lbord"></div></div></div>
 </div>
 
+<dialog id="rsDlg" class="catdlg"><div class="dh">🔎 חיפוש מחדש</div>
+  <div class="db" id="rsBody"></div>
+  <div class="df" id="rsBtns"></div>
+</dialog>
+
+<dialog id="sgDlg" class="catdlg sgdlg"><div class="dh" id="sgTitle">💡 הצעות חדשות</div>
+  <div class="db" id="sgBody"></div>
+  <div class="df"><button class="tbtn" onclick="document.getElementById('sgDlg').close()">סגור</button></div>
+</dialog>
+
 <dialog id="catSetDlg" class="catdlg"><div class="dh" id="csTitle">⚙ הגדרות קטגוריה</div>
   <div class="db csform" id="csBody"></div>
   <div class="df"><button class="tbtn primary" onclick="saveCatSettings()">שמירה</button><button class="tbtn" onclick="document.getElementById('catSetDlg').close()">ביטול</button></div>
@@ -778,7 +801,7 @@ function tabsHTML(){
     if(stt==='done'){ done++; if(!sel) return; }
     const n=c.key==='all'?ITEMS.filter(i=>!i.hidden).length:ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length;
     const b=document.createElement('button'); b.className="tab"+(sel?" on":"");
-    b.innerHTML=(stt==='open'||stt==='pick'?`<span class="dot${stt==='pick'?' pick':''}"></span>`:'')+`<span>${c.icon}</span>${c.label}<span class="c">${n}</span>`;
+    b.innerHTML=(stt==='open'||stt==='pick'?`<span class="dot${stt==='pick'?' pick':''}"></span>`:'')+`<span>${c.icon}</span>${c.label}${(c.key!=='all'&&catSuggs(c.key).length)?'<span title="הצעות חדשות">💡</span>':''}<span class="c">${n}</span>`;
     b.onclick=()=>setCat(c.key);
     t.appendChild(b);
   });
@@ -867,11 +890,86 @@ function renderCatStrip(){
   const dn=docsList('cat_'+cat.key).length;
   const vc=viewCounts();
   let h=`<div class="statline"><button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button><button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button><button class="d" onclick="setView('active')">🤔 בדיון ${vc.active-vc.toorder}</button><button class="r" onclick="setView('rejected')">✕ נפסלו ${vc.rejected}</button></div>
-  <div class="csrow"><span class="st">${stLab}</span><span>${goal}</span><button type="button" onclick="openCatSettings('${esc(cat.key)}')">⚙ הגדרות הקטגוריה</button><button type="button" onclick="openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')">📎 מסמכי הקטגוריה${dn?' ('+dn+')':''}</button></div>`;
+  <div class="csrow"><span class="st">${stLab}</span><span>${goal}</span><button type="button" onclick="openCatSettings('${esc(cat.key)}')">⚙ הגדרות הקטגוריה</button><button type="button" onclick="askResearch('${esc(cat.key)}',normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),true)">🔎 חיפוש מחדש</button><button type="button" onclick="openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')">📎 מסמכי הקטגוריה${dn?' ('+dn+')':''}</button></div>`;
+  h+=researchStripHTML(cat);
   if(chosenN>1&&!cat.multi) h+=`<div class="warnB">⚠ שימי לב: נבחרו ${chosenN} פריטים בקטגוריה. אם זה מכוון (למשל כמה פריטים לאותו חלל), אפשר לאשר בהגדרות הקטגוריה — "מותר לבחור כמה".</div>`;
   ord.forEach(i=>{ const n=docsList('item_'+i.id).length;
     h+=`<div class="bought">📦 נקנה: <b>${esc(i.name)}</b> · ${i.price!=null?nis(i.price):''} · ${i.orderedAt?fmtDate(i.orderedAt):''}${i.orderedBy?' · '+esc(i.orderedBy):''}${i.orderLink?` · <a href="${esc(i.orderLink)}" target="_blank" rel="noopener">אישור הזמנה ↗</a>`:''} <button type="button" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎 קבלה / מסמכים${n?' ('+n+')':''}</button></div>`; });
   el.innerHTML=h; el.style.display='flex';
+}
+
+/* ===== category search parameters + research requests + suggestions ===== */
+const SEARCH_QUALITY=[['','לא הוגדר'],['1','לא חשוב'],['3','חשוב'],['5','קריטי — חומרים טובים ושיחזיק שנים']];
+const SEARCH_LIFE=[['','לא הוגדר'],['temp','זמני / לא קריטי'],['normal','רגיל'],['years','לשנים רבות']];
+const SEARCH_LAB={quality:'איכות ועמידות',life:'אורך חיים',reviews:'רק עם ביקורות טובות',budgetMin:'תקציב מינימום',budgetMax:'תקציב מקסימום',count:'כמה פריטים',style:'סגנון',stores:'חנויות מועדפות',avoid:'להימנע מ־',must:'דרישות חובה',notes:'הערות'};
+function normSearch(o){ const out={}; Object.keys(SEARCH_LAB).forEach(k=>{ let v=o&&o[k]; if(v===undefined||v===null||v===''||v===false) return; out[k]=(typeof v==='boolean')?true:String(v).trim(); }); return out; }
+function readSearchForm(){ const g=id=>(document.getElementById(id)||{}).value; return {quality:g('sQuality'),life:g('sLife'),reviews:document.getElementById('sReviews').checked,budgetMin:g('sBMin'),budgetMax:g('sBMax'),count:g('sCount'),style:g('sStyle'),stores:g('sStores'),avoid:g('sAvoid'),must:g('sMust'),notes:g('sNotes')}; }
+function searchValLabel(k,v){ if(k==='quality') return (SEARCH_QUALITY.find(x=>x[0]===v)||[])[1]||v; if(k==='life') return (SEARCH_LIFE.find(x=>x[0]===v)||[])[1]||v; if(v===true) return 'כן'; return v; }
+let reqs={}, sugg={}, _rsSig='';
+function fetchResearch(){
+  Promise.all([fetch(`${DB}/requests.json`).then(r=>r.json()),fetch(`${DB}/suggestions.json`).then(r=>r.json())]).then(([r,sg])=>{
+    r=r||{}; sg=sg||{}; const sig=JSON.stringify([r,sg]); if(sig===_rsSig) return; _rsSig=sig; reqs=r; sugg=sg;
+    tabsHTML(); renderCatStrip(); if(document.getElementById('sgDlg').open) renderSuggestions(window._sgCat);
+  }).catch(()=>{});
+}
+function catReqs(key){ return Object.entries(reqs).map(([id,r])=>({id,...r})).filter(r=>r.cat===key).sort((a,b)=>(b.at||0)-(a.at||0)); }
+function catSuggs(key){ const out=[]; Object.entries(sugg).forEach(([rid,sg])=>{ if(!sg||sg.cat!==key) return; Object.entries(sg.items||{}).forEach(([i,it])=>{ if(it&&(it.status||'new')==='new') out.push({rid,i,it,sg}); }); }); return out; }
+function askResearch(key,oldS,newS,manual){
+  const c=CATS.find(x=>x.key===key)||{}; const body=document.getElementById('rsBody'), btns=document.getElementById('rsBtns');
+  const keys=[...new Set([...Object.keys(oldS||{}),...Object.keys(newS||{})])].filter(k=>JSON.stringify((oldS||{})[k])!==JSON.stringify((newS||{})[k]));
+  body.innerHTML=(manual?'<p>לחפש מחדש בקטגוריה <b>'+esc(c.label)+'</b> לפי ההגדרות הנוכחיות?</p>':'<p>שינית פרמטרים שמשפיעים על החיפוש בקטגוריה <b>'+esc(c.label)+'</b>:</p>')
+    +(keys.length?'<ul>'+keys.map(k=>`<li><b>${esc(SEARCH_LAB[k]||k)}</b>: ${esc(searchValLabel(k,(oldS||{})[k])||'—')} ← ${esc(searchValLabel(k,(newS||{})[k])||'—')}</li>`).join('')+'</ul>':'')
+    +'<p>לחפש מחדש פריטים שמתאימים להגדרות החדשות? ההצעות יופיעו בראש הקטגוריה, ותוכלי לבחור לכל הצעה אם להוסיף אותה או להחליף פריט קיים.</p>';
+  btns.innerHTML='<button class="tbtn primary" onclick="sendResearch(\''+esc(key)+'\',\''+(manual?'manual':'params-changed')+'\')">🔎 חפשי מחדש</button><button class="tbtn" onclick="document.getElementById(\'rsDlg\').close()">לא עכשיו</button>';
+  document.getElementById('rsDlg').showModal();
+}
+function sendResearch(key,reason){
+  const c=CATS.find(x=>x.key===key)||{}; const id='r'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  const req={cat:key,label:c.label,search:normSearch(c.search),reason,status:'pending',by:(me&&me.name)||'מישהו',at:Date.now(),
+    criteria:BCRIT[key]||[],items:ITEMS.filter(i=>i.cat===key&&!i.hidden).map(i=>({id:i.id,name:i.name,price:i.price,status:itemStatus(i)})),site:location.origin+location.pathname};
+  reqs[id]=req; fetch(`${DB}/requests/${id}.json`,{method:'PUT',body:JSON.stringify(req)}).catch(()=>{});
+  document.getElementById('rsDlg').close(); say('🔎 בקשת החיפוש נשלחה — ההצעות יופיעו בראש הקטגוריה',4000); renderCatStrip(); tabsHTML();
+}
+function cancelResearch(id){ delete reqs[id]; fetch(`${DB}/requests/${id}.json`,{method:'DELETE'}).catch(()=>{}); renderCatStrip(); }
+function ago(ts){ const m=Math.round((Date.now()-ts)/60000); return m<1?'הרגע':(m<60?m+' דק׳':(m<1440?Math.round(m/60)+' שעות':Math.round(m/1440)+' ימים')); }
+function researchStripHTML(cat){
+  let h=''; const rq=catReqs(cat.key), active=rq.find(r=>r.status==='pending'||r.status==='running'), sg=catSuggs(cat.key);
+  if(active) h+=`<div class="rsB">🔎 חיפוש מחדש ${active.status==='running'?'מתבצע כרגע':'נשלח וממתין ל־Claude'} · לפני ${ago(active.at)} <button type="button" onclick="cancelResearch('${active.id}')">ביטול</button></div>`;
+  if(sg.length) h+=`<div class="rsB ready">💡 נמצאו ${sg.length} הצעות חדשות לפי הגדרות החיפוש <button type="button" onclick="openSuggestions('${esc(cat.key)}')">צפייה והחלטה</button></div>`;
+  else { const done=rq.find(r=>r.status==='done'&&Date.now()-(r.at||0)<864e5); if(done&&!active) h+=`<div class="rsB">✓ החיפוש האחרון הסתיים${done.summary?': '+esc(done.summary):' — לא נמצא משהו מתאים יותר'}</div>`; }
+  return h;
+}
+function openSuggestions(key){ window._sgCat=key; renderSuggestions(key); const d=document.getElementById('sgDlg'); if(!d.open) d.showModal(); }
+function renderSuggestions(key){
+  const c=CATS.find(x=>x.key===key)||{}; document.getElementById('sgTitle').textContent='💡 הצעות חדשות — '+(c.label||'');
+  const body=document.getElementById('sgBody'); const list=catSuggs(key); body.innerHTML=list.length?'':'<p class="docnote">אין הצעות ממתינות.</p>';
+  const existing=ITEMS.filter(i=>i.cat===key&&!i.hidden&&!i.ordered);
+  list.forEach(({rid,i,it,sg})=>{
+    const img=it.img||(it.imgs&&it.imgs[0])||''; const stores=Object.values(it.stores||{});
+    const div=document.createElement('div'); div.className='sgcard';
+    div.innerHTML=`${img?`<img src="${esc(img)}" alt="">`:''}<div class="sgm"><b>${it.link?`<a href="${esc(it.link)}" target="_blank" rel="noopener">${esc(it.name)}</a>`:esc(it.name)}</b>
+      <div class="sgp">${it.price!=null?nis(it.price):''}${stores.length?' · '+stores.length+' חנויות':''}</div>
+      ${it.why?`<div class="sgw">למה מתאים: ${esc(it.why)}</div>`:''}
+      ${(it.points||[]).length?`<ol class="pts">${Object.values(it.points).slice(0,3).map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
+      <div class="sgr">להחליף את: <select id="sgrep_${rid}_${i}"><option value="">— (רק להוסיף)</option>${existing.map(e=>`<option value="${esc(e.id)}" ${it.replaces===e.id?'selected':''}>${esc(e.name)}</option>`).join('')}</select></div>
+      <div class="sgb"><button type="button" class="tbtn primary" onclick="sgAccept('${rid}','${i}','add')">➕ הוספה</button><button type="button" class="tbtn" onclick="sgAccept('${rid}','${i}','replace')">🔁 החלפה</button><button type="button" class="tbtn" onclick="sgDismiss('${rid}','${i}')">✕ התעלמות</button></div></div>`;
+    body.appendChild(div); });
+}
+function sgSetStatus(rid,i,status){ if(sugg[rid]&&sugg[rid].items&&sugg[rid].items[i]) sugg[rid].items[i].status=status; _rsSig=JSON.stringify([reqs,sugg]);
+  fetch(`${DB}/suggestions/${rid}/items/${i}/status.json`,{method:'PUT',body:JSON.stringify(status)}).catch(()=>{}); }
+function sgDismiss(rid,i){ sgSetStatus(rid,i,'dismissed'); renderSuggestions(window._sgCat); renderCatStrip(); tabsHTML(); }
+function sgAccept(rid,i,mode){
+  const sg=sugg[rid], it=sg&&sg.items&&sg.items[i]; if(!it) return;
+  const sel=document.getElementById('sgrep_'+rid+'_'+i), repId=sel?sel.value:'';
+  if(mode==='replace'&&!repId){ say('בחרי איזה פריט להחליף',2500); return; }
+  const id='cust_'+rid+'_'+i;
+  const obj={id,cat:sg.cat,type:'product',custom:true,name:it.name,price:it.price,link:it.link||'',img:it.img||(it.imgs&&it.imgs[0])||'',imgs:it.imgs?Object.values(it.imgs):undefined,desc:it.desc||'',tags:it.tags?Object.values(it.tags):undefined,loc:it.loc||undefined,
+    stores:it.stores?Object.values(it.stores):undefined,specs:it.specs,points:it.points?Object.values(it.points):undefined,addedBy:(me&&me.name)||'Claude'};
+  Object.keys(obj).forEach(k=>obj[k]===undefined&&delete obj[k]);
+  fbPushCatalogItem(obj); shared.items=shared.items||{}; shared.items[id]=obj;
+  if(mode==='replace'&&repId){ fbPushHidden(repId,true); shared.items[repId]={...(shared.items[repId]||{id:repId}),id:repId,hidden:true}; }
+  sgSetStatus(rid,i,mode==='replace'?'replaced':'added'); rebuild(); tabsHTML(); RE(true); renderSuggestions(window._sgCat);
+  say(mode==='replace'?'🔁 הוחלף':'➕ נוסף לקטגוריה',2000);
 }
 const PERM_ACTS=[['reject','פסילת פריט'],['choose','בחירת פריט להזמנה'],['order','סימון שפריט הוזמן']];
 function openCatSettings(key){
@@ -879,6 +977,17 @@ function openCatSettings(key){
   const pool=[...new Set(['יעל','רועי','נופר',...namesList()])];
   let h=`<div class="csf"><label>שם <input id="csLabel" value="${esc(c.label)}"></label><label>אייקון <input id="csIcon" value="${esc(c.icon||'')}" maxlength="4" style="width:70px"></label></div>
   <div class="csf"><label>יעד קנייה <input type="date" id="csDue" value="${esc(c.due||'')}"></label><label><input type="checkbox" id="csWish" ${c.wishlist&&!c.due?'checked':''}> Wishlist (בלי תאריך)</label></div>
+  <h4>🔎 פרמטרים לחיפוש מוצרים בקטגוריה</h4>
+  <p class="docnote">שינוי כאן מציע חיפוש מחדש: Claude יחפש פריטים שמתאימים להגדרות החדשות ויציע להוסיף או להחליף.</p>
+  <div class="csf"><label>איכות ועמידות <select id="sQuality">${SEARCH_QUALITY.map(([v,l])=>`<option value="${v}" ${String(c.search&&c.search.quality||'')===v?'selected':''}>${l}</option>`).join('')}</select></label>
+  <label>אורך חיים <select id="sLife">${SEARCH_LIFE.map(([v,l])=>`<option value="${v}" ${(c.search&&c.search.life||'')===v?'selected':''}>${l}</option>`).join('')}</select></label></div>
+  <div class="csf"><label><input type="checkbox" id="sReviews" ${c.search&&c.search.reviews?'checked':''}> רק מוצרים וחנויות עם ביקורות טובות ואיכות ידועה</label></div>
+  <div class="csf"><label>תקציב לפריט (₪): מ־<input type="number" id="sBMin" value="${esc(c.search&&c.search.budgetMin||'')}" style="width:90px"></label><label>עד <input type="number" id="sBMax" value="${esc(c.search&&c.search.budgetMax||'')}" style="width:90px"></label><label>כמה פריטים להביא <input type="number" id="sCount" value="${esc(c.search&&c.search.count||'')}" placeholder="4" style="width:60px"></label></div>
+  <div class="csf"><label>סגנון <input id="sStyle" value="${esc(c.search&&c.search.style||'')}" placeholder="נורדי, כפרי מודרני…" style="width:260px"></label></div>
+  <div class="csf"><label>חנויות מועדפות <input id="sStores" value="${esc(c.search&&c.search.stores||'')}" placeholder="Tomik, Kuala…" style="width:220px"></label><label>להימנע מ־ <input id="sAvoid" value="${esc(c.search&&c.search.avoid||'')}" style="width:180px"></label></div>
+  <div class="csf"><label>דרישות חובה (מידות, מפרט) <input id="sMust" value="${esc(c.search&&c.search.must||'')}" placeholder="למשל: רוחב עד 120 ס״מ, הספק ≥1000W" style="width:380px"></label></div>
+  <div class="csf"><label>הערות לחיפוש <input id="sNotes" value="${esc(c.search&&c.search.notes||'')}" style="width:380px"></label></div>
+  <div class="csf"><button type="button" class="tbtn" onclick="saveCatSettings(true)">💾 שמרי וחפשי מחדש עכשיו</button></div>
   <h4>מי יכול…</h4>`;
   PERM_ACTS.forEach(([a,lab])=>{ const p=c.perms&&c.perms[a]; const all=!p||p==='all'; const sel=all?[]:permNames(p);
     h+=`<div class="csperm" data-a="${a}"><b>${lab}</b><label><input type="radio" name="pm_${a}" value="all" ${all?'checked':''}> כולם</label><label><input type="radio" name="pm_${a}" value="some" ${all?'':'checked'}> רק:</label>`
@@ -889,14 +998,17 @@ function openCatSettings(key){
   document.getElementById('csTitle').textContent='⚙ הגדרות — '+c.label; document.getElementById('csBody').innerHTML=h; document.getElementById('csBody').dataset.key=key;
   document.getElementById('catSetDlg').showModal();
 }
-function saveCatSettings(){
+function saveCatSettings(forceSearch){
   const body=document.getElementById('csBody'), key=body.dataset.key;
   const perms={}; body.querySelectorAll('.csperm').forEach(r=>{ const a=r.dataset.a; const mode=r.querySelector('input[type=radio]:checked').value;
     if(mode==='all') perms[a]='all'; else { const names=[...r.querySelectorAll('input[type=checkbox]:checked')].map(x=>x.value); perms[a]=names.length?names:'all'; } });
   const due=document.getElementById('csDue').value||null, wish=document.getElementById('csWish').checked&&!due;
   const cl=document.getElementById('csClosed').value;
-  setCatMeta(key,{label:document.getElementById('csLabel').value.trim()||undefined,icon:document.getElementById('csIcon').value.trim()||undefined,due,wishlist:wish,perms,multi:document.getElementById('csMulti').checked,closed:cl==='closed'?true:(cl==='open'?false:null)});
+  const oldSearch=normSearch((CATS.find(x=>x.key===key)||{}).search), newSearch=normSearch(readSearchForm());
+  setCatMeta(key,{label:document.getElementById('csLabel').value.trim()||undefined,icon:document.getElementById('csIcon').value.trim()||undefined,due,wishlist:wish,perms,multi:document.getElementById('csMulti').checked,closed:cl==='closed'?true:(cl==='open'?false:null),search:newSearch});
   document.getElementById('catSetDlg').close();
+  if(forceSearch===true) askResearch(key,oldSearch,newSearch,true);
+  else if(JSON.stringify(oldSearch)!==JSON.stringify(newSearch)) askResearch(key,oldSearch,newSearch,false);
 }
 function renderHistory(){
   const el=document.getElementById('history'); if(!el) return;
@@ -1493,7 +1605,7 @@ function fbPoll(){ fetch(`${DB}/picks.json`).then(r=>r.json()).then(d=>{
   if(changed||ordChanged){ rebuild(); tabsHTML(); RE(); }
   const psig=namesList().join('|'); if(changed||psig!==_psig){ _psig=psig; buildChips(); }
   renderPeople();
-  fetchDocsMeta();
+  fetchDocsMeta(); fetchResearch();
 }).catch(()=>{}); }
 const GL={yes:'✓',maybe:'?',no:'✕'};
 function allPeople(){
