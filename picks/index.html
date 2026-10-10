@@ -119,6 +119,19 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .docrow small{color:var(--muted)}
 .docrow .del{background:none;border:0;cursor:pointer;color:#b35a4a}
 .docBtn .dn{margin-inline-start:4px;font-weight:800}
+
+.stpill{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:800;padding:6px 11px;border-radius:10px;margin:0 0 2px;line-height:1.3}
+.stpill small{font-weight:600;opacity:.9;font-size:11.5px}
+.stpill.ordered{background:#4c8a53;color:#fff}
+.stpill.chosen{background:#f8e7bb;color:#6f520d;border:1.5px solid #d9b24f}
+.stpill.discuss{background:#eceff4;color:#475266}
+.stpill.rejected{background:#f5e6e2;color:#8d4a3e}
+.vc{font-size:11.5px;font-weight:800;opacity:.85;margin-inline-start:2px}
+.rejNote{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+.rejNote button{font:inherit;font-size:13px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:7px 14px;cursor:pointer;color:var(--ink-soft);font-weight:650}
+.statline{display:flex;gap:6px;flex-wrap:wrap}
+.statline button{font:inherit;font-size:12.5px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:3px 11px;cursor:pointer;font-weight:700}
+.statline .o{color:#2f6b38}.statline .c{color:#7a5a12}.statline .d{color:#475266}.statline .r{color:#8d4a3e}
 .keySpecs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
 .ks{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--brass-soft);font-weight:700;white-space:nowrap}
 .ks i{font-style:normal;font-weight:500;color:var(--ink-soft)}
@@ -154,13 +167,14 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .ordbox{margin-top:8px;padding:8px 10px;background:var(--ordered-bg);border-radius:10px;font-size:12px;color:var(--ink-soft);line-height:1.7}
 .ordbox a{color:var(--ordered);font-weight:700;text-decoration:none}
 .ordbox a:hover{text-decoration:underline}
-.card.is-ordered{opacity:.72}
+.card.is-ordered{opacity:1}
 .hideb{margin-top:6px;align-self:flex-start;background:none;border:0;color:var(--muted);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;padding:2px 0}
 .hideb:hover{color:var(--no); text-decoration:underline}
 .hideb.restore{color:var(--yes)}
 .hideb.restore:hover{color:var(--yes); text-decoration:underline}
 .card.is-hidden{opacity:.6}
-.card.is-ordered .thumb::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.35)}
+.card.is-ordered .thumb::after{display:none}
+.orderb{display:none!important}
 .ordnote{position:absolute;bottom:9px;inset-inline-start:9px;z-index:4;background:var(--ordered);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:10px;box-shadow:0 2px 6px rgba(60,40,15,.18)}
 .editb:hover{color:var(--brass-d);transform:scale(1.08)}
 .search{flex:1;min-width:180px;position:relative}
@@ -216,7 +230,7 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .card.hidden{display:none}
 .card::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:5px;background:transparent;transition:.2s;z-index:2}
 .card.s-yes::before{background:var(--yes)}.card.s-maybe::before{background:var(--maybe)}.card.s-no::before{background:var(--no)}
-.card.s-no{opacity:.6}
+.card.st-rejected .thumb img{filter:grayscale(.85);opacity:.75}
 .thumb{position:relative;aspect-ratio:4/3.4;overflow:hidden;background:transparent;display:block;cursor:zoom-in}
 .thumb img{width:100%;height:100%;object-fit:contain;padding:6px;display:block;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
 .card:hover .thumb img{transform:scale(1.05)}
@@ -448,11 +462,11 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="catrow"><button type="button" class="allcats" onclick="openCatPanel()">☰ <span>קטגוריות</span><span class="doneN" id="doneN"></span></button><div class="tabs" id="tabs"></div></div>
   <div class="tools">
     <div class="views" id="views">
-    <button class="vbtn on" data-v="pending" onclick="setView('pending')">🟢 פתוח</button>
-    <button class="vbtn" data-v="all" onclick="setView('all')">הכל</button>
-    <button class="vbtn" data-v="left" onclick="setView('left')">✅ מה שנשאר</button>
-    <button class="vbtn" data-v="order" onclick="setView('order')">🛒 להזמנה</button>
-    <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 היסטוריית הזמנות</button>
+    <button class="vbtn on" data-v="active" onclick="setView('active')">פעילים<span class="vc" data-c="active"></span></button>
+    <button class="vbtn" data-v="toorder" onclick="setView('toorder')">🛒 להזמין<span class="vc" data-c="toorder"></span></button>
+    <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 הוזמנו<span class="vc" data-c="ordered"></span></button>
+    <button class="vbtn" data-v="rejected" onclick="setView('rejected')">✕ נפסלו<span class="vc" data-c="rejected"></span></button>
+    <button class="vbtn" data-v="all" onclick="setView('all')">הכל<span class="vc" data-c="all"></span></button>
     <button class="vbtn" data-v="hidden" onclick="setView('hidden')">🙈 הוסתרו<span class="c" id="hiddenCount" style="display:none"></span></button>
   </div>
     <div class="search"><span class="i">🔍</span><input id="q" placeholder="חיפוש…" oninput="RE()"></div>
@@ -483,6 +497,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 <div class="history" id="history" style="display:none"></div>
 <div class="specBar" id="specBar"></div>
 <div id="grid" class="grid"></div>
+<div class="rejNote" id="rejNote" style="display:none"></div>
 </div>
 
 <div class="lb" id="lb" onclick="if(event.target===this)closeLB()">
@@ -606,7 +621,7 @@ let st=JSON.parse(localStorage.getItem(KEY)||"{}"); st.s=st.s||{}; st.custom=st.
 let me=JSON.parse(localStorage.getItem('ida-me')||'null'); // {pk,name}
 let remote={}; // {pk:{name,items:{id:{s,n,q}}}}
 let _psig="";
-let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="pending", featSort=null;
+let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="active", featSort=null;
 let ITEMS=[],CATS=[],byId={};
 let shared={items:{},cats:{}}; // shared catalog from Firebase (/picks/_catalog)
 function modelKey(s){ if(!s)return''; const m=String(s).toUpperCase().match(/[A-Z]{2,4}-? ?\d{3}[A-Z0-9]*/); return m?m[0].replace(/[- ]/g,''):''; }
@@ -664,6 +679,44 @@ function setCat(k){
   tagf.clear();syncHash();buildChips();tabsHTML();RE(true);
 }
 window.addEventListener('hashchange',()=>{applyHash();buildChips();tabsHTML();RE(true);});
+
+/* ===== per-item status: ordered / chosen (to order) / discuss / rejected ===== */
+function itemStatus(it){
+  if(it.ordered) return 'ordered';
+  const ms=marksFor(it.id).filter(m=>m.status==='yes'||m.status==='maybe'||m.status==='no');
+  if(ms.some(m=>m.status==='yes')) return 'chosen';
+  if(ms.length&&ms.every(m=>m.status==='no')) return 'rejected';
+  return 'discuss';
+}
+const ST_LAB={ordered:'📦 הוזמן',chosen:'🛒 נבחר — צריך להזמין',discuss:'🤔 בדיון',rejected:'✕ נפסל'};
+function statusHTML(it,stt){
+  const ms=marksFor(it.id), by=k=>ms.filter(m=>m.status===k).map(m=>m.name);
+  let small='';
+  if(stt==='ordered') small=[it.orderedAt?fmtDate(it.orderedAt):'',it.orderedBy||''].filter(Boolean).join(' · ');
+  else if(stt==='chosen'){ small='✓ '+by('yes').join(', ')+(by('no').length?' · ⚠ '+by('no').join(', ')+' פסלו':''); }
+  else if(stt==='rejected') small='✕ '+by('no').join(', ');
+  else small=ms.length?ms.map(m=>(GL[m.status]||'')+' '+m.name).join(' · '):'עוד לא הוחלט';
+  return `${ST_LAB[stt]}<small>${esc(small)}</small>`;
+}
+function paintStatus(c,id){
+  const it=byId[id]; if(!it||it.type==='color') return; const stt=itemStatus(it);
+  const el=c.querySelector('.stpill'); if(el){ el.className='stpill '+stt; el.innerHTML=statusHTML(it,stt); }
+  ['ordered','chosen','discuss','rejected'].forEach(k=>c.classList.toggle('st-'+k,k===stt));
+}
+function viewCounts(){
+  const pool=ITEMS.filter(i=>!i.hidden&&inCats(i)), c={active:0,toorder:0,ordered:0,rejected:0,all:pool.length};
+  pool.forEach(i=>{ const t=itemStatus(i); if(t==='chosen'){c.active++;c.toorder++;} else if(t==='discuss') c.active++; else c[t]++; });
+  return c;
+}
+function updateViewCounts(){ const c=viewCounts(); document.querySelectorAll('.vc').forEach(e=>{ const n=c[e.dataset.c]; e.textContent=n?(' '+n):''; }); }
+function renderRejNote(){
+  const el=document.getElementById('rejNote'); if(!el) return;
+  if(viewMode!=='active'){ el.style.display='none'; el.innerHTML=''; return; }
+  const c=viewCounts(); let h='';
+  if(c.ordered) h+=`<button type="button" onclick="setView('ordered')">📦 ${c.ordered} כבר הוזמנו — הצגה</button>`;
+  if(c.rejected) h+=`<button type="button" onclick="setView('rejected')">✕ ${c.rejected} נפסלו — הצגה</button>`;
+  el.innerHTML=h; el.style.display=h?'flex':'none';
+}
 function catState(c){
   if(c.key==='all') return 'all';
   const its=ITEMS.filter(i=>i.cat===c.key&&!i.hidden);
@@ -770,7 +823,9 @@ function renderCatStrip(){
   const stt=catState(cat), stLab={open:'🔴 פתוח — צריך החלטה',pick:'🟡 נבחר — צריך להזמין',done:'🟢 נקנה'}[stt]||'';
   const goal=cat.due?`🎯 יעד קנייה: <b>${fmtDate(cat.due)}</b> ${stt==='done'?'':dueRel(cat.due)}`:(cat.wishlist?'💭 Wishlist — בלי תאריך':'⏳ אין יעד קנייה');
   const dn=docsList('cat_'+cat.key).length;
-  let h=`<div class="csrow"><span class="st">${stLab}</span><span>${goal}</span><button type="button" onclick="stripEdit=!stripEdit;renderCatStrip()">✎ יעד</button><button type="button" onclick="openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')">📎 מסמכי הקטגוריה${dn?' ('+dn+')':''}</button></div>`;
+  const vc=viewCounts();
+  let h=`<div class="statline"><button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button><button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button><button class="d" onclick="setView('active')">🤔 בדיון ${vc.active-vc.toorder}</button><button class="r" onclick="setView('rejected')">✕ נפסלו ${vc.rejected}</button></div>
+  <div class="csrow"><span class="st">${stLab}</span><span>${goal}</span><button type="button" onclick="stripEdit=!stripEdit;renderCatStrip()">✎ יעד</button><button type="button" onclick="openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')">📎 מסמכי הקטגוריה${dn?' ('+dn+')':''}</button></div>`;
   if(stripEdit) h+=`<div class="csrow"><label>תאריך יעד: <input type="date" id="dueIn" value="${cat.due||''}"></label><button type="button" onclick="saveDue('${esc(cat.key)}')">שמירה</button><button type="button" onclick="setCatMeta('${esc(cat.key)}',{due:null,wishlist:true});stripEdit=false">💭 Wishlist (בלי תאריך)</button><button type="button" onclick="setCatMeta('${esc(cat.key)}',{due:null,wishlist:false});stripEdit=false">נקי</button></div>`;
   ord.forEach(i=>{ const n=docsList('item_'+i.id).length;
     h+=`<div class="bought">📦 נקנה: <b>${esc(i.name)}</b> · ${i.price!=null?nis(i.price):''} · ${i.orderedAt?fmtDate(i.orderedAt):''}${i.orderedBy?' · '+esc(i.orderedBy):''}${i.orderLink?` · <a href="${esc(i.orderLink)}" target="_blank" rel="noopener">אישור הזמנה ↗</a>`:''} <button type="button" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎 קבלה / מסמכים${n?' ('+n+')':''}</button></div>`; });
@@ -800,7 +855,7 @@ function openCatPanel(){
       const its=ITEMS.filter(i=>i.cat===c.key&&!i.hidden), ord=its.filter(i=>i.ordered).length;
       const row=document.createElement('div'); row.className='crow';
       const go=document.createElement('button'); go.type='button'; go.className='go'; go.innerHTML=`<span>${c.icon}</span>${c.label}`;
-      go.onclick=()=>{ selCats=new Set([c.key]); tagf.clear(); if(g==='done'&&viewMode==='pending') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true); document.getElementById('catDlg').close(); window.scrollTo({top:0,behavior:'smooth'}); };
+      go.onclick=()=>{ selCats=new Set([c.key]); tagf.clear(); if(g==='done'&&viewMode==='active') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true); document.getElementById('catDlg').close(); window.scrollTo({top:0,behavior:'smooth'}); };
       const pg=document.createElement('span'); pg.className='pg'; pg.textContent=its.length+' פריטים'+(ord?' · '+ord+' הוזמנו':'')+(c.due?' · 🎯 '+fmtDate(c.due):(c.wishlist?' · 💭':''));
       const tg=document.createElement('button'); tg.type='button'; tg.className='tg'; tg.textContent=g==='done'?'↩ פתחי מחדש':'✓ סגרנו';
       tg.onclick=()=>setCatClosed(c.key,g!=='done');
@@ -856,12 +911,12 @@ function buildFeatSort(){
 function passView(i){
   if(viewMode==='hidden') return !!i.hidden;
   if(i.hidden) return false;
-  if(viewMode==='pending') return !i.ordered;
   if(viewMode==='all') return true;
-  const ms=marksFor(i.id);
-  if(viewMode==='left') return !ms.some(m=>m.status==='no');
-  if(viewMode==='order') return (personf!=='all' ? statusOfName(personf,i.id)==='yes' : ms.some(m=>m.status==='yes')) && !i.ordered;
-  if(viewMode==='ordered') return !!i.ordered;
+  const stt=itemStatus(i);
+  if(viewMode==='active') return stt==='chosen'||stt==='discuss';
+  if(viewMode==='toorder') return stt==='chosen';
+  if(viewMode==='ordered') return stt==='ordered';
+  if(viewMode==='rejected') return stt==='rejected';
   return true;
 }
 function setView(v){ viewMode=v; document.querySelectorAll('.vbtn').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); RE(); }
@@ -1029,6 +1084,7 @@ function cardEl(it){
     ${it.type==='product'?`<span class="orderb"><span class="ol">✓ הוזמן</span><span class="od"></span></span>`:''}
     ${media}
     <div class="body">
+      ${it.type==='color'?'':'<div class="stpill discuss"></div>'}
       ${nameEl}
       ${sub}
       <div class="scoreRow"><span class="scoreB" style="display:none"></span><span class="likeB" style="display:none"></span></div>
@@ -1055,12 +1111,13 @@ function cardEl(it){
 }
 function paint(id,c){
   c=c||els.get(id); if(!c)return; const s=S(id); const it=byId[id]||{};
-  c.className="card"+(it.pick?" is-pick":"")+(s.status!=='none'?" s-"+s.status:"")+(it.ordered?" is-ordered":"")+(it.hidden?" is-hidden":"");
+  c.className="card"+(it.pick?" is-pick":"")+(s.status!=='none'?" s-"+s.status:"")+(it.ordered?" is-ordered":"")+(it.type==='color'?'':" st-"+itemStatus(it))+(it.hidden?" is-hidden":"");
   c.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.classList.contains(s.status)));
   const ta=c.querySelector('textarea'); if(ta&&ta.value!==s.note)ta.value=s.note;
   const qv=c.querySelector('.qv'); if(qv)qv.textContent=s.qty||1;
   const sb=c.querySelector('.scoreB'); if(sb){ if(it.score!=null){ sb.style.display=''; sb.textContent='התאמה '+it.score+'/100'; sb.className='scoreB '+(it.score>=75?'':(it.score>=50?'mid':'low')); sb.title='ציון התאמה לפי הקריטריונים של הקטגוריה (מפורט בסרגל "מה חשוב בקטגוריה")'; } else sb.style.display='none'; }
   const pim=c.querySelector('.thumb img'); if(pim&&it.img&&pim.getAttribute('src')!==it.img){pim.src=it.img;} // card is built once; follow later image fixes (e.g. from the shared catalog)
+  paintStatus(c,id);
   const od=c.querySelector('.orderb .od'); if(od)od.textContent=it.orderedAt?new Date(it.orderedAt).toLocaleDateString('he-IL'):'';
   const mo=c.querySelector('.markOrd'); if(mo)mo.style.display=it.ordered?'none':'';
   const hb=c.querySelector('.hideb');
@@ -1089,7 +1146,7 @@ function toggleOrdered(id){
   const o={ordered:val,orderedBy:val?((me&&me.name)||'מישהו'):null,orderedAt:val?Date.now():null,orderLink:val?(it.orderLink||null):null};
   Object.assign(it,o); st.ord[id]=o; save();
   fbPushOrdered(id,o); paint(id);
-  if(viewMode==='ordered')RE();
+  RE();
 }
 function setOrderLink(id){
   const it=byId[id]; if(!it)return;
@@ -1150,21 +1207,17 @@ function RE(animate){
     const isEmptyCat=selCats.size>0 && ITEMS.filter(inCats).length===0;
     d.innerHTML=isEmptyCat
       ?`<div class="big">${(CATS.find(c=>c.key===cat)||{}).icon||'✦'}</div><h3>הקטגוריה הזו עדיין ריקה</h3><p>שלחי לי את המקור (לינקים/תמונות/טבלה) ואמלא אותה כאן — עם אותם כלי בחירה, מיון וסינון.</p>`
-      :(viewMode==='pending'&&ITEMS.some(i=>inCats(i)&&i.ordered)?`<div class="big">📦</div><h3>כל מה שבקטגוריה הזו כבר הוזמן</h3><p>אפשר לראות מה נקנה ומתי תחת "היסטוריית הזמנות" או "הכל".</p>`:`<div class="big">🔍</div><h3>אין תוצאות לסינון הנוכחי</h3><p>נסי לנקות חלק מהמסננים או החיפוש.</p>`);
+      :(viewMode==='active'&&ITEMS.some(i=>inCats(i)&&i.ordered)?`<div class="big">📦</div><h3>כל מה שבקטגוריה הזו כבר הוזמן</h3><p>אפשר לראות מה נקנה ומתי תחת "היסטוריית הזמנות" או "הכל".</p>`:`<div class="big">🔍</div><h3>אין תוצאות לסינון הנוכחי</h3><p>נסי לנקות חלק מהמסננים או החיפוש.</p>`);
     grid.appendChild(d);}
   updateSumm(vis);
-  renderCatStrip(); renderHistory();
+  renderCatStrip(); renderHistory(); updateViewCounts(); renderRejNote();
 }
 function updateSumm(vis){
-  const who=personf==='all'?(me&&me.name):personf;
-  let y=0,m=0,n=0;
-  if(who) ITEMS.forEach(i=>{const s=statusOfName(who,i.id); if(s==='yes')y++;else if(s==='maybe')m++;else if(s==='no')n++;});
-  document.getElementById('summ').innerHTML=`מוצג: <b>${vis.length}</b>`
-    +(who?` &nbsp;·&nbsp; <b>${who==(me&&me.name)?'אני':who}</b>: <b style="color:var(--yes)">${y}</b> נבחרו · <b style="color:var(--maybe)">${m}</b> אולי · <b style="color:var(--no)">${n}</b> לא`:'');
+  document.getElementById('summ').innerHTML=`מוצג: <b>${vis.length}</b> פריטים`;
 }
 function setS(id,v){const s=S(id); s.status=(s.status===v)?'none':v; save(); paint(id); fbPushMark(id); renderPeople();
   const so=document.getElementById('sort').value; updateSumm(visible());
-  if(stf.size||so==='status')RE(); }
+  if(stf.size||so==='status'||!passView(byId[id]))RE(); else { updateViewCounts(); renderRejNote(); renderCatStrip(); } }
 function setN(id,v){S(id).note=v;save();fbPushMark(id);}
 function setQ(id,d){const s=S(id);s.qty=Math.max(1,(s.qty||1)+d);save();paint(id);fbPushMark(id);updateSumm(visible());}
 function openLB(id){const it=byId[id];
@@ -1392,7 +1445,9 @@ function renderPeople(){
       return `<div class="pmark"><span class="pchip s-${m.status||'none'}${m.mine?' me':''}"><span class="g">${GL[m.status]||'💬'}</span>${m.name}${qty}</span>${note}</div>`;
     }).join('');
     box.style.display=ms.length?'':'none';
+    paintStatus(c,id);
     const lk=c.querySelector('.likeB'); if(lk){ const y=ms.filter(m=>m.status==='yes'); if(y.length){ lk.style.display=''; lk.textContent='❤ '+y.map(m=>m.name).join(', '); } else lk.style.display='none'; } });
+  updateViewCounts(); renderRejNote(); renderCatStrip();
   const names=namesList();
   const el=document.getElementById('whoami');
   if(el) el.innerHTML=(me?`אני: <b>${me.name}</b> <button class="linkbtn" onclick="openMe()">(החלף)</button>`:'')
