@@ -1013,6 +1013,20 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .statline{display:flex;gap:6px;flex-wrap:wrap}
 .statline button{font:inherit;font-size:12.5px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:3px 11px;cursor:pointer;font-weight:700}
 .statline .o{color:#2f6b38}.statline .c{color:#7a5a12}.statline .d{color:#475266}.statline .r{color:#8d4a3e}
+
+.decRow{display:flex;gap:6px;flex-wrap:wrap}
+.decRow button{flex:1 1 auto;font:inherit;font-size:12.5px;font-weight:700;padding:6px 8px;border-radius:9px;border:1.5px solid var(--line-2);background:var(--paper);cursor:pointer;color:var(--ink)}
+.decRow .dChoose{border-color:#d9b24f;background:#fbf0cf;color:#6f520d}
+.decRow .dReject{color:#8d4a3e}
+.decRow .dOrder{border-color:#4c8a53;background:#4c8a53;color:#fff}
+.decRow button.deny{opacity:.45}
+.warnB{background:#fdf0d0;border:1.5px solid #e2b94f;border-radius:10px;padding:7px 11px;font-size:13px;font-weight:650;color:#6f520d}
+.csf{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.csf input[type=text],.csf input:not([type]),.csf select{padding:6px 9px;border:1.5px solid var(--line-2);border-radius:9px;font:inherit}
+.csperm{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:6px 8px;border:1.5px solid var(--line-2);border-radius:10px;margin:5px 0}
+.csperm b{min-width:130px}
+.csperm .nm{font-weight:600}
+.csform h4{margin:12px 0 4px}
 .keySpecs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
 .ks{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--brass-soft);font-weight:700;white-space:nowrap}
 .ks i{font-style:normal;font-weight:500;color:var(--ink-soft)}
@@ -1386,6 +1400,11 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="info"><h3 id="lbname"></h3><div class="p" id="lbprice"></div><div class="loc" id="lbloc"></div><a class="store" id="lbstore" target="_blank" rel="noopener">לצפייה בחנות ↗</a><div class="lbord" id="lbord"></div></div></div>
 </div>
 
+<dialog id="catSetDlg" class="catdlg"><div class="dh" id="csTitle">⚙ הגדרות קטגוריה</div>
+  <div class="db csform" id="csBody"></div>
+  <div class="df"><button class="tbtn primary" onclick="saveCatSettings()">שמירה</button><button class="tbtn" onclick="document.getElementById('catSetDlg').close()">ביטול</button></div>
+</dialog>
+
 <dialog id="docDlg" class="catdlg"><div class="dh" id="docTitle">📎 מסמכים</div>
   <div class="db">
     <div id="docList"></div>
@@ -1498,7 +1517,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 const BITEMS=__DATA__, BCATS=__CATS__, BCRIT=__CRIT__;
 const DB="__DBURL__";
 const KEY="ida-board-v1";
-let st=JSON.parse(localStorage.getItem(KEY)||"{}"); st.s=st.s||{}; st.custom=st.custom||{cats:[],items:[],seq:0}; st.ord=st.ord||{};
+let st=JSON.parse(localStorage.getItem(KEY)||"{}"); st.s=st.s||{}; st.custom=st.custom||{cats:[],items:[],seq:0}; st.ord=st.ord||{}; st.dec=st.dec||{};
 let me=JSON.parse(localStorage.getItem('ida-me')||'null'); // {pk,name}
 let remote={}; // {pk:{name,items:{id:{s,n,q}}}}
 let _psig="";
@@ -1519,6 +1538,7 @@ function rebuild(){
   // image safety net: a product-page URL pasted into the image field (or a stale local copy) must never win over a real image
   const IMGFIX={cust_fabrizio1:'img/fabrizio1.webp'};
   Object.values(im).forEach(i=>{ if(IMGFIX[i.id]) i.img=IMGFIX[i.id]; else if(i.img&&/^https?:/i.test(i.img)&&!/\.(jpe?g|png|webp|avif|gif|svg)(\?|#|$)/i.test(i.img)&&!/(cdn-cgi|\/images?\/|media|uploads)/i.test(i.img)) i.img=''; });
+  Object.entries(st.dec||{}).forEach(([id,o])=>{if(im[id])im[id]={...im[id],...o};}); // optimistic decision until the server confirms
   Object.entries(st.ord).forEach(([id,o])=>{if(im[id])im[id]={...im[id],...o};}); // this device's optimistic "ordered" toggle, until the server round-trip confirms it
   const cm={}; BCATS.forEach(c=>cm[c.key]={...c});
   st.custom.cats.forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
@@ -1564,25 +1584,48 @@ window.addEventListener('hashchange',()=>{applyHash();buildChips();tabsHTML();RE
 /* ===== per-item status: ordered / chosen (to order) / discuss / rejected ===== */
 function itemStatus(it){
   if(it.ordered) return 'ordered';
-  const ms=marksFor(it.id).filter(m=>m.status==='yes'||m.status==='maybe'||m.status==='no');
-  if(ms.some(m=>m.status==='yes')) return 'chosen';
-  if(ms.length&&ms.every(m=>m.status==='no')) return 'rejected';
+  if(it.decision==='rejected') return 'rejected';
+  if(it.decision==='chosen') return 'chosen';
   return 'discuss';
 }
 const ST_LAB={ordered:'📦 הוזמן',chosen:'🛒 נבחר — צריך להזמין',discuss:'🤔 בדיון',rejected:'✕ נפסל'};
 function statusHTML(it,stt){
   const ms=marksFor(it.id), by=k=>ms.filter(m=>m.status===k).map(m=>m.name);
   let small='';
+  const who=[it.decidedBy,it.decidedAt?fmtDate(it.decidedAt):''].filter(Boolean).join(' · ');
   if(stt==='ordered') small=[it.orderedAt?fmtDate(it.orderedAt):'',it.orderedBy||''].filter(Boolean).join(' · ');
-  else if(stt==='chosen'){ small='✓ '+by('yes').join(', ')+(by('no').length?' · ⚠ '+by('no').join(', ')+' פסלו':''); }
-  else if(stt==='rejected') small='✕ '+by('no').join(', ');
+  else if(stt==='chosen') small=who+(by('no').length?' · ⚠ '+by('no').join(', ')+' לא אוהבים':'');
+  else if(stt==='rejected') small=who+(by('yes').length?' · ❤ '+by('yes').join(', ')+' אהבו':'');
   else small=ms.length?ms.map(m=>(GL[m.status]||'')+' '+m.name).join(' · '):'עוד לא הוחלט';
   return `${ST_LAB[stt]}<small>${esc(small)}</small>`;
 }
+/* ----- permissions + decisions ----- */
+const ACT_LAB={reject:'לפסול פריטים',choose:'לבחור פריטים להזמנה',order:'לסמן שפריט הוזמן'};
+function permNames(p){ return Array.isArray(p)?p:Object.values(p||{}); }
+function canDo(catKey,act){ const c=CATS.find(x=>x.key===catKey); const p=c&&c.perms&&c.perms[act]; if(!p||p==='all') return true; if(!me) return false; return permNames(p).includes(me.name); }
+function say(msg,ms){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(say._t); say._t=setTimeout(()=>{t.classList.remove('show'); t.textContent='✓ הועתק';},ms||3000); }
+function denyMsg(catKey,act){ const c=CATS.find(x=>x.key===catKey)||{}; if(!me){ openMe(); return; } say('אין הרשאה '+ACT_LAB[act]+' בקטגוריה "'+(c.label||'')+'" — רק: '+permNames(c.perms[act]).join(', '),4500); }
+function setDecision(id,val){
+  const it=byId[id]; if(!it||it.ordered) return;
+  const act=val==='rejected'?'reject':(val==='chosen'?'choose':(it.decision==='rejected'?'reject':'choose'));
+  if(!canDo(it.cat,act)){ denyMsg(it.cat,act); return; }
+  const o={decision:val||null,decidedBy:val?((me&&me.name)||'מישהו'):null,decidedAt:val?Date.now():null};
+  Object.assign(it,o); st.dec[id]=o; save();
+  fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,...o})}).catch(()=>{});
+  paint(id); tabsHTML(); RE();
+  if(val==='chosen'){ const cat=CATS.find(c=>c.key===it.cat)||{}; const n=ITEMS.filter(i=>i.cat===it.cat&&!i.hidden&&!i.ordered&&i.decision==='chosen').length;
+    if(n>1&&!cat.multi) say('⚠ שימי לב: נבחרו '+n+' פריטים בקטגוריה "'+(cat.label||'')+'" — האם התכוונת לבחור כמה?',5000); }
+}
+const decChoose=id=>setDecision(id,byId[id]&&byId[id].decision==='chosen'?null:'chosen');
+const decReject=id=>setDecision(id,byId[id]&&byId[id].decision==='rejected'?null:'rejected');
 function paintStatus(c,id){
   const it=byId[id]; if(!it||it.type==='color') return; const stt=itemStatus(it);
   const el=c.querySelector('.stpill'); if(el){ el.className='stpill '+stt; el.innerHTML=statusHTML(it,stt); }
   ['ordered','chosen','discuss','rejected'].forEach(k=>c.classList.toggle('st-'+k,k===stt));
+  const dr=c.querySelector('.decRow'); if(dr){ dr.style.display=stt==='ordered'?'none':'flex';
+    const ch=dr.querySelector('.dChoose'), rj=dr.querySelector('.dReject'), od=dr.querySelector('.dOrder');
+    ch.textContent=stt==='chosen'?'↩ ביטול בחירה':'✅ בחירה להזמנה'; rj.textContent=stt==='rejected'?'↩ ביטול פסילה':'🚫 פסילה'; od.style.display=stt==='chosen'?'':'none';
+    ch.classList.toggle('deny',!canDo(it.cat,'choose')); rj.classList.toggle('deny',!canDo(it.cat,'reject')); od.classList.toggle('deny',!canDo(it.cat,'order')); }
 }
 function viewCounts(){
   const pool=ITEMS.filter(i=>!i.hidden&&inCats(i)), c={active:0,toorder:0,ordered:0,rejected:0,all:pool.length};
@@ -1601,12 +1644,11 @@ function renderRejNote(){
 function catState(c){
   if(c.key==='all') return 'all';
   const its=ITEMS.filter(i=>i.cat===c.key&&!i.hidden);
-  const ord=its.filter(i=>i.ordered).length;
-  const yes=its.some(i=>!i.ordered&&marksFor(i.id).some(m=>m.status==='yes'));
+  const ord=its.filter(i=>i.ordered).length, ch=its.filter(i=>!i.ordered&&i.decision==='chosen').length;
   if(c.closed===true) return 'done';
-  if(c.closed===false) return yes?'pick':'open';
+  if(c.closed===false) return ch?'pick':'open';
   if(ord>0) return 'done';
-  return yes?'pick':'open';
+  return ch?'pick':'open';
 }
 function tabsHTML(){
   const t=document.getElementById('tabs'); const keepScroll=t.scrollLeft; t.innerHTML="";
@@ -1690,29 +1732,53 @@ function delDoc(m){
   paintDocs();
 }
 function setCatMeta(key,o){
+  Object.keys(o).forEach(k=>{ if(o[k]===undefined) delete o[k]; });
   shared.cats=shared.cats||{}; shared.cats[key]={...(shared.cats[key]||{}),key,...o};
   fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(key)}.json`,{method:'PATCH',body:JSON.stringify({key,...o})}).catch(()=>{});
   rebuild(); tabsHTML(); renderCatStrip(); RE();
 }
-let stripEdit=false;
 function renderCatStrip(){
   const el=document.getElementById('catStrip'); if(!el) return;
   const cat=selCats.size===1?CATS.find(c=>selCats.has(c.key)):null;
   if(!cat){ el.style.display='none'; el.innerHTML=''; return; }
   const its=ITEMS.filter(i=>i.cat===cat.key&&!i.hidden);
   const ord=its.filter(i=>i.ordered).sort((a,b)=>(b.orderedAt||0)-(a.orderedAt||0));
-  const stt=catState(cat), stLab={open:'🔴 פתוח — צריך החלטה',pick:'🟡 נבחר — צריך להזמין',done:'🟢 נקנה'}[stt]||'';
+  const stt=catState(cat), chosenN=its.filter(i=>!i.ordered&&i.decision==='chosen').length, stLab={open:'🔴 ממתין להחלטה',pick:'🟡 נבחר — צריך להזמין'+(chosenN>1?' ('+chosenN+')':''),done:'🟢 נקנה'}[stt]||'';
   const goal=cat.due?`🎯 יעד קנייה: <b>${fmtDate(cat.due)}</b> ${stt==='done'?'':dueRel(cat.due)}`:(cat.wishlist?'💭 Wishlist — בלי תאריך':'⏳ אין יעד קנייה');
   const dn=docsList('cat_'+cat.key).length;
   const vc=viewCounts();
   let h=`<div class="statline"><button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button><button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button><button class="d" onclick="setView('active')">🤔 בדיון ${vc.active-vc.toorder}</button><button class="r" onclick="setView('rejected')">✕ נפסלו ${vc.rejected}</button></div>
-  <div class="csrow"><span class="st">${stLab}</span><span>${goal}</span><button type="button" onclick="stripEdit=!stripEdit;renderCatStrip()">✎ יעד</button><button type="button" onclick="openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')">📎 מסמכי הקטגוריה${dn?' ('+dn+')':''}</button></div>`;
-  if(stripEdit) h+=`<div class="csrow"><label>תאריך יעד: <input type="date" id="dueIn" value="${cat.due||''}"></label><button type="button" onclick="saveDue('${esc(cat.key)}')">שמירה</button><button type="button" onclick="setCatMeta('${esc(cat.key)}',{due:null,wishlist:true});stripEdit=false">💭 Wishlist (בלי תאריך)</button><button type="button" onclick="setCatMeta('${esc(cat.key)}',{due:null,wishlist:false});stripEdit=false">נקי</button></div>`;
+  <div class="csrow"><span class="st">${stLab}</span><span>${goal}</span><button type="button" onclick="openCatSettings('${esc(cat.key)}')">⚙ הגדרות הקטגוריה</button><button type="button" onclick="openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')">📎 מסמכי הקטגוריה${dn?' ('+dn+')':''}</button></div>`;
+  if(chosenN>1&&!cat.multi) h+=`<div class="warnB">⚠ שימי לב: נבחרו ${chosenN} פריטים בקטגוריה. אם זה מכוון (למשל כמה פריטים לאותו חלל), אפשר לאשר בהגדרות הקטגוריה — "מותר לבחור כמה".</div>`;
   ord.forEach(i=>{ const n=docsList('item_'+i.id).length;
     h+=`<div class="bought">📦 נקנה: <b>${esc(i.name)}</b> · ${i.price!=null?nis(i.price):''} · ${i.orderedAt?fmtDate(i.orderedAt):''}${i.orderedBy?' · '+esc(i.orderedBy):''}${i.orderLink?` · <a href="${esc(i.orderLink)}" target="_blank" rel="noopener">אישור הזמנה ↗</a>`:''} <button type="button" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎 קבלה / מסמכים${n?' ('+n+')':''}</button></div>`; });
   el.innerHTML=h; el.style.display='flex';
 }
-function saveDue(key){ const v=document.getElementById('dueIn').value; setCatMeta(key,{due:v||null,wishlist:!v}); stripEdit=false; }
+const PERM_ACTS=[['reject','פסילת פריט'],['choose','בחירת פריט להזמנה'],['order','סימון שפריט הוזמן']];
+function openCatSettings(key){
+  const c=CATS.find(x=>x.key===key); if(!c) return;
+  const pool=[...new Set(['יעל','רועי','נופר',...namesList()])];
+  let h=`<div class="csf"><label>שם <input id="csLabel" value="${esc(c.label)}"></label><label>אייקון <input id="csIcon" value="${esc(c.icon||'')}" maxlength="4" style="width:70px"></label></div>
+  <div class="csf"><label>יעד קנייה <input type="date" id="csDue" value="${esc(c.due||'')}"></label><label><input type="checkbox" id="csWish" ${c.wishlist&&!c.due?'checked':''}> Wishlist (בלי תאריך)</label></div>
+  <h4>מי יכול…</h4>`;
+  PERM_ACTS.forEach(([a,lab])=>{ const p=c.perms&&c.perms[a]; const all=!p||p==='all'; const sel=all?[]:permNames(p);
+    h+=`<div class="csperm" data-a="${a}"><b>${lab}</b><label><input type="radio" name="pm_${a}" value="all" ${all?'checked':''}> כולם</label><label><input type="radio" name="pm_${a}" value="some" ${all?'':'checked'}> רק:</label>`
+      +pool.map(n=>`<label class="nm"><input type="checkbox" value="${esc(n)}" ${sel.includes(n)?'checked':''}> ${esc(n)}</label>`).join('')+`</div>`; });
+  h+=`<div class="csf"><label><input type="checkbox" id="csMulti" ${c.multi?'checked':''}> מותר לבחור כמה פריטים בקטגוריה (בלי אזהרה)</label></div>
+  <div class="csf"><label>מצב הקטגוריה <select id="csClosed"><option value="auto" ${c.closed==null?'selected':''}>אוטומטי (נסגרת כשמשהו הוזמן)</option><option value="closed" ${c.closed===true?'selected':''}>סגורה / נקנתה</option><option value="open" ${c.closed===false?'selected':''}>פתוחה (גם אחרי הזמנה)</option></select></label></div>
+  <p class="docnote">ההרשאות הן הסכמה בין בני הבית — האתר לא יאפשר לחשבון אחר ללחוץ, אך אין כאן אבטחה אמיתית.</p>`;
+  document.getElementById('csTitle').textContent='⚙ הגדרות — '+c.label; document.getElementById('csBody').innerHTML=h; document.getElementById('csBody').dataset.key=key;
+  document.getElementById('catSetDlg').showModal();
+}
+function saveCatSettings(){
+  const body=document.getElementById('csBody'), key=body.dataset.key;
+  const perms={}; body.querySelectorAll('.csperm').forEach(r=>{ const a=r.dataset.a; const mode=r.querySelector('input[type=radio]:checked').value;
+    if(mode==='all') perms[a]='all'; else { const names=[...r.querySelectorAll('input[type=checkbox]:checked')].map(x=>x.value); perms[a]=names.length?names:'all'; } });
+  const due=document.getElementById('csDue').value||null, wish=document.getElementById('csWish').checked&&!due;
+  const cl=document.getElementById('csClosed').value;
+  setCatMeta(key,{label:document.getElementById('csLabel').value.trim()||undefined,icon:document.getElementById('csIcon').value.trim()||undefined,due,wishlist:wish,perms,multi:document.getElementById('csMulti').checked,closed:cl==='closed'?true:(cl==='open'?false:null)});
+  document.getElementById('catSetDlg').close();
+}
 function renderHistory(){
   const el=document.getElementById('history'); if(!el) return;
   if(viewMode!=='ordered'){ el.style.display='none'; el.innerHTML=''; return; }
@@ -1725,7 +1791,7 @@ function renderHistory(){
 }
 function openCatPanel(){
   const body=document.getElementById('catBody'); body.innerHTML='';
-  const groups=[['open','🔴 צריך החלטה'],['pick','🟡 נבחר — צריך להזמין'],['done','🟢 הוזמן / סגור']];
+  const groups=[['open','🔴 ממתין להחלטה'],['pick','🟡 נבחר — צריך להזמין'],['done','🟢 הוזמן / סגור']];
   const cats=CATS.filter(c=>c.key!=='all');
   groups.forEach(([g,title])=>{
     const list=cats.filter(c=>catState(c)===g); if(!list.length) return;
@@ -1737,7 +1803,7 @@ function openCatPanel(){
       const row=document.createElement('div'); row.className='crow';
       const go=document.createElement('button'); go.type='button'; go.className='go'; go.innerHTML=`<span>${c.icon}</span>${c.label}`;
       go.onclick=()=>{ selCats=new Set([c.key]); tagf.clear(); if(g==='done'&&viewMode==='active') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true); document.getElementById('catDlg').close(); window.scrollTo({top:0,behavior:'smooth'}); };
-      const pg=document.createElement('span'); pg.className='pg'; pg.textContent=its.length+' פריטים'+(ord?' · '+ord+' הוזמנו':'')+(c.due?' · 🎯 '+fmtDate(c.due):(c.wishlist?' · 💭':''));
+      const pg=document.createElement('span'); pg.className='pg'; const chn=its.filter(i=>!i.ordered&&i.decision==='chosen').length; pg.textContent=its.length+' פריטים'+(ord?' · '+ord+' הוזמנו':'')+(chn>1&&!c.multi?' · ⚠ '+chn+' נבחרו':'')+(c.due?' · 🎯 '+fmtDate(c.due):(c.wishlist?' · 💭':''));
       const tg=document.createElement('button'); tg.type='button'; tg.className='tg'; tg.textContent=g==='done'?'↩ פתחי מחדש':'✓ סגרנו';
       tg.onclick=()=>setCatClosed(c.key,g!=='done');
       row.append(go,pg,tg); wrap.appendChild(row);
@@ -1976,10 +2042,11 @@ function cardEl(it){
       <div class="ordinfo" style="display:none"></div>
       <div class="people" style="display:none"></div>
       <div class="seg">
-        <button class="yes" title="נבחר" onclick="setS('${it.id}','yes')">✓</button>
+        <button class="yes" title="אהבתי" onclick="setS('${it.id}','yes')">✓</button>
         <button class="maybe" title="אולי" onclick="setS('${it.id}','maybe')">?</button>
-        <button class="no" title="לא" onclick="setS('${it.id}','no')">✕</button>
+        <button class="no" title="לא מתאים לי" onclick="setS('${it.id}','no')">✕</button>
       </div>
+      ${it.type==='product'?`<div class="decRow"><button type="button" class="dChoose" onclick="decChoose('${it.id}')"></button><button type="button" class="dReject" onclick="decReject('${it.id}')"></button><button type="button" class="dOrder" onclick="toggleOrdered('${it.id}')">📦 סימון כהוזמן</button></div>`:''}
       ${shopHTML?shopHTML:''}
       ${!shopHTML&&it.type==='product'&&(it.link||it.zap)?`<div class="shoprow">${it.link?`<a class="shopbtn" href="${it.link}" target="_blank" rel="noopener">🏪 לחנות המומלצת</a>`:''}${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div>`:''}
       <button type="button" class="moreBtn" onclick="toggleMore('${it.id}')">פרטים והשוואה ⌄</button>
@@ -2022,6 +2089,7 @@ function paint(id,c){
 }
 function toggleOrdered(id){
   const it=byId[id]; if(!it)return;
+  if(!canDo(it.cat,'order')){ denyMsg(it.cat,'order'); return; }
   const val=!it.ordered;
   if(!val&&!confirm('לבטל את הסימון "הוזמן"?'))return;
   const o={ordered:val,orderedBy:val?((me&&me.name)||'מישהו'):null,orderedAt:val?Date.now():null,orderLink:val?(it.orderLink||null):null};
@@ -2301,6 +2369,7 @@ function fbPoll(){ fetch(`${DB}/picks.json`).then(r=>r.json()).then(d=>{
   // server's value forever, even after later corrections server-side.
   let ordChanged=false;
   Object.keys(st.ord).forEach(id=>{ if(shared.items&&shared.items[id]&&('ordered' in shared.items[id])){ delete st.ord[id]; ordChanged=true; } });
+  Object.keys(st.dec||{}).forEach(id=>{ const sv=(shared.items&&shared.items[id])||{}; if((sv.decision||null)===(st.dec[id].decision||null)){ delete st.dec[id]; ordChanged=true; } });
   if(ordChanged) save();
   if(changed||ordChanged){ rebuild(); tabsHTML(); RE(); }
   const psig=namesList().join('|'); if(changed||psig!==_psig){ _psig=psig; buildChips(); }
