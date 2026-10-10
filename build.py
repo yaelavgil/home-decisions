@@ -1,6 +1,6 @@
-import json,os,sys
+import json,os,sys,glob
 
-REPO="/Users/home/פרוייקטים/home-decisions"
+REPO=os.path.dirname(os.path.abspath(__file__))
 BASE="https://yaelavgil.github.io/home-decisions/"
 DBURL="https://home-picks-47450-default-rtdb.europe-west1.firebasedatabase.app"
 
@@ -698,6 +698,18 @@ for k in DESKS:
     DATA.append({"id":k[0],"cat":"שולחן לדני","type":"product","name":k[1],
                  "price":k[2],"link":k[3],"img":k[4],"tags":k[5],"desc":k[6]})
 
+# per-category criteria + per-item stores/specs/pick from enrich/*.json (see ENRICH-FORMAT.md)
+CRIT={}; _ENR={}
+for _f in sorted(glob.glob(os.path.join(REPO,"enrich","*.json"))):
+    _e=json.load(open(_f,encoding="utf-8"))
+    if _e.get("criteria"): CRIT[_e["cat"]]=_e["criteria"]
+    _ENR.update(_e.get("items") or {})
+for it in DATA:
+    _x=_ENR.get(it["id"])
+    if _x:
+        for _k in ("specs","stores","pick","pickWhy","points"):
+            if _k in _x: it[_k]=_x[_k]
+
 # zap price-comparison link per appliance (link = recommended store, zap = comparison)
 ZAP={
  "P4":"https://www.zap.co.il/model.aspx?modelid=1235119",
@@ -960,6 +972,45 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .shoprow{display:flex;gap:6px;flex-wrap:wrap}
 .shopbtn{font-size:12px;padding:5px 10px;border:1.5px solid var(--line-2);border-radius:9px;text-decoration:none;color:var(--ink-soft);font-weight:650;background:var(--paper)}
 .shopbtn:hover{border-color:var(--brass);color:var(--brass-d)}
+.card{position:relative}
+.pickRibbon{position:absolute;top:10px;right:10px;z-index:3;background:linear-gradient(135deg,#c9a24f,#a9812f);color:#fff;font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:99px;box-shadow:0 3px 10px rgba(120,90,30,.35)}
+.card.is-pick{box-shadow:0 0 0 2px #c9a24f,0 10px 28px -12px rgba(120,90,30,.45)}
+.pickWhy{font-size:12.5px;color:var(--brass-d);font-weight:650;margin:2px 0 6px;line-height:1.4}
+.scoreRow{display:flex;gap:6px;align-items:center;margin:2px 0 6px;flex-wrap:wrap}
+.scoreB{font-size:12px;font-weight:800;padding:3px 9px;border-radius:99px;background:#eef4ec;color:#3f6d3c;border:1px solid #cfe0cb;cursor:help}
+.scoreB.mid{background:#f7efdd;color:#8a6a1f;border-color:#ecd9a8}
+.scoreB.low{background:#f5ebe8;color:#8d4a3e;border-color:#e6cbc4}
+.likeB{font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;background:#fdecef;color:#a13b52;border:1px solid #f3c8d1}
+.pts{margin:0 0 8px;padding:0 20px 0 0;font-size:12.8px;line-height:1.5;color:var(--ink)}
+.pts li{margin:1px 0}
+.pts li::marker{color:var(--brass-d);font-weight:800}
+.specT{width:100%;border-collapse:collapse;font-size:12.5px;margin:2px 0 6px}
+.specT td{padding:3px 6px;border-bottom:1px solid var(--line-2);vertical-align:top}
+.specT td.l{color:var(--ink-soft);width:46%}
+.specT td.v{font-weight:700}
+.specT tr.ok td.v{color:#3f6d3c}.specT tr.part td.v{color:#8a6a1f}.specT tr.bad td.v{color:#8d4a3e}
+.specT tr.na td.v{color:var(--muted);font-weight:500}
+.specT tr.more{display:none}.specT.open tr.more{table-row}
+.specTog{background:none;border:0;color:var(--brass-d);font-weight:650;font-size:12px;cursor:pointer;padding:0 0 6px;font-family:inherit}
+.storeList{display:none;flex-direction:column;gap:4px;margin-top:6px}
+.storeList.open{display:flex}
+.storeRow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;padding:6px 9px;border:1.5px solid var(--line-2);border-radius:9px;background:var(--paper);text-decoration:none;color:var(--ink)}
+.storeRow:hover{border-color:var(--brass)}
+.storeRow.rec{border-color:#c9a24f;background:#fbf5e4}
+.storeRow .sn{flex:1;font-weight:700;min-width:70px}
+.storeRow .sp{font-weight:800;color:var(--brass-d)}
+.storeRow small{flex-basis:100%;color:var(--ink-soft);font-size:11.5px}
+.sTag{font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:99px}
+.sTag.r{background:#c9a24f;color:#fff}.sTag.c{background:#eef4ec;color:#3f6d3c}
+.specBar{display:none;width:100%;order:98;margin-top:6px;background:var(--paper);border:1.5px solid var(--line-2);border-radius:14px;padding:10px 12px;font-size:13px}
+.specBar h4{margin:0 0 6px;font-size:13.5px}
+.specBar ol{margin:0 0 8px;padding:0 20px 0 0;line-height:1.5;color:var(--ink-soft)}
+.specBar ol b{color:var(--ink)}
+.specBar .sf{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0}
+.specBar .sf label{font-weight:700}
+.specBar input[type=number]{width:90px;padding:4px 8px;border:1.5px solid var(--line-2);border-radius:8px;font-family:inherit}
+.specBar .sum{margin-top:6px;color:var(--brass-d);font-weight:700}
+
 .ordersheet{max-width:760px;margin:0 auto;padding:32px 16px 60px}
 .ordersheet h1{font-size:26px;margin:0 0 4px}
 .osub{color:var(--ink-soft);margin:0 0 24px;font-size:14px}
@@ -1145,6 +1196,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
       <option value="rating">⭐ דירוג גבוה קודם</option>
     </select>
     <div class="featSortRow" id="featSortRow"></div>
+    <div class="specBar" id="specBar"></div>
     <button class="tbtn fbtn" id="filterBtn" onclick="toggleFilters()" title="סינון מתקדם">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M3 5h18l-7 8.2V19l-4 2v-7.8z"/></svg>סינון<span class="fbadge" id="fbadge"></span></button>
     <button class="tbtn ic" onclick="openAdd()" title="הוסף פריט">➕<span class="t"> הוסף</span></button>
@@ -1259,7 +1311,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 </dialog>
 
 <script>
-const BITEMS=__DATA__, BCATS=__CATS__;
+const BITEMS=__DATA__, BCATS=__CATS__, BCRIT=__CRIT__;
 const DB="__DBURL__";
 const KEY="ida-board-v1";
 let st=JSON.parse(localStorage.getItem(KEY)||"{}"); st.s=st.s||{}; st.custom=st.custom||{cats:[],items:[],seq:0}; st.ord=st.ord||{};
@@ -1288,7 +1340,9 @@ function rebuild(){
   st.custom.cats.forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
   Object.values(shared.cats||{}).forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
   ITEMS=Object.values(im); CATS=Object.values(cm);
+  ITEMS.forEach(i=>{ if(i.stores&&i.stores.length){ const r=i.stores.find(x=>x.rec)||i.stores[0]; if(r&&r.p!=null) i.price=r.p; if(r&&r.l) i.link=r.l; } });
   byId=Object.fromEntries(ITEMS.map(x=>[x.id,x]));
+  computeScores();
 }
 const els=new Map();
 const dlg=document.getElementById('dlg'), grid=document.getElementById('grid');
@@ -1363,6 +1417,7 @@ function buildChips(){
     c.onclick=()=>{tagf.has(tg)?tagf.delete(tg):tagf.add(tg);buildChips();RE();}; tc.appendChild(c);});
   updateFilterBadge();
   buildFeatSort();
+  buildSpecBar();
 }
 function buildFeatSort(){
   const row=document.getElementById('featSortRow'); if(!row)return;
@@ -1406,7 +1461,7 @@ function visible(){
   let a=ITEMS.filter(i=>inCats(i)
     &&(!q||i.name.includes(q))
     &&(tagf.size===0||(i.tags||[]).some(t=>tagf.has(t)))
-    &&passView(i)&&passPerson(i));
+    &&passView(i)&&passPerson(i)&&passSpec(i));
   const s=document.getElementById('sort').value, rank={yes:0,maybe:1,none:2,no:3};
   const who=personf==='all'?(me&&me.name):personf;
   const so=id=>who?statusOfName(who,id):'none';
@@ -1415,9 +1470,98 @@ function visible(){
   else if(s==='name')a.sort((x,y)=>x.name.localeCompare(y.name,'he'));
   else if(s==='status')a.sort((x,y)=>rank[so(x.id)]-rank[so(y.id)]);
   else if(s==='rating')a.sort((x,y)=>(y.rating||0)-(x.rating||0));
+  else if(s==='score')a.sort((x,y)=>(y.score==null?-1:y.score)-(x.score==null?-1:x.score));
+  else if(s.startsWith('spec:')){ const k=s.slice(5), c=critOf([...selCats][0]).find(z=>z.k===k), hb=(c&&c.higherBetter===false)?-1:1;
+    a.sort((x,y)=>{ const nx=numv((x.specs||{})[k]), ny=numv((y.specs||{})[k]); if(nx==null&&ny==null)return 0; if(nx==null)return 1; if(ny==null)return -1; return hb*(ny-nx); }); }
   else if(featSort)a.sort((x,y)=>((y.featTags||[]).includes(featSort)?1:0)-((x.featTags||[]).includes(featSort)?1:0));
-  else a.sort((x,y)=>(y.ordered?1:0)-(x.ordered?1:0)); // default order: ordered items first (sort is stable, so the rest keep catalog order)
+  else a.sort((x,y)=>((y.ordered?2:0)+(y.pick?1:0))-((x.ordered?2:0)+(x.pick?1:0))); // default order: ordered items first (sort is stable, so the rest keep catalog order)
   return a;
+}
+
+/* ===== criteria / specs / score (data from enrich/*.json) ===== */
+const critOf=cat=>BCRIT[cat]||[];
+const numv=v=>(typeof v==='number')?v:((v===''||v==null)?null:(isNaN(parseFloat(v))?null:parseFloat(v)));
+const esc=t=>String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+function fitOf(c,v,stats){
+  if(c.type==='num'){
+    const n=numv(v); if(n==null) return 0;
+    const g=c.goal||{};
+    if(g.min!=null||g.max!=null||g.ideal!=null){
+      let f=1;
+      if(g.min!=null&&n<g.min) f=Math.min(f,Math.max(0,n/g.min));
+      if(g.max!=null&&n>g.max) f=Math.min(f,Math.max(0,g.max/n));
+      if(g.ideal!=null&&g.min==null&&g.max==null) f=Math.max(0,1-Math.abs(n-g.ideal)/g.ideal);
+      return f;
+    }
+    const s=stats&&stats[c.k]; if(!s||s.max===s.min) return 1;
+    const r=(n-s.min)/(s.max-s.min); return c.higherBetter===false?1-r:r;
+  }
+  if(c.scoreMap){ if(v==null||v==='') return 0; const sv=c.scoreMap[v]; return sv!=null?sv:(c.scoreMap['אחר']!=null?c.scoreMap['אחר']:0.5); }
+  return null;
+}
+function computeScores(){
+  Object.keys(BCRIT).forEach(cat=>{
+    const cr=critOf(cat), pool=ITEMS.filter(i=>i.cat===cat&&!i.hidden&&i.specs), stats={};
+    cr.forEach(c=>{ if(c.type!=='num')return; const vs=pool.map(i=>numv(i.specs[c.k])).filter(x=>x!=null); if(vs.length) stats[c.k]={min:Math.min(...vs),max:Math.max(...vs)}; });
+    pool.forEach(it=>{ let sw=0,sum=0; cr.forEach(c=>{ const f=fitOf(c,it.specs[c.k],stats); if(f==null)return; const w=c.weight||1; sw+=w; sum+=w*f; }); it.score=sw?Math.round(100*sum/sw):null; });
+  });
+}
+function specRowsHTML(it){
+  const cr=critOf(it.cat); if(!cr.length||!it.specs) return '';
+  const rows=cr.map((c,idx)=>{
+    const v=it.specs[c.k], has=!(v==null||v==='');
+    let cls='na', val='לא צוין';
+    if(has){ val=esc(v)+(c.unit&&c.type==='num'?' '+esc(c.unit):''); cls='';
+      const g=c.goal; if(c.type==='num'&&g&&(g.min!=null||g.max!=null)){ const f=fitOf(c,v,null); cls=f>=1?'ok':(f>=.6?'part':'bad'); } }
+    const tip=c.goalNote?` title="${esc(c.goalNote)}"`:'';
+    return `<tr class="${cls}${idx>=4?' more':''}"><td class="l"${tip}>${esc(c.label)}</td><td class="v">${val}</td></tr>`;
+  }).join('');
+  const more=cr.length>4?`<button type="button" class="specTog" onclick="toggleSpec('${it.id}')">כל המפרט (${cr.length}) ⌄</button>`:'';
+  return `<table class="specT" id="spec-${it.id}">${rows}</table>${more}`;
+}
+function toggleSpec(id){ const t=document.getElementById('spec-'+id); if(!t)return; const o=t.classList.toggle('open'); const b=t.nextElementSibling; if(b&&b.classList.contains('specTog')) b.textContent=o?'פחות ⌃':('כל המפרט ('+critOf(byId[id].cat).length+') ⌄'); }
+function storesHTML(it){
+  const st=(it.stores||[]).slice(); if(!st.length) return '';
+  st.sort((a,b)=>(b.rec?1:0)-(a.rec?1:0)||((a.p==null?1e9:a.p)-(b.p==null?1e9:b.p)));
+  const ps=st.map(x=>x.p).filter(x=>x!=null), cheapest=ps.length?Math.min(...ps):null;
+  const rows=st.map(x=>`<a class="storeRow${x.rec?' rec':''}" href="${esc(x.l||'#')}" target="_blank" rel="noopener"><span class="sn">${esc(x.n)}</span>${x.rec?'<span class="sTag r">מומלצת</span>':''}${(x.p!=null&&x.p===cheapest&&st.length>1)?'<span class="sTag c">הכי זול</span>':''}<span class="sp">${x.p!=null?nis(x.p):'—'}</span><span>↗</span>${x.note?`<small>${esc(x.note)}</small>`:''}</a>`).join('');
+  return `<div class="shoprow"><button type="button" class="shopbtn" onclick="toggleStores('${it.id}')">🏪 מחירים ב־${st.length} חנויות ⌄</button>${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div><div class="storeList" id="st-${it.id}">${rows}</div>`;
+}
+function toggleStores(id){ const el=document.getElementById('st-'+id); if(el) el.classList.toggle('open'); }
+let specf={}, specCat=null;
+function passSpec(i){
+  for(const k in specf){ const f=specf[k], v=i.specs&&i.specs[k];
+    if(f.min!=null){ const n=numv(v); if(n==null||n<f.min) return false; }
+    if(f.set&&f.set.size){ if(v==null||!f.set.has(String(v))) return false; } }
+  return true;
+}
+function setSpecMin(k,val){ const n=numv(val); if(n==null) delete specf[k]; else specf[k]={min:n}; buildSpecBar(); RE(); }
+function toggleSpecVal(k,val){ const f=specf[k]||(specf[k]={set:new Set()}); if(!f.set)f.set=new Set(); f.set.has(val)?f.set.delete(val):f.set.add(val); if(!f.set.size) delete specf[k]; buildSpecBar(); RE(); }
+function buildSpecBar(){
+  const bar=document.getElementById('specBar'), sel=document.getElementById('sort'); if(!bar||!sel)return;
+  const keep=sel.value;
+  sel.querySelectorAll('option.dyn').forEach(o=>o.remove());
+  const cat=(selCats.size===1)?[...selCats][0]:null, cr=cat?critOf(cat):[];
+  if(specCat!==cat){ specf={}; specCat=cat; }
+  if(!cr.length){ bar.style.display='none'; bar.innerHTML=''; if(/^(spec:|score)/.test(keep)) sel.value='def'; return; }
+  const add=(v,t)=>{const o=document.createElement('option');o.value=v;o.textContent=t;o.className='dyn';sel.appendChild(o);};
+  add('score','⭐ התאמה לצרכים (ציון)');
+  cr.filter(c=>c.sort).forEach(c=>add('spec:'+c.k,'לפי '+c.label+(c.type==='num'?(c.higherBetter===false?' ↑ נמוך קודם':' ↓ גבוה קודם'):'')));
+  if([...sel.options].some(o=>o.value===keep)) sel.value=keep;
+  const pool=ITEMS.filter(i=>i.cat===cat&&!i.hidden), pick=pool.find(i=>i.pick);
+  let h='<h4>🎯 מה חשוב בקטגוריה (מהחשוב לפחות)</h4><ol>'+cr.map(c=>`<li><b>${esc(c.label)}</b>${c.goalNote?' — '+esc(c.goalNote):''}</li>`).join('')+'</ol>';
+  cr.filter(c=>c.filter).forEach(c=>{
+    if(c.type==='num'){
+      const cur=specf[c.k]&&specf[c.k].min!=null?specf[c.k].min:'';
+      h+=`<div class="sf"><label>${esc(c.label)} מינימום${c.unit?' ('+esc(c.unit)+')':''}:</label><input type="number" value="${cur}" onchange="setSpecMin('${c.k}',this.value)">`
+        +(c.goal&&c.goal.min!=null?`<button type="button" class="chip${cur===c.goal.min?' on':''}" onclick="setSpecMin('${c.k}',${cur===c.goal.min?"''":c.goal.min})">✔ מספיק לצורך (≥ ${c.goal.min})</button>`:'')+`</div>`;
+    } else {
+      const vals=[...new Set(pool.map(i=>i.specs&&i.specs[c.k]).filter(v=>v!=null&&v!==''))].map(String);
+      if(vals.length) h+=`<div class="sf"><label>${esc(c.label)}:</label>`+vals.map(v=>`<button type="button" class="chip${(specf[c.k]&&specf[c.k].set&&specf[c.k].set.has(v))?' on':''}" onclick="toggleSpecVal('${c.k}',this.dataset.v)" data-v="${esc(v)}">${esc(v)}</button>`).join('')+`</div>`;
+    }
+  });
+  if(pick) h+=`<div class="sum">⭐ ההמלצה שלנו: ${esc(pick.name)}${pick.pickWhy?' — '+esc(pick.pickWhy):''}</div>`;
+  bar.innerHTML=h; bar.style.display='block';
 }
 function cardEl(it){
   if(els.has(it.id))return els.get(it.id);
@@ -1435,17 +1579,24 @@ function cardEl(it){
   const stars=it.type==='product'?`<div class="stars" data-id="${it.id}">${[1,2,3,4,5].map(n=>`<button type="button" class="star" data-n="${n}" onclick="event.stopPropagation();setRating('${it.id}',${n})">★</button>`).join('')}<span class="ratedBy"></span></div>`:'';
   const qty=it.type==='product'
     ?`<div class="qty"><span class="ql">כמות</span><span class="stp"><button title="הפחת" onclick="setQ('${it.id}',-1)">−</button><span class="qv">1</span><button title="הוסף" onclick="setQ('${it.id}',1)">+</button></span></div>`:'';
-  c.innerHTML=`<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button>
+  const hasPts=(it.points||[]).length>0;
+  const shopHTML=(it.stores&&it.stores.length)?storesHTML(it):'';
+  c.innerHTML=`${it.pick?'<span class="pickRibbon">⭐ ההמלצה שלנו</span>':''}<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button>
     ${it.type==='product'?`<span class="orderb"><span class="ol">✓ הוזמן</span><span class="od"></span></span>`:''}
     ${media}
     <div class="body">
       ${nameEl}
       ${sub}
+      <div class="scoreRow"><span class="scoreB" style="display:none"></span><span class="likeB" style="display:none"></span></div>
+      ${it.pick&&it.pickWhy?`<div class="pickWhy">⭐ ${esc(it.pickWhy)}</div>`:''}
+      ${hasPts?`<ol class="pts">${it.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
+      ${specRowsHTML(it)}
       ${it.loc?`<div class="loc">📍 ${it.loc}</div>`:''}
       ${featRow}
       ${stars}
-      ${it.desc?`<div class="desc clamped" id="desc-${it.id}">${it.desc}</div><button type="button" class="descToggle" onclick="toggleDesc('${it.id}')">הצג פרטים ⌄</button>`:''}
-      ${it.type==='product'&&(it.link||it.zap)?`<div class="shoprow">${it.link?`<a class="shopbtn" href="${it.link}" target="_blank" rel="noopener">🏪 לחנות המומלצת</a>`:''}${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div>`:''}
+      ${it.desc?`<div class="desc clamped" id="desc-${it.id}">${it.desc}</div><button type="button" class="descToggle" onclick="toggleDesc('${it.id}')">${hasPts?'פרטים מלאים ⌄':'הצג פרטים ⌄'}</button>`:''}
+      ${shopHTML?shopHTML:''}
+      ${!shopHTML&&it.type==='product'&&(it.link||it.zap)?`<div class="shoprow">${it.link?`<a class="shopbtn" href="${it.link}" target="_blank" rel="noopener">🏪 לחנות המומלצת</a>`:''}${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div>`:''}
       <div class="ordinfo" style="display:none"></div>
       <div class="people" style="display:none"></div>
       ${qty}
@@ -1461,10 +1612,11 @@ function cardEl(it){
 }
 function paint(id,c){
   c=c||els.get(id); if(!c)return; const s=S(id); const it=byId[id]||{};
-  c.className="card"+(s.status!=='none'?" s-"+s.status:"")+(it.ordered?" is-ordered":"")+(it.hidden?" is-hidden":"");
+  c.className="card"+(it.pick?" is-pick":"")+(s.status!=='none'?" s-"+s.status:"")+(it.ordered?" is-ordered":"")+(it.hidden?" is-hidden":"");
   c.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.classList.contains(s.status)));
   const ta=c.querySelector('textarea'); if(ta&&ta.value!==s.note)ta.value=s.note;
   const qv=c.querySelector('.qv'); if(qv)qv.textContent=s.qty||1;
+  const sb=c.querySelector('.scoreB'); if(sb){ if(it.score!=null){ sb.style.display=''; sb.textContent='התאמה '+it.score+'/100'; sb.className='scoreB '+(it.score>=75?'':(it.score>=50?'mid':'low')); sb.title='ציון התאמה לפי הקריטריונים של הקטגוריה (מפורט בסרגל "מה חשוב בקטגוריה")'; } else sb.style.display='none'; }
   const pim=c.querySelector('.thumb img'); if(pim&&it.img&&pim.getAttribute('src')!==it.img){pim.src=it.img;} // card is built once; follow later image fixes (e.g. from the shared catalog)
   const od=c.querySelector('.orderb .od'); if(od)od.textContent=it.orderedAt?new Date(it.orderedAt).toLocaleDateString('he-IL'):'';
   const mo=c.querySelector('.markOrd'); if(mo)mo.style.display=it.ordered?'none':'';
@@ -1516,7 +1668,7 @@ function toggleDesc(id){
   const el=document.getElementById('desc-'+id); if(!el)return;
   const nowClamped=el.classList.toggle('clamped');
   const btn=el.nextElementSibling;
-  if(btn) btn.textContent=nowClamped?'הצג פרטים ⌄':'הסתר ⌃';
+  if(btn) btn.textContent=nowClamped?(byId[id]&&(byId[id].points||[]).length?'פרטים מלאים ⌄':'הצג פרטים ⌄'):'הסתר ⌃';
 }
 function toggleHidden(id){
   const it=byId[id]; if(!it)return;
@@ -1794,7 +1946,8 @@ function renderPeople(){
       const note=(!m.mine&&m.note&&m.note.trim())?`<span class="pnote">${m.note.trim().replace(/</g,'&lt;')}</span>`:'';
       return `<div class="pmark"><span class="pchip s-${m.status||'none'}${m.mine?' me':''}"><span class="g">${GL[m.status]||'💬'}</span>${m.name}${qty}</span>${note}</div>`;
     }).join('');
-    box.style.display=ms.length?'':'none'; });
+    box.style.display=ms.length?'':'none';
+    const lk=c.querySelector('.likeB'); if(lk){ const y=ms.filter(m=>m.status==='yes'); if(y.length){ lk.style.display=''; lk.textContent='❤ '+y.map(m=>m.name).join(', '); } else lk.style.display='none'; } });
   const names=namesList();
   const el=document.getElementById('whoami');
   if(el) el.innerHTML=(me?`אני: <b>${me.name}</b> <button class="linkbtn" onclick="openMe()">(החלף)</button>`:'')
@@ -1912,6 +2065,7 @@ checkIncomingAdd();
 </html>'''
 out=(tpl.replace("__DATA__",json.dumps(DATA,ensure_ascii=False))
         .replace("__CATS__",json.dumps(CATS,ensure_ascii=False))
+        .replace("__CRIT__",json.dumps(CRIT,ensure_ascii=False))
         .replace("__DBURL__",DBURL)
         .replace("__SHARE__",BASE+"picks/")
         .replace("__BASE__",BASE))
