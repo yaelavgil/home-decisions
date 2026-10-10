@@ -59,7 +59,7 @@ h1{font-weight:700;font-size:clamp(21px,4vw,31px);letter-spacing:-.02em;margin:0
 /* narrow screens: only the category row stays pinned; search/sort/filters scroll away so the content keeps the screen */
 @media(max-width:999px){
   .deck{display:contents}
-  .tabs{position:sticky;top:0;z-index:30;margin-top:8px;padding:8px 2px 8px;background:var(--bg);border-bottom:1.5px solid var(--line)}
+  .catrow{position:sticky;top:0;z-index:30;margin-top:6px;padding:6px 2px 6px;background:var(--bg);border-bottom:1.5px solid var(--line)}
   .tools{padding-top:10px}
 }
 .tab{position:relative;flex:0 0 auto;border:1.5px solid var(--line-2);background:var(--paper);border-radius:999px;
@@ -69,6 +69,68 @@ h1{font-weight:700;font-size:clamp(21px,4vw,31px);letter-spacing:-.02em;margin:0
 .tab.on{background:linear-gradient(180deg,#bf9760,var(--brass-d));color:#fff;border-color:var(--brass-d);box-shadow:0 8px 18px -10px rgba(148,111,60,.8)}
 .tab.on .c{background:rgba(255,255,255,.25);color:#fff}
 .tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:5px 2px 0}
+/* ===== compact layout (v2) ===== */
+.kicker{display:none}
+h1{font-size:clamp(18px,3vw,24px)}
+header{padding:clamp(8px,1.6vw,12px) 4px 0}
+.catrow{display:flex;gap:8px;align-items:center}
+.catrow .tabs{flex:1;min-width:0;flex-wrap:nowrap!important;overflow-x:auto!important;padding:2px 2px 4px;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%)}
+.allcats{flex:none;border:1.5px solid var(--brass);background:var(--brass-soft);border-radius:999px;padding:7px 13px;font:inherit;font-weight:700;font-size:13.5px;color:var(--brass-d);cursor:pointer;display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.allcats .doneN{font-size:11px;background:#5f8f5c;color:#fff;border-radius:99px;padding:1px 7px;display:none}
+.tab{padding:7px 13px;font-size:13.5px;gap:6px}
+.tab .dot{width:8px;height:8px;border-radius:50%;background:#d98b7c;flex:none}
+.tab .dot.pick{background:#d9b24f}
+.tab.on .dot{box-shadow:0 0 0 2px rgba(255,255,255,.55)}
+.views{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;margin:0;flex:0 1 auto;max-width:100%}
+.views::-webkit-scrollbar{display:none}
+.vbtn{padding:6px 12px;font-size:13px}
+}
+.catdlg{max-width:560px;width:calc(100% - 24px)}
+.catdlg .db{max-height:70vh;overflow:auto}
+.cg h4{margin:12px 0 6px;font-size:13.5px}
+.cg summary{cursor:pointer;font-weight:800;font-size:13.5px;margin:12px 0 6px}
+.crow{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1.5px solid var(--line-2);border-radius:11px;margin:4px 0;background:var(--paper)}
+.crow .go{flex:1;text-align:start;background:none;border:0;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;display:flex;gap:8px;align-items:center}
+.crow .pg{font-size:12px;color:var(--ink-soft);font-weight:600;white-space:nowrap}
+.crow .tg{font-size:12px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:3px 10px;cursor:pointer;font:inherit;font-size:12px;color:var(--brass-d);font-weight:650;white-space:nowrap}
+
+.catStrip{margin:10px 0 0;background:var(--paper);border:1.5px solid var(--line-2);border-radius:14px;padding:10px 12px;font-size:13.5px;display:flex;flex-direction:column;gap:6px}
+.catStrip .csrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.catStrip .st{font-weight:800}
+.catStrip .due.over{color:#b35a4a;font-weight:800}
+.catStrip button,.docBtn{font:inherit;font-size:12.5px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:3px 11px;cursor:pointer;color:var(--brass-d);font-weight:650}
+.catStrip input[type=date]{font:inherit;padding:3px 8px;border:1.5px solid var(--line-2);border-radius:8px}
+.catStrip .bought{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:4px 8px;border-radius:9px;background:#eef4ec;color:#2f5a2c}
+.catStrip .bought b{font-weight:800}
+.history{margin:10px 0 0;background:var(--paper);border:1.5px solid var(--line-2);border-radius:14px;padding:10px 12px}
+.history h4{margin:0 0 6px;font-size:14px}
+.history table{width:100%;border-collapse:collapse;font-size:13px}
+.history td{padding:5px 6px;border-bottom:1px solid var(--line-2);vertical-align:top}
+.history td.n{font-weight:700}
+.history td.p{white-space:nowrap;font-weight:800;color:var(--brass-d)}
+.history .tot{margin-top:6px;font-weight:800}
+.docadd .frow{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+.docadd input[type=text],.docadd input:not([type]){flex:1;min-width:140px;padding:7px 10px;border:1.5px solid var(--line-2);border-radius:9px;font:inherit}
+.docnote{font-size:11.5px;color:var(--muted);margin:2px 0}
+.docrow{display:flex;gap:8px;align-items:center;padding:6px 8px;border:1.5px solid var(--line-2);border-radius:10px;margin:4px 0}
+.docrow a,.docrow button.open{flex:1;text-align:start;background:none;border:0;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none}
+.docrow small{color:var(--muted)}
+.docrow .del{background:none;border:0;cursor:pointer;color:#b35a4a}
+.docBtn .dn{margin-inline-start:4px;font-weight:800}
+.keySpecs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
+.ks{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--brass-soft);font-weight:700;white-space:nowrap}
+.ks i{font-style:normal;font-weight:500;color:var(--ink-soft)}
+.ks.ok{background:#eef4ec;color:#3f6d3c}.ks.part{background:#f7efdd;color:#8a6a1f}.ks.bad{background:#f5ebe8;color:#8d4a3e}.ks.na{opacity:.55}
+.moreBtn{background:none;border:0;color:var(--brass-d);font:inherit;font-weight:700;font-size:12.5px;cursor:pointer;padding:2px 0;text-align:start}
+.more{display:flex;flex-direction:column;gap:6px;border-top:1px dashed var(--line-2);padding-top:8px}
+.more[hidden]{display:none}
+.specBar{padding:0;margin:10px 0 0;order:unset}
+.specBar .sbHead{width:100%;display:flex;gap:10px;align-items:center;justify-content:space-between;background:none;border:0;padding:9px 12px;font:inherit;font-weight:800;font-size:13.5px;color:var(--ink);cursor:pointer;text-align:start}
+.specBar .sbPick{font-weight:650;color:var(--brass-d);font-size:12.5px;flex:1;text-align:start;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.specBar .sbBody{display:none;padding:0 12px 10px}
+.specBar.open .sbBody{display:block}
+
 .tbtn.ic{padding:9px 13px}
 .tbtn.on{background:var(--brass-soft);border-color:var(--brass);color:var(--brass-d)}
 .filters[hidden]{display:none}
@@ -364,6 +426,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   .views{width:100%;display:flex}.vbtn{flex:1;padding:9px 4px;font-size:12.5px}
   .editb{opacity:.8}
 }
+@media(max-width:560px){ .tools #sort{flex:1 1 80px;min-width:0} .tbtn{white-space:nowrap} .plannerlink{font-size:12px;padding:6px 10px} }
 @media(max-width:400px){ .tbtn.ic .t{display:none} .tbtn.ic{padding:9px 12px} .tools{gap:6px} }
 </style>
 </head>
@@ -381,15 +444,16 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 </header>
 
 <div class="deck">
-  <div class="tabs" id="tabs"></div>
-  <div class="views" id="views">
-    <button class="vbtn on" data-v="all" onclick="setView('all')">הכל</button>
+  <div class="catrow"><button type="button" class="allcats" onclick="openCatPanel()">☰ <span>קטגוריות</span><span class="doneN" id="doneN"></span></button><div class="tabs" id="tabs"></div></div>
+  <div class="tools">
+    <div class="views" id="views">
+    <button class="vbtn on" data-v="pending" onclick="setView('pending')">🟢 פתוח</button>
+    <button class="vbtn" data-v="all" onclick="setView('all')">הכל</button>
     <button class="vbtn" data-v="left" onclick="setView('left')">✅ מה שנשאר</button>
     <button class="vbtn" data-v="order" onclick="setView('order')">🛒 להזמנה</button>
-    <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 כבר הוזמן</button>
+    <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 היסטוריית הזמנות</button>
     <button class="vbtn" data-v="hidden" onclick="setView('hidden')">🙈 הוסתרו<span class="c" id="hiddenCount" style="display:none"></span></button>
   </div>
-  <div class="tools">
     <div class="search"><span class="i">🔍</span><input id="q" placeholder="חיפוש…" oninput="RE()"></div>
     <select id="sort" onchange="featSort=null;buildFeatSort();RE()" title="מיון">
       <option value="def">מיון</option>
@@ -400,7 +464,6 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
       <option value="rating">⭐ דירוג גבוה קודם</option>
     </select>
     <div class="featSortRow" id="featSortRow"></div>
-    <div class="specBar" id="specBar"></div>
     <button class="tbtn fbtn" id="filterBtn" onclick="toggleFilters()" title="סינון מתקדם">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M3 5h18l-7 8.2V19l-4 2v-7.8z"/></svg>סינון<span class="fbadge" id="fbadge"></span></button>
     <button class="tbtn ic" onclick="openAdd()" title="הוסף פריט">➕<span class="t"> הוסף</span></button>
@@ -415,6 +478,9 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="summ" id="summ"></div>
 </div>
 
+<div class="catStrip" id="catStrip" style="display:none"></div>
+<div class="history" id="history" style="display:none"></div>
+<div class="specBar" id="specBar"></div>
 <div id="grid" class="grid"></div>
 </div>
 
@@ -422,6 +488,23 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="box"><button class="x" onclick="closeLB()" aria-label="סגירה">✕</button><div class="im"><img id="lbimg" src="" alt=""></div><div class="thumbs" id="lbthumbs"></div>
   <div class="info"><h3 id="lbname"></h3><div class="p" id="lbprice"></div><div class="loc" id="lbloc"></div><a class="store" id="lbstore" target="_blank" rel="noopener">לצפייה בחנות ↗</a><div class="lbord" id="lbord"></div></div></div>
 </div>
+
+<dialog id="docDlg" class="catdlg"><div class="dh" id="docTitle">📎 מסמכים</div>
+  <div class="db">
+    <div id="docList"></div>
+    <div class="docadd">
+      <div class="frow"><input id="docName" placeholder="שם (קבלה, תוכנית, אישור הזמנה…)"><input id="docUrl" placeholder="קישור (דרייב / מייל / אתר) — או העלי קובץ למטה" dir="ltr"></div>
+      <div class="frow"><button type="button" class="tbtn" onclick="addDocLink()">🔗 הוסיפי קישור</button><label class="tbtn">📎 העלי תמונה / PDF<input type="file" id="docFile" accept="image/*,application/pdf" hidden onchange="addDocFile(this)"></label></div>
+      <p class="docnote">קבצים נשמרים בבסיס הנתונים המשותף (תמונות מוקטנות, PDF עד ~900KB). מסמכים עם פרטים אישיים רגישים — עדיף קישור לדרייב.</p>
+    </div>
+  </div>
+  <div class="df"><button class="tbtn" onclick="document.getElementById('docDlg').close()">סגור</button></div>
+</dialog>
+
+<dialog id="catDlg" class="catdlg"><div class="dh">📂 כל הקטגוריות</div>
+  <div class="db" id="catBody"></div>
+  <div class="df"><button class="tbtn" onclick="document.getElementById('catDlg').close()">סגור</button></div>
+</dialog>
 
 <dialog id="cartDlg"><div class="dh" id="cartTitle">🛒 עגלה</div>
   <div class="db cartbody" id="cartBody"></div>
@@ -522,7 +605,7 @@ let st=JSON.parse(localStorage.getItem(KEY)||"{}"); st.s=st.s||{}; st.custom=st.
 let me=JSON.parse(localStorage.getItem('ida-me')||'null'); // {pk,name}
 let remote={}; // {pk:{name,items:{id:{s,n,q}}}}
 let _psig="";
-let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="all", featSort=null;
+let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="pending", featSort=null;
 let ITEMS=[],CATS=[],byId={};
 let shared={items:{},cats:{}}; // shared catalog from Firebase (/picks/_catalog)
 function modelKey(s){ if(!s)return''; const m=String(s).toUpperCase().match(/[A-Z]{2,4}-? ?\d{3}[A-Z0-9]*/); return m?m[0].replace(/[- ]/g,''):''; }
@@ -580,24 +663,156 @@ function setCat(k){
   tagf.clear();syncHash();buildChips();tabsHTML();RE(true);
 }
 window.addEventListener('hashchange',()=>{applyHash();buildChips();tabsHTML();RE(true);});
+function catState(c){
+  if(c.key==='all') return 'all';
+  const its=ITEMS.filter(i=>i.cat===c.key&&!i.hidden);
+  const ord=its.filter(i=>i.ordered).length;
+  const yes=its.some(i=>!i.ordered&&marksFor(i.id).some(m=>m.status==='yes'));
+  if(c.closed===true) return 'done';
+  if(c.closed===false) return yes?'pick':'open';
+  if(ord>0) return 'done';
+  return yes?'pick':'open';
+}
 function tabsHTML(){
   const t=document.getElementById('tabs'); const keepScroll=t.scrollLeft; t.innerHTML="";
   updateHiddenCount();
+  let done=0;
   CATS.forEach(c=>{
+    const stt=catState(c), sel=(c.key==='all'?selCats.size===0:selCats.has(c.key));
+    if(stt==='done'){ done++; if(!sel) return; }
     const n=c.key==='all'?ITEMS.filter(i=>!i.hidden).length:ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length;
-    const b=document.createElement('button'); b.className="tab"+((c.key==='all'?selCats.size===0:selCats.has(c.key))?" on":"");
-    b.innerHTML=`<span>${c.icon}</span>${c.label}<span class="c">${n}</span>`;
+    const b=document.createElement('button'); b.className="tab"+(sel?" on":"");
+    b.innerHTML=(stt==='open'||stt==='pick'?`<span class="dot${stt==='pick'?' pick':''}"></span>`:'')+`<span>${c.icon}</span>${c.label}<span class="c">${n}</span>`;
     b.onclick=()=>setCat(c.key);
     t.appendChild(b);
   });
-  // single scrolling row on narrow screens: keep position across rebuilds and keep the active tab in view
+  const dn=document.getElementById('doneN'); if(dn){ dn.textContent='✓ '+done+' הוזמנו'; dn.style.display=done?'inline':'none'; }
   t.scrollLeft=keepScroll;
   const on=t.querySelector('.tab.on');
   if(on&&t.scrollWidth>t.clientWidth){
-    const r=on.getBoundingClientRect(), tr=t.getBoundingClientRect(), pad=28;
-    if(r.left<tr.left+pad) t.scrollLeft-=(tr.left+pad-r.left);
-    else if(r.right>tr.right-pad) t.scrollLeft+=(r.right-(tr.right-pad));
+    const r=on.getBoundingClientRect(), tr=t.getBoundingClientRect();
+    if(r.left<tr.left+20||r.right>tr.right-20) t.scrollLeft+=(r.left+r.width/2)-(tr.left+tr.width/2);
   }
+}
+
+/* ===== documents / category goals / history ===== */
+let docsMeta={}, _docsSig='', docScope=null;
+const fmtDate=ts=>{ const d=(typeof ts==='number')?new Date(ts):new Date(ts+'T00:00:00'); return isNaN(d)?'':d.toLocaleDateString('he-IL',{day:'numeric',month:'numeric',year:'2-digit'}); };
+function dueRel(due){ const d=new Date(due+'T00:00:00'), n=new Date(); n.setHours(0,0,0,0); const days=Math.round((d-n)/864e5);
+  return days<0?`<span class="due over">(איחור ${-days} ימים)</span>`:(days===0?'<span class="due over">(היום!)</span>':`<span class="due">(בעוד ${days} ימים)</span>`); }
+function docsList(scope){ return Object.entries(docsMeta[scope]||{}).map(([id,m])=>({id,...m})).sort((a,b)=>(b.at||0)-(a.at||0)); }
+function fetchDocsMeta(){ fetch(`${DB}/docs/meta.json`).then(r=>r.json()).then(d=>{ d=d||{}; const sig=JSON.stringify(d); if(sig!==_docsSig){ _docsSig=sig; docsMeta=d; paintDocs(); } }).catch(()=>{}); }
+function paintDocs(){
+  els.forEach((c,id)=>{ const b=c.querySelector('.docBtn .dn'); if(b){ const n=docsList('item_'+id).length; b.textContent=n?('('+n+')'):''; } });
+  renderCatStrip(); renderHistory(); if(document.getElementById('docDlg').open) renderDocList();
+}
+function openDocs(scope,title){ docScope=scope; document.getElementById('docTitle').textContent='📎 מסמכים — '+title; document.getElementById('docName').value=''; document.getElementById('docUrl').value=''; renderDocList(); const d=document.getElementById('docDlg'); if(!d.open) d.showModal(); }
+function renderDocList(){
+  const box=document.getElementById('docList'); const l=docsList(docScope); box.innerHTML=l.length?'':'<p class="docnote">עוד אין מסמכים כאן.</p>';
+  l.forEach(m=>{ const row=document.createElement('div'); row.className='docrow';
+    const icon=m.t==='link'?'🔗':(/pdf/.test(m.m||'')?'📄':'🖼️');
+    const main=m.t==='link'?document.createElement('a'):document.createElement('button');
+    if(m.t==='link'){ main.href=m.u; main.target='_blank'; main.rel='noopener'; } else { main.type='button'; main.className='open'; main.onclick=()=>openDocFile(m); }
+    main.textContent=icon+' '+(m.n||'מסמך');
+    const meta=document.createElement('small'); meta.textContent=[m.by,m.at?fmtDate(m.at):''].filter(Boolean).join(' · ');
+    const del=document.createElement('button'); del.type='button'; del.className='del'; del.textContent='🗑'; del.title='מחיקה'; del.onclick=()=>delDoc(m);
+    row.append(main,meta,del); box.appendChild(row); });
+}
+function newDocId(){ return 'd'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function putDocMeta(scope,id,meta){ docsMeta[scope]=docsMeta[scope]||{}; docsMeta[scope][id]=meta; _docsSig=JSON.stringify(docsMeta);
+  return fetch(`${DB}/docs/meta/${encodeURIComponent(scope)}/${id}.json`,{method:'PUT',body:JSON.stringify(meta)}).then(()=>paintDocs()); }
+function addDocLink(){
+  const n=document.getElementById('docName').value.trim(), u=document.getElementById('docUrl').value.trim();
+  if(!/^https?:\/\//i.test(u)){ alert('צריך קישור שמתחיל ב-https://'); return; }
+  putDocMeta(docScope,newDocId(),{n:n||'קישור',t:'link',u,by:(me&&me.name)||'',at:Date.now()});
+  document.getElementById('docName').value=''; document.getElementById('docUrl').value='';
+}
+function fileToDataURL(f){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(f); }); }
+function downscale(f,max,q){ return new Promise((res,rej)=>{ const img=new Image(); img.onload=()=>{ const k=Math.min(1,max/Math.max(img.width,img.height)); const c=document.createElement('canvas'); c.width=Math.round(img.width*k); c.height=Math.round(img.height*k); c.getContext('2d').drawImage(img,0,0,c.width,c.height); res(c.toDataURL('image/jpeg',q)); }; img.onerror=rej; img.src=URL.createObjectURL(f); }); }
+async function addDocFile(inp){
+  const f=inp.files&&inp.files[0]; inp.value=''; if(!f) return;
+  try{
+    let data, mime=f.type;
+    if(/^image\//.test(f.type)){ data=await downscale(f,1600,.82); mime='image/jpeg'; }
+    else if(f.type==='application/pdf'){ if(f.size>900*1024){ alert('ה-PDF גדול מדי (עד ~900KB). אפשר לצרף קישור לדרייב במקום.'); return; } data=await fileToDataURL(f); }
+    else { alert('נתמכים: תמונה, PDF או קישור.'); return; }
+    const id=newDocId(); const nm=document.getElementById('docName').value.trim()||f.name;
+    await fetch(`${DB}/docs/data/${id}.json`,{method:'PUT',body:JSON.stringify(data)});
+    await putDocMeta(docScope,id,{n:nm,t:'file',m:mime,by:(me&&me.name)||'',at:Date.now(),sz:data.length});
+    document.getElementById('docName').value='';
+  }catch(e){ alert('ההעלאה נכשלה'); }
+}
+async function openDocFile(m){
+  const w=window.open('','_blank');
+  try{ const data=await fetch(`${DB}/docs/data/${m.id}.json`).then(r=>r.json()); const blob=await (await fetch(data)).blob(); const u=URL.createObjectURL(blob); if(w) w.location=u; else window.open(u,'_blank'); }
+  catch(e){ if(w) w.close(); alert('לא הצלחתי לפתוח את הקובץ'); }
+}
+function delDoc(m){
+  if(!confirm('למחוק את "'+(m.n||'מסמך')+'"?')) return;
+  if(docsMeta[docScope]) delete docsMeta[docScope][m.id]; _docsSig=JSON.stringify(docsMeta);
+  fetch(`${DB}/docs/meta/${encodeURIComponent(docScope)}/${m.id}.json`,{method:'DELETE'}).catch(()=>{});
+  if(m.t==='file') fetch(`${DB}/docs/data/${m.id}.json`,{method:'DELETE'}).catch(()=>{});
+  paintDocs();
+}
+function setCatMeta(key,o){
+  shared.cats=shared.cats||{}; shared.cats[key]={...(shared.cats[key]||{}),key,...o};
+  fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(key)}.json`,{method:'PATCH',body:JSON.stringify({key,...o})}).catch(()=>{});
+  rebuild(); tabsHTML(); renderCatStrip(); RE();
+}
+let stripEdit=false;
+function renderCatStrip(){
+  const el=document.getElementById('catStrip'); if(!el) return;
+  const cat=selCats.size===1?CATS.find(c=>selCats.has(c.key)):null;
+  if(!cat){ el.style.display='none'; el.innerHTML=''; return; }
+  const its=ITEMS.filter(i=>i.cat===cat.key&&!i.hidden);
+  const ord=its.filter(i=>i.ordered).sort((a,b)=>(b.orderedAt||0)-(a.orderedAt||0));
+  const stt=catState(cat), stLab={open:'🔴 פתוח — צריך החלטה',pick:'🟡 נבחר — צריך להזמין',done:'🟢 נקנה'}[stt]||'';
+  const goal=cat.due?`🎯 יעד קנייה: <b>${fmtDate(cat.due)}</b> ${stt==='done'?'':dueRel(cat.due)}`:(cat.wishlist?'💭 Wishlist — בלי תאריך':'⏳ אין יעד קנייה');
+  const dn=docsList('cat_'+cat.key).length;
+  let h=`<div class="csrow"><span class="st">${stLab}</span><span>${goal}</span><button type="button" onclick="stripEdit=!stripEdit;renderCatStrip()">✎ יעד</button><button type="button" onclick="openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')">📎 מסמכי הקטגוריה${dn?' ('+dn+')':''}</button></div>`;
+  if(stripEdit) h+=`<div class="csrow"><label>תאריך יעד: <input type="date" id="dueIn" value="${cat.due||''}"></label><button type="button" onclick="saveDue('${esc(cat.key)}')">שמירה</button><button type="button" onclick="setCatMeta('${esc(cat.key)}',{due:null,wishlist:true});stripEdit=false">💭 Wishlist (בלי תאריך)</button><button type="button" onclick="setCatMeta('${esc(cat.key)}',{due:null,wishlist:false});stripEdit=false">נקי</button></div>`;
+  ord.forEach(i=>{ const n=docsList('item_'+i.id).length;
+    h+=`<div class="bought">📦 נקנה: <b>${esc(i.name)}</b> · ${i.price!=null?nis(i.price):''} · ${i.orderedAt?fmtDate(i.orderedAt):''}${i.orderedBy?' · '+esc(i.orderedBy):''}${i.orderLink?` · <a href="${esc(i.orderLink)}" target="_blank" rel="noopener">אישור הזמנה ↗</a>`:''} <button type="button" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎 קבלה / מסמכים${n?' ('+n+')':''}</button></div>`; });
+  el.innerHTML=h; el.style.display='flex';
+}
+function saveDue(key){ const v=document.getElementById('dueIn').value; setCatMeta(key,{due:v||null,wishlist:!v}); stripEdit=false; }
+function renderHistory(){
+  const el=document.getElementById('history'); if(!el) return;
+  if(viewMode!=='ordered'){ el.style.display='none'; el.innerHTML=''; return; }
+  const list=ITEMS.filter(i=>i.ordered&&!i.hidden&&inCats(i)).sort((a,b)=>(b.orderedAt||0)-(a.orderedAt||0));
+  let tot=0; list.forEach(i=>{ tot+=(i.price||0); });
+  const catLab=k=>(CATS.find(c=>c.key===k)||{}).label||k;
+  el.innerHTML=`<h4>📦 היסטוריית הזמנות (${list.length})</h4>`+(list.length?`<table>`+list.map(i=>{ const n=docsList('item_'+i.id).length;
+    return `<tr><td>${i.orderedAt?fmtDate(i.orderedAt):'—'}</td><td class="n">${esc(i.name)}</td><td>${esc(catLab(i.cat))}</td><td class="p">${i.price!=null?nis(i.price):''}</td><td>${esc(i.orderedBy||'')}</td><td><button type="button" class="docBtn" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎${n?' ('+n+')':''}</button></td></tr>`; }).join('')+`</table><div class="tot">סה״כ: ${nis(tot)}</div>`:'<p class="docnote">עוד לא סומן שום פריט כמוזמן.</p>');
+  el.style.display='block';
+}
+function openCatPanel(){
+  const body=document.getElementById('catBody'); body.innerHTML='';
+  const groups=[['open','🔴 צריך החלטה'],['pick','🟡 נבחר — צריך להזמין'],['done','🟢 הוזמן / סגור']];
+  const cats=CATS.filter(c=>c.key!=='all');
+  groups.forEach(([g,title])=>{
+    const list=cats.filter(c=>catState(c)===g); if(!list.length) return;
+    const wrap=document.createElement(g==='done'?'details':'div'); wrap.className='cg';
+    const hd=document.createElement(g==='done'?'summary':'h4'); hd.textContent=title+' ('+list.length+')'; wrap.appendChild(hd);
+    list.sort((a,b)=>(a.due||'9999')<(b.due||'9999')?-1:((a.due||'9999')>(b.due||'9999')?1:0));
+    list.forEach(c=>{
+      const its=ITEMS.filter(i=>i.cat===c.key&&!i.hidden), ord=its.filter(i=>i.ordered).length;
+      const row=document.createElement('div'); row.className='crow';
+      const go=document.createElement('button'); go.type='button'; go.className='go'; go.innerHTML=`<span>${c.icon}</span>${c.label}`;
+      go.onclick=()=>{ selCats=new Set([c.key]); tagf.clear(); if(g==='done'&&viewMode==='pending') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true); document.getElementById('catDlg').close(); window.scrollTo({top:0,behavior:'smooth'}); };
+      const pg=document.createElement('span'); pg.className='pg'; pg.textContent=its.length+' פריטים'+(ord?' · '+ord+' הוזמנו':'')+(c.due?' · 🎯 '+fmtDate(c.due):(c.wishlist?' · 💭':''));
+      const tg=document.createElement('button'); tg.type='button'; tg.className='tg'; tg.textContent=g==='done'?'↩ פתחי מחדש':'✓ סגרנו';
+      tg.onclick=()=>setCatClosed(c.key,g!=='done');
+      row.append(go,pg,tg); wrap.appendChild(row);
+    });
+    body.appendChild(wrap);
+  });
+  document.getElementById('catDlg').showModal();
+}
+function setCatClosed(key,val){
+  shared.cats=shared.cats||{}; shared.cats[key]={...(shared.cats[key]||{}),key,closed:val};
+  fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(key)}.json`,{method:'PATCH',body:JSON.stringify({key,closed:val})}).catch(()=>{});
+  rebuild(); tabsHTML(); openCatPanel(); RE();
 }
 (function(){const t=document.getElementById('tabs'); if(!t||t._wheel) return; t._wheel=1;
   t.addEventListener('wheel',e=>{ if(t.scrollWidth>t.clientWidth && Math.abs(e.deltaY)>Math.abs(e.deltaX)){ t.scrollLeft+=e.deltaY; e.preventDefault(); }},{passive:false});})();
@@ -640,6 +855,7 @@ function buildFeatSort(){
 function passView(i){
   if(viewMode==='hidden') return !!i.hidden;
   if(i.hidden) return false;
+  if(viewMode==='pending') return !i.ordered;
   if(viewMode==='all') return true;
   const ms=marksFor(i.id);
   if(viewMode==='left') return !ms.some(m=>m.status==='no');
@@ -648,6 +864,7 @@ function passView(i){
   return true;
 }
 function setView(v){ viewMode=v; document.querySelectorAll('.vbtn').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); RE(); }
+
 function updateFilterBadge(){ const n=(personf!=='all'?1:0)+stf.size+tagf.size; const b=document.getElementById('fbadge'); if(b){b.textContent=n||'';b.style.display=n?'inline-flex':'none';} const fb=document.getElementById('filterBtn'); if(fb)fb.classList.toggle('on',n>0); }
 function passPerson(i){
   if(personf==='all'){
@@ -710,7 +927,7 @@ function computeScores(){
     pool.forEach(it=>{ let sw=0,sum=0; cr.forEach(c=>{ const f=fitOf(c,it.specs[c.k],stats); if(f==null)return; const w=c.weight||1; sw+=w; sum+=w*f; }); it.score=sw?Math.round(100*sum/sw):null; });
   });
 }
-function specRowsHTML(it){
+function specRowsHTML(it,all){
   const cr=critOf(it.cat); if(!cr.length||!it.specs) return '';
   const rows=cr.map((c,idx)=>{
     const v=it.specs[c.k], has=!(v==null||v==='');
@@ -718,12 +935,21 @@ function specRowsHTML(it){
     if(has){ val=esc(v)+(c.unit&&c.type==='num'?' '+esc(c.unit):''); cls='';
       const g=c.goal; if(c.type==='num'&&g&&(g.min!=null||g.max!=null)){ const f=fitOf(c,v,null); cls=f>=1?'ok':(f>=.6?'part':'bad'); } }
     const tip=c.goalNote?` title="${esc(c.goalNote)}"`:'';
-    return `<tr class="${cls}${idx>=4?' more':''}"><td class="l"${tip}>${esc(c.label)}</td><td class="v">${val}</td></tr>`;
+    return `<tr class="${cls}${(!all&&idx>=4)?' more':''}"><td class="l"${tip}>${esc(c.label)}</td><td class="v">${val}</td></tr>`;
   }).join('');
-  const more=cr.length>4?`<button type="button" class="specTog" onclick="toggleSpec('${it.id}')">כל המפרט (${cr.length}) ⌄</button>`:'';
+  const more=(!all&&cr.length>4)?`<button type="button" class="specTog" onclick="toggleSpec('${it.id}')">כל המפרט (${cr.length}) ⌄</button>`:'';
   return `<table class="specT" id="spec-${it.id}">${rows}</table>${more}`;
 }
 function toggleSpec(id){ const t=document.getElementById('spec-'+id); if(!t)return; const o=t.classList.toggle('open'); const b=t.nextElementSibling; if(b&&b.classList.contains('specTog')) b.textContent=o?'פחות ⌃':('כל המפרט ('+critOf(byId[id].cat).length+') ⌄'); }
+function keySpecsHTML(it){
+  const cr=critOf(it.cat); if(!cr.length||!it.specs) return '';
+  const parts=cr.slice(0,3).map(c=>{ const v=it.specs[c.k], has=!(v==null||v===''); let cls='na', val='—';
+    if(has){ val=esc(v)+(c.unit&&c.type==='num'?' '+esc(c.unit):''); cls='';
+      const g=c.goal; if(c.type==='num'&&g&&(g.min!=null||g.max!=null)){ const f=fitOf(c,v,null); cls=f>=1?'ok':(f>=.6?'part':'bad'); } }
+    return `<span class="ks ${cls}"><i>${esc(c.label)}</i> ${val}</span>`; });
+  return `<div class="keySpecs">${parts.join('')}</div>`;
+}
+function toggleMore(id){ const m=document.getElementById('more-'+id); if(!m)return; m.hidden=!m.hidden; const b=m.previousElementSibling; if(b&&b.classList.contains('moreBtn')) b.textContent=m.hidden?'פרטים והשוואה ⌄':'פחות ⌃'; }
 function storesHTML(it){
   const st=(it.stores||[]).slice(); if(!st.length) return '';
   st.sort((a,b)=>(b.rec?1:0)-(a.rec?1:0)||((a.p==null?1e9:a.p)-(b.p==null?1e9:b.p)));
@@ -732,7 +958,8 @@ function storesHTML(it){
   return `<div class="shoprow"><button type="button" class="shopbtn" onclick="toggleStores('${it.id}')">🏪 מחירים ב־${st.length} חנויות ⌄</button>${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div><div class="storeList" id="st-${it.id}">${rows}</div>`;
 }
 function toggleStores(id){ const el=document.getElementById('st-'+id); if(el) el.classList.toggle('open'); }
-let specf={}, specCat=null;
+let specf={}, specCat=null, specBarOpen=false;
+function toggleSpecBar(){ specBarOpen=!specBarOpen; buildSpecBar(); }
 function passSpec(i){
   for(const k in specf){ const f=specf[k], v=i.specs&&i.specs[k];
     if(f.min!=null){ const n=numv(v); if(n==null||n<f.min) return false; }
@@ -753,7 +980,7 @@ function buildSpecBar(){
   cr.filter(c=>c.sort).forEach(c=>add('spec:'+c.k,'לפי '+c.label+(c.type==='num'?(c.higherBetter===false?' ↑ נמוך קודם':' ↓ גבוה קודם'):'')));
   if([...sel.options].some(o=>o.value===keep)) sel.value=keep;
   const pool=ITEMS.filter(i=>i.cat===cat&&!i.hidden), pick=pool.find(i=>i.pick);
-  let h='<h4>🎯 מה חשוב בקטגוריה (מהחשוב לפחות)</h4><ol>'+cr.map(c=>`<li><b>${esc(c.label)}</b>${c.goalNote?' — '+esc(c.goalNote):''}</li>`).join('')+'</ol>';
+  let h='<ol>'+cr.map(c=>`<li><b>${esc(c.label)}</b>${c.goalNote?' — '+esc(c.goalNote):''}</li>`).join('')+'</ol>';
   cr.filter(c=>c.filter).forEach(c=>{
     if(c.type==='num'){
       const cur=specf[c.k]&&specf[c.k].min!=null?specf[c.k].min:'';
@@ -764,8 +991,9 @@ function buildSpecBar(){
       if(vals.length) h+=`<div class="sf"><label>${esc(c.label)}:</label>`+vals.map(v=>`<button type="button" class="chip${(specf[c.k]&&specf[c.k].set&&specf[c.k].set.has(v))?' on':''}" onclick="toggleSpecVal('${c.k}',this.dataset.v)" data-v="${esc(v)}">${esc(v)}</button>`).join('')+`</div>`;
     }
   });
-  if(pick) h+=`<div class="sum">⭐ ההמלצה שלנו: ${esc(pick.name)}${pick.pickWhy?' — '+esc(pick.pickWhy):''}</div>`;
-  bar.innerHTML=h; bar.style.display='block';
+  const head=`<button type="button" class="sbHead" onclick="toggleSpecBar()"><span>🎯 מה חשוב בקטגוריה · סינון ומיון ${specBarOpen?'⌃':'⌄'}</span>${pick?`<span class="sbPick">⭐ ${esc(pick.name)}</span>`:''}</button>`;
+  bar.innerHTML=head+'<div class="sbBody">'+h+(pick&&pick.pickWhy?`<div class="sum">⭐ ההמלצה שלנו: ${esc(pick.name)} — ${esc(pick.pickWhy)}</div>`:'')+'</div>';
+  bar.classList.toggle('open',specBarOpen); bar.style.display='block';
 }
 function cardEl(it){
   if(els.has(it.id))return els.get(it.id);
@@ -785,6 +1013,17 @@ function cardEl(it){
     ?`<div class="qty"><span class="ql">כמות</span><span class="stp"><button title="הפחת" onclick="setQ('${it.id}',-1)">−</button><span class="qv">1</span><button title="הוסף" onclick="setQ('${it.id}',1)">+</button></span></div>`:'';
   const hasPts=(it.points||[]).length>0;
   const shopHTML=(it.stores&&it.stores.length)?storesHTML(it):'';
+  const pts=it.points||[], ptsTop=pts.slice(0,3), ptsRest=pts.slice(3);
+  const descHTML=it.desc?`<div class="desc${hasPts?'':' clamped'}" id="desc-${it.id}">${it.desc}</div>${hasPts?'':`<button type="button" class="descToggle" onclick="toggleDesc('${it.id}')">הצג פרטים ⌄</button>`}`:'';
+  const moreInner=`${hasPts?specRowsHTML(it,true):''}
+        ${ptsRest.length?`<ol class="pts" start="4">${ptsRest.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
+        ${it.loc?`<div class="loc">📍 ${it.loc}</div>`:''}
+        ${featRow}
+        ${stars}
+        ${hasPts?descHTML:''}
+        ${qty}
+        <div class="note"><textarea placeholder="הערה: גוון / גודל / וריאציה…" oninput="setN('${it.id}',this.value)"></textarea></div>
+        <div class="cardActions">${it.type==='product'?`<button class="markOrd" onclick="toggleOrdered('${it.id}')">📦 סמן כהוזמן</button>`:''}<button class="hideb" onclick="toggleHidden('${it.id}')">${it.hidden?'↩️ שחזר ללוח':'🗑️ הסר מהלוח'}</button></div>`;
   c.innerHTML=`${it.pick?'<span class="pickRibbon">⭐ ההמלצה שלנו</span>':''}<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button>
     ${it.type==='product'?`<span class="orderb"><span class="ol">✓ הוזמן</span><span class="od"></span></span>`:''}
     ${media}
@@ -793,24 +1032,23 @@ function cardEl(it){
       ${sub}
       <div class="scoreRow"><span class="scoreB" style="display:none"></span><span class="likeB" style="display:none"></span></div>
       ${it.pick&&it.pickWhy?`<div class="pickWhy">⭐ ${esc(it.pickWhy)}</div>`:''}
-      ${hasPts?`<ol class="pts">${it.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
-      ${specRowsHTML(it)}
-      ${it.loc?`<div class="loc">📍 ${it.loc}</div>`:''}
-      ${featRow}
-      ${stars}
-      ${it.desc?`<div class="desc clamped" id="desc-${it.id}">${it.desc}</div><button type="button" class="descToggle" onclick="toggleDesc('${it.id}')">${hasPts?'פרטים מלאים ⌄':'הצג פרטים ⌄'}</button>`:''}
-      ${shopHTML?shopHTML:''}
-      ${!shopHTML&&it.type==='product'&&(it.link||it.zap)?`<div class="shoprow">${it.link?`<a class="shopbtn" href="${it.link}" target="_blank" rel="noopener">🏪 לחנות המומלצת</a>`:''}${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div>`:''}
+      ${hasPts?keySpecsHTML(it):''}
+      ${hasPts?`<ol class="pts">${ptsTop.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
+      ${hasPts?'':descHTML}
       <div class="ordinfo" style="display:none"></div>
       <div class="people" style="display:none"></div>
-      ${qty}
       <div class="seg">
         <button class="yes" title="נבחר" onclick="setS('${it.id}','yes')">✓</button>
         <button class="maybe" title="אולי" onclick="setS('${it.id}','maybe')">?</button>
         <button class="no" title="לא" onclick="setS('${it.id}','no')">✕</button>
       </div>
-      <div class="note"><textarea placeholder="הערה: גוון / גודל / וריאציה…" oninput="setN('${it.id}',this.value)"></textarea></div>
-      <div class="cardActions">${it.type==='product'?`<button class="markOrd" onclick="toggleOrdered('${it.id}')">📦 סמן כהוזמן</button>`:''}<button class="hideb" onclick="toggleHidden('${it.id}')">${it.hidden?'↩️ שחזר ללוח':'🗑️ הסר מהלוח'}</button></div>
+      ${shopHTML?shopHTML:''}
+      ${!shopHTML&&it.type==='product'&&(it.link||it.zap)?`<div class="shoprow">${it.link?`<a class="shopbtn" href="${it.link}" target="_blank" rel="noopener">🏪 לחנות המומלצת</a>`:''}${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div>`:''}
+      <button type="button" class="moreBtn" onclick="toggleMore('${it.id}')">פרטים והשוואה ⌄</button>
+      ${it.type==='product'?`<button type="button" class="docBtn" onclick="openDocs('item_${it.id}',this.closest('.card').querySelector('.name').textContent)">📎 מסמכים<span class="dn"></span></button>`:''}
+      <div class="more" id="more-${it.id}" hidden>
+        ${moreInner}
+      </div>
     </div>`;
   els.set(it.id,c); grid.appendChild(c); paint(it.id,c); return c;
 }
@@ -911,9 +1149,10 @@ function RE(animate){
     const isEmptyCat=selCats.size>0 && ITEMS.filter(inCats).length===0;
     d.innerHTML=isEmptyCat
       ?`<div class="big">${(CATS.find(c=>c.key===cat)||{}).icon||'✦'}</div><h3>הקטגוריה הזו עדיין ריקה</h3><p>שלחי לי את המקור (לינקים/תמונות/טבלה) ואמלא אותה כאן — עם אותם כלי בחירה, מיון וסינון.</p>`
-      :`<div class="big">🔍</div><h3>אין תוצאות לסינון הנוכחי</h3><p>נסי לנקות חלק מהמסננים או החיפוש.</p>`;
+      :(viewMode==='pending'&&ITEMS.some(i=>inCats(i)&&i.ordered)?`<div class="big">📦</div><h3>כל מה שבקטגוריה הזו כבר הוזמן</h3><p>אפשר לראות מה נקנה ומתי תחת "היסטוריית הזמנות" או "הכל".</p>`:`<div class="big">🔍</div><h3>אין תוצאות לסינון הנוכחי</h3><p>נסי לנקות חלק מהמסננים או החיפוש.</p>`);
     grid.appendChild(d);}
   updateSumm(vis);
+  renderCatStrip(); renderHistory();
 }
 function updateSumm(vis){
   const who=personf==='all'?(me&&me.name):personf;
@@ -1131,6 +1370,7 @@ function fbPoll(){ fetch(`${DB}/picks.json`).then(r=>r.json()).then(d=>{
   if(changed||ordChanged){ rebuild(); tabsHTML(); RE(); }
   const psig=namesList().join('|'); if(changed||psig!==_psig){ _psig=psig; buildChips(); }
   renderPeople();
+  fetchDocsMeta();
 }).catch(()=>{}); }
 const GL={yes:'✓',maybe:'?',no:'✕'};
 function allPeople(){
