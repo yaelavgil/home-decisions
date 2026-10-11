@@ -1082,6 +1082,17 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"ערסלים לגינה","label":"ערסלים לגינה","icon":"🪢","slug":"garden-hammocks","group":"חוץ ופרגולה","multi":True,"subs":["כיסא תלוי / ערסל כיסא","ערסל תלייה — יחיד","ערסל זוגי","ערסל לשלושה / ספת תלייה"]},
       {"key":"גלגלת צינור","label":"גלגלת צינור","icon":"🧵","slug":"hose-reel","group":"חוץ ופרגולה","multi":True,"subs":["אוטומטית מתכנסת — קיר","ידנית — מסגרת / קיר","עגלה ניידת"]}]
 
+# first-seen timestamps (ms) per item id -> "recently added" view; new ids are stamped once at build time
+import time as _time
+_ADDED_P=os.path.join(REPO,"added.json")
+try: _ADDED=json.load(open(_ADDED_P,encoding="utf-8"))
+except Exception: _ADDED={}
+_now=int(_time.time()*1000); _chg=False
+for _d in DATA:
+    if _d["id"] not in _ADDED: _ADDED[_d["id"]]=_now; _chg=True
+    _d["addedAt"]=_ADDED[_d["id"]]
+if _chg: json.dump(_ADDED,open(_ADDED_P,"w",encoding="utf-8"),ensure_ascii=False,indent=0,sort_keys=True)
+
 GROUPS={"תאורה":"תאורה","מכונות קפה":"מטבח","מיקרוגל":"מטבח","תנור":"מטבח","כיריים":"מטבח","מדיח":"מטבח","מקרר":"מטבח","פח":"מטבח",
  "מיטת לילי":"חדרי שינה וילדים","מיטת אורחים":"חדרי שינה וילדים","ארונות לחדרי הילדים":"חדרי שינה וילדים","ארון לחדר אורחים":"חדרי שינה וילדים",
  "שולחן לדני":"חדרי שינה וילדים","שולחן לימודים לדני":"חדרי שינה וילדים","תליה זמנית":"חדרי שינה וילדים",
@@ -1408,6 +1419,44 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .spendBig:hover{filter:brightness(1.05)}
 .spendMini{flex:none;border:1.5px solid #c9a24f;background:#fbf0cf;border-radius:999px;padding:7px 13px;font:inherit;font-weight:800;font-size:13.5px;color:#6f520d;cursor:pointer;white-space:nowrap}
 @media(max-width:560px){.spendBig{padding:6px 12px}.spendBig b{font-size:20px}.spendBig .sl{font-size:11px}}
+
+.rcBtn{flex:none;position:relative;border:1.5px solid var(--line-2);background:var(--paper);border-radius:999px;padding:7px 13px;font:inherit;font-weight:800;font-size:13.5px;color:var(--ink);cursor:pointer;white-space:nowrap;display:inline-flex;gap:5px;align-items:center}
+.rcBtn b{background:#d9534f;color:#fff;border-radius:99px;font-size:11px;min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.rcBtn b[hidden]{display:none}
+.rcFull{position:fixed;inset:0;z-index:72;background:var(--bg);display:flex;flex-direction:column}
+.rcFull[hidden]{display:none}
+.rcHead{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1.5px solid var(--line);background:var(--paper);position:sticky;top:0;z-index:2}
+.rcHead h2{margin:0;font-size:19px;flex:1}
+.rcBack{border:1.5px solid var(--line-2);background:var(--paper);border-radius:999px;padding:8px 14px;font:inherit;font-weight:800;cursor:pointer;color:var(--ink)}
+.rcSeen{border:0;background:var(--brass-soft);border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;font-size:13px;cursor:pointer;color:var(--brass-d)}
+.rcBar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--bg)}
+.rcChips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;max-width:100%}
+.rcChips::-webkit-scrollbar{display:none}
+.rcChips button{flex:none;font:inherit;font-weight:700;font-size:13px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:6px 14px;cursor:pointer;color:var(--ink-soft)}
+.rcChips button.on{background:var(--brass-d);border-color:var(--brass-d);color:#fff}
+.rcBar select{padding:7px 10px;border:1.5px solid var(--line-2);border-radius:99px;font:inherit;font-weight:650;background:var(--paper);max-width:100%}
+.rcTgl{display:inline-flex;gap:6px;align-items:center;font-weight:650;font-size:13px}
+.rcBody{flex:1;overflow:auto;padding:6px 14px 40px;-webkit-overflow-scrolling:touch}
+.rcDay{margin:18px 0 8px;font-size:14px;font-weight:800;color:var(--brass-d);display:flex;gap:8px;align-items:center}
+.rcDay small{color:var(--muted);font-weight:700}
+.rcGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.rcCard{position:relative;background:var(--paper);border:1.5px solid var(--line-2);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.rcCard .im{aspect-ratio:4/3;background:#fbf8f2;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.rcCard .im img{width:100%;height:100%;object-fit:contain}
+.rcCard .newr{position:absolute;top:8px;inset-inline-start:8px;background:#d9534f;color:#fff;font-size:11px;font-weight:800;border-radius:99px;padding:2px 9px}
+.rcCard .bd{padding:9px 11px 11px;display:flex;flex-direction:column;gap:5px;flex:1}
+.rcCard .nm{font-weight:700;font-size:13.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rcCard .pr{font-weight:900;color:var(--brass-d)}
+.rcCard .mt{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--ink-soft)}
+.rcCard .mt .cat{background:var(--brass-soft);border-radius:99px;padding:1px 8px;font-weight:700;color:var(--brass-d)}
+.rcCard .acts{display:flex;gap:6px;margin-top:auto;padding-top:4px}
+.rcCard .acts button{flex:1;font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:6px 8px;cursor:pointer;color:var(--ink-soft)}
+.rcCard .acts .go{background:var(--brass-d);border-color:var(--brass-d);color:#fff}
+.rcEmpty{text-align:center;padding:60px 16px;color:var(--ink-soft)}
+.card.flash{animation:cflash 1.8s ease 1}
+@keyframes cflash{0%,60%{box-shadow:0 0 0 4px #d9b24f}100%{box-shadow:none}}
+.card .newTag{position:absolute;top:10px;inset-inline-start:10px;z-index:3;background:#d9534f;color:#fff;font-size:11px;font-weight:800;border-radius:99px;padding:2px 9px}
+@media(max-width:560px){.rcBtn .t{display:none}.rcGrid{grid-template-columns:repeat(2,1fr);gap:9px}.rcHead h2{font-size:17px}.rcSeen{font-size:12px;padding:7px 10px}}
 .keySpecs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
 .ks{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--brass-soft);font-weight:700;white-space:nowrap}
 .ks i{font-style:normal;font-weight:500;color:var(--ink-soft)}
@@ -1738,7 +1787,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 </header>
 
 <div class="deck">
-  <div class="catrow"><button type="button" class="spendMini" onclick="openSpend()" title="הוצאות על הלבשת הבית והחצר">💰 <b id="spendTot2"></b></button><button type="button" class="allcats" onclick="toggleCatMenu()">☰ <span>קטגוריות</span><span class="doneN" id="doneN"></span></button><div class="tabs" id="tabs"></div><div class="catMenu" id="catMenu" hidden></div></div>
+  <div class="catrow"><button type="button" class="rcBtn" id="rcBtn" onclick="openRecents()" aria-label="נוספו לאחרונה">🕒 <span class="t">חדשים</span><b id="rcBadge" hidden></b></button><button type="button" class="spendMini" onclick="openSpend()" title="הוצאות על הלבשת הבית והחצר">💰 <b id="spendTot2"></b></button><button type="button" class="allcats" onclick="toggleCatMenu()">☰ <span>קטגוריות</span><span class="doneN" id="doneN"></span></button><div class="tabs" id="tabs"></div><div class="catMenu" id="catMenu" hidden></div></div>
   <div class="tools">
     <div class="views" id="views">
     <button class="vbtn on" data-v="active" onclick="setView('active')">פעילים<span class="vc" data-c="active"></span></button>
@@ -1856,6 +1905,11 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="db"><textarea id="out"></textarea></div>
   <div class="df"><button class="tbtn primary" onclick="copyOut()">העתק ללוח</button><button class="tbtn" onclick="dlg.close()">סגור</button></div>
 </dialog>
+<div class="rcFull" id="rcFull" hidden role="dialog" aria-modal="true" aria-label="נוספו לאחרונה">
+  <div class="rcHead"><button type="button" class="rcBack" onclick="closeRecents()" aria-label="חזרה ללוח">→ חזרה</button><h2>🕒 נוספו לאחרונה</h2><button type="button" class="rcSeen" id="rcSeenBtn" onclick="markRecentsSeen()">✓ סמני הכל כנצפה</button></div>
+  <div class="rcBar"><div class="rcChips" id="rcRange"></div><select id="rcCat" onchange="rcCat=this.value;renderRecents()" aria-label="סינון לפי קטגוריה"></select><label class="rcTgl"><input type="checkbox" id="rcUnord" onchange="rcUnord=this.checked;renderRecents()"> רק מה שעוד לא הוזמן</label></div>
+  <div class="rcBody" id="rcBody"></div>
+</div>
 <div class="cartFull" id="spendFull" hidden>
   <div class="cfHead"><button type="button" class="cfX" onclick="closeSpend()" aria-label="סגירה">✕</button><h2>💰 הוצאות על הלבשת הבית והחצר</h2>
     <div class="cfTabs" id="spTabs"></div></div>
@@ -2219,6 +2273,43 @@ function renderSpend(){
 function copySpend(){ const L=spendItems(); const rows=[['תאריך','פריט','קטגוריה','חנות','סכום','אסמכתא']].concat(L.map(i=>[i.orderedAt?fmtDate(i.orderedAt):'',i.name,((CATS.find(c=>c.key===i.cat)||{}).label||''),guessStore(i),lineTotal(i),{ok:'יש',part:'מסמך חנות',no:'אין'}[receiptState(i)]]));
   const tsv=rows.map(r=>r.join('\t')).join('\n'); (navigator.clipboard?navigator.clipboard.writeText(tsv):Promise.reject()).then(()=>say('📋 הטבלה הועתקה — אפשר להדביק באקסל',2500),()=>prompt('העתיקי:',tsv)); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!document.getElementById('spendFull').hidden&&!document.querySelector('dialog[open]')) closeSpend(); });
+
+/* ===== recently added ("Recents") ===== */
+let rcRangeV='7', rcCat='', rcUnord=false;
+const RC_RANGES=[['1','24 שעות'],['7','7 ימים'],['30','30 ימים'],['0','הכל']];
+function addedTs(i){ return i.addedAt||(shared.seen&&shared.seen[i.id])||0; }
+function rcLastSeen(){ try{ let v=localStorage.getItem('rcSeen'); if(!v){ v=String(Date.now()); localStorage.setItem('rcSeen',v); } return Number(v); }catch(e){ return Date.now(); } }
+function rcList(){ return ITEMS.filter(i=>!i.hidden&&i.type!=='color'&&addedTs(i)).map(i=>({it:i,ts:addedTs(i)})).sort((a,b)=>b.ts-a.ts); }
+function updateRecentsBadge(){ const ls=rcLastSeen(); const n=rcList().filter(x=>x.ts>ls).length; const b=document.getElementById('rcBadge'); if(!b) return; b.hidden=!n; b.textContent=n>99?'99+':n; b.parentNode.title=n?(n+' פריטים חדשים שלא ראית'):'נוספו לאחרונה'; }
+function openRecents(){ const f=document.getElementById('rcFull'); f.hidden=false; document.body.style.overflow='hidden'; renderRecents(); f.querySelector('.rcBody').scrollTop=0; setTimeout(()=>{ const b=f.querySelector('.rcBack'); if(b) b.focus(); },30); }
+function closeRecents(){ document.getElementById('rcFull').hidden=true; document.body.style.overflow=''; }
+function markRecentsSeen(){ try{ localStorage.setItem('rcSeen',String(Date.now())); }catch(e){} updateRecentsBadge(); renderRecents(); say('✓ סומן כנצפה',1500); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!document.getElementById('rcFull').hidden&&!document.querySelector('dialog[open]')) closeRecents(); });
+function dayLabel(ts){ const d=new Date(ts), n=new Date(); const t0=new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime(); const dd=Math.floor((t0-new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime())/864e5);
+  if(dd<=0) return 'היום'; if(dd===1) return 'אתמול'; if(dd<7) return 'לפני '+dd+' ימים'; return d.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:d.getFullYear()===n.getFullYear()?undefined:'numeric'}); }
+function ago2(ts){ const m=Math.round((Date.now()-ts)/60000); return m<1?'הרגע':(m<60?'לפני '+m+' דק׳':(m<1440?'לפני '+Math.round(m/60)+' שעות':'לפני '+Math.round(m/1440)+' ימים')); }
+function renderRecents(){
+  const ls=rcLastSeen(); let L=rcList(); const all=L.length;
+  const days=Number(rcRangeV); if(days>0) L=L.filter(x=>x.ts>=Date.now()-days*864e5);
+  if(rcCat) L=L.filter(x=>x.it.cat===rcCat); if(rcUnord) L=L.filter(x=>!x.it.ordered&&itemStatus(x.it)!=='rejected');
+  document.getElementById('rcRange').innerHTML=RC_RANGES.map(([k,l])=>`<button type="button" class="${rcRangeV===k?'on':''}" onclick="rcRangeV='${k}';renderRecents()">${l}</button>`).join('');
+  const sel=document.getElementById('rcCat'); const cats=CATS.filter(c=>c.key!=='all');
+  sel.innerHTML='<option value="">כל הקטגוריות</option>'+cats.map(c=>`<option value="${esc(c.key)}" ${rcCat===c.key?'selected':''}>${c.icon} ${esc(c.label)}</option>`).join('');
+  document.getElementById('rcUnord').checked=rcUnord;
+  const body=document.getElementById('rcBody');
+  if(!L.length){ body.innerHTML=`<div class="rcEmpty"><div style="font-size:42px">🕒</div><h3>אין פריטים חדשים בטווח הזה</h3><p>${all?'אפשר להרחיב את הטווח או לנקות את הסינון.':'עוד לא נוספו פריטים.'}</p><button type="button" class="tbtn" onclick="rcRangeV='0';rcCat='';rcUnord=false;renderRecents()">הצגת הכל</button></div>`; return; }
+  const groups=[]; L.forEach(x=>{ const k=dayLabel(x.ts); let g=groups[groups.length-1]; if(!g||g.k!==k){ g={k,items:[]}; groups.push(g); } g.items.push(x); });
+  const catOf=k=>cats.find(c=>c.key===k)||{};
+  body.innerHTML=groups.map(g=>`<div class="rcDay">${esc(g.k)} <small>${g.items.length} פריטים</small></div><div class="rcGrid">`+g.items.map(({it,ts})=>{ const stt=itemStatus(it), c=catOf(it.cat), im=(it.imgs&&it.imgs[0])||it.img||'';
+    return `<div class="rcCard"><div class="im" onclick="rcOpen('${it.id}')" role="button" tabindex="0">${im?`<img src="${esc(im)}" alt="" loading="lazy">`:`<span style="font-size:40px">${c.icon||'📦'}</span>`}</div>${ts>ls?'<span class="newr">חדש</span>':''}
+      <div class="bd"><div class="nm">${esc(it.name)}</div><div class="pr">${it.price!=null?nis(it.price):''}</div>
+      <div class="mt"><span class="cat">${c.icon||''} ${esc(c.label||it.cat)}</span><span>${ST_LAB[stt]}</span><span>${ago2(ts)}</span></div>
+      <div class="acts"><button type="button" class="go" onclick="rcOpen('${it.id}')">פתיחה בקטגוריה</button>${it.link?`<a class="tbtn" style="flex:none;padding:6px 10px;text-decoration:none" href="${esc(it.link)}" target="_blank" rel="noopener" title="לחנות">↗</a>`:''}</div></div></div>`; }).join('')+'</div>').join('');
+}
+function rcOpen(id){ const it=byId[id]; if(!it) return; closeRecents(); selCats=new Set([it.cat]); subf=null; placef=null; tagf.clear(); if(viewMode!=='all') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true);
+  setTimeout(()=>{ const c=els.get(id); if(c){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.add('flash'); setTimeout(()=>c.classList.remove('flash'),2000); } },250); }
+function recordFirstSeen(){ // custom items created straight in Firebase have no build-time stamp: remember when first loaded
+  try{ const seen=(shared&&shared.seen)||{}; ITEMS.forEach(i=>{ if(!i.addedAt&&i.custom&&!seen[i.id]){ seen[i.id]=Date.now(); shared.seen=seen; fetch(`${DB}/picks/_catalog/seen/${encodeURIComponent(i.id)}.json`,{method:'PUT',body:String(seen[i.id])}).catch(()=>{}); } }); }catch(e){} }
 function openStoresDlg(){ document.getElementById('stQ').value=''; renderStores(); const d=document.getElementById('storesDlg'); if(!d.open) d.showModal(); }
 function addStore(){ const n=prompt('שם החנות / הספק (למשל: הבית של עידה, נגר, חשמלאי):'); if(!n||!n.trim()) return; openDocs('store_'+n.trim(),n.trim()); }
 function renderStores(){
@@ -2858,6 +2949,7 @@ function paint(id,c){
   const sb=c.querySelector('.scoreB'); if(sb){ if(it.score!=null){ sb.style.display=''; sb.textContent='התאמה '+it.score+'/100'; sb.className='scoreB '+(it.score>=75?'':(it.score>=50?'mid':'low')); sb.title='ציון התאמה לפי הקריטריונים של הקטגוריה (מפורט בסרגל "מה חשוב בקטגוריה")'; } else sb.style.display='none'; }
   const pim=c.querySelector('.thumb img'); if(pim&&it.img&&pim.getAttribute('src')!==it.img){pim.src=it.img;} // card is built once; follow later image fixes (e.g. from the shared catalog)
   paintStatus(c,id); paintLoc(c,it); paintParts(c,it);
+  { let nt=c.querySelector('.newTag'); const isNew=addedTs(it)>rcLastSeen()&&it.type!=='color'; if(isNew&&!nt){ nt=document.createElement('span'); nt.className='newTag'; nt.textContent='חדש'; c.appendChild(nt); } else if(!isNew&&nt) nt.remove(); }
   const od=c.querySelector('.orderb .od'); if(od)od.textContent=it.orderedAt?new Date(it.orderedAt).toLocaleDateString('he-IL'):'';
   const mo=c.querySelector('.markOrd'); if(mo)mo.style.display=it.ordered?'none':'';
   const hb=c.querySelector('.hideb');
@@ -2986,7 +3078,7 @@ function RE(animate){
       :(viewMode==='active'&&ITEMS.some(i=>inCats(i)&&i.ordered)?`<div class="big">📦</div><h3>כל מה שבקטגוריה הזו כבר הוזמן</h3><p>אפשר לראות מה נקנה ומתי תחת "היסטוריית הזמנות" או "הכל".</p>`:`<div class="big">🔍</div><h3>אין תוצאות לסינון הנוכחי</h3><p>נסי לנקות חלק מהמסננים או החיפוש.</p>`);
     grid.appendChild(d);}
   updateSumm(vis);
-  renderCatStrip(); renderHistory(); updateViewCounts(); renderRejNote(); renderSubRow(); updateSpendChip(); if(!document.getElementById('spendFull').hidden) renderSpend();
+  renderCatStrip(); renderHistory(); updateViewCounts(); renderRejNote(); renderSubRow(); updateSpendChip(); updateRecentsBadge(); if(!document.getElementById('spendFull').hidden) renderSpend();
 }
 function updateSumm(vis){
   document.getElementById('summ').innerHTML=`מוצג: <b>${vis.length}</b> פריטים`;
@@ -3265,7 +3357,7 @@ function fbPoll(){ fetch(`${DB}/picks.json`).then(r=>r.json()).then(d=>{
   if(changed||ordChanged){ rebuild(); tabsHTML(); RE(); }
   const psig=namesList().join('|'); if(changed||psig!==_psig){ _psig=psig; buildChips(); }
   renderPeople();
-  fetchDocsMeta(); fetchResearch();
+  fetchDocsMeta(); fetchResearch(); recordFirstSeen();
 }).catch(()=>{}); }
 const GL={yes:'✓',maybe:'?',no:'✕'};
 function allPeople(){
