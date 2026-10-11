@@ -687,12 +687,11 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="catrow"><button type="button" class="rcBtn" id="rcBtn" onclick="openRecents()" aria-label="נוספו לאחרונה">🕒 <span class="t">חדשים</span><b id="rcBadge" hidden></b></button><button type="button" class="spendMini" onclick="openSpend()" title="הוצאות על הלבשת הבית והחצר">💰 <b id="spendTot2"></b></button><button type="button" class="allcats" onclick="toggleCatMenu()">☰ <span>קטגוריות</span><span class="doneN" id="doneN"></span></button><div class="tabs" id="tabs"></div><div class="catMenu" id="catMenu" hidden></div></div>
   <div class="tools">
     <div class="views" id="views">
-    <button class="vbtn on" data-v="active" onclick="setView('active')">פעילים<span class="vc" data-c="active"></span></button>
+    <button class="vbtn on" data-v="all" onclick="setView('all')">הכל<span class="vc" data-c="all"></span></button>
     <button class="vbtn" data-v="tochoose" onclick="setView('tochoose')">🤔 לבחירה<span class="vc" data-c="tochoose"></span></button>
     <button class="vbtn" data-v="toorder" onclick="setView('toorder')">🛒 להזמין<span class="vc" data-c="toorder"></span></button>
     <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 הוזמנו<span class="vc" data-c="ordered"></span></button>
     <button class="vbtn" data-v="rejected" onclick="setView('rejected')">↩ הוסרו מההזמנה<span class="vc" data-c="rejected"></span></button>
-    <button class="vbtn" data-v="all" onclick="setView('all')">הכל<span class="vc" data-c="all"></span></button>
     <button class="vbtn" data-v="hidden" onclick="setView('hidden')">🙈 הוסתרו<span class="c" id="hiddenCount" style="display:none"></span></button>
   </div>
     <div class="search"><span class="i">🔍</span><input id="q" placeholder="חיפוש…" oninput="RE()"></div>
@@ -913,7 +912,7 @@ let st=JSON.parse(localStorage.getItem(KEY)||"{}"); st.s=st.s||{}; st.custom=st.
 let me=JSON.parse(localStorage.getItem('ida-me')||'null'); // {pk,name}
 let remote={}; // {pk:{name,items:{id:{s,n,q}}}}
 let _psig="";
-let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="active", featSort=null, subf=null, placef=null;
+let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="all", featSort=null, subf=null, placef=null;
 let ITEMS=[],CATS=[],byId={};
 let shared={items:{},cats:{}}; // shared catalog from Firebase (/picks/_catalog)
 function modelKey(s){ if(!s)return''; const m=String(s).toUpperCase().match(/[A-Z]{2,4}-? ?\d{3}[A-Z0-9]*/); return m?m[0].replace(/[- ]/g,''):''; }
@@ -1643,7 +1642,7 @@ function passView(i){
   if(viewMode==='rejected') return stt==='rejected';
   return true;
 }
-function setView(v){ viewMode=v; document.querySelectorAll('.vbtn').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); RE(); }
+function setView(v){ if(v===viewMode&&v!=='all') v='all'; viewMode=v; document.querySelectorAll('.vbtn').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); RE(); }
 
 function updateFilterBadge(){ const n=(personf!=='all'?1:0)+stf.size+tagf.size; const b=document.getElementById('fbadge'); if(b){b.textContent=n||'';b.style.display=n?'inline-flex':'none';} const fb=document.getElementById('filterBtn'); if(fb)fb.classList.toggle('on',n>0); }
 function passPerson(i){
