@@ -1096,16 +1096,12 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"גלגלת צינור","label":"גלגלת צינור","icon":"🧵","slug":"hose-reel","group":"חוץ ופרגולה","multi":True,"subs":["אוטומטית מתכנסת — קיר","ידנית — מסגרת / קיר","עגלה ניידת"]},
       {"key":"מחסן לכביסה ומייבש","label":"מחסן לכביסה ומייבש","icon":"🧺","slug":"laundry-shed","group":"חוץ ופרגולה","multi":True,"subs":["מחסן פלדה","מעטפת אטומה / ארון חוץ","DIY / חלופה זולה"]}]
 
-# first-seen timestamps (ms) per item id -> "recently added" view; new ids are stamped once at build time
-import time as _time
-_ADDED_P=os.path.join(REPO,"added.json")
-try: _ADDED=json.load(open(_ADDED_P,encoding="utf-8"))
+# first-seen timestamps (ms) per item id -> "recently added" view. added.json is a read-only baseline (committed);
+# items added later are stamped by the page itself in Firebase (/picks/_catalog/seen/<id>) the first time anyone loads the board.
+try: _ADDED=json.load(open(os.path.join(REPO,"added.json"),encoding="utf-8"))
 except Exception: _ADDED={}
-_now=int(_time.time()*1000); _chg=False
 for _d in DATA:
-    if _d["id"] not in _ADDED: _ADDED[_d["id"]]=_now; _chg=True
-    _d["addedAt"]=_ADDED[_d["id"]]
-if _chg: json.dump(_ADDED,open(_ADDED_P,"w",encoding="utf-8"),ensure_ascii=False,indent=0,sort_keys=True)
+    if _d["id"] in _ADDED: _d["addedAt"]=_ADDED[_d["id"]]
 
 GROUPS={"תאורה":"תאורה","מכונות קפה":"מטבח","מיקרוגל":"מטבח","תנור":"מטבח","כיריים":"מטבח","מדיח":"מטבח","מקרר":"מטבח","פח":"מטבח",
  "מיטת לילי":"חדרי שינה וילדים","מיטת אורחים":"חדרי שינה וילדים","ארונות לחדרי הילדים":"חדרי שינה וילדים","ארון לחדר אורחים":"חדרי שינה וילדים",
@@ -2323,7 +2319,7 @@ function renderRecents(){
 function rcOpen(id){ const it=byId[id]; if(!it) return; closeRecents(); selCats=new Set([it.cat]); subf=null; placef=null; tagf.clear(); if(viewMode!=='all') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true);
   setTimeout(()=>{ const c=els.get(id); if(c){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.add('flash'); setTimeout(()=>c.classList.remove('flash'),2000); } },250); }
 function recordFirstSeen(){ // custom items created straight in Firebase have no build-time stamp: remember when first loaded
-  try{ const seen=(shared&&shared.seen)||{}; ITEMS.forEach(i=>{ if(!i.addedAt&&i.custom&&!seen[i.id]){ seen[i.id]=Date.now(); shared.seen=seen; fetch(`${DB}/picks/_catalog/seen/${encodeURIComponent(i.id)}.json`,{method:'PUT',body:String(seen[i.id])}).catch(()=>{}); } }); }catch(e){} }
+  try{ const seen=(shared&&shared.seen)||{}; ITEMS.forEach(i=>{ if(!i.addedAt&&!seen[i.id]){ seen[i.id]=Date.now(); shared.seen=seen; fetch(`${DB}/picks/_catalog/seen/${encodeURIComponent(i.id)}.json`,{method:'PUT',body:String(seen[i.id])}).catch(()=>{}); } }); }catch(e){} }
 function openStoresDlg(){ document.getElementById('stQ').value=''; renderStores(); const d=document.getElementById('storesDlg'); if(!d.open) d.showModal(); }
 function addStore(){ const n=prompt('שם החנות / הספק (למשל: הבית של עידה, נגר, חשמלאי):'); if(!n||!n.trim()) return; openDocs('store_'+n.trim(),n.trim()); }
 function renderStores(){
