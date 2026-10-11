@@ -858,9 +858,16 @@ const STL={yes:'נבחר',maybe:'אולי',no:'לא',none:''};
 /* deep-linkable tabs: each category has a slug, reflected in the URL hash (#coffee) */
 const slugOf=c=>c.slug||c.key;
 const inCats=i=>selCats.size===0||selCats.has(i.cat);
+const SITE="https://yaelavgil.github.io/home-decisions/", SITE_PATH=(()=>{try{return new URL(SITE).pathname;}catch(e){return '/';}})();
+function onLiveSite(){ return location.href.startsWith(SITE)&&location.pathname.indexOf(SITE_PATH+'picks/')!==0; }
+function ensureBase(){ if(!document.querySelector('base')){ const b=document.createElement('base'); b.href=SITE; document.head.prepend(b); } }
 function syncHash(){
-  if(selCats.size===0){ history.replaceState(null,'',location.pathname+location.search); return; }
   const slugs=CATS.filter(c=>selCats.has(c.key)).map(c=>encodeURIComponent(slugOf(c)));
+  // On the live site the address bar shows /c/<slug>/ (a real static page with WhatsApp preview tags); copying it shares the category
+  if(onLiveSite()){
+    try{ ensureBase(); const path=SITE_PATH+(slugs.length===1?'c/'+slugs[0]+'/':''); history.replaceState(null,'',path+(slugs.length>1?'#'+slugs.join('+'):'')); return; }catch(e){}
+  }
+  if(selCats.size===0){ history.replaceState(null,'',location.pathname+location.search); return; }
   history.replaceState(null,'','#'+slugs.join('+'));
 }
 function applyHash(){
@@ -1026,7 +1033,7 @@ function storeNames(){ const set=new Set(ITEMS.filter(i=>i.ordered).map(guessSto
 
 function shareCat(key){
   const c=CATS.find(x=>x.key===key); if(!c) return; const slug=c.slug||c.key;
-  const url=location.origin+location.pathname.replace(/[^/]*$/,'')+'c/'+encodeURIComponent(slug)+'/';
+  const url=(onLiveSite()?SITE:location.origin+location.pathname.replace(/[^/]*$/,''))+'c/'+encodeURIComponent(slug)+'/';
   const title=(c.label||'')+' — לוח החלטות';
   if(navigator.share){ navigator.share({title,url}).catch(()=>{}); return; }
   const done=()=>say('🔗 הקישור לקטגוריה הועתק — כשתשלחי אותו בוואטסאפ תופיע תמונה של הקטגוריה',3500);
@@ -2183,7 +2190,7 @@ function copyOrderLink(){
   const who=personf==='all'?(me&&me.name):personf; if(!who)return;
   const ids=ITEMS.filter(i=>i.type==='product'&&statusOfName(who,i.id)==='yes').map(i=>i.id);
   if(!ids.length){alert('סמנו ✓ על מוצרים קודם — הקישור נבנה מהבחירות.');return;}
-  const url=location.origin+location.pathname+'#order='+ids.join(',');
+  const url=(onLiveSite()?SITE:location.origin+location.pathname)+'#order='+ids.join(',');
   const done=()=>{const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);};
   navigator.clipboard?navigator.clipboard.writeText(url).then(done,done):done();
 }
@@ -2201,7 +2208,7 @@ if(_oids){
   fetch(`${DB}/picks.json`).then(r=>r.json()).then(d=>{ shared=(d&&d._catalog)||{items:{},cats:{}}; rebuild(); renderOrder(_oids); }).catch(()=>{});
 }
 else{
-rebuild(); applyHash(); tabsHTML(); buildChips(); RE(true);
+rebuild(); applyHash(); tabsHTML(); buildChips(); RE(true); if(selCats.size) syncHash();
 if(me){ me.pk=pkFromName(me.name); localStorage.setItem('ida-me',JSON.stringify(me)); fbPushName(); startSync(); } else openMe();
 checkIncomingAdd();
 }
