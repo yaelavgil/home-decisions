@@ -223,6 +223,15 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .gwrap.zoom img{width:220%;cursor:zoom-out}
 .gfig .gtools{display:flex;gap:8px;margin:6px 0 0}
 .gfig .gtools button{font:inherit;font-size:12.5px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:3px 11px;cursor:pointer;color:var(--brass-d);font-weight:650}
+
+.stbox{border:1.5px solid var(--line-2);border-radius:12px;margin:8px 0;background:var(--paper);padding:2px 10px}
+.stbox summary{cursor:pointer;padding:9px 0;font-size:14.5px}
+.stbox .stm{color:var(--ink-soft);font-weight:600;font-size:12.5px;margin-inline-start:8px}
+.stdocs{margin:4px 0 8px}
+.sttbl{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 10px}
+.sttbl td{padding:4px 6px;border-bottom:1px solid var(--line-2);vertical-align:top}
+.sttbl td.p{white-space:nowrap;font-weight:800;color:var(--brass-d)}
+#docKind{padding:6px 8px;border:1.5px solid var(--line-2);border-radius:9px;font:inherit}
 .keySpecs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
 .ks{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--brass-soft);font-weight:700;white-space:nowrap}
 .ks i{font-style:normal;font-weight:500;color:var(--ink-soft)}
@@ -544,6 +553,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
       <a href="planner/" class="plannerlink">🛒 מתכנן קנייה חכם</a>
       <a href="entrance-cabinet/" class="plannerlink">🚪 גוונים לארון כניסה</a>
+      <a href="#" class="plannerlink" onclick="openStoresDlg();return false">🏪 חנויות ומסמכים</a>
       <a href="#" class="plannerlink" onclick="openDocGallery('cat_תאורה','תוכניות תאורה');return false">🗺 תוכניות תאורה</a>
       <div class="whoami" id="whoami"></div>
     </div>
@@ -598,6 +608,11 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="info"><h3 id="lbname"></h3><div class="p" id="lbprice"></div><div class="loc" id="lbloc"></div><a class="store" id="lbstore" target="_blank" rel="noopener">לצפייה בחנות ↗</a><div class="lbord" id="lbord"></div></div></div>
 </div>
 
+<dialog id="storesDlg" class="catdlg galdlg"><div class="dh">🏪 חנויות, הזמנות ומסמכים</div>
+  <div class="db"><div class="cmTop"><input id="stQ" placeholder="🔍 חיפוש חנות…" oninput="renderStores()"><button type="button" class="tbtn" onclick="addStore()">＋ חנות / ספק חדש</button></div><div id="stBody"></div></div>
+  <div class="df"><button class="tbtn" onclick="document.getElementById('storesDlg').close()">סגור</button></div>
+</dialog>
+
 <dialog id="galDlg" class="catdlg galdlg"><div class="dh" id="galTitle">🗺 תוכניות</div>
   <div class="db" id="galBody"></div>
   <div class="df"><button class="tbtn" onclick="document.getElementById('galDlg').close()">סגור</button></div>
@@ -642,7 +657,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="db">
     <div id="docList"></div>
     <div class="docadd">
-      <div class="frow"><input id="docName" placeholder="שם (קבלה, תוכנית, אישור הזמנה…)"><input id="docUrl" placeholder="קישור (דרייב / מייל / אתר) — או העלי קובץ למטה" dir="ltr"></div>
+      <div class="frow"><select id="docKind"><option>קבלה</option><option>חשבונית</option><option>הצעת מחיר</option><option>הזמנה / אישור</option><option>תוכנית</option><option>אחר</option></select><input id="docName" placeholder="שם / תיאור (אופציונלי)"><input id="docUrl" placeholder="קישור (דרייב / מייל / אתר) — או העלי קובץ למטה" dir="ltr"></div>
       <div class="frow"><button type="button" class="tbtn" onclick="addDocLink()">🔗 הוסיפי קישור</button><label class="tbtn">📎 העלי תמונה / PDF<input type="file" id="docFile" accept="image/*,application/pdf" hidden onchange="addDocFile(this)"></label></div>
       <p class="docnote">קבצים נשמרים בבסיס הנתונים המשותף (תמונות מוקטנות, PDF עד ~900KB). מסמכים עם פרטים אישיים רגישים — עדיף קישור לדרייב.</p>
     </div>
@@ -919,7 +934,7 @@ function docsList(scope){ return Object.entries(docsMeta[scope]||{}).map(([id,m]
 function fetchDocsMeta(){ fetch(`${DB}/docs/meta.json`).then(r=>r.json()).then(d=>{ d=d||{}; const sig=JSON.stringify(d); if(sig!==_docsSig){ _docsSig=sig; docsMeta=d; paintDocs(); } }).catch(()=>{}); }
 function paintDocs(){
   els.forEach((c,id)=>{ const b=c.querySelector('.docBtn .dn'); if(b){ const n=docsList('item_'+id).length; b.textContent=n?('('+n+')'):''; } });
-  renderCatStrip(); renderHistory(); if(document.getElementById('docDlg').open) renderDocList();
+  renderCatStrip(); renderHistory(); if(document.getElementById('docDlg').open) renderDocList(); if(document.getElementById('storesDlg')&&document.getElementById('storesDlg').open) renderStores();
 }
 function openDocs(scope,title){ docScope=scope; document.getElementById('docTitle').textContent='📎 מסמכים — '+title; document.getElementById('docName').value=''; document.getElementById('docUrl').value=''; renderDocList(); const d=document.getElementById('docDlg'); if(!d.open) d.showModal(); }
 function renderDocList(){
@@ -928,7 +943,7 @@ function renderDocList(){
     const icon=m.t==='link'?'🔗':(/pdf/.test(m.m||'')?'📄':'🖼️');
     const main=m.t==='link'?document.createElement('a'):document.createElement('button');
     if(m.t==='link'){ main.href=m.u; main.target='_blank'; main.rel='noopener'; } else { main.type='button'; main.className='open'; main.onclick=()=>openDocFile(m); }
-    main.textContent=icon+' '+(m.n||'מסמך');
+    main.textContent=icon+' '+(m.k?'['+m.k+'] ':'')+(m.n||'מסמך');
     const meta=document.createElement('small'); meta.textContent=[m.by,m.at?fmtDate(m.at):''].filter(Boolean).join(' · ');
     const del=document.createElement('button'); del.type='button'; del.className='del'; del.textContent='🗑'; del.title='מחיקה'; del.onclick=()=>delDoc(m);
     row.append(main,meta,del); box.appendChild(row); });
@@ -946,13 +961,42 @@ function openDocGallery(scope,title){
     fetch(`${DB}/docs/data/${m.id}.json`).then(r=>r.json()).then(d=>{ if(d) img.src=d; }).catch(()=>{}); });
   const d=document.getElementById('galDlg'); if(!d.open) d.showModal();
 }
+
+/* ===== stores: where we bought, per-store receipts / quotes / invoices ===== */
+const STORE_HOSTS={'ida-home.co.il':'הבית של עידה','ksp.co.il':'KSP','haikudesign.co.il':'Haiku','tomik.co.il':'Tomik','kualastyle.com':'Kuala','hootam.co.il':'Hootam','darmarrakech.co.il':'Dar Marrakech','pandazzz.co.il':'Pandazzz','sheepyby.com':'Sheepy','rico-brand.com':'RICO Home','ikea.com':'IKEA','gardensale.co.il':'Gardensale','havaya-store.co.il':'החוויה','bug.co.il':'Bug','mrgan.co.il':'מר גן','ebath.co.il':'eBath','kiorim.co.il':'קיורים (גינזבורג)','conex.co.il':'Conex','bathboutique.co.il':'בוטיק לאמבט','aliexpress.com':'עלי אקספרס','payngo.co.il':'PayNGo','electricland.co.il':'Electric Land','zap.co.il':'זאפ','super-pharm.co.il':'Super-Pharm','etzmaleh.co.il':'עצמלא','turkiz.net':'Turkiz','ponponi.co.il':'Ponponi','ghaun.online':'ג.חיון','domicile.co.il':'Domicile','amazon.com':'Amazon','temu.com':'Temu'};
+function hostOf(u){ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return ''; } }
+function guessStore(it){
+  if(it.orderStore) return it.orderStore;
+  const st=it.stores?Object.values(it.stores):[]; if(st.length){ const r=st.find(x=>x.rec)||st[0]; if(r&&r.n) return String(r.n).replace(/\s*\(.*\)\s*$/,'').trim(); }
+  const h=hostOf(it.link||''); for(const k in STORE_HOSTS) if(h===k||h.endsWith('.'+k)) return STORE_HOSTS[k]; return h||'לא ידוע';
+}
+function qtyOf(it){ const m=((it.orderedBy||'')+' '+(it.orderNote||'')).match(/(\d+)\s*יח|×\s*(\d+)/); return m?Number(m[1]||m[2]):1; }
+function lineTotal(it){ return it.paid!=null?it.paid:(it.price||0)*qtyOf(it); }
+function storeNames(){ const set=new Set(ITEMS.filter(i=>i.ordered).map(guessStore)); Object.keys(docsMeta).filter(k=>k.startsWith('store_')).forEach(k=>set.add(k.slice(6))); Object.values(STORE_HOSTS).forEach(n=>set.add(n)); return [...set].filter(Boolean).sort((a,b)=>a.localeCompare(b,'he')); }
+function openStoresDlg(){ document.getElementById('stQ').value=''; renderStores(); const d=document.getElementById('storesDlg'); if(!d.open) d.showModal(); }
+function addStore(){ const n=prompt('שם החנות / הספק (למשל: הבית של עידה, נגר, חשמלאי):'); if(!n||!n.trim()) return; openDocs('store_'+n.trim(),n.trim()); }
+function renderStores(){
+  const q=(document.getElementById('stQ').value||'').trim(); const body=document.getElementById('stBody');
+  const by={}; ITEMS.filter(i=>i.ordered&&!i.hidden).forEach(i=>{ const n=guessStore(i); (by[n]=by[n]||[]).push(i); });
+  Object.keys(docsMeta).filter(k=>k.startsWith('store_')).forEach(k=>{ const n=k.slice(6); by[n]=by[n]||[]; });
+  const names=Object.keys(by).filter(n=>!q||n.includes(q)).sort((a,b)=>by[b].reduce((x,i)=>x+lineTotal(i),0)-by[a].reduce((x,i)=>x+lineTotal(i),0));
+  body.innerHTML=names.length?'':'<p class="docnote">עוד אין חנויות עם הזמנות או מסמכים. סמני פריט כהוזמן, או הוסיפי חנות.</p>';
+  names.forEach(n=>{
+    const its=by[n].sort((a,b)=>(b.orderedAt||0)-(a.orderedAt||0)), tot=its.reduce((x,i)=>x+lineTotal(i),0), docs=docsList('store_'+n);
+    const d=document.createElement('details'); d.className='stbox'; if(q) d.open=true;
+    d.innerHTML=`<summary><b>${esc(n)}</b> <span class="stm">${its.length?its.length+' פריטים · '+nis(tot):'אין הזמנות עדיין'} · 📎 ${docs.length} מסמכים</span></summary>
+      <div class="stdocs">${docs.length?docs.map(m=>`<div class="docrow">${m.t==='link'?`<a href="${esc(m.u)}" target="_blank" rel="noopener">🔗 ${m.k?'['+esc(m.k)+'] ':''}${esc(m.n||'קישור')}</a>`:`<button type="button" class="open" onclick='openDocFile(${JSON.stringify(m).replace(/'/g,"&#39;")})'>${/pdf/.test(m.m||'')?'📄':'🖼️'} ${m.k?'['+esc(m.k)+'] ':''}${esc(m.n||'מסמך')}</button>`}<small>${[m.by,m.at?fmtDate(m.at):''].filter(Boolean).join(' · ')}</small></div>`).join(''):'<p class="docnote">אין מסמכי חנות (קבלות, חשבוניות, הצעות מחיר).</p>'}
+        <button type="button" class="tbtn" onclick="openDocs('store_${esc(n)}','${esc(n)}')">📎 הוספה / ניהול מסמכי החנות</button></div>
+      ${its.length?`<table class="sttbl">${its.map(i=>`<tr><td>${i.orderedAt?fmtDate(i.orderedAt):'—'}</td><td>${esc(i.name)}</td><td class="p">${nis(lineTotal(i))}</td><td><button type="button" class="docBtn" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎 ${docsList('item_'+i.id).length||''}</button> <button type="button" class="docBtn" onclick="openOrderDlg('${i.id}')">✎</button></td></tr>`).join('')}</table>`:''}`;
+    body.appendChild(d); });
+}
 function newDocId(){ return 'd'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function putDocMeta(scope,id,meta){ docsMeta[scope]=docsMeta[scope]||{}; docsMeta[scope][id]=meta; _docsSig=JSON.stringify(docsMeta);
   return fetch(`${DB}/docs/meta/${encodeURIComponent(scope)}/${id}.json`,{method:'PUT',body:JSON.stringify(meta)}).then(()=>paintDocs()); }
 function addDocLink(){
   const n=document.getElementById('docName').value.trim(), u=document.getElementById('docUrl').value.trim();
   if(!/^https?:\/\//i.test(u)){ alert('צריך קישור שמתחיל ב-https://'); return; }
-  putDocMeta(docScope,newDocId(),{n:n||'קישור',t:'link',u,by:(me&&me.name)||'',at:Date.now()});
+  putDocMeta(docScope,newDocId(),{n:n||'קישור',k:document.getElementById('docKind').value,t:'link',u,by:(me&&me.name)||'',at:Date.now()});
   document.getElementById('docName').value=''; document.getElementById('docUrl').value='';
 }
 function fileToDataURL(f){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(f); }); }
@@ -966,7 +1010,7 @@ async function addDocFile(inp){
     else { alert('נתמכים: תמונה, PDF או קישור.'); return; }
     const id=newDocId(); const nm=document.getElementById('docName').value.trim()||f.name;
     await fetch(`${DB}/docs/data/${id}.json`,{method:'PUT',body:JSON.stringify(data)});
-    await putDocMeta(docScope,id,{n:nm,t:'file',m:mime,by:(me&&me.name)||'',at:Date.now(),sz:data.length});
+    await putDocMeta(docScope,id,{n:nm,k:document.getElementById('docKind').value,t:'file',m:mime,by:(me&&me.name)||'',at:Date.now(),sz:data.length});
     document.getElementById('docName').value='';
   }catch(e){ alert('ההעלאה נכשלה'); }
 }
@@ -1003,7 +1047,7 @@ function renderCatStrip(){
   h+=researchStripHTML(cat);
   if(chosenN>1&&!cat.multi) h+=`<div class="warnB">⚠ שימי לב: נבחרו ${chosenN} פריטים בקטגוריה. אם זה מכוון (למשל כמה פריטים לאותו חלל), אפשר לאשר בהגדרות הקטגוריה — "מותר לבחור כמה".</div>`;
   ord.forEach(i=>{ const n=docsList('item_'+i.id).length;
-    h+=`<div class="bought">📦 נקנה: <b>${esc(i.name)}</b> · ${i.price!=null?nis(i.price):''} · ${i.orderedAt?fmtDate(i.orderedAt):''}${i.orderedBy?' · '+esc(i.orderedBy):''}${i.orderLink?` · <a href="${esc(i.orderLink)}" target="_blank" rel="noopener">אישור הזמנה ↗</a>`:''} <button type="button" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎 קבלה / מסמכים${n?' ('+n+')':''}</button><button type="button" onclick="openOrderDlg('${i.id}')">✎ עריכה / ביטול</button></div>`; });
+    h+=`<div class="bought">📦 נקנה: <b>${esc(i.name)}</b> · ${i.price!=null?nis(i.price):''} · ${i.orderedAt?fmtDate(i.orderedAt):''}${i.orderedBy?' · '+esc(i.orderedBy):''} · 🏪 ${esc(guessStore(i))}${i.orderLink?` · <a href="${esc(i.orderLink)}" target="_blank" rel="noopener">אישור הזמנה ↗</a>`:''} <button type="button" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎 קבלה / מסמכים${n?' ('+n+')':''}</button><button type="button" onclick="openOrderDlg('${i.id}')">✎ עריכה / ביטול</button></div>`; });
   el.innerHTML=h; el.style.display='flex';
 }
 
@@ -1127,7 +1171,7 @@ function renderHistory(){
   let tot=0; list.forEach(i=>{ tot+=(i.paid!=null?i.paid:(i.price||0)); });
   const catLab=k=>(CATS.find(c=>c.key===k)||{}).label||k;
   el.innerHTML=`<h4>📦 היסטוריית הזמנות (${list.length})</h4>`+(list.length?`<table>`+list.map(i=>{ const n=docsList('item_'+i.id).length;
-    return `<tr><td>${i.orderedAt?fmtDate(i.orderedAt):'—'}</td><td class="n">${esc(i.name)}</td><td>${esc(catLab(i.cat))}</td><td class="p">${i.paid!=null?nis(i.paid):(i.price!=null?nis(i.price):'')}</td><td>${esc(i.orderedBy||'')}</td><td><button type="button" class="docBtn" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎${n?' ('+n+')':''}</button> <button type="button" class="docBtn" onclick="openOrderDlg('${i.id}')">✎ עריכה / ביטול</button></td></tr>`; }).join('')+`</table><div class="tot">סה״כ: ${nis(tot)}</div>`:'<p class="docnote">עוד לא סומן שום פריט כמוזמן.</p>');
+    return `<tr><td>${i.orderedAt?fmtDate(i.orderedAt):'—'}</td><td class="n">${esc(i.name)}</td><td>${esc(catLab(i.cat))}</td><td>${esc(guessStore(i))}</td><td class="p">${i.paid!=null?nis(i.paid):(i.price!=null?nis(i.price):'')}</td><td>${esc(i.orderedBy||'')}</td><td><button type="button" class="docBtn" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎${n?' ('+n+')':''}</button> <button type="button" class="docBtn" onclick="openOrderDlg('${i.id}')">✎ עריכה / ביטול</button></td></tr>`; }).join('')+`</table><div class="tot">סה״כ: ${nis(tot)}</div>`:'<p class="docnote">עוד לא סומן שום פריט כמוזמן.</p>');
   el.style.display='block';
 }
 const GROUP_ORDER=['תאורה','מטבח','חדרי שינה וילדים','סלון ומשפחה','כניסה ונגרות','אמבטיה','חוץ ופרגולה','גימור וצבעים','אחר'];
@@ -1592,6 +1636,7 @@ function openOrderDlg(id){
     <label>מי הזמינה <input id="ordBy" list="ordNames" value="${esc(who)}" style="width:160px"><datalist id="ordNames">${pool.map(n=>`<option value="${esc(n)}">`).join('')}</datalist></label></div>
   <div class="csf"><label>מחיר ששולם (₪) <input type="number" id="ordPaid" value="${it.paid!=null?esc(it.paid):''}" placeholder="${it.price!=null?esc(it.price):''}" style="width:120px"></label>
     <label>הערה <input id="ordNote" value="${esc(it.orderNote||'')}" placeholder="למשל: ×2, צבע, מספר הזמנה" style="width:260px"></label></div>
+  <div class="csf"><label>נקנה מחנות <input id="ordStore" list="ordStores" value="${esc(guessStore(it))}" style="width:200px"><datalist id="ordStores">${storeNames().map(n=>`<option value="${esc(n)}">`).join('')}</datalist></label><button type="button" class="tbtn" onclick="openDocs('item_'+_ordId,(byId[_ordId]||{}).name||'פריט')">📎 קבלות / מסמכים של הפריט</button></div>
   <div class="csf"><label>קישור לאישור הזמנה <input id="ordLink" value="${esc(it.orderLink||'')}" dir="ltr" style="width:360px" placeholder="https://…"></label></div>
   ${it.ordered?'':'<p class="docnote">מסמנים את הפריט כהוזמן עם התאריך שנבחר — אפשר לתקן תאריך עבר.</p>'}`;
   document.getElementById('ordCancelBtn').style.display=it.ordered?'':'none';
@@ -1602,14 +1647,14 @@ function saveOrderDlg(){
   const link=document.getElementById('ordLink').value.trim(); if(link&&!/^https?:\/\//i.test(link)){ alert('הקישור צריך להתחיל ב-https://'); return; }
   const dv=document.getElementById('ordDate').value; const at=dv?new Date(dv+'T12:00:00').getTime():Date.now();
   const paid=document.getElementById('ordPaid').value;
-  const o={ordered:true,orderedBy:document.getElementById('ordBy').value.trim()||((me&&me.name)||'מישהו'),orderedAt:at,orderLink:link||null,paid:paid!==''?Number(paid):null,orderNote:document.getElementById('ordNote').value.trim()||null};
+  const o={ordered:true,orderedBy:document.getElementById('ordBy').value.trim()||((me&&me.name)||'מישהו'),orderedAt:at,orderLink:link||null,orderStore:document.getElementById('ordStore').value.trim()||null,paid:paid!==''?Number(paid):null,orderNote:document.getElementById('ordNote').value.trim()||null};
   Object.assign(it,o); st.ord[id]=o; save(); fbPushOrdered(id,o);
   document.getElementById('ordDlg').close(); paint(id); tabsHTML(); RE(); if(typeof renderLbOrd==='function'&&lbId===id) renderLbOrd();
 }
 function cancelOrder(){
   const id=_ordId, it=byId[id]; if(!it) return;
   if(!confirm('לבטל את הסימון "הוזמן" ל"'+(it.name||'')+'"?')) return;
-  const o={ordered:false,orderedBy:null,orderedAt:null,orderLink:null,paid:null,orderNote:null};
+  const o={ordered:false,orderedBy:null,orderedAt:null,orderLink:null,paid:null,orderNote:null,orderStore:null};
   Object.assign(it,o); st.ord[id]=o; save(); fbPushOrdered(id,o);
   document.getElementById('ordDlg').close(); paint(id); tabsHTML(); RE(); say('↩ הסימון "הוזמן" בוטל',2500); if(typeof renderLbOrd==='function'&&lbId===id) renderLbOrd();
 }
