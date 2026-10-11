@@ -45,3 +45,14 @@ still come from `build.py` as before.)
 * **points**: 4–6 short bullets, **ordered from most to least important for the decision** (replaces the long free-text on the card; the long `desc` stays under "פרטים מלאים").
 * All items of a category must be comparable on the same criteria — same keys for every item.
 * Don't invent values. Unverified → leave out and mention in `points` ("לא אומת: …").
+
+## Bundles (items made of several purchasable parts)
+An item may be a *bundle*: e.g. a track-lighting run = track + spots + driver + connectors. In `lighting.json` (and in Firebase via the 🧩 dialog) give the item a `parts` list instead of a single price:
+```json
+{"name":"פס צבירה 3 מ׳ לבן + 5 ספוטים + דרייבר (סלון)","parts":[
+  {"n":"פרופיל לאמדן 3 מ׳","q":1,"p":220,"l":"https://…","img":"img-file.jpg","note":"מחסני תאורה"},
+  {"n":"ספוט מסלול 7W","q":5,"p":44,"l":"https://…"},
+  {"n":"דרייבר 48V","q":1,"p":130}],"loc":"סלון","sub":"תאורת תקרה","img":"image of the assembled item"}
+```
+`price` of the item = Σ `q × p` of its parts (build.py and the page compute it). Optional per part: `done:true` (already ordered), `img` (file under img/ or URL), `note`. The card shows "🧩 מורכב מ־N רכיבים" with an expandable list.
+

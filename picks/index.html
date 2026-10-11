@@ -199,6 +199,20 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .placeGrid label{display:flex;gap:6px;align-items:center;font-weight:600;font-size:13.5px}
 .loc .addloc{background:none;border:0;color:var(--brass-d);font:inherit;font-size:12.5px;font-weight:650;cursor:pointer;padding:0}
 .tbtn.danger{border-color:#b57468;color:#8d4a3e}
+
+.partsBox{border:1.5px dashed var(--line-2);border-radius:10px;padding:6px 9px;font-size:12.5px}
+.partsBox .ph{display:flex;gap:8px;align-items:center;justify-content:space-between;font-weight:800;color:var(--ink);cursor:pointer;background:none;border:0;width:100%;font:inherit;font-weight:800;padding:0;text-align:start}
+.partsBox .pl{display:none;margin-top:6px}
+.partsBox.open .pl{display:block}
+.partRow{display:flex;gap:8px;align-items:center;padding:4px 0;border-top:1px solid var(--line-2)}
+.partRow img{width:34px;height:34px;object-fit:contain;border-radius:6px;background:#fbf8f2;flex:none}
+.partRow .pn{flex:1;min-width:0;font-weight:650}
+.partRow .pq{color:var(--brass-d);font-weight:800;white-space:nowrap}
+.partRow.done .pn::after{content:" ✓";color:#4c8a53}
+.parted{display:grid;grid-template-columns:1.6fr .5fr .7fr 1.2fr auto;gap:6px;align-items:center;margin:4px 0}
+.parted input{padding:6px 8px;border:1.5px solid var(--line-2);border-radius:8px;font:inherit;min-width:0}
+.parted button{background:none;border:0;cursor:pointer;font-size:16px}
+@media(max-width:560px){.parted{grid-template-columns:1fr 60px 80px}.parted input:nth-child(4){grid-column:1/-1}}
 .keySpecs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
 .ks{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--brass-soft);font-weight:700;white-space:nowrap}
 .ks i{font-style:normal;font-weight:500;color:var(--ink-soft)}
@@ -573,6 +587,11 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="info"><h3 id="lbname"></h3><div class="p" id="lbprice"></div><div class="loc" id="lbloc"></div><a class="store" id="lbstore" target="_blank" rel="noopener">לצפייה בחנות ↗</a><div class="lbord" id="lbord"></div></div></div>
 </div>
 
+<dialog id="partsDlg" class="catdlg"><div class="dh" id="partsTitle">🧩 רכיבים</div>
+  <div class="db" id="partsBody"></div>
+  <div class="df"><button class="tbtn primary" onclick="savePartsDlg()">שמירה</button><button class="tbtn" onclick="document.getElementById('partsDlg').close()">ביטול</button></div>
+</dialog>
+
 <dialog id="ordDlg" class="catdlg"><div class="dh" id="ordTitle">📦 הזמנה</div>
   <div class="db" id="ordBody"></div>
   <div class="df"><button class="tbtn primary" onclick="saveOrderDlg()">שמירה</button><button class="tbtn danger" id="ordCancelBtn" onclick="cancelOrder()">↩ ביטול סימון "הוזמן"</button><button class="tbtn" onclick="document.getElementById('ordDlg').close()">סגור</button></div>
@@ -743,6 +762,7 @@ function rebuild(){
   Object.values(shared.cats||{}).forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
   ITEMS=Object.values(im).filter(i=>!i.deleted); CATS=Object.values(cm);
   ITEMS.forEach(i=>{ if(i.cat==='תאורת חוץ'){ i.cat='תאורה'; i.sub=i.sub||'תאורת חוץ'; } });
+  ITEMS.forEach(i=>{ if(i.parts&&Object.keys(i.parts).length){ i.parts=Object.values(i.parts); i.price=i.parts.reduce((a,p)=>a+(Number(p.p)||0)*(Number(p.q)||1),0); } });
   ITEMS.forEach(i=>{ if(i.stores&&i.stores.length){ const r=i.stores.find(x=>x.rec)||i.stores[0]; if(r&&r.p!=null) i.price=r.p; if(r&&r.l) i.link=r.l; } });
   byId=Object.fromEntries(ITEMS.map(x=>[x.id,x]));
   computeScores();
@@ -1116,6 +1136,37 @@ function renderCatMenu(){
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') toggleCatMenu(false); });
 document.addEventListener('click',e=>{ const m=document.getElementById('catMenu'); if(m&&!m.hidden&&!e.target.closest('#catMenu')&&!e.target.closest('.allcats')) toggleCatMenu(false); });
 function openCatPanel(){ toggleCatMenu(true); }
+
+/* ===== bundles: an item made of several purchasable parts ===== */
+function paintParts(c,it){
+  const box=c&&c.querySelector('.partsBox'); if(!box) return;
+  const parts=it&&it.parts?Object.values(it.parts):[];
+  if(!parts.length){ box.style.display='none'; box.innerHTML=''; return; }
+  const wasOpen=box.classList.contains('open'); const tot=parts.reduce((a,p)=>a+(Number(p.p)||0)*(Number(p.q)||1),0);
+  box.style.display=''; box.classList.toggle('open',wasOpen);
+  box.innerHTML=`<button type="button" class="ph" onclick="this.parentNode.classList.toggle('open')"><span>🧩 מורכב מ־${parts.length} רכיבים לרכישה</span><span>${nis(tot)} ⌄</span></button><div class="pl">`
+    +parts.map(p=>`<div class="partRow${p.done?' done':''}">${p.img?`<img src="${esc(p.img)}" alt="" loading="lazy">`:''}<span class="pn">${p.l?`<a href="${esc(p.l)}" target="_blank" rel="noopener">${esc(p.n)}</a>`:esc(p.n)}${p.note?` <small>${esc(p.note)}</small>`:''}</span><span class="pq">${(Number(p.q)||1)>1?(Number(p.q))+'× ':''}${p.p!=null?nis(p.p):''}</span></div>`).join('')+`</div>`;
+}
+let _partsId=null;
+function openPartsDlg(id){
+  const it=byId[id]; if(!it) return; _partsId=id; const parts=it.parts?Object.values(it.parts):[];
+  document.getElementById('partsTitle').textContent='🧩 רכיבים — '+(it.name||'').slice(0,50);
+  document.getElementById('partsBody').innerHTML='<p class="docnote">פריט שמורכב מכמה רכיבים לרכישה (למשל פס צבירה + ספוטים + דרייבר). המחיר של הפריט הוא סכום הרכיבים. השאירי ריק כדי לבטל.</p><div class="parted" style="font-weight:700;font-size:12px"><span>רכיב</span><span>כמות</span><span>מחיר ליח׳</span><span>קישור</span><span></span></div><div id="partsList"></div><div><button type="button" class="tbtn" onclick="addPartRow()">＋ רכיב</button></div>';
+  parts.forEach(p=>addPartRow(p)); if(!parts.length) addPartRow();
+  document.getElementById('partsDlg').showModal();
+}
+function addPartRow(p){
+  p=p||{}; const d=document.createElement('div'); d.className='parted'; d.dataset.img=p.img||''; d.dataset.done=p.done?'1':''; d.dataset.note=p.note||'';
+  d.innerHTML=`<input placeholder="שם הרכיב" value="${esc(p.n||'')}"><input type="number" min="1" value="${esc(p.q||1)}"><input type="number" placeholder="₪" value="${p.p!=null?esc(p.p):''}"><input placeholder="https://…" dir="ltr" value="${esc(p.l||'')}"><button type="button" onclick="this.parentNode.remove()" title="מחיקה">🗑</button>`;
+  document.getElementById('partsList').appendChild(d);
+}
+function savePartsDlg(){
+  const id=_partsId, it=byId[id]; if(!it) return;
+  const parts=[...document.querySelectorAll('#partsList .parted')].map(d=>{ const inp=d.querySelectorAll('input'); const n=inp[0].value.trim(); if(!n) return null;
+    const o={n,q:Math.max(1,Number(inp[1].value)||1)}; if(inp[2].value!=='') o.p=Number(inp[2].value); if(inp[3].value.trim()) o.l=inp[3].value.trim(); if(d.dataset.img) o.img=d.dataset.img; if(d.dataset.done) o.done=true; if(d.dataset.note) o.note=d.dataset.note; return o; }).filter(Boolean);
+  it.parts=parts.length?parts:null; patchItem(id,{parts:parts.length?parts:null});
+  document.getElementById('partsDlg').close(); rebuild(); const c=els.get(id); if(c) paint(id); RE();
+}
 const DEFAULT_PLACES=[
  {n:'סלון'},{n:'מטבח'},{n:'פינת אוכל'},{n:'פינת משפחה'},{n:'כניסה',alias:['כניסה']},{n:'מדרגות'},{n:'מסדרון'},
  {n:'חדר אורחים',alias:['אורחים']},{n:'ממ״ד',alias:['ממ"ד','ממ״ד']},{n:'חדר שינה הורים',alias:['שינה הורים','חדרי שינה (הורים']},{n:'חדר ארונות הורים',alias:['ארונות הורים']},
@@ -1431,7 +1482,7 @@ function cardEl(it){
   const moreInner=`${hasPts?specRowsHTML(it,true):''}
         ${ptsRest.length?`<ol class="pts" start="4">${ptsRest.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
         ${featRow}
-        ${(()=>{ const cc=CATS.find(x=>x.key===it.cat)||{}; return (it.type==='color')?'':`<div class="moreSel">${(cc.subs&&cc.subs.length)?`תת־נושא: <select onchange=\"setSub('${it.id}',this.value)\"><option value=\"\">— לא משויך</option>${cc.subs.map(x=>`<option ${it.sub===x?'selected':''}>${esc(x)}</option>`).join('')}</select> <button type=\"button\" class=\"docBtn\" onclick=\"openSubMgr('${esc(it.cat)}')\">✎</button>`:`<button type=\"button\" class=\"docBtn\" onclick=\"openSubMgr('${esc(it.cat)}')\">＋ תת־נושא</button>`}<button type=\"button\" class=\"docBtn\" onclick=\"openPlaceDlg('${it.id}')\">📍 מיקום בבית</button></div>`; })()}
+        ${(()=>{ const cc=CATS.find(x=>x.key===it.cat)||{}; return (it.type==='color')?'':`<div class="moreSel">${(cc.subs&&cc.subs.length)?`תת־נושא: <select onchange=\"setSub('${it.id}',this.value)\"><option value=\"\">— לא משויך</option>${cc.subs.map(x=>`<option ${it.sub===x?'selected':''}>${esc(x)}</option>`).join('')}</select> <button type=\"button\" class=\"docBtn\" onclick=\"openSubMgr('${esc(it.cat)}')\">✎</button>`:`<button type=\"button\" class=\"docBtn\" onclick=\"openSubMgr('${esc(it.cat)}')\">＋ תת־נושא</button>`}<button type=\"button\" class=\"docBtn\" onclick=\"openPlaceDlg('${it.id}')\">📍 מיקום בבית</button><button type=\"button\" class=\"docBtn\" onclick=\"openPartsDlg('${it.id}')\">🧩 רכיבים</button></div>`; })()}
         ${stars}
         ${hasPts?descHTML:''}
         ${qty}
@@ -1444,6 +1495,7 @@ function cardEl(it){
       ${it.type==='color'?'':'<div class="stpill discuss"></div>'}
       ${nameEl}
       ${sub}
+      <div class="partsBox" style="display:none"></div>
       <div class="scoreRow"><span class="scoreB" style="display:none"></span><span class="likeB" style="display:none"></span></div>
       ${it.pick&&it.pickWhy?`<div class="pickWhy">⭐ ${esc(it.pickWhy)}</div>`:''}
       ${hasPts?keySpecsHTML(it):''}
@@ -1477,7 +1529,7 @@ function paint(id,c){
   const qv=c.querySelector('.qv'); if(qv)qv.textContent=s.qty||1;
   const sb=c.querySelector('.scoreB'); if(sb){ if(it.score!=null){ sb.style.display=''; sb.textContent='התאמה '+it.score+'/100'; sb.className='scoreB '+(it.score>=75?'':(it.score>=50?'mid':'low')); sb.title='ציון התאמה לפי הקריטריונים של הקטגוריה (מפורט בסרגל "מה חשוב בקטגוריה")'; } else sb.style.display='none'; }
   const pim=c.querySelector('.thumb img'); if(pim&&it.img&&pim.getAttribute('src')!==it.img){pim.src=it.img;} // card is built once; follow later image fixes (e.g. from the shared catalog)
-  paintStatus(c,id); paintLoc(c,it);
+  paintStatus(c,id); paintLoc(c,it); paintParts(c,it);
   const od=c.querySelector('.orderb .od'); if(od)od.textContent=it.orderedAt?new Date(it.orderedAt).toLocaleDateString('he-IL'):'';
   const mo=c.querySelector('.markOrd'); if(mo)mo.style.display=it.ordered?'none':'';
   const hb=c.querySelector('.hideb');
@@ -1655,7 +1707,7 @@ function openSummary(){
     const yes=its.filter(i=>statusOfName(who,i.id)==='yes'), maybe=its.filter(i=>statusOfName(who,i.id)==='maybe');
     if(!yes.length&&!maybe.length)return;
     out+=`\n${c.icon} ${c.label}\n`+"—".repeat(22)+"\n";
-    const line=i=>{const mk=markOf(who,i.id)||{}; const q=mk.q||1; let l="• "+i.name; if(i.type==='color'&&i.code)l+="  ("+i.code+")"; if(i.price!=null){l+=(q>1?"  ×"+q:"")+"  —  "+nis((i.price||0)*q); if(!i.ordered)sum+=(i.price||0)*q;} else if(q>1){l+="  ×"+q;} if(i.ordered)l+="  📦 כבר הוזמן"; if(mk.n&&mk.n.trim())l+="\n   ↳ "+mk.n.trim(); return l;};
+    const line=i=>{const mk=markOf(who,i.id)||{}; const q=mk.q||1; let l="• "+i.name+(i.parts&&i.parts.length?"  ["+Object.values(i.parts).map(p=>((Number(p.q)||1)>1?p.q+'× ':'')+p.n).join(' + ')+"]":""); if(i.type==='color'&&i.code)l+="  ("+i.code+")"; if(i.price!=null){l+=(q>1?"  ×"+q:"")+"  —  "+nis((i.price||0)*q); if(!i.ordered)sum+=(i.price||0)*q;} else if(q>1){l+="  ×"+q;} if(i.ordered)l+="  📦 כבר הוזמן"; if(mk.n&&mk.n.trim())l+="\n   ↳ "+mk.n.trim(); return l;};
     if(yes.length){out+="✓ להזמין:\n"+yes.map(line).join("\n")+"\n";}
     if(maybe.length){out+="\n? אולי (להחליט):\n"+maybe.map(line).join("\n")+"\n";}
   });
