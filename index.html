@@ -137,7 +137,7 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .decSeg .ds{flex:1 1 0;font:inherit;font-size:12.5px;font-weight:700;padding:8px 4px;border:0;border-inline-start:1px solid var(--line-2);background:var(--paper);color:var(--ink-soft);cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
 .decSeg .ds:first-child{border-inline-start:0}
 .decSeg .ds:hover{background:var(--brass-soft)}
-.decSeg .ds.on.d{background:#e4e8ef;color:#2f3a4c}
+.decMeta{font-size:11.5px;color:var(--ink-soft);font-weight:600}
 .decSeg .ds.on.c{background:#4c8a53;color:#fff}
 .decSeg .ds.on.r{background:#b57468;color:#fff}
 .decSeg .ds.deny,.decRow .dOrder.deny{opacity:.45}
@@ -687,7 +687,6 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="tools">
     <div class="views" id="views">
     <button class="vbtn on" data-v="all" onclick="setView('all')">הכל<span class="vc" data-c="all"></span></button>
-    <button class="vbtn" data-v="tochoose" onclick="setView('tochoose')">🤔 לבחירה<span class="vc" data-c="tochoose"></span></button>
     <button class="vbtn" data-v="toorder" onclick="setView('toorder')">🛒 להזמין<span class="vc" data-c="toorder"></span></button>
     <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 הוזמנו<span class="vc" data-c="ordered"></span></button>
     <button class="vbtn" data-v="rejected" onclick="setView('rejected')">↩ הוסרו מההזמנה<span class="vc" data-c="rejected"></span></button>
@@ -989,7 +988,7 @@ function itemStatus(it){
   if(it.decision==='chosen') return 'chosen';
   return 'discuss';
 }
-const ST_LAB={ordered:'📦 הוזמן',chosen:'🛒 נבחר — צריך להזמין',discuss:'🤔 בדיון',rejected:'↩ הוסר מההזמנה'};
+const ST_LAB={ordered:'📦 הוזמן',chosen:'🛒 נבחר — צריך להזמין',discuss:'',rejected:'↩ הוסר מההזמנה'};
 function statusHTML(it,stt){
   const ms=marksFor(it.id), by=k=>ms.filter(m=>m.status===k).map(m=>m.name);
   let small='';
@@ -1020,15 +1019,23 @@ function setDecision(id,val){
 const decChoose=id=>setDecision(id,byId[id]&&byId[id].decision==='chosen'?null:'chosen');
 const decReject=id=>setDecision(id,byId[id]&&byId[id].decision==='rejected'?null:'rejected');
 function decPick(id,v){ const it=byId[id]; if(!it) return; setDecision(id,(it.decision||null)===v?null:v); }
+function decMetaText(it,stt){
+  const ms=marksFor(it.id), by=k=>ms.filter(m=>m.status===k).map(m=>m.name);
+  const who=[it.decidedBy,it.decidedAt?fmtDate(it.decidedAt):''].filter(Boolean).join(' · ');
+  if(stt==='chosen') return 'נבחר'+(who?' ע״י '+who:'')+(by('no').length?' · ⚠ '+by('no').join(', ')+' לא אוהבים':'');
+  if(stt==='rejected') return 'הוסר'+(who?' ע״י '+who:'')+(by('yes').length?' · ❤ '+by('yes').join(', ')+' אהבו':'');
+  return '';
+}
 function paintStatus(c,id){
   const it=byId[id]; if(!it||it.type==='color') return; const stt=itemStatus(it);
-  const el=c.querySelector('.stpill'); if(el){ el.className='stpill '+stt; el.innerHTML=statusHTML(it,stt); }
+  const el=c.querySelector('.stpill'); if(el){ if(stt==='ordered'){ el.style.display=''; el.className='stpill ordered'; el.innerHTML=statusHTML(it,stt); } else { el.style.display='none'; el.innerHTML=''; } }
   ['ordered','chosen','discuss','rejected'].forEach(k=>c.classList.toggle('st-'+k,k===stt));
   const dr=c.querySelector('.decRow'); if(dr){ dr.style.display='flex';
-    const seg=dr.querySelector('.decSeg'), od=dr.querySelector('.dOrder');
+    const seg=dr.querySelector('.decSeg'), od=dr.querySelector('.dOrder'), meta=dr.querySelector('.decMeta');
     seg.style.display=stt==='ordered'?'none':'flex';
-    seg.querySelectorAll('.ds').forEach(b=>{ const k=b.classList.contains('c')?'chosen':(b.classList.contains('r')?'rejected':'discuss'); const on=(k===stt); b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false');
-      const act=k==='chosen'?'choose':(k==='rejected'?'reject':(stt==='rejected'?'reject':'choose')); b.classList.toggle('deny',!canDo(it.cat,act)); });
+    seg.querySelectorAll('.ds').forEach(b=>{ const k=b.classList.contains('c')?'chosen':'rejected'; const on=(k===stt); b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false');
+      b.classList.toggle('deny',!canDo(it.cat,k==='chosen'?'choose':'reject')); });
+    if(meta){ const t=decMetaText(it,stt); meta.textContent=t; meta.style.display=t?'':'none'; }
     od.style.display=(stt==='chosen'||stt==='ordered')?'':'none'; od.textContent=stt==='ordered'?'✎ עריכת הזמנה / ביטול':'📦 סימון כהוזמן'; od.classList.toggle('deny',!canDo(it.cat,'order')); }
 }
 function viewCounts(){
@@ -1276,7 +1283,7 @@ function renderCatStrip(){
   const goal=cat.due?`🎯 יעד קנייה: <b>${fmtDate(cat.due)}</b> ${stt==='done'?'':dueRel(cat.due)}`:(cat.wishlist?'💭 Wishlist — בלי תאריך':'⏳ אין יעד קנייה');
   const dn=docsList('cat_'+cat.key).length;
   const vc=viewCounts();
-  let h=`<div class="statline"><button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button><button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button><button class="d" onclick="setView('active')">🤔 בדיון ${vc.active-vc.toorder}</button><button class="r" onclick="setView('rejected')">↩ הוסרו ${vc.rejected}</button></div>
+  let h=`<div class="statline"><button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button><button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button><button class="r" onclick="setView('rejected')">↩ הוסרו ${vc.rejected}</button></div>
   <div class="csrow"><span class="st">${stLab}</span><span>${goal}</span><button type="button" onclick="shareCat('${esc(cat.key)}')">🔗 שיתוף הקטגוריה</button><button type="button" onclick="openCatSettings('${esc(cat.key)}')">⚙ הגדרות הקטגוריה</button><button type="button" onclick="askResearch('${esc(cat.key)}',normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),true)">🔎 חיפוש מחדש</button><button type="button" onclick="openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')">📎 מסמכי הקטגוריה${dn?' ('+dn+')':''}</button>${imgDocs('cat_'+cat.key).length?`<button type="button" onclick="openDocGallery('cat_${esc(cat.key)}','${esc(cat.label)} — תוכניות ותמונות')">🗺 תוכניות / תמונות (${imgDocs('cat_'+cat.key).length})</button>`:''}</div>`;
   h+=researchStripHTML(cat);
   if(chosenN>1&&!cat.multi) h+=`<div class="warnB">⚠ שימי לב: נבחרו ${chosenN} פריטים בקטגוריה. אם זה מכוון (למשל כמה פריטים לאותו חלל), אפשר לאשר בהגדרות הקטגוריה — "מותר לבחור כמה".</div>`;
@@ -1426,7 +1433,7 @@ function renderCatMenu(){
   const cats=allCats.filter(c=>!menuState||catState(c)===menuState).filter(c=>!q||c.label.includes(q)||(c.group||'').includes(q)||(c.subs||[]).some(x=>x.includes(q)));
   const item=c=>{ const n=ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length, stt=catState(c), sg=catSuggs?catSuggs(c.key).length:0, b=brk[c.key]||{d:0,c:0,o:0};
     const subs=(c.subs||[]).filter(x=>!q||c.label.includes(q)||x.includes(q));
-    return `<div><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span>${esc(c.label)}${sg?' 💡':''}<small class="cmb">${b.d?`<span class="cc d" title="לבחירה">🤔${b.d}</span>`:''}${b.c?`<span class="cc c" title="נבחר — להזמין">🛒${b.c}</span>`:''}${b.o?`<span class="cc o" title="הוזמן">📦${b.o}</span>`:''}</small></button>`
+    return `<div><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span>${esc(c.label)}${sg?' 💡':''}<small class="cmb">${b.c?`<span class="cc c" title="נבחר — להזמין">🛒${b.c}</span>`:''}${b.o?`<span class="cc o" title="הוזמן">📦${b.o}</span>`:''}</small></button>`
       +(subs.length?`<div class="cmsubs">${subs.map(x=>`<button type="button" onclick="pickCat('${esc(c.key)}','${esc(x)}')">${esc(x)}</button>`).join('')}</div>`:'')+`</div>`; };
   let body='';
   if(menuMode==='topic'){
@@ -1826,7 +1833,7 @@ function cardEl(it){
         <button class="maybe" title="אולי" onclick="setS('${it.id}','maybe')">?</button>
         <button class="no" title="לא מתאים לי" onclick="setS('${it.id}','no')">✕</button>
       </div>
-      ${it.type==='product'?`<div class="decRow"><div class="decSeg" role="group" aria-label="ההחלטה על הפריט"><button type="button" class="ds d" onclick="decPick('${it.id}',null)">🤔 בדיון</button><button type="button" class="ds c" onclick="decPick('${it.id}','chosen')">✅ נבחר</button><button type="button" class="ds r" onclick="decPick('${it.id}','rejected')">↩ הוסר</button></div><button type="button" class="dOrder" onclick="toggleOrdered('${it.id}')">📦 סימון כהוזמן</button></div>`:''}
+      ${it.type==='product'?`<div class="decRow"><div class="decSeg" role="group" aria-label="ההחלטה על הפריט"><button type="button" class="ds c" onclick="decPick('${it.id}','chosen')">✅ נבחר להזמנה</button><button type="button" class="ds r" onclick="decPick('${it.id}','rejected')">↩ הוסר</button></div><div class="decMeta"></div><button type="button" class="dOrder" onclick="toggleOrdered('${it.id}')">📦 סימון כהוזמן</button></div>`:''}
       ${shopHTML?shopHTML:''}
       ${!shopHTML&&it.type==='product'&&(it.link||it.zap)?`<div class="shoprow">${it.link?`<a class="shopbtn" href="${it.link}" target="_blank" rel="noopener">🏪 לחנות המומלצת</a>`:''}${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div>`:''}
       <button type="button" class="moreBtn" onclick="toggleMore('${it.id}')">פרטים והשוואה ⌄</button>
