@@ -274,6 +274,16 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .cfFoot #cfTotal{font-weight:700}.cfFoot #cfTotal b{color:var(--brass-d);font-size:20px}
 .cfBtns{display:flex;gap:8px;flex-wrap:wrap}
 @media(max-width:560px){.cfRow{grid-template-columns:48px 1fr auto}.cfRow .qty{grid-column:2}.cfRow .acts{grid-column:1/-1}}
+
+.cmSum{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 12px;padding:8px 10px;background:var(--brass-soft);border-radius:12px}
+.cmSum .lab{font-weight:800;color:var(--ink)}
+.cmSum button{font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:5px 12px;cursor:pointer;color:var(--ink-soft)}
+.cmSum button.on{background:var(--brass-d);border-color:var(--brass-d);color:#fff}
+.cmSum .cmTot{margin-inline-start:auto;font-weight:700;color:#6f520d}
+.cmb{display:inline-flex;gap:4px;margin-inline-start:auto}
+.cc{font-size:11.5px;font-weight:800;border-radius:99px;padding:1px 7px}
+.cc.d{background:#eceff4;color:#475266}.cc.c{background:#f8e7bb;color:#6f520d}.cc.o{background:#e6f1e5;color:#2f6b38}
+.tab .c.ch{background:#f8e7bb;color:#6f520d;margin-inline-start:2px}
 .keySpecs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
 .ks{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--brass-soft);font-weight:700;white-space:nowrap}
 .ks i{font-style:normal;font-weight:500;color:var(--ink-soft)}
@@ -607,6 +617,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="tools">
     <div class="views" id="views">
     <button class="vbtn on" data-v="active" onclick="setView('active')">פעילים<span class="vc" data-c="active"></span></button>
+    <button class="vbtn" data-v="tochoose" onclick="setView('tochoose')">🤔 לבחירה<span class="vc" data-c="tochoose"></span></button>
     <button class="vbtn" data-v="toorder" onclick="setView('toorder')">🛒 להזמין<span class="vc" data-c="toorder"></span></button>
     <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 הוזמנו<span class="vc" data-c="ordered"></span></button>
     <button class="vbtn" data-v="rejected" onclick="setView('rejected')">↩ הוסרו מההזמנה<span class="vc" data-c="rejected"></span></button>
@@ -939,8 +950,8 @@ function paintStatus(c,id){
     ch.classList.toggle('deny',!canDo(it.cat,'choose')); rj.classList.toggle('deny',!canDo(it.cat,'reject')); od.classList.toggle('deny',!canDo(it.cat,'order')); }
 }
 function viewCounts(){
-  const pool=ITEMS.filter(i=>!i.hidden&&inCats(i)), c={active:0,toorder:0,ordered:0,rejected:0,all:pool.length};
-  pool.forEach(i=>{ const t=itemStatus(i); if(t==='chosen'){c.active++;c.toorder++;} else if(t==='discuss') c.active++; else c[t]++; });
+  const pool=ITEMS.filter(i=>!i.hidden&&inCats(i)), c={active:0,toorder:0,tochoose:0,ordered:0,rejected:0,all:pool.length};
+  pool.forEach(i=>{ const t=itemStatus(i); if(t==='chosen'){c.active++;c.toorder++;} else if(t==='discuss'){ c.active++; c.tochoose++; } else c[t]++; });
   return c;
 }
 function updateViewCounts(){ const c=viewCounts(); document.querySelectorAll('.vc').forEach(e=>{ const n=c[e.dataset.c]; e.textContent=n?(' '+n):''; }); }
@@ -970,7 +981,7 @@ function tabsHTML(){
     if(stt==='done'){ done++; if(!sel) return; }
     const n=c.key==='all'?ITEMS.filter(i=>!i.hidden).length:ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length;
     const b=document.createElement('button'); b.className="tab"+(sel?" on":"");
-    b.innerHTML=(stt==='open'||stt==='pick'?`<span class="dot${stt==='pick'?' pick':''}"></span>`:'')+`<span>${c.icon}</span>${c.label}${(c.key!=='all'&&catSuggs(c.key).length)?'<span title="הצעות חדשות">💡</span>':''}<span class="c">${n}</span>`;
+    b.innerHTML=(stt==='open'||stt==='pick'?`<span class="dot${stt==='pick'?' pick':''}"></span>`:'')+`<span>${c.icon}</span>${c.label}${(c.key!=='all'&&catSuggs(c.key).length)?'<span title="הצעות חדשות">💡</span>':''}<span class="c">${n}</span>${(()=>{ if(c.key==='all') return ''; const ch=ITEMS.filter(i=>i.cat===c.key&&!i.hidden&&itemStatus(i)==='chosen').length; return ch?`<span class="c ch" title="נבחר — צריך להזמין">🛒${ch}</span>`:''; })()}`;
     b.onclick=()=>setCat(c.key);
     t.appendChild(b);
   });
@@ -1242,7 +1253,7 @@ function renderHistory(){
   el.style.display='block';
 }
 const GROUP_ORDER=['תאורה','מטבח','חדרי שינה וילדים','סלון ומשפחה','כניסה ונגרות','אמבטיה','חוץ ופרגולה','גימור וצבעים','אחר'];
-let menuMode='topic', menuQ='';
+let menuMode='topic', menuQ='', menuState=null;
 function toggleCatMenu(force){
   const m=document.getElementById('catMenu'); const open=force!==undefined?force:m.hidden; m.hidden=!open;
   if(open){ renderCatMenu(); setTimeout(()=>{const q=document.getElementById('cmQ'); if(q&&matchMedia('(min-width:700px)').matches)q.focus();},60); }
@@ -1254,10 +1265,12 @@ function pickCat(key,sub){
 }
 function renderCatMenu(){
   const m=document.getElementById('catMenu'), q=menuQ.trim();
-  const cats=CATS.filter(c=>c.key!=='all').filter(c=>!q||c.label.includes(q)||(c.group||'').includes(q)||(c.subs||[]).some(x=>x.includes(q)));
-  const item=c=>{ const n=ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length, stt=catState(c), sg=catSuggs?catSuggs(c.key).length:0;
+  const allCats=CATS.filter(c=>c.key!=='all'); const stc={open:0,pick:0,done:0}; let remChoose=0, remOrder=0; const brk={};
+  allCats.forEach(c=>{ stc[catState(c)]++; const its=ITEMS.filter(i=>i.cat===c.key&&!i.hidden); const b={d:0,c:0,o:0}; its.forEach(i=>{ const t=itemStatus(i); if(t==='discuss')b.d++; else if(t==='chosen')b.c++; else if(t==='ordered')b.o++; }); brk[c.key]=b; remChoose+=catState(c)==='open'?1:0; remOrder+=b.c; });
+  const cats=allCats.filter(c=>!menuState||catState(c)===menuState).filter(c=>!q||c.label.includes(q)||(c.group||'').includes(q)||(c.subs||[]).some(x=>x.includes(q)));
+  const item=c=>{ const n=ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length, stt=catState(c), sg=catSuggs?catSuggs(c.key).length:0, b=brk[c.key]||{d:0,c:0,o:0};
     const subs=(c.subs||[]).filter(x=>!q||c.label.includes(q)||x.includes(q));
-    return `<div><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span>${esc(c.label)}${sg?' 💡':''}<small>${stt==='done'?'✓ ':''}${n}</small></button>`
+    return `<div><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span>${esc(c.label)}${sg?' 💡':''}<small class="cmb">${b.d?`<span class="cc d" title="לבחירה">🤔${b.d}</span>`:''}${b.c?`<span class="cc c" title="נבחר — להזמין">🛒${b.c}</span>`:''}${b.o?`<span class="cc o" title="הוזמן">📦${b.o}</span>`:''}</small></button>`
       +(subs.length?`<div class="cmsubs">${subs.map(x=>`<button type="button" onclick="pickCat('${esc(c.key)}','${esc(x)}')">${esc(x)}</button>`).join('')}</div>`:'')+`</div>`; };
   let body='';
   if(menuMode==='topic'){
@@ -1270,7 +1283,13 @@ function renderCatMenu(){
     body=Object.keys(byL).map(L=>`<div class="cmg"><h5>${esc(L)}</h5>${byL[L].map(item).join('')}</div>`).join('');
   }
   if(!cats.length) body='<p class="docnote">לא נמצאה קטגוריה בשם הזה.</p>';
-  m.innerHTML=`<div class="cmTop"><input id="cmQ" placeholder="🔍 חיפוש קטגוריה או נושא…" value="${esc(menuQ)}" oninput="menuQ=this.value;renderCatMenu();document.getElementById('cmQ').focus();"><span class="seg2"><button type="button" class="${menuMode==='topic'?'on':''}" onclick="menuMode='topic';renderCatMenu()">🗂 לפי נושא</button><button type="button" class="${menuMode==='alpha'?'on':''}" onclick="menuMode='alpha';renderCatMenu()">א–ת</button></span><button type="button" class="cmi" style="width:auto" onclick="pickCat('all')">✦ הכל</button></div><div class="cmCols">${body}</div>`;
+  m.innerHTML=`<div class="cmTop"><input id="cmQ" placeholder="🔍 חיפוש קטגוריה או נושא…" value="${esc(menuQ)}" oninput="menuQ=this.value;renderCatMenu();document.getElementById('cmQ').focus();"><span class="seg2"><button type="button" class="${menuMode==='topic'?'on':''}" onclick="menuMode='topic';renderCatMenu()">🗂 לפי נושא</button><button type="button" class="${menuMode==='alpha'?'on':''}" onclick="menuMode='alpha';renderCatMenu()">א–ת</button></span><button type="button" class="cmi" style="width:auto" onclick="pickCat('all')">✦ הכל</button></div>
+    <div class="cmSum"><span class="lab">מה נותר:</span>
+      <button type="button" class="${menuState==='open'?'on':''}" onclick="menuState=menuState==='open'?null:'open';renderCatMenu()">🔴 ממתינות להחלטה <b>${stc.open}</b></button>
+      <button type="button" class="${menuState==='pick'?'on':''}" onclick="menuState=menuState==='pick'?null:'pick';renderCatMenu()">🟡 נבחר, צריך להזמין <b>${stc.pick}</b></button>
+      <button type="button" class="${menuState==='done'?'on':''}" onclick="menuState=menuState==='done'?null:'done';renderCatMenu()">🟢 הוזמנו <b>${stc.done}</b></button>
+      <span class="cmTot">🛒 ${remOrder} פריטים נבחרו ועוד לא הוזמנו</span></div>
+    <div class="cmCols">${body}</div>`;
   const qi=document.getElementById('cmQ'); if(qi&&document.activeElement===document.body) {}
 }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') toggleCatMenu(false); });
@@ -1461,6 +1480,7 @@ function passView(i){
   const stt=itemStatus(i);
   if(viewMode==='active') return stt==='chosen'||stt==='discuss';
   if(viewMode==='toorder') return stt==='chosen';
+  if(viewMode==='tochoose') return stt==='discuss';
   if(viewMode==='ordered') return stt==='ordered';
   if(viewMode==='rejected') return stt==='rejected';
   return true;
