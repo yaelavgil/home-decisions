@@ -212,6 +212,16 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .parted input{padding:6px 8px;border:1.5px solid var(--line-2);border-radius:8px;font:inherit;min-width:0}
 .parted button{background:none;border:0;cursor:pointer;font-size:16px}
 @media(max-width:560px){.parted{grid-template-columns:1fr 60px 80px}.parted input:nth-child(4){grid-column:1/-1}}
+
+.galdlg{max-width:1100px;width:calc(100% - 16px)}
+.galdlg .db{max-height:78vh;overflow:auto}
+.gfig{margin:0 0 18px}
+.gfig figcaption{font-weight:700;font-size:13.5px;margin:0 0 6px}
+.gwrap{overflow:auto;border:1.5px solid var(--line-2);border-radius:12px;background:#fff;max-height:70vh}
+.gwrap img{display:block;width:100%;cursor:zoom-in}
+.gwrap.zoom img{width:220%;cursor:zoom-out}
+.gfig .gtools{display:flex;gap:8px;margin:6px 0 0}
+.gfig .gtools button{font:inherit;font-size:12.5px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:3px 11px;cursor:pointer;color:var(--brass-d);font-weight:650}
 .keySpecs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
 .ks{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--brass-soft);font-weight:700;white-space:nowrap}
 .ks i{font-style:normal;font-weight:500;color:var(--ink-soft)}
@@ -533,6 +543,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
       <a href="planner/" class="plannerlink">🛒 מתכנן קנייה חכם</a>
       <a href="entrance-cabinet/" class="plannerlink">🚪 גוונים לארון כניסה</a>
+      <a href="#" class="plannerlink" onclick="openDocGallery('cat_תאורה','תוכניות תאורה');return false">🗺 תוכניות תאורה</a>
       <div class="whoami" id="whoami"></div>
     </div>
   </div>
@@ -585,6 +596,11 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="box"><button class="x" onclick="closeLB()" aria-label="סגירה">✕</button><div class="im"><img id="lbimg" src="" alt=""></div><div class="thumbs" id="lbthumbs"></div>
   <div class="info"><h3 id="lbname"></h3><div class="p" id="lbprice"></div><div class="loc" id="lbloc"></div><a class="store" id="lbstore" target="_blank" rel="noopener">לצפייה בחנות ↗</a><div class="lbord" id="lbord"></div></div></div>
 </div>
+
+<dialog id="galDlg" class="catdlg galdlg"><div class="dh" id="galTitle">🗺 תוכניות</div>
+  <div class="db" id="galBody"></div>
+  <div class="df"><button class="tbtn" onclick="document.getElementById('galDlg').close()">סגור</button></div>
+</dialog>
 
 <dialog id="partsDlg" class="catdlg"><div class="dh" id="partsTitle">🧩 רכיבים</div>
   <div class="db" id="partsBody"></div>
@@ -916,6 +932,19 @@ function renderDocList(){
     const del=document.createElement('button'); del.type='button'; del.className='del'; del.textContent='🗑'; del.title='מחיקה'; del.onclick=()=>delDoc(m);
     row.append(main,meta,del); box.appendChild(row); });
 }
+
+function imgDocs(scope){ return docsList(scope).filter(m=>m.t==='file'&&/image/.test(m.m||'')); }
+function openDocGallery(scope,title){
+  document.getElementById('galTitle').textContent='🗺 '+title; const body=document.getElementById('galBody');
+  const list=imgDocs(scope); body.innerHTML=list.length?'':'<p class="docnote">עוד אין תמונות/תוכניות מצורפות. אפשר להוסיף דרך 📎 מסמכי הקטגוריה.</p>';
+  list.forEach(m=>{ const f=document.createElement('figure'); f.className='gfig';
+    f.innerHTML=`<figcaption>${esc(m.n||'תמונה')}</figcaption><div class="gwrap"><img alt="" style="min-height:120px"></div><div class="gtools"><button type="button" data-a="z">🔍 הגדלה / הקטנה</button><button type="button" data-a="o">↗ פתיחה בלשונית חדשה</button></div>`;
+    const wrap=f.querySelector('.gwrap'), img=f.querySelector('img');
+    wrap.onclick=()=>wrap.classList.toggle('zoom'); f.querySelector('[data-a=z]').onclick=()=>wrap.classList.toggle('zoom'); f.querySelector('[data-a=o]').onclick=()=>openDocFile(m);
+    body.appendChild(f);
+    fetch(`${DB}/docs/data/${m.id}.json`).then(r=>r.json()).then(d=>{ if(d) img.src=d; }).catch(()=>{}); });
+  const d=document.getElementById('galDlg'); if(!d.open) d.showModal();
+}
 function newDocId(){ return 'd'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function putDocMeta(scope,id,meta){ docsMeta[scope]=docsMeta[scope]||{}; docsMeta[scope][id]=meta; _docsSig=JSON.stringify(docsMeta);
   return fetch(`${DB}/docs/meta/${encodeURIComponent(scope)}/${id}.json`,{method:'PUT',body:JSON.stringify(meta)}).then(()=>paintDocs()); }
@@ -969,7 +998,7 @@ function renderCatStrip(){
   const dn=docsList('cat_'+cat.key).length;
   const vc=viewCounts();
   let h=`<div class="statline"><button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button><button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button><button class="d" onclick="setView('active')">🤔 בדיון ${vc.active-vc.toorder}</button><button class="r" onclick="setView('rejected')">↩ הוסרו ${vc.rejected}</button></div>
-  <div class="csrow"><span class="st">${stLab}</span><span>${goal}</span><button type="button" onclick="openCatSettings('${esc(cat.key)}')">⚙ הגדרות הקטגוריה</button><button type="button" onclick="askResearch('${esc(cat.key)}',normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),true)">🔎 חיפוש מחדש</button><button type="button" onclick="openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')">📎 מסמכי הקטגוריה${dn?' ('+dn+')':''}</button></div>`;
+  <div class="csrow"><span class="st">${stLab}</span><span>${goal}</span><button type="button" onclick="openCatSettings('${esc(cat.key)}')">⚙ הגדרות הקטגוריה</button><button type="button" onclick="askResearch('${esc(cat.key)}',normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),true)">🔎 חיפוש מחדש</button><button type="button" onclick="openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')">📎 מסמכי הקטגוריה${dn?' ('+dn+')':''}</button>${imgDocs('cat_'+cat.key).length?`<button type="button" onclick="openDocGallery('cat_${esc(cat.key)}','${esc(cat.label)} — תוכניות ותמונות')">🗺 תוכניות / תמונות (${imgDocs('cat_'+cat.key).length})</button>`:''}</div>`;
   h+=researchStripHTML(cat);
   if(chosenN>1&&!cat.multi) h+=`<div class="warnB">⚠ שימי לב: נבחרו ${chosenN} פריטים בקטגוריה. אם זה מכוון (למשל כמה פריטים לאותו חלל), אפשר לאשר בהגדרות הקטגוריה — "מותר לבחור כמה".</div>`;
   ord.forEach(i=>{ const n=docsList('item_'+i.id).length;
