@@ -15,6 +15,7 @@ def tags(n):
 items=json.load(open(os.path.join(REPO,"lighting.json"),encoding="utf-8"))
 DATA=[]
 for k,it in enumerate(items):
+    if it.get("deleted"): continue  # folded into a bundle; keep the row so ids (index+1) stay stable
     _c0=it.get("cat","תאורה")
     DATA.append({"id":"l"+str(k+1),"cat":"תאורה","sub":it.get("sub") or ("תאורת חוץ" if _c0=="תאורת חוץ" else ""),"type":"product","name":it["name"],"price":it.get("price") if it.get("parts") is None else sum((p.get("p") or 0)*(p.get("q") or 1) for p in it["parts"]),
                  "link":it.get("link",""),"img":("img/"+it["img"]) if it.get("img") else "","tags":it.get("tags") or tags(it["name"]),"loc":it.get("loc",""),
@@ -77,7 +78,7 @@ COFFEE=[
   "✔ יש: טמפינג מונחה (Impress) + תיקון מינון אוטומטי — קפה עקבי לכל אחד, מטחנה 25 דרגות\n✘ אין: קפה קר, מסך מגע · חימום איטי (~60 שנ׳)\n📐 ‎33×38×41 ס״מ (רוחב×עומק×גובה) · ~11 ק״ג"),
  ("K3","DeLonghi La Specialista Maestro · EC9865",4390,
   "https://www.coffee4u.co.il/product/מכונת-אספרסו-la-specialista-maestro-cold-brew-metal-ec-9865m-delonghi",
-  "https://www.coffee4u.co.il/images/itempics/1355_07072024000601.jpg",
+  "img/item-k3.jpg",
   ["טמפינג מונחה + קפה קר","גובה ~46 ס״מ"],
   "✔ יש: גם טמפינג מונחה וגם cold brew אמיתי, שני גופי חימום (חליטה+הקצפה ברצף), מיכל 2.5 ל׳\n✘ אין: דיוק טחינה (8 דרגות בלבד מול 25–30 בברוויל)\n📐 ‎42×37×45.5–46.5 ס״מ (רוחב×עומק×גובה) · 16 ק״ג · הגבוהה והכבדה מכולן — לתכנן מדף גבוה יותר"),
 ]
@@ -188,7 +189,7 @@ for d in DISH:
 FRIDGE=[
  ("R1","LG GMZ765 · 750 ל׳ · 3 דלתות · בר מים חיצוני + מכין קרח",10690,
   "https://www.electricland.co.il/product/מקרר-3-דלתות-lg-דגם-gmz765-נירוסטה-כהה",
-  "https://www.electricland.co.il/images/itempics/GMZ765_280520251555060_large.jpg",
+  "img/item-r1.jpg",
   ["🥇 מקום 1","קרח + בר מים בדלת"],
   "🥇 מקום 1 בין ה-LG — הכי קרוב לחוויית קיוסק ב-3 דלתות: בר מים מסונן חיצוני בדלת (בלי לפתוח!) + מכין קרח אוטומטי בחיבור לקו המים שלכם\n⭐ פיצ'ר מיוחד: Knock-Knock (דפיקה מאירה את הפנים) · UVnano לחיטוי פיית המים · מדחס ליניארי עם 10 שנות אחריות\n😊 דגם חדש — עדיין מעט ביקורות · הקרח נאסף ממגירה במקפיא (אין מתקן קרח בדלת — ראו הסמסונג למטה)\n📐 רוחב 90.8 ס״מ · 750 ל׳ (504/246) · נירוסטה מושחרת · 💰 ₪10,690 באלקטריק לנד (בזאפ מ-₪8,395)"),
  ("R2","LG R-3D288BINS · 750 ל׳ · InstaView · מכין קרח",10500,
