@@ -133,12 +133,17 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .statline button{font:inherit;font-size:12.5px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:3px 11px;cursor:pointer;font-weight:700}
 .statline .o{color:#2f6b38}.statline .c{color:#7a5a12}.statline .d{color:#475266}.statline .r{color:#8d4a3e}
 
-.decRow{display:flex;gap:6px;flex-wrap:wrap}
-.decRow button{flex:1 1 auto;font:inherit;font-size:12.5px;font-weight:700;padding:6px 8px;border-radius:9px;border:1.5px solid var(--line-2);background:var(--paper);cursor:pointer;color:var(--ink)}
-.decRow .dChoose{border-color:#d9b24f;background:#fbf0cf;color:#6f520d}
-.decRow .dReject{color:#8d4a3e}
-.decRow .dOrder{border-color:#4c8a53;background:#4c8a53;color:#fff}
-.decRow button.deny{opacity:.45}
+.decRow{display:flex;flex-direction:column;gap:6px}
+.decSeg{display:flex;border:1.5px solid var(--line-2);border-radius:12px;overflow:hidden;background:var(--paper)}
+.decSeg .ds{flex:1 1 0;font:inherit;font-size:12.5px;font-weight:700;padding:8px 4px;border:0;border-inline-start:1px solid var(--line-2);background:var(--paper);color:var(--ink-soft);cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
+.decSeg .ds:first-child{border-inline-start:0}
+.decSeg .ds:hover{background:var(--brass-soft)}
+.decSeg .ds.on.d{background:#e4e8ef;color:#2f3a4c}
+.decSeg .ds.on.c{background:#4c8a53;color:#fff}
+.decSeg .ds.on.r{background:#b57468;color:#fff}
+.decSeg .ds.deny,.decRow .dOrder.deny{opacity:.45}
+.decRow .dOrder{font:inherit;font-size:12.5px;font-weight:700;padding:8px;border-radius:10px;border:1.5px solid #4c8a53;background:var(--paper);color:#2f6b38;cursor:pointer}
+.decRow .dOrder:hover{background:#eef4ec}
 .warnB{background:#fdf0d0;border:1.5px solid #e2b94f;border-radius:10px;padding:7px 11px;font-size:13px;font-weight:650;color:#6f520d}
 .csf{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:8px 0}
 .csf input[type=text],.csf input:not([type]),.csf select{padding:6px 9px;border:1.5px solid var(--line-2);border-radius:9px;font:inherit}
@@ -1016,15 +1021,17 @@ function setDecision(id,val){
 }
 const decChoose=id=>setDecision(id,byId[id]&&byId[id].decision==='chosen'?null:'chosen');
 const decReject=id=>setDecision(id,byId[id]&&byId[id].decision==='rejected'?null:'rejected');
+function decPick(id,v){ const it=byId[id]; if(!it) return; setDecision(id,(it.decision||null)===v?null:v); }
 function paintStatus(c,id){
   const it=byId[id]; if(!it||it.type==='color') return; const stt=itemStatus(it);
   const el=c.querySelector('.stpill'); if(el){ el.className='stpill '+stt; el.innerHTML=statusHTML(it,stt); }
   ['ordered','chosen','discuss','rejected'].forEach(k=>c.classList.toggle('st-'+k,k===stt));
   const dr=c.querySelector('.decRow'); if(dr){ dr.style.display='flex';
-    dr.querySelector('.dChoose').style.display=stt==='ordered'?'none':''; dr.querySelector('.dReject').style.display=stt==='ordered'?'none':'';
-    const ch=dr.querySelector('.dChoose'), rj=dr.querySelector('.dReject'), od=dr.querySelector('.dOrder');
-    ch.textContent=stt==='chosen'?'↩ ביטול בחירה':'✅ בחירה להזמנה'; rj.textContent=stt==='rejected'?'↩ החזרה לבחירה':'↩ הסרה מההזמנה'; od.style.display=(stt==='chosen'||stt==='ordered')?'':'none'; od.textContent=stt==='ordered'?'✎ עריכת הזמנה / ביטול':'📦 סימון כהוזמן';
-    ch.classList.toggle('deny',!canDo(it.cat,'choose')); rj.classList.toggle('deny',!canDo(it.cat,'reject')); od.classList.toggle('deny',!canDo(it.cat,'order')); }
+    const seg=dr.querySelector('.decSeg'), od=dr.querySelector('.dOrder');
+    seg.style.display=stt==='ordered'?'none':'flex';
+    seg.querySelectorAll('.ds').forEach(b=>{ const k=b.classList.contains('c')?'chosen':(b.classList.contains('r')?'rejected':'discuss'); const on=(k===stt); b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false');
+      const act=k==='chosen'?'choose':(k==='rejected'?'reject':(stt==='rejected'?'reject':'choose')); b.classList.toggle('deny',!canDo(it.cat,act)); });
+    od.style.display=(stt==='chosen'||stt==='ordered')?'':'none'; od.textContent=stt==='ordered'?'✎ עריכת הזמנה / ביטול':'📦 סימון כהוזמן'; od.classList.toggle('deny',!canDo(it.cat,'order')); }
 }
 function viewCounts(){
   const pool=ITEMS.filter(i=>!i.hidden&&inCats(i)), c={active:0,toorder:0,tochoose:0,ordered:0,rejected:0,all:pool.length};
@@ -1821,7 +1828,7 @@ function cardEl(it){
         <button class="maybe" title="אולי" onclick="setS('${it.id}','maybe')">?</button>
         <button class="no" title="לא מתאים לי" onclick="setS('${it.id}','no')">✕</button>
       </div>
-      ${it.type==='product'?`<div class="decRow"><button type="button" class="dChoose" onclick="decChoose('${it.id}')"></button><button type="button" class="dReject" onclick="decReject('${it.id}')"></button><button type="button" class="dOrder" onclick="toggleOrdered('${it.id}')">📦 סימון כהוזמן</button></div>`:''}
+      ${it.type==='product'?`<div class="decRow"><div class="decSeg" role="group" aria-label="ההחלטה על הפריט"><button type="button" class="ds d" onclick="decPick('${it.id}',null)">🤔 בדיון</button><button type="button" class="ds c" onclick="decPick('${it.id}','chosen')">✅ נבחר</button><button type="button" class="ds r" onclick="decPick('${it.id}','rejected')">↩ הוסר</button></div><button type="button" class="dOrder" onclick="toggleOrdered('${it.id}')">📦 סימון כהוזמן</button></div>`:''}
       ${shopHTML?shopHTML:''}
       ${!shopHTML&&it.type==='product'&&(it.link||it.zap)?`<div class="shoprow">${it.link?`<a class="shopbtn" href="${it.link}" target="_blank" rel="noopener">🏪 לחנות המומלצת</a>`:''}${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div>`:''}
       <button type="button" class="moreBtn" onclick="toggleMore('${it.id}')">פרטים והשוואה ⌄</button>
