@@ -531,7 +531,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
     <button class="vbtn on" data-v="active" onclick="setView('active')">פעילים<span class="vc" data-c="active"></span></button>
     <button class="vbtn" data-v="toorder" onclick="setView('toorder')">🛒 להזמין<span class="vc" data-c="toorder"></span></button>
     <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 הוזמנו<span class="vc" data-c="ordered"></span></button>
-    <button class="vbtn" data-v="rejected" onclick="setView('rejected')">✕ נפסלו<span class="vc" data-c="rejected"></span></button>
+    <button class="vbtn" data-v="rejected" onclick="setView('rejected')">↩ הוסרו מההזמנה<span class="vc" data-c="rejected"></span></button>
     <button class="vbtn" data-v="all" onclick="setView('all')">הכל<span class="vc" data-c="all"></span></button>
     <button class="vbtn" data-v="hidden" onclick="setView('hidden')">🙈 הוסתרו<span class="c" id="hiddenCount" style="display:none"></span></button>
   </div>
@@ -740,7 +740,7 @@ function rebuild(){
   const cm={}; BCATS.forEach(c=>cm[c.key]={...c});
   st.custom.cats.forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
   Object.values(shared.cats||{}).forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
-  ITEMS=Object.values(im); CATS=Object.values(cm);
+  ITEMS=Object.values(im).filter(i=>!i.deleted); CATS=Object.values(cm);
   ITEMS.forEach(i=>{ if(i.cat==='תאורת חוץ'){ i.cat='תאורה'; i.sub=i.sub||'תאורת חוץ'; } });
   ITEMS.forEach(i=>{ if(i.stores&&i.stores.length){ const r=i.stores.find(x=>x.rec)||i.stores[0]; if(r&&r.p!=null) i.price=r.p; if(r&&r.l) i.link=r.l; } });
   byId=Object.fromEntries(ITEMS.map(x=>[x.id,x]));
@@ -788,7 +788,7 @@ function itemStatus(it){
   if(it.decision==='chosen') return 'chosen';
   return 'discuss';
 }
-const ST_LAB={ordered:'📦 הוזמן',chosen:'🛒 נבחר — צריך להזמין',discuss:'🤔 בדיון',rejected:'✕ נפסל'};
+const ST_LAB={ordered:'📦 הוזמן',chosen:'🛒 נבחר — צריך להזמין',discuss:'🤔 בדיון',rejected:'↩ הוסר מההזמנה'};
 function statusHTML(it,stt){
   const ms=marksFor(it.id), by=k=>ms.filter(m=>m.status===k).map(m=>m.name);
   let small='';
@@ -800,7 +800,7 @@ function statusHTML(it,stt){
   return `${ST_LAB[stt]}<small>${esc(small)}</small>`;
 }
 /* ----- permissions + decisions ----- */
-const ACT_LAB={reject:'לפסול פריטים',choose:'לבחור פריטים להזמנה',order:'לסמן שפריט הוזמן'};
+const ACT_LAB={reject:'להסיר פריטים מההזמנה',choose:'לבחור פריטים להזמנה',order:'לסמן שפריט הוזמן'};
 function permNames(p){ return Array.isArray(p)?p:Object.values(p||{}); }
 function canDo(catKey,act){ const c=CATS.find(x=>x.key===catKey); const p=c&&c.perms&&c.perms[act]; if(!p||p==='all') return true; if(!me) return false; return permNames(p).includes(me.name); }
 function say(msg,ms){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(say._t); say._t=setTimeout(()=>{t.classList.remove('show'); t.textContent='✓ הועתק';},ms||3000); }
@@ -825,7 +825,7 @@ function paintStatus(c,id){
   const dr=c.querySelector('.decRow'); if(dr){ dr.style.display='flex';
     dr.querySelector('.dChoose').style.display=stt==='ordered'?'none':''; dr.querySelector('.dReject').style.display=stt==='ordered'?'none':'';
     const ch=dr.querySelector('.dChoose'), rj=dr.querySelector('.dReject'), od=dr.querySelector('.dOrder');
-    ch.textContent=stt==='chosen'?'↩ ביטול בחירה':'✅ בחירה להזמנה'; rj.textContent=stt==='rejected'?'↩ ביטול פסילה':'🚫 פסילה'; od.style.display=(stt==='chosen'||stt==='ordered')?'':'none'; od.textContent=stt==='ordered'?'✎ עריכת הזמנה / ביטול':'📦 סימון כהוזמן';
+    ch.textContent=stt==='chosen'?'↩ ביטול בחירה':'✅ בחירה להזמנה'; rj.textContent=stt==='rejected'?'↩ החזרה לבחירה':'↩ הסרה מההזמנה'; od.style.display=(stt==='chosen'||stt==='ordered')?'':'none'; od.textContent=stt==='ordered'?'✎ עריכת הזמנה / ביטול':'📦 סימון כהוזמן';
     ch.classList.toggle('deny',!canDo(it.cat,'choose')); rj.classList.toggle('deny',!canDo(it.cat,'reject')); od.classList.toggle('deny',!canDo(it.cat,'order')); }
 }
 function viewCounts(){
@@ -839,7 +839,7 @@ function renderRejNote(){
   if(viewMode!=='active'){ el.style.display='none'; el.innerHTML=''; return; }
   const c=viewCounts(); let h='';
   if(c.ordered) h+=`<button type="button" onclick="setView('ordered')">📦 ${c.ordered} כבר הוזמנו — הצגה</button>`;
-  if(c.rejected) h+=`<button type="button" onclick="setView('rejected')">✕ ${c.rejected} נפסלו — הצגה</button>`;
+  if(c.rejected) h+=`<button type="button" onclick="setView('rejected')">↩ ${c.rejected} הוסרו מההזמנה — הצגה</button>`;
   el.innerHTML=h; el.style.display=h?'flex':'none';
 }
 function catState(c){
@@ -948,7 +948,7 @@ function renderCatStrip(){
   const goal=cat.due?`🎯 יעד קנייה: <b>${fmtDate(cat.due)}</b> ${stt==='done'?'':dueRel(cat.due)}`:(cat.wishlist?'💭 Wishlist — בלי תאריך':'⏳ אין יעד קנייה');
   const dn=docsList('cat_'+cat.key).length;
   const vc=viewCounts();
-  let h=`<div class="statline"><button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button><button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button><button class="d" onclick="setView('active')">🤔 בדיון ${vc.active-vc.toorder}</button><button class="r" onclick="setView('rejected')">✕ נפסלו ${vc.rejected}</button></div>
+  let h=`<div class="statline"><button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button><button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button><button class="d" onclick="setView('active')">🤔 בדיון ${vc.active-vc.toorder}</button><button class="r" onclick="setView('rejected')">↩ הוסרו ${vc.rejected}</button></div>
   <div class="csrow"><span class="st">${stLab}</span><span>${goal}</span><button type="button" onclick="openCatSettings('${esc(cat.key)}')">⚙ הגדרות הקטגוריה</button><button type="button" onclick="askResearch('${esc(cat.key)}',normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),true)">🔎 חיפוש מחדש</button><button type="button" onclick="openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')">📎 מסמכי הקטגוריה${dn?' ('+dn+')':''}</button></div>`;
   h+=researchStripHTML(cat);
   if(chosenN>1&&!cat.multi) h+=`<div class="warnB">⚠ שימי לב: נבחרו ${chosenN} פריטים בקטגוריה. אם זה מכוון (למשל כמה פריטים לאותו חלל), אפשר לאשר בהגדרות הקטגוריה — "מותר לבחור כמה".</div>`;
@@ -1030,7 +1030,7 @@ function sgAccept(rid,i,mode){
   sgSetStatus(rid,i,mode==='replace'?'replaced':'added'); rebuild(); tabsHTML(); RE(true); renderSuggestions(window._sgCat);
   say(mode==='replace'?'🔁 הוחלף':'➕ נוסף לקטגוריה',2000);
 }
-const PERM_ACTS=[['reject','פסילת פריט'],['choose','בחירת פריט להזמנה'],['order','סימון שפריט הוזמן']];
+const PERM_ACTS=[['reject','הסרת פריט מההזמנה'],['choose','בחירת פריט להזמנה'],['order','סימון שפריט הוזמן']];
 function openCatSettings(key){
   const c=CATS.find(x=>x.key===key); if(!c) return;
   const pool=[...new Set(['יעל','רועי','נופר',...namesList()])];
@@ -1435,7 +1435,7 @@ function cardEl(it){
         ${hasPts?descHTML:''}
         ${qty}
         <div class="note"><textarea placeholder="הערה: גוון / גודל / וריאציה…" oninput="setN('${it.id}',this.value)"></textarea></div>
-        <div class="cardActions">${it.type==='product'?`<button class="markOrd" onclick="toggleOrdered('${it.id}')">📦 סמן כהוזמן</button>`:''}<button class="hideb" onclick="toggleHidden('${it.id}')">${it.hidden?'↩️ שחזר ללוח':'🗑️ הסר מהלוח'}</button></div>`;
+        <div class="cardActions">${it.type==='product'?`<button class="markOrd" onclick="toggleOrdered('${it.id}')">📦 סמן כהוזמן</button>`:''}<button class="hideb" onclick="toggleHidden('${it.id}')">${it.hidden?'↩️ שחזר ללוח':'🙈 הסתר'}</button><button class="hideb" onclick="deleteItem('${it.id}')">🗑 מחיקת הפריט (לצמיתות)</button></div>`;
   c.innerHTML=`${it.pick?'<span class="pickRibbon">⭐ ההמלצה שלנו</span>':''}<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button>
     ${it.type==='product'?`<span class="orderb"><span class="ol">✓ הוזמן</span><span class="od"></span></span>`:''}
     ${media}
@@ -1481,7 +1481,7 @@ function paint(id,c){
   const mo=c.querySelector('.markOrd'); if(mo)mo.style.display=it.ordered?'none':'';
   const hb=c.querySelector('.hideb');
   if(hb){ hb.classList.toggle('restore',!!it.hidden);
-    hb.textContent=it.hidden?'↩️ שחזר ללוח':'🗑️ הסר מהלוח'; }
+    hb.textContent=it.hidden?'↩️ שחזר ללוח':'🙈 הסתר'; }
   const oi=c.querySelector('.ordinfo');
   if(oi){ oi.innerHTML='';
     if(it.ordered){ oi.style.display='';
@@ -1553,10 +1553,21 @@ function toggleDesc(id){
   const btn=el.nextElementSibling;
   if(btn) btn.textContent=nowClamped?(byId[id]&&(byId[id].points||[]).length?'פרטים מלאים ⌄':'הצג פרטים ⌄'):'הסתר ⌃';
 }
+function deleteItem(id){
+  const it=byId[id]; if(!it) return;
+  if(!confirm('למחוק את "'+(it.name||'')+'" לצמיתות מהקטגוריה?\nהפעולה מוחקת את הפריט מהלוח לגמרי ולא ניתנת לשחזור.')) return;
+  const builtin=BITEMS.some(b=>b.id===id);
+  const tomb=builtin?{id,deleted:true}:{id,deleted:true,cat:it.cat};
+  shared.items=shared.items||{}; shared.items[id]=builtin?{...(shared.items[id]||{}),...tomb}:tomb;
+  fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:builtin?'PATCH':'PUT',body:JSON.stringify(tomb)}).catch(()=>{});
+  st.custom.items=(st.custom.items||[]).filter(x=>x.id!==id); delete st.ord[id]; if(st.dec) delete st.dec[id]; delete st.s[id]; save();
+  const c=els.get(id); if(c){ c.remove(); els.delete(id); }
+  rebuild(); tabsHTML(); updateHiddenCount(); renderSubRow(); RE(true); say('🗑 הפריט נמחק מהלוח',2500);
+}
 function toggleHidden(id){
   const it=byId[id]; if(!it)return;
   const val=!it.hidden;
-  if(val && !confirm('להסיר את "'+it.name+'" מהלוח?\nהפריט לא נמחק — אפשר תמיד לשחזר אותו מתצוגת "🙈 הוסתרו".')) return;
+  if(val && !confirm('להסתיר את "'+it.name+'"?\nהפריט לא נמחק — אפשר לשחזר אותו מתצוגת "🙈 הוסתרו".')) return;
   Object.assign(it,{hidden:val});
   fbPushHidden(id,val); paint(id);
   updateHiddenCount();
