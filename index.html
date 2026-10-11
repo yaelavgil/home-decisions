@@ -231,6 +231,48 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .sttbl td{padding:4px 6px;border-bottom:1px solid var(--line-2);vertical-align:top}
 .sttbl td.p{white-space:nowrap;font-weight:800;color:var(--brass-d)}
 #docKind{padding:6px 8px;border:1.5px solid var(--line-2);border-radius:9px;font:inherit}
+
+.cartFull{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;flex-direction:column}
+.cartFull[hidden]{display:none}
+.cfHead{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-bottom:1.5px solid var(--line);background:var(--paper)}
+.cfHead h2{margin:0;font-size:20px;flex:none}
+.cfX{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line-2);background:var(--paper);font-size:17px;cursor:pointer;flex:none}
+.cfTabs{display:flex;gap:6px;flex:1;flex-wrap:wrap}
+.cfTabs button{font:inherit;font-weight:700;font-size:14px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:7px 16px;cursor:pointer;color:var(--ink-soft)}
+.cfTabs button.on{background:var(--brass-d);border-color:var(--brass-d);color:#fff}
+.cfOpts .seg2{display:inline-flex;border:1.5px solid var(--line-2);border-radius:99px;overflow:hidden}
+.cfOpts .seg2 button{border:0;background:var(--paper);padding:7px 14px;font:inherit;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink-soft)}
+.cfOpts .seg2 button.on{background:var(--brass-d);color:#fff}
+.cfAdd{position:relative;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--bg)}
+.cfAdd input{width:100%;max-width:640px;padding:10px 14px;border:1.5px solid var(--line-2);border-radius:12px;font:inherit}
+.cfRes{position:absolute;inset-inline:16px;top:100%;z-index:5;max-width:640px;background:var(--paper);border:1.5px solid var(--line-2);border-radius:12px;box-shadow:0 18px 40px -16px rgba(40,28,12,.4);max-height:50vh;overflow:auto;display:none}
+.cfRes button{display:flex;gap:10px;align-items:center;width:100%;text-align:start;background:none;border:0;padding:8px 12px;font:inherit;cursor:pointer;border-bottom:1px solid var(--line-2)}
+.cfRes button:hover{background:var(--brass-soft)}
+.cfRes img{width:36px;height:36px;object-fit:contain;border-radius:6px;background:#fbf8f2}
+.cfRes small{color:var(--muted);margin-inline-start:auto;white-space:nowrap}
+.cfBody{flex:1;overflow:auto;padding:12px 16px 30px}
+.cfGroup{margin:0 0 18px;max-width:1100px}
+.cfGroup h3{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 6px;font-size:16px;border-bottom:2px solid var(--line-2);padding-bottom:5px}
+.cfGroup h3 .gt{margin-inline-start:auto;color:var(--brass-d);font-weight:800}
+.cfGroup h3 button{font:inherit;font-size:12.5px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:3px 11px;cursor:pointer;color:var(--brass-d);font-weight:650}
+.cfRow{display:grid;grid-template-columns:56px 1fr auto auto;gap:6px 12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line-2)}
+.cfRow img,.cfRow .cthumb{width:56px;height:56px;object-fit:contain;border-radius:8px;background:#fbf8f2}
+.cfRow .nm{font-weight:700;text-decoration:none;color:var(--ink)}
+.cfRow .meta{font-size:12px;color:var(--ink-soft);display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:2px}
+.cfRow .meta .b{background:var(--brass-soft);border-radius:99px;padding:1px 8px;font-weight:700;color:var(--brass-d)}
+.cfRow .meta .b.ch{background:#f8e7bb;color:#6f520d}
+.cfRow .note{width:100%;max-width:340px;padding:4px 8px;border:1.5px solid var(--line-2);border-radius:8px;font:inherit;font-size:12.5px;margin-top:4px}
+.cfRow .qty{display:inline-flex;align-items:center;gap:4px}
+.cfRow .qty button{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line-2);background:var(--paper);cursor:pointer;font-weight:800}
+.cfRow .pr{font-weight:800;color:var(--brass-d);white-space:nowrap;min-width:70px;text-align:end}
+.cfRow .acts{grid-column:2/-1;display:flex;gap:6px;flex-wrap:wrap}
+.cfRow .acts button,.cfRow .acts a{font:inherit;font-size:12.5px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:3px 11px;cursor:pointer;color:var(--ink-soft);font-weight:650;text-decoration:none}
+.cfRow .acts .ord{background:#4c8a53;border-color:#4c8a53;color:#fff}
+.cfRow .acts .del{color:#8d4a3e}
+.cfFoot{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 16px;border-top:1.5px solid var(--line);background:var(--paper)}
+.cfFoot #cfTotal{font-weight:700}.cfFoot #cfTotal b{color:var(--brass-d);font-size:20px}
+.cfBtns{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:560px){.cfRow{grid-template-columns:48px 1fr auto}.cfRow .qty{grid-column:2}.cfRow .acts{grid-column:1/-1}}
 .keySpecs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
 .ks{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--brass-soft);font-weight:700;white-space:nowrap}
 .ks i{font-style:normal;font-weight:500;color:var(--ink-soft)}
@@ -677,6 +719,15 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="db"><textarea id="out"></textarea></div>
   <div class="df"><button class="tbtn primary" onclick="copyOut()">העתק ללוח</button><button class="tbtn" onclick="dlg.close()">סגור</button></div>
 </dialog>
+<div class="cartFull" id="cartFull" hidden>
+  <div class="cfHead"><button type="button" class="cfX" onclick="closeCartFull()" aria-label="סגירה">✕</button><h2 id="cfTitle">🛒 עגלה</h2>
+    <div class="cfTabs" id="cfTabs"></div>
+    <div class="cfOpts"><span class="seg2"><button type="button" id="cfGS" onclick="cartGroup='store';renderCartFull()">לפי חנות</button><button type="button" id="cfGC" onclick="cartGroup='cat';renderCartFull()">לפי קטגוריה</button></span></div>
+  </div>
+  <div class="cfAdd"><input id="cfAddQ" placeholder="➕ הוסיפי פריט לעגלה — חיפוש לפי שם…" oninput="cartAddSearch()" autocomplete="off"><div class="cfRes" id="cfRes"></div></div>
+  <div class="cfBody" id="cfBody"></div>
+  <div class="cfFoot"><div id="cfTotal"></div><div class="cfBtns"><button class="tbtn primary" onclick="openSummary()">📋 העתק הזמנה</button><button class="tbtn" onclick="copyOrderLink()">🔗 קישור להזמנה</button><button class="tbtn" onclick="closeCartFull()">חזרה ללוח</button></div></div>
+</div>
 <div class="toast" id="toast">✓ הועתק</div>
 
 <dialog id="meDlg"><div class="dh">👋 מי את/ה?</div>
@@ -1801,26 +1852,91 @@ function cartRow(i,q,note,isMaybe,editable){
     : `<span class="cp">${i.price!=null?nis((i.price||0)*q):''}${q>1?` <small>×${q}</small>`:''}</span>`;
   return `<div class="cartrow">${media}<div class="ci">${nameEl}${noteHtml}</div>${right}</div>`;
 }
+
+/* ===== full-screen cart ===== */
+let cartTab='buy', cartGroup='store', cartWho=null;
 function openCart(){
-  const who=personf==='all'?(me&&me.name):personf;
-  const body=document.getElementById('cartBody'); const title=document.getElementById('cartTitle');
-  if(!who){ body.innerHTML='<div class="cempty">בחרו שם קודם.</div>'; title.textContent='🛒 עגלה'; document.getElementById('cartDlg').showModal(); return; }
-  const editable = !!(me && who===me.name);
-  const cats=CATS.filter(c=>c.key!=='all'); const inView=inCats;
-  let chosenHtml='', total=0, anyChosen=false, cnt=0;
-  cats.forEach(c=>{ const chosen=ITEMS.filter(i=>i.cat===c.key&&inView(i)&&statusOfName(who,i.id)==='yes');
-    if(!chosen.length)return; anyChosen=true; chosenHtml+=`<div class="csec">${c.icon} ${c.label}</div>`;
-    chosen.forEach(i=>{const mk=markOf(who,i.id)||{};const q=mk.q||1;if(!i.ordered)total+=(i.price||0)*q;cnt++;chosenHtml+=cartRow(i,q,mk.n,false,editable);}); });
-  let maybeHtml='', anyMaybe=false;
-  cats.forEach(c=>{ const mb=ITEMS.filter(i=>i.cat===c.key&&inView(i)&&statusOfName(who,i.id)==='maybe');
-    if(!mb.length)return; anyMaybe=true; maybeHtml+=`<div class="csec">${c.icon} ${c.label}</div>`;
-    mb.forEach(i=>{const mk=markOf(who,i.id)||{};maybeHtml+=cartRow(i,mk.q||1,mk.n,true,editable);}); });
-  let html=`<div class="csub">🛒 נבחרו לקנייה${cnt?` <span class="ccount">${cnt}</span>`:''}</div>`;
-  html+= anyChosen?chosenHtml:'<div class="cempty">עדיין אין פריטים נבחרים (✓).</div>';
-  html+=`<div class="ctotal">סה״כ נבחרים: <b>${nis(total)}</b></div>`;
-  if(anyMaybe) html+=`<div class="csub" style="margin-top:18px">🤔 לשקול — אולי</div>`+maybeHtml;
-  title.textContent='🛒 עגלה — '+(who===(me&&me.name)?'שלי':who);
-  body.innerHTML=html; document.getElementById('cartDlg').showModal();
+  cartWho=personf==='all'?(me&&me.name):personf; if(!cartWho){ openMe(); return; }
+  document.getElementById('cartFull').hidden=false; document.body.style.overflow='hidden'; document.getElementById('cfAddQ').value=''; document.getElementById('cfRes').style.display='none'; renderCartFull();
+}
+function closeCartFull(){ document.getElementById('cartFull').hidden=true; document.body.style.overflow=''; }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!document.getElementById('cartFull').hidden&&!document.querySelector('dialog[open]')) closeCartFull(); });
+function cartLists(who){
+  const inCart=i=>{ if(i.hidden||i.ordered) return false; const stt=itemStatus(i); if(stt==='rejected') return false; return statusOfName(who,i.id)==='yes'||stt==='chosen'; };
+  const buy=ITEMS.filter(inCart), maybe=ITEMS.filter(i=>!i.hidden&&!i.ordered&&!inCart(i)&&itemStatus(i)!=='rejected'&&statusOfName(who,i.id)==='maybe');
+  const ordered=ITEMS.filter(i=>i.ordered&&!i.hidden).sort((a,b)=>(b.orderedAt||0)-(a.orderedAt||0));
+  return {buy,maybe,ordered};
+}
+const qtyFor=(who,i)=>((markOf(who,i.id)||{}).q)||1;
+function renderCartFull(){
+  const who=cartWho; const editable=!!(me&&who===me.name); const L=cartLists(who);
+  document.getElementById('cfTitle').textContent='🛒 עגלה — '+(who===(me&&me.name)?'שלי':who);
+  const tabs=[['buy','🛒 לקנייה',L.buy.length],['maybe','🤔 לשקול',L.maybe.length],['ordered','📦 הוזמנו',L.ordered.length]];
+  document.getElementById('cfTabs').innerHTML=tabs.map(([k,l,n])=>`<button type="button" class="${cartTab===k?'on':''}" onclick="cartTab='${k}';renderCartFull()">${l} (${n})</button>`).join('');
+  document.getElementById('cfGS').className=cartGroup==='store'?'on':''; document.getElementById('cfGC').className=cartGroup==='cat'?'on':'';
+  const items=L[cartTab]; const body=document.getElementById('cfBody');
+  const keyOf=i=>cartGroup==='store'?guessStore(i):((CATS.find(c=>c.key===i.cat)||{}).icon||'')+' '+((CATS.find(c=>c.key===i.cat)||{}).label||i.cat);
+  const groups={}; items.forEach(i=>{ (groups[keyOf(i)]=groups[keyOf(i)]||[]).push(i); });
+  const gtot=g=>g.reduce((a,i)=>a+(cartTab==='ordered'?lineTotal(i):(i.price||0)*qtyFor(who,i)),0);
+  body.innerHTML=items.length?'':`<div class="cempty">${cartTab==='buy'?'העגלה ריקה. סמני ✓ על פריטים, או הוסיפי מהחיפוש למעלה.':(cartTab==='maybe'?'אין פריטים לשקול.':'עוד לא סומן שום פריט כמוזמן.')}</div>`;
+  Object.keys(groups).sort((a,b)=>gtot(groups[b])-gtot(groups[a])).forEach(k=>{
+    const g=groups[k]; const sec=document.createElement('div'); sec.className='cfGroup';
+    const bulk=(cartTab==='buy'&&editable&&cartGroup==='store')?`<button type="button" onclick="bulkOrder('${esc(k)}')">📦 סמני את כל הפריטים מ־${esc(k)} כהוזמנו</button>`:'';
+    sec.innerHTML=`<h3><span>${esc(k)}</span><span class="stm">${g.length} פריטים</span>${bulk}<span class="gt">${nis(gtot(g))}</span></h3>`;
+    g.forEach(i=>sec.appendChild(cartRowEl(i,who,editable)));
+    body.appendChild(sec); });
+  const tot=items.reduce((a,i)=>a+(cartTab==='ordered'?lineTotal(i):(i.price||0)*qtyFor(who,i)),0);
+  document.getElementById('cfTotal').innerHTML=(cartTab==='ordered'?'סה״כ הוזמן: ':(cartTab==='maybe'?'סה״כ לשקול: ':'סה״כ לקנייה: '))+`<b>${nis(tot)}</b>`;
+}
+function cartRowEl(i,who,editable){
+  const q=qtyFor(who,i), mk=markOf(who,i.id)||{}, stt=itemStatus(i);
+  const d=document.createElement('div'); d.className='cfRow';
+  const media=i.type==='color'?`<span class="cthumb" style="background:${i.hex}"></span>`:(i.img?`<img src="${esc(i.img)}" alt="">`:`<span class="cthumb"></span>`);
+  const price=cartTab==='ordered'?lineTotal(i):(i.price||0)*q;
+  const meta=cartTab==='ordered'
+    ?`<span class="b">🏪 ${esc(guessStore(i))}</span><span>${i.orderedAt?fmtDate(i.orderedAt):''}</span><span>${esc(i.orderedBy||'')}</span>${i.orderNote?`<span>${esc(i.orderNote)}</span>`:''}`
+    :`<span class="b">🏪 ${esc(guessStore(i))}</span>${stt==='chosen'?'<span class="b ch">🛒 נבחר</span>':''}<span>${esc((CATS.find(c=>c.key===i.cat)||{}).label||'')}</span>`;
+  d.innerHTML=`${media}<div><a class="nm" ${i.link?`href="${esc(i.link)}" target="_blank" rel="noopener"`:''}>${esc(i.name)}</a><div class="meta">${meta}</div>`
+    +(cartTab!=='ordered'&&editable?`<input class="note" placeholder="הערה (גוון / גודל / וריאציה)…" value="${esc(mk.n||'')}" onchange="setN('${i.id}',this.value)">`:(mk.n?`<div class="meta">↳ ${esc(mk.n)}</div>`:''))
+    +`</div>`
+    +(cartTab==='buy'&&editable?`<span class="qty"><button type="button" onclick="cartQty('${i.id}',-1)">−</button><b>${q}</b><button type="button" onclick="cartQty('${i.id}',1)">+</button></span>`:`<span>${q>1?'×'+q:''}</span>`)
+    +`<span class="pr">${i.price!=null||cartTab==='ordered'?nis(price):''}</span>`
+    +`<div class="acts">`
+    +(cartTab==='buy'?`<button type="button" class="ord" onclick="openOrderDlg('${i.id}')">📦 הוזמן</button>`:'')
+    +(cartTab==='maybe'&&editable?`<button type="button" class="ord" onclick="cartMark('${i.id}','yes')">➕ לעגלה</button>`:'')
+    +(cartTab==='ordered'?`<button type="button" onclick="openOrderDlg('${i.id}')">✎ עריכה / ביטול</button><button type="button" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎 מסמכים</button>`:'')
+    +(cartTab!=='ordered'?`<button type="button" onclick="cartStore('${i.id}')">🏪 חנות</button>`:'')
+    +(cartTab==='buy'&&editable?`<button type="button" onclick="cartMark('${i.id}','maybe')">🤔 לשקול</button>`:'')
+    +(cartTab!=='ordered'&&editable?`<button type="button" class="del" onclick="cartRemove('${i.id}')">🗑 הסרה מהעגלה</button>`:'')
+    +(i.link?`<a href="${esc(i.link)}" target="_blank" rel="noopener">↗ לחנות</a>`:'')+`</div>`;
+  return d;
+}
+function setMark(id,val){ const s=S(id); s.status=val; save(); paint(id); fbPushMark(id); renderPeople(); updateSumm(visible()); }
+function cartMark(id,val){ setMark(id,val); renderCartFull(); RE(); }
+function cartQty(id,dv){ setQ(id,dv); renderCartFull(); }
+function cartRemove(id){ const it=byId[id]; if(!it) return; setMark(id,'none');
+  if(it.decision==='chosen'&&canDo(it.cat,'choose')) setDecision(id,null);
+  renderCartFull(); RE(); say('הוסר מהעגלה',1800); }
+function cartStore(id){ const it=byId[id]; if(!it) return; const v=prompt('מאיפה קונים את הפריט הזה? (שם החנות)',guessStore(it)); if(v===null) return; it.orderStore=v.trim(); patchItem(id,{orderStore:v.trim()||null}); renderCartFull(); }
+function cartAddSearch(){
+  const q=(document.getElementById('cfAddQ').value||'').trim(), box=document.getElementById('cfRes');
+  if(q.length<2){ box.style.display='none'; return; }
+  const who=cartWho; const L=cartLists(who); const have=new Set([...L.buy,...L.ordered].map(i=>i.id));
+  const res=ITEMS.filter(i=>!i.hidden&&!have.has(i.id)&&itemStatus(i)!=='rejected'&&((i.name||'').includes(q)||((CATS.find(c=>c.key===i.cat)||{}).label||'').includes(q))).slice(0,10);
+  box.innerHTML=res.length?res.map(i=>`<button type="button" onclick="cartAdd('${i.id}')">${i.img?`<img src="${esc(i.img)}" alt="">`:''}<span>${esc(i.name)}</span><small>${esc((CATS.find(c=>c.key===i.cat)||{}).label||'')} · ${i.price!=null?nis(i.price):''}</small></button>`).join(''):'<div class="cempty" style="padding:10px">לא נמצא פריט.</div>';
+  box.style.display='block';
+}
+function cartAdd(id){ if(!me){ openMe(); return; } setMark(id,'yes'); cartTab='buy'; document.getElementById('cfAddQ').value=''; document.getElementById('cfRes').style.display='none'; renderCartFull(); RE(); say('נוסף לעגלה',1500); }
+function bulkOrder(storeName){
+  const who=cartWho; if(!me||who!==me.name){ say('רק בעגלה שלך',2000); return; }
+  const items=cartLists(who).buy.filter(i=>guessStore(i)===storeName); if(!items.length) return;
+  const today=new Date(); const ds=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  const v=prompt('סימון '+items.length+' פריטים מ־'+storeName+' כהוזמנו.\nתאריך ההזמנה (YYYY-MM-DD):',ds); if(v===null) return;
+  const at=new Date(v+'T12:00:00').getTime(); if(isNaN(at)){ alert('תאריך לא תקין'); return; }
+  let n=0; items.forEach(i=>{ if(!canDo(i.cat,'order')) return; const q=qtyFor(who,i);
+    const o={ordered:true,orderedBy:me.name+(q>1?' · '+q+' יח׳':''),orderedAt:at,orderStore:storeName,orderLink:i.orderLink||null};
+    Object.assign(i,o); st.ord[i.id]=o; fbPushOrdered(i.id,o); n++; });
+  save(); tabsHTML(); RE(); renderCartFull(); say('📦 '+n+' פריטים סומנו כהוזמנו',2500);
 }
 function promoteToCart(id){ setS(id,'yes'); openCart(); }
 function addToggle(){
