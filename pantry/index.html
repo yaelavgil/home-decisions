@@ -65,6 +65,22 @@ h2.cab{margin:22px 0 2px;font-size:1.25rem}
   <p class="small" id="shipnote"></p>
 </div>
 
+<div class="card" id="foodcmp" style="margin-top:14px">
+  <h2>🥫 סלסלות / מיכלים למזון — השוואת חנויות (מחיר ליחידה)</h2>
+  <table>
+   <thead><tr><th>חנות · מוצר</th><th class="n">מחיר</th><th>מזון / ניקוי</th><th>הערות</th></tr></thead>
+   <tbody>
+    <tr><td><b>IKEA 365+</b> מיכל מזון 5.2L · 32×21×11</td><td class="n">₪19</td><td>״אידאלי למזון יבש בארונות ובמגירות״ · מדיח + מיקרו + מקפיא</td><td>המלצה למזון. מכסה אטום: ₪34. חנות בלבד</td></tr>
+    <tr><td><b>Home Center</b> EIIe / ELLE / Rio</td><td class="n">₪25–30</td><td>לא צוין (אקריליק)</td><td>הכי מתאים לגריד המתוכנן; לאריזות סגורות</td></tr>
+    <tr><td><b>IKEA</b> KLIPPKAKTUS 30×19×14</td><td class="n">₪25–29</td><td>מיועד למקרר · ידני בלבד</td><td>חלופה באותו מחיר</td></tr>
+    <tr><td><b>Golf &amp; Co</b> TRITAN 27.3×19.7×11</td><td class="n">₪65</td><td>מכסה אטום · מדיח</td><td>איכותי אך פי 3.4 מ־IKEA · חינם מעל ₪349 · איסוף ₪4</td></tr>
+    <tr><td><b>Castro Home</b> 4.7L 26.9×16.4×15</td><td class="n">₪70</td><td>מכסה אטום · מדיח לא צוין</td><td>״1+1״ לא אומת · חינם מעל ₪199</td></tr>
+    <tr><td><b>AliExpress</b> (Temu חסום בהתחברות; SHEIN ללא נתונים)</td><td class="n">₪7–26</td><td>לא צוין</td><td>מידות/חומר לא פורסמו, 2–4 שבועות, החזרה קשה</td></tr>
+    <tr><td><b>H&amp;M Home</b></td><td class="n">—</td><td>—</td><td>האתר לא נטען (תחזוקה) — לא נבדק</td></tr>
+   </tbody></table>
+  <p class="small">אין פער מחיר ״ענק״: Home Center ≈₪27 מול AliExpress ≈₪7–26, ו־IKEA 365+ ₪19 הוא הזול והמוצהר־למזון. 32×21 דורש גריד קצת שונה — אחרי המדידה אחשב אותו.</p>
+</div>
+
 <div class="card" id="routes" style="margin-top:14px">
   <h2>🧭 מסלולי קנייה</h2>
   <table>
@@ -248,6 +264,6 @@ state.forEach(cab=>{const sec=document.createElement('section');sec.id='s_'+cab.
 document.querySelectorAll('input[name=ship]').forEach(r=>r.addEventListener('change',paint));
 paint();
 if(only){const keep={c7:'s_c7',c8:'s_c8',c9:'s_c9',shop:'shopcard'};const k=keep[only];
-  document.querySelectorAll('#cabs>section,#shopcard,#routes,#measure,.note,.legend,.back,h1,p.small').forEach(e=>{if(only==='shop'){if(!['shopcard','routes'].includes(e.id))e.style.display='none';}else{if(e.id!==k&&!e.matches('h1,.legend'))e.style.display='none';}});}
+  document.querySelectorAll('#cabs>section,#shopcard,#routes,#measure,.note,.legend,.back,h1,p.small').forEach(e=>{if(only==='shop'){if(!['shopcard','routes','foodcmp'].includes(e.id))e.style.display='none';}else{if(e.id!==k&&!e.matches('h1,.legend'))e.style.display='none';}});}
 </script>
 </body></html>
