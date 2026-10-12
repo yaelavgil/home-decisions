@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>שיבוץ מגירות המזווה</title>
+<style>
+:root{--bg:#faf6ef;--card:#fff;--ink:#2c2a26;--mut:#7b756b;--line:#e4dccd;--ok:#2f7d4f;--okbg:#e6f3ea;--warn:#a4650b;--warnbg:#fbefd9;--bad:#b3352b;--badbg:#fbe4e1;--acc:#8a6a3b;
+ --b1:#d9eaf3;--b2:#e4efdc;--b3:#f6e6d0;--b4:#ece3f3;--b5:#f3dcdc;--stroke:#6f8fa3}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#1d1b18;--card:#272420;--ink:#efe9de;--mut:#a79f90;--line:#3d382f;--okbg:#1f3427;--warnbg:#3b2f17;--badbg:#3d1f1b;--b1:#25394a;--b2:#2b3a25;--b3:#45361f;--b4:#35294a;--b5:#4a2a2a;--stroke:#8fb3c7}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Rubik,Heebo,system-ui,sans-serif;line-height:1.5}
+.wrap{max-width:1100px;margin:0 auto;padding:16px}
+a{color:var(--acc)}h1{font-size:1.5rem;margin:.2em 0}h2{font-size:1.15rem;margin:.2em 0}
+.back{display:inline-block;margin-bottom:6px;font-size:.9rem}
+.note{background:var(--warnbg);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:.92rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px;margin:14px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.dims{display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin:6px 0 8px}
+.dims label{font-size:.78rem;color:var(--mut);display:flex;flex-direction:column;gap:2px}
+.dims input{width:68px;padding:5px 6px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.tag{font-size:.72rem;padding:1px 7px;border-radius:99px;background:var(--warnbg);color:var(--warn);align-self:center}
+.tag.m{background:var(--okbg);color:var(--ok)}
+.st{font-size:.85rem;padding:5px 9px;border-radius:8px;margin:6px 0}
+.st.ok{background:var(--okbg);color:var(--ok)}.st.warn{background:var(--warnbg);color:var(--warn)}.st.bad{background:var(--badbg);color:var(--bad)}
+svg{width:100%;height:auto;display:block}
+.bk{stroke:var(--stroke);stroke-width:.35}
+.lbl{font-size:2.6px;fill:var(--ink);text-anchor:middle}.dim{font-size:2.1px;fill:var(--mut);text-anchor:middle}
+.gap{fill:none;stroke:var(--mut);stroke-width:.25;stroke-dasharray:1.2 1}
+ul.what{margin:6px 0 0;padding:0 18px 0 0;font-size:.85rem}ul.what li{margin:2px 0}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:5px;vertical-align:middle;border:1px solid var(--stroke)}
+table{border-collapse:collapse;width:100%;font-size:.88rem}th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}th{color:var(--mut);font-weight:500}
+td.n,th.n{text-align:left;font-variant-numeric:tabular-nums}
+tfoot td{font-weight:600}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button{font:inherit;padding:6px 12px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--acc)}
+.sol{margin-top:8px}
+.small{font-size:.8rem;color:var(--mut)}
+@media (max-width:480px){.wrap{padding:12px}}
+</style>
+</head>
+<body><div class="wrap">
+<a class="back" href="../c/pantry-organizers/">← חזרה לקטגוריית ״ארגון מזווה״ בלוח</a>
+<h1>🧺 שיבוץ מגירות המזווה (ארון 9, ימין־תחתון)</h1>
+<p class="small">שלוש מגירות מריבוקס (Blum) בארון 60 ס״מ · ציור מלמעלה: החזית (אל מי שעומד מול הארון) למטה, הגב למעלה · כל המידות בס״מ ולפי הקצה העליון של הסלסלה.</p>
+<div class="note"><b>מה נמדד ומה הערכה:</b> הגבהים נמדדו על־ידי יעל (עליונה 15.5 · אמצעית 24 · תחתונה 22.5). <b>רוחב ועומק נקיים הם הערכה</b> (≈50 × ≈47 — ארון 60 פחות דפנות, מסילות ודפנות המגירה) עד שימדדו. שני שדות המידות לכל מגירה ניתנים לעדכון — השיבוץ נבדק מיד מול המספרים החדשים, ואפשר ללחוץ ״הצע שיבוץ אוטומטי״.</div>
+
+<div class="grid" id="drawers"></div>
+
+<div class="card">
+  <h2>🛒 רשימת קניות (לפי השיבוץ שמוצג)</h2>
+  <div class="row small" style="margin:4px 0 8px">
+    <label><input type="radio" name="ship" value="pick"> איסוף עצמי מסניף Home Center (נתניה / גן שמואל)</label>
+    <label><input type="radio" name="ship" value="ship" checked> משלוח לבית (₪39.90 לכל 10 יח׳ — נבדק בקופה)</label>
+  </div>
+  <table id="shop"></table>
+  <p class="small" id="shipnote"></p>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h2>🧭 מסלולי קנייה (לפי השיבוץ הנוכחי — 9 יח׳)</h2>
+  <table>
+   <thead><tr><th>מסלול</th><th class="n">סה״כ</th><th>הערות</th></tr></thead>
+   <tbody>
+    <tr><td><b>Home Center — איסוף עצמי</b> (נתניה / גן שמואל)</td><td class="n">₪294.10</td><td>הכי זול אם האיסוף חינם — האתר מציע איסוף בקופה אך לא מציין עלות (לא אומת)</td></tr>
+    <tr><td><b>Home Center — משלוח לבית</b></td><td class="n">₪334.00</td><td>₪39.90 לחבילה של עד 10 יח׳ (נבדק בקופה) — כל 9 היחידות בחבילה אחת; אפשר להוסיף יחידה אחת בלי תוספת משלוח</td></tr>
+    <tr><td>ההוזלה: סלסלות Portland/Austin לבנות מחוררות (₪10)</td><td class="n">≈₪90 + משלוח</td><td>לא שקופות; גריד אחר (27.5×18 / 29.5×12 / 30.5×21) — פריטי PB12–14 בלוח</td></tr>
+    <tr><td>IKEA / KSP</td><td class="n">—</td><td>אין חיסכון: KLIPPKAKTUS ₪25–29 (חנות בלבד), Fresco ₪19–35 (KSP איסוף חינם / משלוח ₪30 מ־₪199), במבוק UPPDATERA ₪59–79 (פרימיום)</td></tr>
+   </tbody></table>
+  <p class="small">המידות נשארות הערכה לרוחב ולעומק עד שיעל תמדוד; הגבהים נמדדו. אחרי המדידה אפשר להקליד את הערכים בכרטיס כל מגירה ולהריץ ״הצע שיבוץ אוטומטי״.</p>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h2>📏 מה למדוד (3 מידות נקיות בכל אחת משלוש המגירות)</h2>
+  <ul class="what" style="font-size:.92rem">
+    <li><b>רוחב נקי</b> — מדופן פנימית אחת לשנייה, בגובה תחתית המגירה.</li>
+    <li><b>עומק נקי</b> — מהקדמה הפנימית (צד מי שעומד) עד הגב הפנימי.</li>
+    <li><b>גובה נקי</b> — מהתחתית עד קצה הדופן; ואם יש מעקה זכוכית — גם עד קצהו העליון (ההגבהה בזכוכית מופיעה במפרט).</li>
+  </ul>
+  <p class="small">המחולל (הקובץ הזה) נשאר פתוח לעריכה: הקוד והמידות של כל סלסלה בראש הסקריפט.</p>
+</div>
+</div>
+<script>
+/* ===== baskets: L = long side, W = short side, H = height (cm, rim); p = ₪; id = board item ===== */
+const B={
+ LON:{n:'London 36.5×10×11',s:'London',L:36.5,W:10,H:11,p:24.9,id:'PB6',u:'https://www.homecenter.co.il/products/1771492965468'},
+ RIO:{n:'Rio 36.5×20×11',s:'Rio',L:36.5,W:20,H:11,p:29.9,id:'PB5',u:'https://www.homecenter.co.il/products/1771492965469'},
+ SD:{n:'San Diego 36.5×25×11',s:'San Diego',L:36.5,W:25,H:11,p:39.9,id:'PB7',u:'https://www.homecenter.co.il/products/1771492965470'},
+ HK:{n:'Hong Kong 36.5×20×20',s:'Hong Kong',L:36.5,W:20,H:20,p:59.9,id:'PB8',u:'https://www.homecenter.co.il/products/1771492965492'},
+ EIIE:{n:'EIIe 28.5×21×15.5',s:'EIIe 28.5',L:28.5,W:21,H:15.5,p:29.9,id:'PB1',u:'https://www.homecenter.co.il/products/1771492965488'},
+ E55:{n:'ELLE 5.5L 22×19.5×15',s:'ELLE 5.5L',L:22,W:19.5,H:15,p:24.9,id:'PB2',u:'https://www.homecenter.co.il/products/1771492965489'},
+ E33:{n:'ELLE 3.3L 27×11×15',s:'ELLE 3.3L',L:27,W:11,H:15,p:29.9,id:'PB3',u:'https://www.homecenter.co.il/products/1771492965481'},
+ E15:{n:'ELLE 15×15×15',s:'ELLE 15',L:15,W:15,H:15,p:19.9,id:'PB4',u:'https://www.homecenter.co.il/products/1771492965490'},
+ MOML:{n:'MOM 31.5×17.5×13.3',s:'MOM L',L:31.5,W:17.5,H:13.3,p:29.9,id:'PB9',u:'https://www.homecenter.co.il/products/1771492965487'},
+ MOMS:{n:'MOM 23.8×12.5×10.8',s:'MOM S',L:23.8,W:12.5,H:10.8,p:24.9,id:'PB10',u:'https://www.homecenter.co.il/products/1771492965486'},
+ CHI:{n:'Chicago 27.5×17.3×9.5',s:'Chicago',L:27.5,W:17.3,H:9.5,p:34.9,id:'PB11',u:'https://www.homecenter.co.il/products/1771492965475'}
+};
+const CLEAR=0.3;      // total play per basket row / column for tapered rims (cm)
+const HEAD=0.0;       // we only require basket height <= drawer clear height
+/* ===== drawers: dims = clear inner W (across) x D (front→back) x H, 'm' = measured; rows are listed FRONT first.
+   item: [key, rotated?, 'what goes in it'] — rotated=false: long side runs front→back (pull direction), rotated=true: long side runs across the width. */
+const DRAWERS=[
+ {id:'top',name:'מגירה עליונה (נמוכה)',theme:'אורז · קטניות · פסטה',W:50,D:47,H:15.5,Wm:false,Dm:false,Hm:true,
+  rows:[[['LON',true,'תה, אבקות מרק, תבלינים ארוזים — השימוש היומיומי']],
+        [['SD',false,'פסטה — ספגטי שוכב לאורך (36.5) + פסטה קצרה, שתי שכבות'],['RIO',false,'אורז (שקיות 1 ק״ג), בורגול, קוסקוס, קטניות']]]},
+ {id:'mid',name:'מגירה אמצעית',theme:'שימורים · צנצנות',W:50,D:47,H:24,Wm:false,Dm:false,Hm:true,
+  rows:[[['E55',false,'שימורים קטנים (טונה, תירס, חומוס) ≈4'],['EIIE',true,'שימורים 400 גר׳ ≈6']],
+        [['HK',true,'שימורים גדולים 800 גר׳ וצנצנות רוטב/טחינה (גובה 20) ≈8']]]},
+ {id:'bot',name:'מגירה תחתונה (לילדים)',theme:'חטיפים',W:50,D:47,H:22.5,Wm:false,Dm:false,Hm:true,
+  rows:[[['E55',false,'ביסקוויטים וחטיפי דגנים'],['EIIE',true,'חטיפי אנרגיה, פופקורן, קרקרים']],
+        [['RIO',true,'שקיות חטיפים שוכבות (במבה, צ׳יפס) — נמוך, נגיש לילדים']]]}
+];
+const COLORS=['var(--b1)','var(--b2)','var(--b3)','var(--b4)','var(--b5)'];
+const f1=x=>(Math.round(x*10)/10).toString().replace(/\.0$/,'');
+const el=(t,a={},...c)=>{const e=document.createElementNS('http://www.w3.org/2000/svg',t);for(const k in a)e.setAttribute(k,a[k]);c.forEach(x=>e.append(x));return e};
+function dimsOf(it){const b=B[it[0]];return it[1]?{w:b.L,d:b.W}:{w:b.W,d:b.L};}   // across-width x along-depth
+function evalLayout(d){
+  let usedD=0,maxRowW=0,errs=[],warns=[],tallest=0;
+  d.rows.forEach(r=>{const w=r.reduce((s,it)=>s+dimsOf(it).w,0);const dd=Math.max(...r.map(it=>dimsOf(it).d));usedD+=dd;maxRowW=Math.max(maxRowW,w);r.forEach(it=>tallest=Math.max(tallest,B[it[0]].H));});
+  if(maxRowW>d.W+1e-9)errs.push('הרוחב הדרוש '+f1(maxRowW)+' > '+f1(d.W));
+  if(usedD>d.D+1e-9)errs.push('העומק הדרוש '+f1(usedD)+' > '+f1(d.D));
+  if(tallest>d.H+1e-9)errs.push('סלסלה בגובה '+f1(tallest)+' > '+f1(d.H));
+  else if(d.H-tallest<1)warns.push('מרווח גובה '+f1(d.H-tallest)+' ס״מ בלבד');
+  if(!errs.length){ if(d.W-maxRowW<0.5)warns.push('אין מרווח ברוחב ('+f1(d.W-maxRowW)+')'); if(d.D-usedD<0.5)warns.push('אין מרווח בעומק ('+f1(d.D-usedD)+')'); }
+  return{usedD,maxRowW,errs,warns,tallest};
+}
+function draw(d,layout,host){
+  const W=d.W,D=d.D,pad=5,vw=W+pad*2,vh=D+pad*2+6;
+  const s=el('svg',{viewBox:`0 0 ${vw} ${vh}`,role:'img','aria-label':d.name});
+  s.append(el('rect',{x:pad,y:pad,width:W,height:D,rx:1,fill:'none',stroke:'var(--ink)','stroke-width':.5}));
+  const t=el('text',{x:pad+W/2,y:pad-1.5,class:'dim'});t.textContent='גב המגירה';s.append(t);
+  const t2=el('text',{x:pad+W/2,y:pad+D+4.5,class:'dim'});t2.textContent='חזית (אליך) · רוחב נקי '+f1(W)+' × עומק נקי '+f1(D);s.append(t2);
+  let y=pad+D;let n=0;
+  layout.rows.forEach(r=>{
+    const rd=Math.max(...r.map(it=>dimsOf(it).d));let x=pad+W;       // start from the right (RTL feel)
+    r.forEach(it=>{const b=B[it[0]],dm=dimsOf(it);x-=dm.w;
+      s.append(el('rect',{x:x,y:y-dm.d,width:dm.w,height:dm.d,rx:.8,class:'bk',fill:COLORS[n%COLORS.length]}));
+      const g=(txt,dy,cl)=>{const e=el('text',{x:x+dm.w/2,y:y-dm.d/2+dy,class:cl,direction:'ltr'});e.textContent=txt;s.append(e)};
+      g(b.s,-1.2,'lbl');g(f1(b.L)+'×'+f1(b.W)+'×'+f1(b.H),2.2,'dim');n++;});
+    const fw=x-pad;                       // free width at the left of the row
+    if(fw>0.4){s.append(el('rect',{x:pad,y:y-rd,width:fw,height:rd,class:'gap'}));const e=el('text',{x:pad+fw/2,y:y-rd/2,class:'dim'});e.textContent=fw>14?'פנוי '+f1(fw)+' × '+f1(rd):(fw>6?'פנוי':'');e.setAttribute('direction','ltr');s.append(e)}
+    y-=rd;
+  });
+  const fd=y-pad;if(fd>=1){s.append(el('rect',{x:pad,y:pad,width:W,height:fd,class:'gap'}));const e=el('text',{x:pad+W/2,y:pad+fd/2+.8,class:'dim'});e.textContent='פנוי בגב '+f1(fd)+' ס״מ';s.append(e)}
+  host.innerHTML='';host.append(s);
+}
+/* ===== automatic layout (guillotine rows, exhaustive): maximises covered area, then fewer pieces, then price ===== */
+function autoLayout(d,allowed){
+  const types=allowed.filter(k=>B[k].H<=d.H+1e-9);const opts=[];
+  types.forEach(k=>{const b=B[k];opts.push([k,false,b.W,b.L,b.p]);opts.push([k,true,b.L,b.W,b.p]);});
+  const rowsMap=new Map();
+  (function rec(i,cur,w){ if(cur.length){const key=cur.map(o=>o[0]+(o[1]?'^':'')).sort().join('+');if(!rowsMap.has(key)){const dd=Math.max(...cur.map(o=>o[3]));rowsMap.set(key,{items:cur.slice(),w,d:dd,a:cur.reduce((s,o)=>s+o[2]*o[3],0),p:cur.reduce((s,o)=>s+o[4],0)});}}
+    if(cur.length>=5)return;for(let j=i;j<opts.length;j++){if(w+opts[j][2]<=d.W+1e-9)rec(j,cur.concat([opts[j]]),w+opts[j][2]);}})(0,[],0);
+  const rows=[...rowsMap.values()].filter(r=>r.d<=d.D+1e-9&&r.w>=0.8*d.W).sort((a,b)=>b.a-a.a);
+  let best=null;
+  (function rec(st,remD,cur,a,n,p){ if(cur.length){const sc=a-n*0.01-p*0.0001;if(!best||sc>best.sc)best={sc,rows:cur.slice()};}
+    if(cur.length>=4)return;for(let j=st;j<rows.length;j++){const r=rows[j];if(r.d<=remD+1e-9)rec(j,remD-r.d,cur.concat([r]),a+r.a,n+r.items.length,p+r.p);}})(0,d.D,[],0,0,0);
+  if(!best)return null;
+  return{rows:best.rows.map(r=>r.items.map(o=>[o[0],o[1],'']))};
+}
+const state=JSON.parse(JSON.stringify(DRAWERS));
+function cardOf(d){
+  const c=document.createElement('div');c.className='card';c.id='c_'+d.id;
+  c.innerHTML=`<h2>${d.name} <span class="small">· ${d.theme}</span></h2>
+  <div class="dims"><label>רוחב נקי <input type="number" step=".1" data-k="W" value="${d.W}"></label><label>עומק נקי <input type="number" step=".1" data-k="D" value="${d.D}"></label><label>גובה נקי <input type="number" step=".1" data-k="H" value="${d.H}"></label>
+  <span class="tag ${d.Wm&&d.Dm?'m':''}" data-t="wd">${d.Wm&&d.Dm?'נמדד':'רוחב/עומק: הערכה'}</span><span class="tag m">גובה: נמדד</span></div>
+  <div class="st" data-s></div><div data-svg></div><ul class="what" data-what></ul><div class="sol"><button data-b="auto">הצע שיבוץ אוטומטי למידות האלה</button> <button data-b="reset">חזרה לשיבוץ המומלץ</button> <span class="small" data-solmsg></span></div>`;
+  c.querySelectorAll('input').forEach(i=>i.addEventListener('input',()=>{const k=i.dataset.k;d[k]=parseFloat(i.value)||0;if(k!=='H'){d[k+'m']=true;}paint();}));
+  c.querySelector('[data-b=auto]').onclick=()=>{const r=autoLayout(d,Object.keys(B));const m=c.querySelector('[data-solmsg]');if(!r){m.textContent='לא נמצא שיבוץ למידות האלה.';return;}d.rows=r.rows;m.textContent='שיבוץ אוטומטי — הוגדר לפי שטח מכוסה מרבי; תכולה מוצעת לפי הסלסלה.';paint();};
+  c.querySelector('[data-b=reset]').onclick=()=>{const o=DRAWERS.find(x=>x.id===d.id);d.rows=JSON.parse(JSON.stringify(o.rows));c.querySelector('[data-solmsg]').textContent='';paint();};
+  return c;
+}
+function paint(){
+  const tally={};
+  state.forEach(d=>{const c=document.getElementById('c_'+d.id);const ev=evalLayout(d);
+    const st=c.querySelector('[data-s]');st.className='st '+(ev.errs.length?'bad':ev.warns.length?'warn':'ok');
+    const free=d.W-ev.maxRowW,freeD=d.D-ev.usedD;
+    st.textContent=ev.errs.length?'לא נכנס: '+ev.errs.join(' · '):'נכנס ✓ · פנוי לרוחב '+f1(free)+' · פנוי לעומק '+f1(freeD)+' · גובה סלסלה מקס׳ '+f1(ev.tallest)+' מתוך '+f1(d.H)+(ev.warns.length?' · ⚠ '+ev.warns.join(', '):'');
+    c.querySelector('[data-t=wd]').className='tag '+(d.Wm&&d.Dm?'m':'');c.querySelector('[data-t=wd]').textContent=d.Wm&&d.Dm?'נמדד':(d.Wm||d.Dm?'חלקית נמדד':'רוחב/עומק: הערכה');
+    draw(d,d,c.querySelector('[data-svg]'));
+    const ul=c.querySelector('[data-what]');ul.innerHTML='';let n=0;
+    d.rows.slice().forEach(r=>r.forEach(it=>{const b=B[it[0]];tally[it[0]]=(tally[it[0]]||0)+1;const li=document.createElement('li');li.innerHTML=`<span class="sw" style="background:${COLORS[n%COLORS.length]}"></span><b>${b.s}</b> ${f1(b.L)}×${f1(b.W)}×${f1(b.H)}${it[2]?' — '+it[2]:''}`;ul.append(li);n++;}));
+  });
+  const keys=Object.keys(tally);let units=0,sum=0;
+  const rows=keys.map(k=>{const b=B[k],q=tally[k];units+=q;sum+=q*b.p;return`<tr><td><a href="${b.u}" target="_blank" rel="noopener">${b.n}</a></td><td class="n">${q}</td><td class="n">₪${b.p.toFixed(2)}</td><td class="n">₪${(q*b.p).toFixed(2)}</td></tr>`}).join('');
+  const mode=document.querySelector('input[name=ship]:checked').value;const ship=mode==='ship'?Math.ceil(units/10)*39.9:0;
+  document.getElementById('shop').innerHTML=`<thead><tr><th>סלסלה (Home Center · AJAMI)</th><th class="n">כמות</th><th class="n">מחיר</th><th class="n">סה״כ</th></tr></thead><tbody>${rows}</tbody>
+   <tfoot><tr><td>${units} יח׳ · מוצרים</td><td></td><td></td><td class="n">₪${sum.toFixed(2)}</td></tr><tr><td>${mode==='ship'?'משלוח ('+Math.ceil(units/10)+' × ₪39.90 — כל 10 יח׳)':'איסוף עצמי'}</td><td></td><td></td><td class="n">₪${ship.toFixed(2)}</td></tr><tr><td>סה״כ</td><td></td><td></td><td class="n">₪${(sum+ship).toFixed(2)}</td></tr></tfoot>`;
+  document.getElementById('shipnote').textContent=mode==='ship'?'המשלוח באתר: ₪39.90 לכל חבילה של עד 10 יחידות (נבדק בקופה עם 1/2/5/8/10 יח׳ = ₪39.90, 11 ו־15 יח׳ = ₪79.80). מחיר האיסוף העצמי נשאר להשלמה בקופה — לא אומת.':'איסוף עצמי: האתר מציע אותו בקופה; העלות לא מצוינת בתקנון (לא אומתה).';
+}
+const host=document.getElementById('drawers');state.forEach(d=>host.append(cardOf(d)));
+document.querySelectorAll('input[name=ship]').forEach(r=>r.addEventListener('change',paint));
+paint();
+</script>
+</body></html>
