@@ -1097,7 +1097,8 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"בסיס על גלגלים","label":"בסיס על גלגלים","icon":"🛞","slug":"appliance-bases","group":"מטבח","multi":True,"subs":["מקרר גדול","מקרר קטן","מכונת כביסה","מייבש"]},
       {"key":"ערסלים לגינה","label":"ערסלים לגינה","icon":"🪢","slug":"garden-hammocks","group":"חוץ ופרגולה","multi":True,"subs":["כיסא תלוי / ערסל כיסא","ערסל תלייה — יחיד","ערסל זוגי","ערסל לשלושה / ספת תלייה"]},
       {"key":"גלגלת צינור","label":"גלגלת צינור","icon":"🧵","slug":"hose-reel","group":"חוץ ופרגולה","multi":True,"subs":["אוטומטית מתכנסת — קיר","ידנית — מסגרת / קיר","עגלה ניידת"]},
-      {"key":"מחסן לכביסה ומייבש","label":"מחסן לכביסה ומייבש","icon":"🧺","slug":"laundry-shed","group":"חוץ ופרגולה","multi":True,"subs":["מחסן פלדה","מעטפת אטומה / ארון חוץ","DIY / חלופה זולה"]}]
+      {"key":"מחסן לכביסה ומייבש","label":"מחסן לכביסה ומייבש","icon":"🧺","slug":"laundry-shed","group":"חוץ ופרגולה","multi":True,"subs":["מחסן פלדה","מעטפת אטומה / ארון חוץ","DIY / חלופה זולה"]},
+      {"key":"קוטל יתושים","label":"קוטל יתושים","icon":"🦟","slug":"mosquito-killer","group":"חוץ ופרגולה","multi":True}]
 
 # first-seen timestamps (ms) per item id -> "recently added" view. added.json is a read-only baseline (committed);
 # items added later are stamped by the page itself in Firebase (/picks/_catalog/seen/<id>) the first time anyone loads the board.
