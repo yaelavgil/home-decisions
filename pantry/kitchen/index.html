@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>מפת האחסון במטבח</title>
+<style>
+:root{--bg:#faf6ef;--card:#fff;--ink:#2c2a26;--mut:#7b756b;--line:#d9cfbd;
+ --plan:#dcebf5;--planb:#7aa3bd;--sug:#fbf0cf;--sugb:#d1a93c;--app:#ececec;--appb:#9a9a9a;--none:#f4f1ea;--noneb:#cfc7b4}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#1d1b18;--card:#272420;--ink:#efe9de;--mut:#a79f90;--line:#3d382f;--plan:#24394a;--planb:#5d87a3;--sug:#40351a;--sugb:#a88a2f;--app:#33322f;--appb:#77746b;--none:#2a2823;--noneb:#4a463b}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Rubik,Heebo,system-ui,sans-serif;line-height:1.35}
+.wrap{max-width:1500px;margin:0 auto;padding:16px}
+h1{margin:.1em 0;font-size:1.6rem}h2{margin:18px 0 6px;font-size:1.2rem}.sub{color:var(--mut);font-size:.88rem}
+a{color:#8a6a3b}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0;font-size:.85rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}.sw{width:16px;height:16px;border-radius:4px;border:1.5px solid}
+.sw.p{background:var(--plan);border-color:var(--planb)}.sw.s{background:var(--sug);border-color:var(--sugb)}.sw.a{background:var(--app);border-color:var(--appb)}.sw.n{background:var(--none);border-color:var(--noneb)}
+.wall{display:grid;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:6px}
+.cell{border:1.5px solid;border-radius:8px;padding:6px 8px;font-size:.78rem;overflow:hidden}
+.cell b{display:block;font-size:.85rem;margin-bottom:2px}
+.cell small{display:block;color:var(--mut);font-size:.7rem}
+.cell.p{background:var(--plan);border-color:var(--planb)}.cell.s{background:var(--sug);border-color:var(--sugb)}.cell.a{background:var(--app);border-color:var(--appb)}.cell.n{background:var(--none);border-color:var(--noneb)}
+.cell .no{float:left;background:var(--ink);color:var(--bg);border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;margin-right:6px}
+.hdr{font-size:.8rem;color:var(--mut);padding:2px 4px;text-align:center}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:900px){.two{grid-template-columns:1fr}}
+svg{width:100%;height:auto}
+.note{background:#fbefd9;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:.85rem;margin:8px 0;color:#5b4310}
+</style>
+</head>
+<body><div class="wrap">
+<h1>🗺️ מפת האחסון במטבח — כל הארונות והמגירות</h1>
+<div class="sub">לפי תוכנית פורמג׳ו 10925 (12.8.26) ותכנון התכולה של יעל (6.10.26). גבהי המגירות בארון 9 נמדדו (15.5 / 24 / 22.5); את שאר המידות עוד לא מדדו. · <a href="../">שיבוץ הסלסלות בכל מגירה ←</a></div>
+<div class="legend">
+ <span><i class="sw p"></i>תכנון של יעל (6.10)</span>
+ <span><i class="sw s"></i>הצעה לאישור — לא הוגדר עדיין</span>
+ <span><i class="sw a"></i>מכשיר / ללא אחסון</span>
+ <span><i class="sw n"></i>פתוח / לא נקבע</span>
+</div>
+
+<h2>1 · מבט מלמעלה — איפה כל קיר</h2>
+<svg viewBox="0 0 760 360" role="img" aria-label="תוכנית המטבח מלמעלה">
+ <style>.r{fill:var(--card);stroke:var(--ink);stroke-width:1.5}.t{font-size:13px;fill:var(--ink);text-anchor:middle}.m{font-size:11px;fill:var(--mut);text-anchor:middle}.pl{fill:var(--plan);stroke:var(--planb);stroke-width:1.5}.su{fill:var(--sug);stroke:var(--sugb);stroke-width:1.5}.ap{fill:var(--app);stroke:var(--appb);stroke-width:1.5}.nn{fill:var(--none);stroke:var(--noneb);stroke-width:1.5}.nb{font-size:11px;font-weight:700;fill:var(--ink);text-anchor:middle}</style>
+ <!-- tall wall (right) -->
+ <rect class="pl" x="640" y="20" width="90" height="120" rx="4"/><text class="nb" x="685" y="52">ארון 7</text><text class="m" x="685" y="68">750</text>
+ <rect class="pl" x="640" y="145" width="90" height="85" rx="4"/><text class="nb" x="685" y="180">ארון 8</text><text class="m" x="685" y="196">600</text>
+ <rect class="pl" x="640" y="235" width="90" height="85" rx="4"/><text class="nb" x="685" y="270">ארון 9</text><text class="m" x="685" y="286">מזווה 600</text>
+ <rect class="ap" x="640" y="325" width="90" height="30" rx="4"/><text class="nb" x="685" y="345">מקרר 970</text>
+ <text class="t" x="685" y="12">הקיר הגבוה</text>
+ <!-- main wall (top) -->
+ <rect class="su" x="30" y="20" width="60" height="60" rx="4"/><text class="nb" x="60" y="48">#2</text><text class="m" x="60" y="62">חצי פינה</text>
+ <rect class="su" x="95" y="20" width="85" height="60" rx="4"/><text class="nb" x="137" y="46">#3</text><text class="m" x="137" y="60">3 מגירות</text>
+ <rect class="su" x="185" y="20" width="100" height="60" rx="4"/><text class="nb" x="235" y="46">#4</text><text class="m" x="235" y="60">3 מגירות</text>
+ <rect class="pl" x="290" y="20" width="97" height="60" rx="4"/><text class="nb" x="338" y="46">#5 כיור</text><text class="m" x="338" y="60">ניקיון</text>
+ <rect class="ap" x="392" y="20" width="61" height="60" rx="4"/><text class="nb" x="422" y="46">#6</text><text class="m" x="422" y="60">מדיח</text>
+ <text class="t" x="240" y="12">הקיר הראשי (בסיס)</text>
+ <!-- left return -->
+ <rect class="pl" x="30" y="85" width="28" height="70" rx="4"/><text class="nb" x="44" y="118">#1</text><text class="m" x="44" y="132">28</text>
+  <!-- island -->
+ <rect class="su" x="150" y="230" width="82" height="85" rx="4"/><text class="nb" x="191" y="266">#12</text><text class="m" x="191" y="282">3 מגירות</text>
+ <rect class="su" x="236" y="230" width="85" height="85" rx="4"/><text class="nb" x="278" y="266">#11</text><text class="m" x="278" y="282">3 מגירות</text>
+ <rect class="su" x="325" y="230" width="82" height="85" rx="4"/><text class="nb" x="366" y="266">#10</text><text class="m" x="366" y="282">3 מגירות</text>
+ <text class="t" x="278" y="222">האי</text>
+ <rect class="nn" x="150" y="320" width="257" height="14" rx="3"/><text class="m" x="278" y="331">גב האי — פאנלים לא נפתחים (#28, #29)</text>
+ <!-- peninsula -->
+ <rect class="su" x="100" y="190" width="40" height="70" rx="4"/><text class="nb" x="120" y="222">#13</text>
+ <rect class="su" x="100" y="265" width="40" height="70" rx="4"/><text class="nb" x="120" y="298">#14</text>
+ <text class="t" x="70" y="185">חצי־אי</text>
+ <text class="m" x="395" y="352">סכמה בלבד — לא בקנה מידה</text>
+</svg>
+
+<h2>2 · הקיר הגבוה — שלוש עמודות, מלמעלה למטה</h2>
+<div class="wall" style="grid-template-columns:750fr 600fr 600fr 970fr">
+ <div class="hdr">ארון 7 · 75 ס״מ<br>צלחות וסכו״ם</div><div class="hdr">ארון 8 · 60 ס״מ<br>כלי אפייה</div><div class="hdr">ארון 9 · 60 ס״מ<br>מזווה</div><div class="hdr">מקרר · 97 ס״מ</div>
+ <div class="cell p"><b>עליון — עונתי</b>מה שיוצא פעמיים בשנה<small>ארון עליון · 2 דלתות</small></div>
+ <div class="cell p"><b>עליון — חומרי אפייה</b>קמח, סוכר, אבקות בקופסאות אטומות<small>ארון עליון</small></div>
+ <div class="cell p"><b>עליון — עונתי</b><small>ארון עליון</small></div>
+ <div class="cell a" style="grid-row:span 2"><b>מקרר</b>שקע מים מאחור · אין מדפי מדף<small>מעליו ארון עליון פריק (#17) — לא הוגדר</small></div>
+ <div class="cell p"><b>מלאי קפה ותה</b>חליטות, קפסולות, דבש<small>ארון עליון</small></div>
+ <div class="cell p"><b>תבניות בעמידה</b>תבניות, רשתות, נייר אפייה — לעמוד אנכית<small>ארון עליון + מחיצות אנכיות</small></div>
+ <div class="cell p"><b>מלאי יבש — חבילות גדולות</b>קמח, סוכר, חבילות גדולות<small>ארון עליון</small></div>
+ <div class="cell p"><b>☕ פינת הקפה</b>מכונת קפה ומקצף על המשטח · ספלים וכוסיות על המדף · סוכר וכפיות<small>נישה פתוחה</small></div>
+ <div class="cell a"><b>🔥 התנור — BOSCH HBG774</b>השקע בתא שמעליו</div>
+ <div class="cell a"><b>♨️ המיקרוגל — BOSCH BFL520MB0</b>על המדף הנשלף</div>
+ <div class="cell n"><b>חלל המקרר</b>בין ארונות 970 · ג 1915</div>
+ <div class="cell p"><b>⬇️ עליונה (נמוכה 15.5*)</b>סכו״ם ומפיות<small>סלסלה: מגש סכו״ם + Rio למפיות</small></div>
+ <div class="cell p"><b>⬇️ עליונה (נמוכה 15.5*)</b>מערוך, מריות<small>2 מגשי VARIERA צרים</small></div>
+ <div class="cell p"><b>⬇️ עליונה (נמוכה 15.5)</b>פסטה · אורז · קטניות<small>San Diego + Rio + London</small></div>
+ <div class="cell n" style="grid-row:span 3"></div>
+ <div class="cell p"><b>⬇️ אמצעית (24*)</b>צלחות וקערות<small>ערימות על משטח מגן (צלחות ארוחה Ø27 לא עומדות)</small></div>
+ <div class="cell p"><b>⬇️ אמצעית (24*)</b>צורות וסיליקון<small>E55 + EIIe + ערימת צורות</small></div>
+ <div class="cell p"><b>⬇️ אמצעית (24)</b>שימורים ורטבים<small>E55 + EIIe + Hong Kong</small></div>
+ <div class="cell p"><b>⬇️ תחתונה (22.5*)</b>כלי הגשה<small>פלטות, קערות הגשה, סכו״ם הגשה</small></div>
+ <div class="cell p"><b>⬇️ תחתונה (22.5*)</b>תבניות זכוכית<small>ערימה + מחיצה + משטח</small></div>
+ <div class="cell p"><b>⬇️ תחתונה (22.5)</b>חטיפים לילדים<small>E55 + EIIe + Rio שוכב</small></div>
+</div>
+<div class="sub">* גובה המגירה בארונות 7 ו־8 הוא הערכה (הונח שווה לארון 9). בארון 7 המגירות רחבות (≈65 ס״מ נקי).</div>
+
+<h2>3 · הקיר הראשי (בסיס) — ארונות 1–6</h2>
+<div class="wall" style="grid-template-columns:280fr 660fr 850fr 1000fr 970fr 610fr">
+ <div class="hdr">#1 · 28</div><div class="hdr">#2 · 66</div><div class="hdr">#3 · 85 (מתחת לכיריים)</div><div class="hdr">#4 · 100</div><div class="hdr">#5 · 97 (כיור)</div><div class="hdr">#6 · 61</div>
+ <div class="cell p" style="grid-row:span 3"><b><span class="no">1</span>ארון בקבוקים ותבלינים</b>פתיחה נשלפת (96) — שמן, חומץ, רטבים, תבלינים</div>
+ <div class="cell s" style="grid-row:span 3"><b><span class="no">2</span>חצי פינה</b>הצעה: מכשירים כבדים בשימוש לא יומיומי — מיקסר, מעבד מזון, בלנדר; סירים גדולים</div>
+ <div class="cell s"><b>⬇️ עליונה</b>הצעה: כפות בישול, מרים, מטרפות, מצקות</div>
+ <div class="cell s"><b>⬇️ עליונה + סכומון (100)</b>הצעה: סכו״ם יומיומי — סכומון כלול ✱</div>
+ <div class="cell p" style="grid-row:span 3"><b><span class="no">5</span>ארון כיור</b>מערכת מים + טוחן (אוורור בסוקל ובשוכם תחתון) · עגלת חומרי ניקיון</div>
+ <div class="cell a" style="grid-row:span 3"><b><span class="no">6</span>מדיח אינטגרלי</b>60 ס״מ</div>
+ <div class="cell s"><b>⬇️ אמצעית</b>הצעה: מחבתות עומדות</div>
+ <div class="cell s"><b>⬇️ אמצעית</b>הצעה: קופסאות אחסון ופלסטיק</div>
+ <div class="cell s"><b>⬇️ תחתונה</b>הצעה: סירים ומכסים</div>
+ <div class="cell s"><b>⬇️ תחתונה</b>הצעה: קערות ערבוב וכלים כבדים</div>
+</div>
+<div class="sub">✱ הצעה — בתכנון של יעל הסכו״ם נמצא בארון 7 (עליונה). הסכומון בארון 4 כלול כבר בהצעת המחיר — להחליט איפה סכו״ם ואיפה כלי בישול.</div>
+
+<h2>4 · האי והחצי־אי</h2>
+<div class="two">
+ <div>
+  <div class="wall" style="grid-template-columns:820fr 850fr 820fr"><div class="hdr">#12 · 82</div><div class="hdr">#11 · 85 (סכומון 85)</div><div class="hdr">#10 · 82</div>
+   <div class="cell s"><b>⬇️ עליונה</b>הצעה: סכו״ם וקשיות ילדים, מפיות</div><div class="cell s"><b>⬇️ עליונה + סכומון (85)</b>הצעה: סכו״ם הגשה ואירוח</div><div class="cell s"><b>⬇️ עליונה</b>הצעה: שקיות, נייר אפייה, נייר כסף</div>
+   <div class="cell s"><b>⬇️ אמצעית</b>הצעה: כוסות וספלים</div><div class="cell s"><b>⬇️ אמצעית</b>הצעה: קופסאות אוכל לבית הספר</div><div class="cell s"><b>⬇️ אמצעית</b>הצעה: מגבות מטבח וכלי ניקוי קטנים</div>
+   <div class="cell s"><b>⬇️ תחתונה</b>הצעה: קערות וצלחות עמוקות</div><div class="cell s"><b>⬇️ תחתונה</b>הצעה: מכשירים קטנים (טוסטר, מערבל)</div><div class="cell s"><b>⬇️ תחתונה</b>הצעה: דברים כבדים לשימוש נדיר</div>
+  </div>
+  <div class="sub">האי: 3 ארונות × 3 מגירות. גבו האי (#28, #29) — פאנלים לא נפתחים.</div>
+ </div>
+ <div>
+  <div class="wall" style="grid-template-columns:1fr 1fr"><div class="hdr">#13 · 54</div><div class="hdr">#14 · 54</div>
+   <div class="cell s"><b><span class="no">13</span>חצי־אי</b>הצעה: מכשירים קטנים (בלנדר, מיקסר)<small>פרטי הפתיחה (מגירה/דלת) לא ברורים בתוכנית — לאמת</small></div>
+   <div class="cell s"><b><span class="no">14</span>חצי־אי</b>הצעה: טפסים, פחים, אחסון כבד<small>פרטי הפתיחה לא ברורים — לאמת</small></div>
+  </div>
+ </div>
+</div>
+<div class="note"><b>מה מתוכנן ומה הצעה:</b> התכולה של הקיר הגבוה (ארונות 7–9) היא התכנון של יעל מ־6.10; ארון 1 וארון 5 לפי הערות התוכנית. שאר הארונות והמגירות (2, 3, 4, האי והחצי־אי) הם הצעה בלבד, לפי מה שהיה במטבח הקודם (סירים, מחבתות, קופסאות, כוסות, מכשירים) — לאישור יעל.</div>
+</div></body></html>
