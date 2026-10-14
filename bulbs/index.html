@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>נורות לגופי התאורה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf5ec;--card:#fff;--ink:#2b2418;--soft:#6e6454;--line:#eadfca;--brass:#a07a3c;--brass-d:#7d5c25}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#17130c;--card:#221c11;--ink:#f3ead7;--soft:#b8ab92;--line:#3a3020;--brass:#d4a85a;--brass-d:#e3bf7c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Rubik","Heebo","Arial Hebrew",Arial,sans-serif;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding:28px 16px 60px}
+h1{font-size:clamp(26px,5vw,38px);margin:0 0 6px;font-weight:700}
+.lead{color:var(--soft);margin:0 0 22px;font-size:17px}
+.k-card{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:18px 18px 22px;margin-bottom:26px}
+.k-card h2{margin:0 0 4px;font-size:20px}
+.k-card p{margin:0 0 14px;color:var(--soft)}
+.scale{direction:ltr;position:relative;height:30px;border-radius:15px;background:linear-gradient(90deg,rgb(255,137,18) 0%,rgb(255,161,72) 11%,rgb(255,169,87) 15.5%,rgb(255,180,107) 22%,rgb(255,209,163) 44%,rgb(255,228,206) 66%,rgb(255,249,253) 100%);border:1px solid var(--line)}
+.scale i{position:absolute;top:-6px;width:3px;height:42px;background:var(--ink);border-radius:2px}
+.scale i b{position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-style:normal;font-size:12px;font-weight:600;white-space:nowrap;color:var(--ink)}
+.ticks{direction:ltr;display:flex;justify-content:space-between;font-size:12px;color:var(--soft);margin-top:8px}
+.ticks span:first-child{color:var(--brass-d);font-weight:600}
+.guide{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:16px}
+.guide div{display:flex;gap:10px;align-items:center;font-size:14px}
+.guide .sw{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);flex:none}
+.row{display:grid;grid-template-columns:1fr 36px 1fr;gap:12px;align-items:stretch;background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:16px;margin-bottom:16px}
+.fx,.bulb{display:flex;gap:14px;align-items:center;min-width:0}
+.fx img,.bulb img{width:112px;height:112px;object-fit:contain;border-radius:14px;background:#fff;flex:none}
+.bulb img{background:#fff}
+.tag{display:inline-block;font-size:12px;font-weight:600;background:#f3e6c9;color:var(--brass-d);border-radius:99px;padding:2px 10px;margin-bottom:4px}
+@media (prefers-color-scheme:dark){.tag{background:#3a2f18}}
+.row h3{margin:0 0 2px;font-size:18px}
+.sub{color:var(--soft);font-size:14px}
+.arrow{align-self:center;text-align:center;font-size:26px;color:var(--brass)}
+.spec{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 6px}
+.spec span{font-size:13px;font-weight:600;border-radius:8px;padding:3px 9px;background:#f4ecdc;color:#4d3d1f}
+@media (prefers-color-scheme:dark){.spec span{background:#32291a;color:#e8dcc2}}
+.yellow{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:4px}
+.yellow .bar{direction:ltr;position:relative;flex:1;height:10px;border-radius:5px;background:linear-gradient(90deg,rgb(255,137,18),rgb(255,169,87) 25%,rgb(255,180,107) 40%,rgb(255,209,163) 66%,rgb(255,249,253));border:1px solid var(--line);max-width:150px}
+.yellow .bar i{position:absolute;top:-4px;width:3px;height:16px;background:var(--ink);border-radius:2px}
+.price{font-weight:700;font-size:15px;margin-top:6px}
+.price small{font-weight:400;color:var(--soft)}
+a.ksp{display:inline-block;margin-top:6px;font-size:13px;color:var(--brass-d);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th,td{text-align:right;padding:9px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--soft);font-weight:500;font-size:13px}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.tot td{font-weight:700;font-size:16px;border-bottom:0}
+.note{color:var(--soft);font-size:13.5px;margin-top:14px}
+@media(max-width:700px){.row{grid-template-columns:1fr}.arrow{transform:rotate(90deg);height:26px}.fx img,.bulb img{width:96px;height:96px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>הנורות לגופי התאורה</h1>
+<p class="lead">לכל גוף: איך הוא נראה, איזו נורה בחרנו בשבילו, כמה וואט, וכמה צהוב האור.</p>
+
+<section class="k-card" aria-labelledby="kh">
+<h2 id="kh">מה זה K (קלווין)?</h2>
+<p>המספר אומר כמה האור צהוב. <b>נמוך = צהוב וחם</b>, כמו להבה. <b>גבוה = לבן וקר</b>, כמו אור יום. כל הנורות שבחרנו בין 2500K ל־3000K, כלומר חמות וצהבהבות, לא לבנות.</p>
+<div class="scale" role="img" aria-label="סקאלת גוון האור מ־2000K עד 6500K">
+<i style="left:11.1%"><b>2500K</b></i><i style="left:22.2%"><b style="top:36px">3000K</b></i>
+</div>
+<div class="ticks" style="margin-top:14px"><span>2000K · כתום־להבה</span><span>4000K · לבן ניטרלי</span><span>6500K · אור יום כחלחל</span></div>
+<div class="guide">
+<div><span class="sw" style="background:rgb(255,161,72)"></span><span><b>2500K</b> · צהוב־כתום עמוק, כמו נר. אווירה חמה מאוד.</span></div>
+<div><span class="sw" style="background:rgb(255,169,87)"></span><span><b>2700K</b> · צהוב חם, כמו נורת להט ישנה.</span></div>
+<div><span class="sw" style="background:rgb(255,180,107)"></span><span><b>3000K</b> · צהוב־לבן עדין. עדיין חם, פחות כתום.</span></div>
+</div>
+</section>
+
+<!-- helper: rows -->
+<div id="rows"></div>
+
+<section class="k-card" aria-labelledby="th">
+<h2 id="th">רשימת קנייה ב־KSP</h2>
+<table>
+<tr><th>נורה</th><th>כמות</th><th>מחיר</th><th>סה״כ</th></tr>
+<tr><td>A60 דמוי פחם Philips 6W 3000K (זוג)</td><td class="n">8 זוגות</td><td class="n">₪34</td><td class="n">₪272</td></tr>
+<tr><td>G95 פילמנט ענבר Wellmax 8W 2500K (הלנה + גרלנדה)</td><td class="n">11</td><td class="n">₪19</td><td class="n">₪209</td></tr>
+<tr><td>G93 דמוי פחם Philips 7W 2700K (זוג)</td><td class="n">2 זוגות</td><td class="n">₪105</td><td class="n">₪210</td></tr>
+<tr><td>G9 Wellmax 7W 3000K (קייטי)</td><td class="n">2</td><td class="n">₪20</td><td class="n">₪40</td></tr>
+<tr class="tot"><td colspan="3">סה״כ</td><td class="n">₪731</td></tr>
+</table>
+<p class="note">מחירי KSP מאוקטובר 2026, בלי משלוח. אפשרות לחדרי השינה: זוגות Philips 7.5W בגוון 2700K (₪69 לזוג) לארבעת הפבריציו שליד המיטות. לוודא על האריזה שהנורה נכנסת באהיל. הנורות מפורטות גם בלוח המשימות.</p>
+</section>
+</div>
+<script>
+const K=(k)=>Math.max(0,Math.min(100,(k-2000)/(6500-2000)*100));
+const BULBS={
+ a60:{img:'img/bulb-260290.jpg',name:'A60 דמוי פחם · Philips',w:'6W',k:3000,lm:'570 לומן',desc:'צהוב־לבן עדין',price:'₪17 ליחידה <small>(₪34 לזוג)</small>',url:'https://ksp.co.il/web/item/260290'},
+ g95:{img:'img/bulb-407198.jpg',name:'G95 פילמנט ענבר · Wellmax',w:'8W',k:2500,lm:'',desc:'צהוב־כתום עמוק, כמו נר',price:'₪19 ליחידה',url:'https://ksp.co.il/web/item/407198'},
+ g93:{img:'img/bulb-260283.jpg',name:'G93 דמוי פחם · Philips',w:'7W',k:2700,lm:'806 לומן',desc:'צהוב חם, כמו נורת להט',price:'₪52 ליחידה <small>(₪105 לזוג)</small>',url:'https://ksp.co.il/web/item/260283'},
+ g9:{img:'img/bulb-437480.jpg',name:'G9 נעיצה · Wellmax',w:'7W',k:3000,lm:'',desc:'צהוב־לבן עדין',price:'₪20 ליחידה',url:'https://ksp.co.il/web/item/437480'}
+};
+const ROWS=[
+ {img:'img/helena.jpg',name:'הלנה',where:'כניסה, מעל מראת הכניסה',qty:'1 גוף',b:'g95',base:'E27 · אהיל 16 ס״מ'},
+ {img:'img/valeri.jpg',name:'ולרי',where:'מעל האי במטבח',qty:'3 גופים',b:'g93',base:'E27 · אהיל 20 ס״מ'},
+ {img:'img/mark.jpg',name:'מארק',where:'סלון ופינת משפחה בקומה א׳',qty:'6 גופים (8 נקנו)',b:'a60',base:'E27 · אהיל 12 ס״מ'},
+ {img:'img/fabrizio.jpg',name:'פבריציו',where:'מדרגות, מסדרון, חדרי שינה',qty:'8 גופים',b:'a60',base:'E27'},
+ {img:'img/silo.jpg',name:'סילו',where:'מקלחת אורחים, מעל הכיור',qty:'1 גוף',b:'a60',base:'E27'},
+ {img:'img/katie.jpg',name:'קייטי',where:'מקלחת אורחים, צמודת תקרה',qty:'1 גוף · 2 נורות',b:'g9',base:'2 בתי G9'},
+ {img:'img/garland.jpg',name:'גרלנדה (מחסני תאורה)',where:'חוץ',qty:'10 שקעים',b:'g95',base:'E27 · IP44 · 11 מ׳'}
+];
+document.getElementById('rows').innerHTML=ROWS.map(r=>{const b=BULBS[r.b];return `
+<article class="row">
+ <div class="fx"><img src="${r.img}" alt="גוף תאורה ${r.name}" loading="lazy"><div><span class="tag">${r.qty}</span><h3>${r.name}</h3><div class="sub">${r.where}</div><div class="sub">${r.base}</div></div></div>
+ <div class="arrow" aria-hidden="true">←</div>
+ <div class="bulb"><img src="${b.img}" alt="${b.name}" loading="lazy"><div>
+  <h3>${b.name}</h3>
+  <div class="spec"><span>${b.w}</span><span>${b.k}K</span>${b.lm?`<span>${b.lm}</span>`:''}</div>
+  <div class="yellow"><span>${b.desc}</span><span class="bar"><i style="left:${K(b.k)}%"></i></span></div>
+  <div class="price">${b.price}</div>
+  <a class="ksp" href="${b.url}" target="_blank" rel="noopener">לדף ב־KSP</a>
+ </div></div>
+</article>`}).join('');
+</script>
+</body>
+</html>
