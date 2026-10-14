@@ -27,6 +27,7 @@ h1{font-size:clamp(26px,5vw,38px);margin:0 0 6px;font-weight:700}
 .guide .sw{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);flex:none}
 .row{display:grid;grid-template-columns:1fr 36px 1fr;gap:12px;align-items:stretch;background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:16px;margin-bottom:16px}
 .fx,.bulb{display:flex;gap:14px;align-items:center;min-width:0}
+.fx{color:inherit;text-decoration:none;border-radius:14px;transition:background .15s}.fx:hover{background:rgba(160,122,60,.08)}.fx:focus-visible{outline:2px solid var(--brass);outline-offset:3px}.go{margin-top:4px;font-size:13px;font-weight:600;color:var(--brass-d)}
 .fx img,.bulb img{width:112px;height:112px;object-fit:contain;border-radius:14px;background:#fff;flex:none}
 .bulb img{background:#fff}
 .tag{display:inline-block;font-size:12px;font-weight:600;background:#f3e6c9;color:var(--brass-d);border-radius:99px;padding:2px 10px;margin-bottom:4px}
@@ -96,17 +97,17 @@ const BULBS={
  g9:{img:'img/bulb-437480.jpg',name:'G9 נעיצה · Wellmax',w:'7W',k:3000,lm:'',desc:'צהוב־לבן עדין',price:'₪20 ליחידה',url:'https://ksp.co.il/web/item/437480'}
 };
 const ROWS=[
- {img:'img/helena.jpg',name:'הלנה',where:'כניסה, מעל מראת הכניסה',qty:'1 גוף',b:'g95',base:'E27 · אהיל 16 ס״מ'},
- {img:'img/valeri.jpg',name:'ולרי',where:'מעל האי במטבח',qty:'3 גופים',b:'g93',base:'E27 · אהיל 20 ס״מ'},
- {img:'img/mark.jpg',name:'מארק',where:'סלון ופינת משפחה בקומה א׳',qty:'6 גופים (8 נקנו)',b:'a60',base:'E27 · אהיל 12 ס״מ'},
- {img:'img/fabrizio.jpg',name:'פבריציו',where:'מדרגות, מסדרון, חדרי שינה',qty:'8 גופים',b:'a60',base:'E27'},
- {img:'img/silo.jpg',name:'סילו',where:'מקלחת אורחים, מעל הכיור',qty:'1 גוף',b:'a60',base:'E27'},
- {img:'img/katie.jpg',name:'קייטי',where:'מקלחת אורחים, צמודת תקרה',qty:'1 גוף · 2 נורות',b:'g9',base:'2 בתי G9'},
- {img:'img/garland.jpg',name:'גרלנדה (מחסני תאורה)',where:'חוץ',qty:'10 שקעים',b:'g95',base:'E27 · IP44 · 11 מ׳'}
+ {img:'img/helena.jpg',url:'https://store.ida-home.co.il/product/%d7%94%d7%9c%d7%a0%d7%94',name:'הלנה',where:'כניסה, מעל מראת הכניסה',qty:'1 גוף',b:'g95',base:'E27 · אהיל 16 ס״מ'},
+ {img:'img/valeri.jpg',url:'https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%95%d7%9c%d7%a8%d7%99',name:'ולרי',where:'מעל האי במטבח',qty:'3 גופים',b:'g93',base:'E27 · אהיל 20 ס״מ'},
+ {img:'img/mark.jpg',url:'https://store.ida-home.co.il/product/%D7%92%D7%95%D7%A3-%D7%AA%D7%90%D7%95%D7%A8%D7%94-%D7%9E%D7%90%D7%A8%D7%A7',name:'מארק',where:'סלון ופינת משפחה בקומה א׳',qty:'6 גופים (8 נקנו)',b:'a60',base:'E27 · אהיל 12 ס״מ'},
+ {img:'img/fabrizio.jpg',url:'https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%a4%d7%91%d7%a8%d7%99%d7%a6%d7%99%d7%95-2',name:'פבריציו',where:'מדרגות, מסדרון, חדרי שינה',qty:'8 גופים',b:'a60',base:'E27'},
+ {img:'img/silo.jpg',url:'https://store.ida-home.co.il/product/wall-light-silo',name:'סילו',where:'מקלחת אורחים, מעל הכיור',qty:'1 גוף',b:'a60',base:'E27'},
+ {img:'img/katie.jpg',url:'https://store.ida-home.co.il/product/%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%a6%d7%9e%d7%95%d7%93%d7%aa-%d7%aa%d7%a7%d7%a8%d7%94-%d7%a7%d7%99%d7%99%d7%98%d7%99-%d7%a7%d7%98%d7%a0%d7%94',name:'קייטי',where:'מקלחת אורחים, צמודת תקרה',qty:'1 גוף · 2 נורות',b:'g9',base:'2 בתי G9'},
+ {img:'img/garland.jpg',url:'https://www.lighting.co.il/75323002',name:'גרלנדה (מחסני תאורה)',where:'חוץ',qty:'10 שקעים',b:'g95',base:'E27 · IP44 · 11 מ׳'}
 ];
 document.getElementById('rows').innerHTML=ROWS.map(r=>{const b=BULBS[r.b];return `
 <article class="row">
- <div class="fx"><img src="${r.img}" alt="גוף תאורה ${r.name}" loading="lazy"><div><span class="tag">${r.qty}</span><h3>${r.name}</h3><div class="sub">${r.where}</div><div class="sub">${r.base}</div></div></div>
+ <a class="fx" href="${r.url}" target="_blank" rel="noopener" title="לדף הגוף ב${r.url.includes('lighting.co.il')?'מחסני תאורה':'בית של עידה'}"><img src="${r.img}" alt="גוף תאורה ${r.name}" loading="lazy"><div><span class="tag">${r.qty}</span><h3>${r.name}</h3><div class="sub">${r.where}</div><div class="sub">${r.base}</div><div class="go">${r.url.includes('lighting.co.il')?'לדף במחסני תאורה ↗':'לדף בבית של עידה ↗'}</div></div></a>
  <div class="arrow" aria-hidden="true">←</div>
  <div class="bulb"><img src="${b.img}" alt="${b.name}" loading="lazy"><div>
   <h3>${b.name}</h3>
