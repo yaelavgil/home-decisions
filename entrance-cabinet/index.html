@@ -145,7 +145,7 @@
 
   <div class="chosenBox" id="chosen">
     <div class="sw" role="img" aria-label="הגוון שנבחר: Desert Mirage, #D2CBBD"></div>
-    <img class="fanImg" src="renders/desert-mirage-fan.jpg" alt="Desert Mirage במניפת נירלט" loading="lazy">
+    <img class="fanImg" src="renders/desert-mirage.jpg" alt="הדמיית ארון הכניסה בגוון Desert Mirage" loading="lazy" style="flex:0 0 130px;height:176px"><img class="fanImg" src="renders/desert-mirage-fan.jpg" alt="Desert Mirage במניפת נירלט" loading="lazy">
     <div class="txt">
       <span class="badge">✅ הגוון שנבחר סופית · 9.10.2026</span>
       <h2>Desert Mirage</h2>
@@ -188,6 +188,7 @@
 
 <script>
 const FAMILIES = [
+  {key:"greige", label:"🤍 הנבחר — גריג׳ חם ובהיר", note:"הכיוון שנבחר ב־9.10: אבן־חול אפורה־חמה, במקום הירוק. מתאים לכחול העמוק של המטבח ולא מתחרה בו."},
   {key:"deep",    label:"🌲 משפחה 1 — עמוק ודרמטי",        note:"שני הגוונים הכהים ביותר, כמעט אותה רמת בהירות — ההבדל הוא הכיוון: קריר-טורקיזי מול חם-אדמתי."},
   {key:"mid",     label:"🌊 משפחה 2 — בינוני-כהה",         note:"אותו כיוון גוון בקירוב (LRV 24–30): Mountain Meadow (נירלט) הכי עמוק, קריר-אפרפר יותר (Shady) באמצע, חם-זית יותר (New Lawn) הכי בהיר."},
   {key:"neutral", label:"⚪ משפחה 3 — ניטרלי-אפור עד ירקרק בהיר-בינוני", note:"שני קצוות אותו טווח ניטרלי: הכי אפור (Green Moor, LRV 38) מול הכי ירוק (Nature's Abundance, LRV 43)."},
@@ -195,6 +196,9 @@ const FAMILIES = [
 ];
 
 const COLORS = [
+  {name:"Desert Mirage", code:"IS 0231", hex:"#D2CBBD", rgb:[210,203,189], lrv:60, family:"greige", tagLabel:"✅ נבחר · נירלט", render:"desert-mirage", brand:"נירלט",
+   why:'הגוון שנבחר סופית ב־<b>9.10.2026</b> (הוצע ע"י נופר, אושר ע"י יעל). גריג׳ בהיר וחם, קרוב לשמנת־אבן. ההדמיה צבועה מחדש רק בדלתות, מעץ האלון והידיות נשארו כמו במקור.',
+   url:"https://nirlat.com/fan/#/category/wall/family//color-fan/hue/IS_0231"},
   {name:"Forest Found", code:"0951A", hex:"#597667", rgb:[89,118,103], lrv:16, family:"deep", tagLabel:"טורקיז-אלגנטי", render:"forest-found",
    why:'הכי כהה מבין הגוונים <b>(LRV 16)</b>. נטייה טורקיזית-כחלחלה, אלגנטי ועל-זמני. סיכון: עלול "לבלוע" אור בכניסה חשוכה.',
    url:"https://tambour.co.il/hue/forest-found-0951a/"},
