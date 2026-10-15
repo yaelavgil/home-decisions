@@ -80,11 +80,10 @@ tr.tot td{font-weight:700;font-size:16px;border-bottom:0}
 <h2 id="th">רשימת קנייה ב־KSP</h2>
 <table>
 <tr><th>נורה</th><th>כמות</th><th>מחיר (₪)</th><th>אחרי 20% הנחת כמות</th></tr>
-<tr><td>A60 דמוי פחם Philips 6W 3000K (זוג)</td><td class="n">5 זוגות</td><td class="n">170</td><td class="n">≈136</td></tr>
-<tr><td>ST64 דמוי פחם Philips 6W 3000K (זוג)</td><td class="n">3 זוגות</td><td class="n">144</td><td class="n">≈115</td></tr>
+<tr><td>A60 דמוי פחם Philips 6W 3000K (זוג) · 2 הזמנות (מגבלת 5)</td><td class="n">8 זוגות</td><td class="n">272</td><td class="n">≈218</td></tr>
 <tr><td>G80 גלוב NEPTON 8W 3000K</td><td class="n">4</td><td class="n">88</td><td class="n">≈68</td></tr>
 <tr><td>G9 Wellmax 7W 3000K</td><td class="n">3</td><td class="n">60</td><td class="n">60</td></tr>
-<tr class="tot"><td colspan="2">סה״כ KSP (בלי הגרלנדה)</td><td class="n">462</td><td class="n">≈379</td></tr>
+<tr class="tot"><td colspan="2">סה״כ KSP (בלי הגרלנדה)</td><td class="n">420</td><td class="n">≈346</td></tr>
 <tr><td>גרלנדה ×25 · ST45 4W 2700K (מחסני תאורה, עדיין לא נבחר)</td><td class="n">25–30</td><td class="n">298–357</td><td class="n">—</td></tr>
 </table>
 <p class="note"><b>עודכן 15.10 — הגוון נקבע לפי שימוש ולא לפי גוף.</b> <b>3000K</b> איפה שעובדים: האי במטבח ופינת העבודה. <b>2700K</b> איפה שרוצים אווירה: הכניסה, הסלון, פינת המשפחה וחדרי השינה. <b>2200K ענבר</b> בגרלנדה — אור כתום־להבה מושך הכי פחות יתושים.<br><br>שני תיקונים שנכנסו: ולרי מעל האי היה 2700K ועבר ל-3000K, ומארק בסלון היה 3000K ועבר ל-2700K. הוחלף גם ה-G93 של פיליפס (₪52 ליחידה) ב-NEPTON G95 (₪22) — אותו קוטר בפועל, 9.3 מול 9.5 ס״מ, וגם הגוון מדויק יותר לאי. <b>הגרלנדה ירדה מ-8W ל-4W, וזה מאפשר לאכלס את כל 25 השקעים.</b> ב-8W העומס היה 200W ולכן אפשר היה להדליק ~15; ב-4W זה 100W וכולן נכנסות — ועדיין עולה פחות, כי נורת 4W זולה בכחצי. 8W גם חזק מדי לאווירה בחוץ. את ה-26 מטר למתוח בזיגזג מעל הפרגולה כדי לקבל מרווח צפוף.<br><br>⚠️ <b>שני דגמים עדיין לא נבחרו: ה-A60 ב-2700K והענבר 4W לגרלנדה</b> — המחיר ₪13 הוא הערכה. <b>15.10 — נבדק: בפבריציו ובמארק הזכוכית היא גלינה (מט).</b> הנורה נראית כזוהר ולא כחוטים, ולכן אין טעם בנורת פילמנט שם — החוט מוסתר ממילא. עברנו ללד רגילה 2700K, חיסכון של ₪105.<br><br>מחירי KSP מאוקטובר 2026, בלי משלוח. ב-KSP יש הנחת כמות: 2 יח׳ 10%, 3 יח׳ 15%, 4+ יח׳ 20%.</p>
@@ -93,7 +92,7 @@ tr.tot td{font-weight:700;font-size:16px;border-bottom:0}
 <script>
 const K=(k)=>Math.max(0,Math.min(100,(k-2000)/(6500-2000)*100));
 const BULBS={
- a60:{img:'img/bulb-260290.jpg',name:'A60 דמוי פחם · Philips',w:'6W',k:3000,lm:'570 לומן',desc:'צהוב־לבן עדין',price:'₪17 ליחידה <small>(₪34 לזוג, ₪27 עם הנחת כמות)</small>',url:'https://ksp.co.il/web/item/260290'},
+ a60:{img:'img/bulb-260290.jpg',name:'A60 דמוי פחם · Philips',w:'6W',k:3000,lm:'570 לומן',desc:'צהוב־לבן עדין · קצר (כ־10.5 ס״מ), נכנס באהיל',price:'₪17 ליחידה <small>(₪34 לזוג, ₪27 עם הנחת כמות)</small>',url:'https://ksp.co.il/web/item/260290'},
  st64:{img:'img/bulb-260297.jpg',name:'ST64 דמוי פחם · Philips',w:'6W',k:3000,lm:'',desc:'צהוב־לבן עדין, צורה ארוכה ויפה',price:'₪24 ליחידה <small>(₪48 לזוג)</small>',url:'https://ksp.co.il/web/item/260290'},
  g80:{img:'img/bulb-344705.jpg',name:'G80 גלוב · NEPTON',w:'8W',k:3000,lm:'',desc:'צהוב־לבן, קצת פחות חם — מתאים מעל האי',price:'₪22 ליחידה',url:'https://ksp.co.il/web/item/344705'},
  g9:{img:'img/bulb-437480.jpg',name:'G9 נעיצה · Wellmax',w:'7W',k:3000,lm:'',desc:'צהוב־לבן עדין',price:'₪20 ליחידה',url:'https://ksp.co.il/web/item/437480'},
@@ -104,8 +103,8 @@ const ROWS=[
  {img:'img/valeri.jpg',url:'https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%95%d7%9c%d7%a8%d7%99',name:'ולרי',where:'מעל האי במטבח',qty:'3 גופים',b:'g80',base:'E27 · אהיל 20 ס״מ'},
  {img:'img/mark.jpg',url:'https://store.ida-home.co.il/product/%D7%92%D7%95%D7%A3-%D7%AA%D7%90%D7%95%D7%A8%D7%94-%D7%9E%D7%90%D7%A8%D7%A7',name:'מארק',where:'סלון וקומה א׳ (מדרגות ברצף) · אותו גוון',qty:'6 גופים (8 נקנו)',b:'a60',base:'E27 · אהיל 12 ס״מ'},
  {img:'img/fabrizio.jpg',url:'https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%a4%d7%91%d7%a8%d7%99%d7%a6%d7%99%d7%95-2',name:'פבריציו — מדרגות ומסדרון',where:'אותו גוון כמו הסלון',qty:'4 גופים',b:'a60',base:'E27'},
- {img:'img/fabrizio.jpg',url:'https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%a4%d7%91%d7%a8%d7%99%d7%a6%d7%99%d7%95-2',name:'פבריציו — חדרי שינה',where:'חדר הורים וחדר אורחים, ליד המיטה',qty:'4 גופים',b:'st64',base:'E27'},
- {img:'img/silo.jpg',url:'https://store.ida-home.co.il/product/wall-light-silo',name:'סילו',where:'מקלחת אורחים, מעל הכיור',qty:'1 גוף',b:'st64',base:'E27'},
+ {img:'img/fabrizio.jpg',url:'https://store.ida-home.co.il/product/%d7%92%d7%95%d7%a3-%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%a4%d7%91%d7%a8%d7%99%d7%a6%d7%99%d7%95-2',name:'פבריציו — חדרי שינה',where:'חדר הורים וחדר אורחים, ליד המיטה',qty:'4 גופים',b:'a60',base:'E27'},
+ {img:'img/silo.jpg',url:'https://store.ida-home.co.il/product/wall-light-silo',name:'סילו',where:'מקלחת אורחים, מעל הכיור',qty:'1 גוף',b:'a60',base:'E27'},
  {img:'img/katie.jpg',url:'https://store.ida-home.co.il/product/%d7%aa%d7%90%d7%95%d7%a8%d7%94-%d7%a6%d7%9e%d7%95%d7%93%d7%aa-%d7%aa%d7%a7%d7%a8%d7%94-%d7%a7%d7%99%d7%99%d7%98%d7%99-%d7%a7%d7%98%d7%a0%d7%94',name:'קייטי',where:'מקלחת אורחים, מעל האסלה (תקרה)',qty:'1 גוף · 2 נורות',b:'g9',base:'2 בתי G9'},
  {img:'img/garland.jpg',url:'https://www.lighting.co.il/75323003',name:'גרלנדה 25 נורות (מחסני תאורה 75323003)',where:'חוץ, לאווירה בלבד',qty:'25 שקעים (ועוד 10 אם הגיעה הקטנה)',b:'st45',base:'E27 · IP44 · 26 מ׳'}
 ];
