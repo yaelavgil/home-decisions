@@ -488,6 +488,9 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .likeB{font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;background:#fdecef;color:#a13b52;border:1px solid #f3c8d1}
 .pts{margin:0 0 8px;padding:0 20px 0 0;font-size:12.8px;line-height:1.5;color:var(--ink)}
 .pts li{margin:1px 0}
+.locLine:not(.open){display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.pickWhyFull{font-size:12.5px;color:var(--brass-d);font-weight:600;margin:8px 0 4px;line-height:1.5}
+.ptsFullH{font-size:12px;font-weight:700;color:var(--ink-soft);margin:8px 0 2px}
 .pts li::marker{color:var(--brass-d);font-weight:800}
 .specT{width:100%;border-collapse:collapse;font-size:12.5px;margin:2px 0 6px}
 .specT td{padding:3px 6px;border-bottom:1px solid var(--line-2);vertical-align:top}
@@ -1809,7 +1812,8 @@ function cardEl(it){
   const pts=it.points||[], ptsTop=pts.slice(0,3), ptsRest=pts.slice(3);
   const descHTML=it.desc?`<div class="desc${hasPts?'':' clamped'}" id="desc-${it.id}">${it.desc}</div>${hasPts?'':`<button type="button" class="descToggle" onclick="toggleDesc('${it.id}')">הצג פרטים ⌄</button>`}`:'';
   const moreInner=`${hasPts?specRowsHTML(it,true):''}
-        ${ptsRest.length?`<ol class="pts" start="4">${ptsRest.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
+        ${it.pick&&it.pickWhy&&shortTxt(it.pickWhy,110)!==it.pickWhy?`<div class="pickWhyFull">⭐ ${esc(it.pickWhy)}</div>`:''}
+        ${pts.length&&pts.some(p=>shortTxt(String(p).split(/\s[—–]\s/)[0].length>=14?String(p).split(/\s[—–]\s/)[0]:p,56)!==p)?`<div class="ptsFullH">פירוט מלא</div><ol class="pts">${pts.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:(ptsRest.length?`<ol class="pts" start="4">${ptsRest.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:'')}
         ${featRow}
         ${(()=>{ const cc=CATS.find(x=>x.key===it.cat)||{}; return (it.type==='color')?'':`<div class="moreSel">${(cc.subs&&cc.subs.length)?`תת־נושא: <select onchange=\"setSub('${it.id}',this.value)\"><option value=\"\">— לא משויך</option>${cc.subs.map(x=>`<option ${it.sub===x?'selected':''}>${esc(x)}</option>`).join('')}</select> <button type=\"button\" class=\"docBtn\" onclick=\"openSubMgr('${esc(it.cat)}')\">✎</button>`:`<button type=\"button\" class=\"docBtn\" onclick=\"openSubMgr('${esc(it.cat)}')\">＋ תת־נושא</button>`}<button type=\"button\" class=\"docBtn\" onclick=\"openPlaceDlg('${it.id}')\">📍 מיקום בבית</button><button type=\"button\" class=\"docBtn\" onclick=\"openPartsDlg('${it.id}')\">🧩 רכיבים</button></div>`; })()}
         ${stars}
@@ -1826,11 +1830,11 @@ function cardEl(it){
       ${sub}
       <div class="partsBox" style="display:none"></div>
       <div class="scoreRow"><span class="scoreB" style="display:none"></span><span class="likeB" style="display:none"></span></div>
-      ${it.pick&&it.pickWhy?`<div class="pickWhy">⭐ ${esc(it.pickWhy)}</div>`:''}
+      ${it.pick&&it.pickWhy?`<div class="pickWhy">⭐ ${esc(shortTxt(it.pickWhy,110))}</div>`:''}
       ${hasPts?keySpecsHTML(it):''}
-      ${hasPts?`<ol class="pts">${ptsTop.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
+      ${hasPts?`<ol class="pts">${ptsTop.map(p=>`<li>${esc(shortTxt(String(p).split(/\s[—–]\s/)[0].length>=14?String(p).split(/\s[—–]\s/)[0]:p,56))}</li>`).join('')}</ol>`:''}
       ${hasPts?'':descHTML}
-      ${it.type==='color'?'':'<div class="loc locLine"></div>'}
+      ${it.type==='color'?'':'<div class="loc locLine" title="לחיצה להרחבה" onclick="this.classList.toggle(\'open\')"></div>'}
       ${it.sub?`<div><span class="subtag">${esc(it.sub)}</span></div>`:''}
       <div class="ordinfo" style="display:none"></div>
       <div class="people" style="display:none"></div>
@@ -1931,6 +1935,11 @@ function setRating(id,n){
   if(document.getElementById('sort').value==='rating')RE();
 }
 function fbPushRating(id,o){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,...o})}).catch(()=>{}); }
+function shortTxt(t,max){ // one short line: first clause of a long sentence; the full text lives in the collapsed details
+  max=max||84; t=String(t==null?'':t).replace(/\s+/g,' ').trim().replace(/\s*\([^)]{18,}\)/g,''); if(t.length<=max) return t;
+  const ds=[' — ','; ',' · ',': ','. ',' ('], idx=ds.map(d=>t.indexOf(d,22)).filter(i=>i>0&&i<=max+14);
+  let r=idx.length?t.slice(0,Math.min(...idx)):t.slice(0,max).replace(/\s+\S*$/,'');
+  return r.replace(/[\s,;:·—-]+$/,'')+'…'; }
 function toggleDesc(id){
   const el=document.getElementById('desc-'+id); if(!el)return;
   const nowClamped=el.classList.toggle('clamped');
