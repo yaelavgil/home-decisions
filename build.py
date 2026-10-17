@@ -2618,6 +2618,11 @@ function pickCat(key,sub){
 }
 function renderCatMenu(){
   const m=document.getElementById('catMenu'), q=menuQ.trim();
+  /* שדה החיפוש יושב בתוך המכולה שנבנית כאן מחדש, ולכן כל הקלדה הורסת אותו
+     ויוצרת אותו מחדש עם סמן באפס. בלי לשחזר את מיקום הסמן כל תו חדש נדחף
+     לתחילת השדה, ו"יעל" נכתב "לעי". */
+  const hadFocus=document.activeElement&&document.activeElement.id==='cmQ';
+  const caret=hadFocus?document.activeElement.selectionStart:null;
   const allCats=CATS.filter(c=>c.key!=='all'); const stc={open:0,pick:0,done:0}; let remChoose=0, remOrder=0; const brk={};
   allCats.forEach(c=>{ stc[catState(c)]++; const its=ITEMS.filter(i=>i.cat===c.key&&!i.hidden); const b={d:0,c:0,o:0}; its.forEach(i=>{ const t=itemStatus(i); if(t==='discuss')b.d++; else if(t==='chosen')b.c++; else if(t==='ordered')b.o++; }); brk[c.key]=b; remChoose+=catState(c)==='open'?1:0; remOrder+=b.c; });
   const cats=allCats.filter(c=>!menuState||catState(c)===menuState).filter(c=>!q||c.label.includes(q)||(c.group||'').includes(q)||(c.subs||[]).some(x=>x.includes(q)));
@@ -2636,14 +2641,15 @@ function renderCatMenu(){
     body=Object.keys(byL).map(L=>`<div class="cmg"><h5>${esc(L)}</h5>${byL[L].map(item).join('')}</div>`).join('');
   }
   if(!cats.length) body='<p class="docnote">לא נמצאה קטגוריה בשם הזה.</p>';
-  m.innerHTML=`<div class="cmTop"><input id="cmQ" placeholder="🔍 חיפוש קטגוריה או נושא…" value="${esc(menuQ)}" oninput="menuQ=this.value;renderCatMenu();document.getElementById('cmQ').focus();"><span class="seg2"><button type="button" class="${menuMode==='topic'?'on':''}" onclick="menuMode='topic';renderCatMenu()">🗂 לפי נושא</button><button type="button" class="${menuMode==='alpha'?'on':''}" onclick="menuMode='alpha';renderCatMenu()">א–ת</button></span><button type="button" class="cmi" style="width:auto" onclick="pickCat('all')">✦ הכל</button></div>
+  m.innerHTML=`<div class="cmTop"><input id="cmQ" placeholder="🔍 חיפוש קטגוריה או נושא…" value="${esc(menuQ)}" oninput="menuQ=this.value;renderCatMenu();"><span class="seg2"><button type="button" class="${menuMode==='topic'?'on':''}" onclick="menuMode='topic';renderCatMenu()">🗂 לפי נושא</button><button type="button" class="${menuMode==='alpha'?'on':''}" onclick="menuMode='alpha';renderCatMenu()">א–ת</button></span><button type="button" class="cmi" style="width:auto" onclick="pickCat('all')">✦ הכל</button></div>
     <div class="cmSum"><span class="lab">מה נותר:</span>
       <button type="button" class="${menuState==='open'?'on':''}" onclick="menuState=menuState==='open'?null:'open';renderCatMenu()">🔴 ממתינות להחלטה <b>${stc.open}</b></button>
       <button type="button" class="${menuState==='pick'?'on':''}" onclick="menuState=menuState==='pick'?null:'pick';renderCatMenu()">🟡 נבחר, צריך להזמין <b>${stc.pick}</b></button>
       <button type="button" class="${menuState==='done'?'on':''}" onclick="menuState=menuState==='done'?null:'done';renderCatMenu()">🟢 הוזמנו <b>${stc.done}</b></button>
       <span class="cmTot">🛒 ${remOrder} פריטים נבחרו ועוד לא הוזמנו</span></div>
     <div class="cmCols">${body}</div>`;
-  const qi=document.getElementById('cmQ'); if(qi&&document.activeElement===document.body) {}
+  const qi=document.getElementById('cmQ');
+  if(qi&&hadFocus){ qi.focus(); const p=caret==null?qi.value.length:caret; try{qi.setSelectionRange(p,p);}catch(e){} }
 }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') toggleCatMenu(false); });
 document.addEventListener('click',e=>{ const m=document.getElementById('catMenu'); if(m&&!m.hidden&&!e.target.closest('#catMenu')&&!e.target.closest('.allcats')) toggleCatMenu(false); });
