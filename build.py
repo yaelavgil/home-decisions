@@ -18,7 +18,7 @@ for k,it in enumerate(items):
     if it.get("deleted"): continue  # folded into a bundle; keep the row so ids (index+1) stay stable
     _c0=it.get("cat","תאורה")
     DATA.append({"id":"l"+str(k+1),"cat":"תאורה","sub":it.get("sub") or ("תאורת חוץ" if _c0=="תאורת חוץ" else ""),"type":"product","name":it["name"],"price":it.get("price") if it.get("parts") is None else sum((p.get("p") or 0)*(p.get("q") or 1) for p in it["parts"]),
-                 "link":it.get("link",""),"img":("img/"+it["img"]) if it.get("img") else "","tags":it.get("tags") or tags(it["name"]),"loc":it.get("loc",""),
+                 "link":it.get("link",""),"img":("img/"+it["img"]) if it.get("img") else "","tags":it.get("tags") or tags(it["name"]),"loc":it.get("loc",""),**({"imgs":["img/"+x for x in it["imgs"]]} if it.get("imgs") else {}),**({"desc":it["desc"]} if it.get("desc") and it.get("imgs") else {}),
                  **({"parts":[{**p,"img":("img/"+p["img"]) if p.get("img") and not str(p["img"]).startswith(("http","img/")) else p.get("img","")} for p in it["parts"]]} if it.get("parts") else {})})
 
 # --- Kitchen handles (Domicile) — pulled from home-picks ---
@@ -1171,7 +1171,7 @@ GROUPS={"תאורה":"תאורה","מכונות קפה":"מטבח","מיקרוג
  "שולחן לדני":"חדרי שינה וילדים","שולחן לימודים לדני":"חדרי שינה וילדים","תליה זמנית":"חדרי שינה וילדים",
  "ספות לפינת משפחה":"סלון ומשפחה","זרועות לטלוויזיה":"סלון ומשפחה","מראה לכניסה":"כניסה ונגרות","ידיות":"כניסה ונגרות",
  "מחמם מגבות":"אמבטיה","תנורי פרגולה":"חוץ ופרגולה","מקרר פרגולה":"חוץ ופרגולה","צבעים":"גימור וצבעים"}
-SUBS={"תאורה":["תאורת קיר","תאורת תקרה","תאורה למטבח","מאווררי תקרה עם תאורה","תאורת חוץ"]}
+SUBS={"תאורה":["תאורת חוץ","תאורת קיר","תאורת תקרה","תאורת קיר לילדים (הדלקה עצמית)","תאורה למטבח","מאווררי תקרה עם תאורה"]}
 MULTI={"תאורה","צבעים","ידיות","תליה זמנית"}
 for _c in CATS:
     if _c["key"]=="all": continue
