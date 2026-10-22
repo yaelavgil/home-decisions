@@ -1209,6 +1209,15 @@ for _f in sorted(glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__
             it["criteria"]=_e.get("criteria",[])
             for _k in ("specs","stores","pick","pickWhy","points"):
                 if _k in _x: it[_k]=_x[_k]
+# --- default sub-categories + automatic assignment for the newer categories (items keep editable sub via Firebase) ---
+_SUBS={"bathroom-heater":["מפזר חום","תנור אינפרא"],"outdoor-daybed":["טיק / עץ","במבוק","אלומיניום וראטן סינתטי"],"tv-console":["עומד על רגליים","תלוי על הקיר"],"towel-warmer":["מחמם מגבות","תנור אמבטיה"]}
+_ITEMSUB={"BH1":"מפזר חום","BH2":"תנור אינפרא","BH3":"תנור אינפרא","BH4":"תנור אינפרא","BH5":"מפזר חום","BH6":"מפזר חום","BH7":"מפזר חום","BH8":"תנור אינפרא","BH9":"מפזר חום","BH10":"מפזר חום",
+ "DB1":"טיק / עץ","DB2":"אלומיניום וראטן סינתטי","DB3":"במבוק","DB4":"במבוק",
+ "TC1":"עומד על רגליים","TC2":"עומד על רגליים","TC3":"תלוי על הקיר","TC4":"עומד על רגליים",
+ "TW5":"מחמם מגבות","TW13":"מחמם מגבות","TW14":"מחמם מגבות","TW6":"תנור אמבטיה","TW7":"תנור אמבטיה","TW8":"תנור אמבטיה"}
+for _d in DATA:
+    if _d["id"] in _ITEMSUB and not _d.get("sub"): _d["sub"]=_ITEMSUB[_d["id"]]
+
 CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"תאורה","label":"תאורה","icon":"💡","slug":"lighting"},
       {"key":"צבעים","label":"צבעים","icon":"🎨","slug":"colors"},
@@ -1228,12 +1237,12 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"שולחן לימודים לדני","label":"שולחן לימודים לדני","icon":"📚","slug":"danny-study-desk"},
       {"key":"וילון לממד","label":"וילון גלילה לממד (חדר דני)","icon":"🪟","slug":"mamad-blind","group":"חדרי שינה וילדים","multi":True,"subs":["זול ומהיר","מידה אישית — מראה טבעי","פרימיום — קסטה / דאבל / תעלות צד"]},
       {"key":"תנורי פרגולה","label":"תנורי פרגולה","icon":"🌡️","slug":"pergola-heater"},
-      {"key":"מחמם מגבות","label":"מחמם מגבות","icon":"🧖","slug":"towel-warmer"},
-      {"key":"תנור לחדרי רחצה","label":"תנור לחדרי רחצה","icon":"🔥","slug":"bathroom-heater"},
+      {"key":"מחמם מגבות","label":"מחמם מגבות","icon":"🧖","slug":"towel-warmer","subs":["מחמם מגבות", "תנור אמבטיה"]},
+      {"key":"תנור לחדרי רחצה","label":"תנור לחדרי רחצה","icon":"🔥","slug":"bathroom-heater","subs":["מפזר חום", "תנור אינפרא"]},
       {"key":"סיפון לכיור","label":"סיפון לכיור (מקלחת אורחים)","icon":"🚰","slug":"sink-siphon"},
       {"key":"סל כביסה","label":"סל כביסה למסתור","icon":"🧺","slug":"laundry-hamper"},
-      {"key":"מיטת רביצה לגינה","label":"מיטות רביצה לגינה","icon":"🛏️","slug":"outdoor-daybed","group":"חוץ ופרגולה"},
-      {"key":"מזנון לטלוויזיה","label":"מזנון לטלוויזיה","icon":"📺","slug":"tv-console","group":"סלון ומשפחה"},
+      {"key":"מיטת רביצה לגינה","label":"מיטות רביצה לגינה","icon":"🛏️","slug":"outdoor-daybed","group":"חוץ ופרגולה","subs":["טיק / עץ", "במבוק", "אלומיניום וראטן סינתטי"]},
+      {"key":"מזנון לטלוויזיה","label":"מזנון לטלוויזיה","icon":"📺","slug":"tv-console","group":"סלון ומשפחה","subs":["עומד על רגליים", "תלוי על הקיר"]},
       {"key":"אינטרקום וידאו","label":"אינטרקום וידאו לכניסות","icon":"📹","slug":"video-intercom","group":"בית חכם"},
       {"key":"מנעול חכם","label":"מנעול חכם לדלתות","icon":"🔐","slug":"smart-lock","group":"בית חכם"},
       {"key":"ספות לפינת משפחה","label":"ספות לפינת משפחה","icon":"🛋️","slug":"family-sofas"},
@@ -1672,6 +1681,9 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .orderb{display:none!important}
 .ordnote{position:absolute;bottom:9px;inset-inline-start:9px;z-index:4;background:var(--ordered);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:10px;box-shadow:0 2px 6px rgba(60,40,15,.18)}
 .editb:hover{color:var(--brass-d);transform:scale(1.08)}
+.delb{inset-inline-end:43px}.delb:hover{color:#b3372c!important;border-color:#b3372c}
+.subQuick{margin:2px 0 6px}.subQuick select{font:inherit;font-size:12px;border:1px solid var(--line-2);border-radius:999px;padding:3px 10px;background:var(--paper);color:var(--ink-soft);max-width:100%;cursor:pointer}
+.subRow .auto{font-weight:700}
 .search{flex:1;min-width:180px;position:relative}
 .search input{width:100%;border:1.5px solid var(--line-2);border-radius:var(--r-sm);padding:10px 38px 10px 14px;font:inherit;font-size:14px;background:var(--paper);transition:.18s}
 .search input:focus{outline:none;border-color:var(--brass);box-shadow:0 0 0 4px var(--brass-soft)}
@@ -2801,7 +2813,7 @@ function renderSubRow(){
   if(subs.length){
     h+=`<button type="button" class="${!subf?'on':''}" onclick="subf=null;renderSubRow();RE()">הכל<small>${its.length}</small></button>`
       +subs.map(k=>`<button type="button" class="${subf===k?'on':''}" onclick="subf='${esc(k)}';renderSubRow();RE()">${esc(k)}<small>${cnt(k)}</small></button>`).join('')
-      +(none?`<button type="button" class="warn ${subf==='__none'?'on':''}" onclick="subf='__none';renderSubRow();RE()">⚠ ללא שיוך<small>${none}</small></button>`:'');
+      +(none?`<button type="button" class="warn ${subf==='__none'?'on':''}" onclick="subf='__none';renderSubRow();RE()">⚠ ללא שיוך<small>${none}</small></button><button type="button" class="mgr auto" onclick="autoAssignSubs('${esc(cat.key)}')">⚡ שיוך אוטומטי</button>`:'');
   }
   h+=`<button type="button" class="mgr" onclick="openSubMgr('${esc(cat.key)}')">${subs.length?'✎ ניהול תתי־קטגוריות':'＋ הוספת תת־קטגוריה'}</button>`;
   if(usedPlaces.length) h+=`<select onchange="placef=this.value||null;renderSubRow();RE()"><option value="">📍 כל המקומות</option>${usedPlaces.map(n=>`<option value="${esc(n)}" ${placef===n?'selected':''}>${esc(n)}</option>`).join('')}<option value="__none" ${placef==='__none'?'selected':''}>ללא מיקום</option></select>`;
@@ -2837,6 +2849,7 @@ function saveSubMgr(){
   setCatMeta(key,{subs:names});
   if(subf&&!names.includes(subf)) subf=null;
   document.getElementById('subDlg').close(); renderSubRow(); RE();
+  its.forEach(i=>{ const e=els.get(i.id); if(e){ e.remove(); els.delete(i.id); } }); autoAssignSubs(key,true); renderSubRow(); RE();
 }
 function setSub(id,val){ const it=byId[id]; if(!it) return; it.sub=val||''; patchItem(id,{sub:val||''}); renderSubRow(); RE(); }
 /* ----- places ----- */
@@ -3098,13 +3111,14 @@ function cardEl(it){
         ${qty}
         <div class="note"><textarea placeholder="הערה: גוון / גודל / וריאציה…" oninput="setN('${it.id}',this.value)"></textarea></div>
         <div class="cardActions">${it.type==='product'?`<button class="markOrd" onclick="toggleOrdered('${it.id}')">📦 סמן כהוזמן</button>`:''}<button class="hideb" onclick="toggleHidden('${it.id}')">${it.hidden?'↩️ שחזר ללוח':'🙈 הסתר'}</button><button class="hideb" onclick="deleteItem('${it.id}')">🗑 מחיקת הפריט (לצמיתות)</button></div>`;
-  c.innerHTML=`${it.pick?'<span class="pickRibbon">⭐ ההמלצה שלנו</span>':''}<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button>
+  c.innerHTML=`${it.pick?'<span class="pickRibbon">⭐ ההמלצה שלנו</span>':''}<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button><button class="editb delb" title="מחיקת הפריט מהלוח" onclick="event.stopPropagation();deleteItem('${it.id}')">🗑</button>
     ${it.type==='product'?`<span class="orderb"><span class="ol">✓ הוזמן</span><span class="od"></span></span>`:''}
     ${media}
     <div class="body">
       ${it.type==='color'?'':'<div class="stpill discuss"></div>'}
       ${nameEl}
       ${sub}
+      ${subQuick(it)}
       <div class="partsBox" style="display:none"></div>
       <div class="scoreRow"><span class="scoreB" style="display:none"></span><span class="likeB" style="display:none"></span></div>
       ${it.pick&&it.pickWhy?`<div class="pickWhy">⭐ ${esc(shortTxt(it.pickWhy,110))}</div>`:''}
@@ -3222,6 +3236,25 @@ function toggleDesc(id){
   const nowClamped=el.classList.toggle('clamped');
   const btn=el.nextElementSibling;
   if(btn) btn.textContent=nowClamped?(byId[id]&&(byId[id].points||[]).length?'פרטים מלאים ⌄':'הצג פרטים ⌄'):'הסתר ⌃';
+}
+function subQuick(it){
+  const cc=CATS.find(x=>x.key===it.cat)||{};
+  const subs=[...new Set([...(cc.subs||[]),...ITEMS.filter(i=>i.cat===it.cat).map(i=>i.sub).filter(Boolean)])];
+  if(it.type==='color'||!subs.length) return '';
+  return `<div class="subQuick"><select onclick="event.stopPropagation()" onchange="setSub('${it.id}',this.value)" title="שיוך לתת־קטגוריה"><option value="">— ללא שיוך</option>${subs.map(x=>`<option ${it.sub===x?'selected':''}>${esc(x)}</option>`).join('')}</select></div>`;
+}
+function subTokens(t){ return String(t||'').split(/[\s\/·,\-–—()+]+/).map(w=>w.replace(/^[הולבמש](?=.{3,})/,'')).filter(w=>w.length>=3); }
+function autoAssignSubs(key,silent){
+  const c=CATS.find(x=>x.key===key); if(!c||!(c.subs&&c.subs.length)) return 0; let n=0;
+  ITEMS.filter(i=>i.cat===key&&!i.sub&&!i.hidden).forEach(it=>{
+    const name=(it.name||'').toLowerCase(), hay=(name+' '+(it.tags||[]).join(' ')+' '+String(it.desc||'').slice(0,500)).toLowerCase();
+    let best=null,bs=0;
+    c.subs.forEach(sn=>{ let sc=0; subTokens(sn).forEach(t=>{ t=t.toLowerCase(); if(name.includes(t)) sc+=3; else if(hay.includes(t)) sc+=1; }); if(sc>bs){bs=sc;best=sn;} });
+    if(best){ it.sub=best; patchItem(it.id,{sub:best}); n++; }
+  });
+  if(n){ ITEMS.filter(i=>i.cat===key).forEach(i=>{ const e=els.get(i.id); if(e){ e.remove(); els.delete(i.id); } }); renderSubRow(); RE(); }
+  if(!silent) say(n?('⚡ שויכו '+n+' פריטים אוטומטית'):'לא נמצאו התאמות — אפשר לשייך ידנית מהתפריט שבכרטיס',3000);
+  return n;
 }
 function deleteItem(id){
   const it=byId[id]; if(!it) return;
