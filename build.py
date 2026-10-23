@@ -3358,7 +3358,7 @@ function openLB(id){const it=byId[id];
   else if(it.img){img.style.display='';im.style.background='';img.src=it.img;}
   const th=document.getElementById('lbthumbs'); th.innerHTML='';
   if(it.imgs&&it.imgs.length>1){it.imgs.forEach((u,i)=>{const t=document.createElement('img');t.src=u;t.loading='lazy';if(i===0)t.className='on';t.onclick=()=>{img.src=u;th.querySelectorAll('img').forEach(x=>x.classList.toggle('on',x===t));};th.appendChild(t);});}
-  else{img.style.display='none';im.style.background='linear-gradient(135deg,#faf6ee,#efe7d9)';}
+  else if(!it.img&&it.type!=='color'){img.style.display='none';im.style.background='linear-gradient(135deg,#faf6ee,#efe7d9)';}
   document.getElementById('lbname').textContent=it.name;
   document.getElementById('lbprice').textContent=it.type==='color'?(it.code||''):(it.price!=null?nis(it.price):'');
   const stEl=document.getElementById('lbstore'); if(it.link){stEl.style.display='';stEl.href=it.link;stEl.textContent=it.type==='color'?'לגוון באתר נירלט ↗':'לצפייה בחנות ↗';}else{stEl.style.display='none';}
