@@ -1297,6 +1297,13 @@ except Exception: _ADDED={}
 for _d in DATA:
     if _d["id"] in _ADDED: _d["addedAt"]=_ADDED[_d["id"]]
 
+# --- default priority per category (1 = urgent, 2 = soon, 3 = can wait); editable in the app (🎯 לפי דחיפות) and stored in Firebase cat meta ---
+_PRIO={"bathroom-heater":1,"pergola-heater":1,"towel-warmer":1,"tv-arms":1,"smart-lock":1,"video-intercom":1,"mamad-blind":1,
+ "sink-siphon":2,"laundry-hamper":2,"tv-console":2,"lighting":2,
+ "yard-games":3,"garden-hammocks":3}
+for _c in CATS:
+    if _c.get("slug") in _PRIO and "prio" not in _c: _c["prio"]=_PRIO[_c["slug"]]
+
 GROUPS={"תאורה":"תאורה","מכונות קפה":"מטבח","מיקרוגל":"מטבח","תנור":"מטבח","כיריים":"מטבח","מדיח":"מטבח","מקרר":"מטבח","פח":"מטבח",
  "מיטת לילי":"חדרי שינה וילדים","מיטת אורחים":"חדרי שינה וילדים","ארונות לחדרי הילדים":"חדרי שינה וילדים","ארון לחדר אורחים":"חדרי שינה וילדים",
  "שולחן לדני":"חדרי שינה וילדים","שולחן לימודים לדני":"חדרי שינה וילדים","תליה זמנית":"חדרי שינה וילדים",
@@ -1481,6 +1488,8 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .catrow{position:relative}
 .catMenu{position:absolute;top:calc(100% + 6px);inset-inline:0;z-index:60;background:var(--paper);border:1.5px solid var(--line-2);border-radius:16px;box-shadow:0 24px 60px -20px rgba(40,28,12,.45);padding:12px 14px;max-height:72vh;overflow:auto}
 .catMenu[hidden]{display:none}
+.prow{display:flex;align-items:flex-start;gap:6px}.pmain{flex:1;min-width:0}.pmain .phint{display:block;margin:-2px 10px 6px;color:var(--ink-soft);font-size:11px}
+.pPill{flex:none;width:30px;height:30px;margin-top:3px;border-radius:50%;border:1.5px solid var(--line-2);background:var(--paper);cursor:pointer;font-size:15px;line-height:1}.pPill:hover{border-color:var(--brass);transform:scale(1.08)}
 .cmTop{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 .cmTop input{flex:1;min-width:160px;padding:9px 12px;border:1.5px solid var(--line-2);border-radius:11px;font:inherit}
 .cmTop .seg2{display:inline-flex;border:1.5px solid var(--line-2);border-radius:99px;overflow:hidden}
@@ -2007,7 +2016,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 </header>
 
 <div class="deck">
-  <div class="catrow"><button type="button" class="rcBtn" id="rcBtn" onclick="openRecents()" aria-label="נוספו לאחרונה">🕒 <span class="t">חדשים</span><b id="rcBadge" hidden></b></button><button type="button" class="spendMini" onclick="openSpend()" title="הוצאות על הלבשת הבית והחצר">💰 <b id="spendTot2"></b></button><button type="button" class="allcats" onclick="toggleCatMenu()">☰ <span>קטגוריות</span><span class="doneN" id="doneN"></span></button><div class="tabs" id="tabs"></div><div class="catMenu" id="catMenu" hidden></div></div>
+  <div class="catrow"><button type="button" class="rcBtn" id="rcBtn" onclick="openRecents()" aria-label="נוספו לאחרונה">🕒 <span class="t">חדשים</span><b id="rcBadge" hidden></b></button><button type="button" class="spendMini" onclick="openSpend()" title="הוצאות על הלבשת הבית והחצר">💰 <b id="spendTot2"></b></button><button type="button" class="allcats prioBtn" onclick="menuMode='prio';toggleCatMenu(true)" title="סדר קטגוריות לפי דחיפות — מה לסגור ולהזמין קודם">🎯 <span>מה דחוף</span></button><button type="button" class="allcats" onclick="toggleCatMenu()">☰ <span>קטגוריות</span><span class="doneN" id="doneN"></span></button><div class="tabs" id="tabs"></div><div class="catMenu" id="catMenu" hidden></div></div>
   <div class="tools">
     <div class="views" id="views">
     <button class="vbtn on" data-v="all" onclick="setView('all')">הכל<span class="vc" data-c="all"></span></button>
@@ -2748,6 +2757,11 @@ function toggleCatMenu(force){
   const m=document.getElementById('catMenu'); const open=force!==undefined?force:m.hidden; m.hidden=!open;
   if(open){ renderCatMenu(); setTimeout(()=>{const q=document.getElementById('cmQ'); if(q&&matchMedia('(min-width:700px)').matches)q.focus();},60); }
 }
+function cycleCatPrio(key){
+  const c=CATS.find(x=>x.key===key); if(!c) return;
+  const cur=Number(c.prio)||0, nxt={0:1,1:2,2:3,3:0}[cur];
+  setCatMeta(key,{prio:nxt}); renderCatMenu();
+}
 function pickCat(key,sub){
   selCats=key==='all'?new Set():new Set([key]); subf=sub||null; placef=null; tagf.clear();
   const c=CATS.find(x=>x.key===key); if(c&&catState(c)==='done'&&viewMode==='active') setView('all');
@@ -2764,11 +2778,23 @@ function renderCatMenu(){
   allCats.forEach(c=>{ stc[catState(c)]++; const its=ITEMS.filter(i=>i.cat===c.key&&!i.hidden); const b={d:0,c:0,o:0}; its.forEach(i=>{ const t=itemStatus(i); if(t==='discuss')b.d++; else if(t==='chosen')b.c++; else if(t==='ordered')b.o++; }); brk[c.key]=b; remChoose+=catState(c)==='open'?1:0; remOrder+=b.c; });
   const cats=allCats.filter(c=>!menuState||catState(c)===menuState).filter(c=>!q||c.label.includes(q)||(c.group||'').includes(q)||(c.subs||[]).some(x=>x.includes(q)));
   const item=c=>{ const n=ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length, stt=catState(c), sg=catSuggs?catSuggs(c.key).length:0, b=brk[c.key]||{d:0,c:0,o:0};
-    const subs=(c.subs||[]).filter(x=>!q||c.label.includes(q)||x.includes(q));
+    const subs=menuMode==='prio'?[]:(c.subs||[]).filter(x=>!q||c.label.includes(q)||x.includes(q));
     return `<div><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span>${esc(c.label)}${sg?' 💡':''}<small class="cmb">${b.c?`<span class="cc c" title="נבחר — להזמין">🛒${b.c}</span>`:''}${b.o?`<span class="cc o" title="הוזמן">📦${b.o}</span>`:''}</small></button>`
       +(subs.length?`<div class="cmsubs">${subs.map(x=>`<button type="button" onclick="pickCat('${esc(c.key)}','${esc(x)}')">${esc(x)}</button>`).join('')}</div>`:'')+`</div>`; };
   let body='';
-  if(menuMode==='topic'){
+  if(menuMode==='prio'){
+    const LV=[[1,'🔴 דחוף — לסגור ולהזמין קודם'],[2,'🟠 בקרוב'],[3,'🟢 אפשר לחכות'],[0,'⚪ עוד לא הוגדרה דחיפות']];
+    const rank=c=>({pick:0,open:1}[catState(c)]??2);
+    const chN=c=>ITEMS.filter(i=>i.cat===c.key&&!i.hidden&&!i.ordered&&i.decision==='chosen').length;
+    const live=cats.filter(c=>catState(c)!=='done'&&ITEMS.some(i=>i.cat===c.key&&!i.hidden));
+    const doneN=cats.filter(c=>catState(c)==='done').length;
+    const row=c=>{ const pr=Number(c.prio)||0, st=catState(c), cn=chN(c);
+      const hint=st==='pick'?`🟡 נבחר — צריך להזמין${cn>1?' ('+cn+')':''}`:'';
+      return `<div class="prow"><button type="button" class="pPill p${pr}" onclick="cycleCatPrio('${esc(c.key)}')" title="לחצי כדי לשנות דחיפות">${['⚪','🔴','🟠','🟢'][pr]}</button><div class="pmain">${item(c)}${hint?`<small class="phint">${hint}</small>`:''}</div></div>`; };
+    body=LV.map(([lv,lab])=>{ const arr=live.filter(c=>(Number(c.prio)||0)===lv).sort((a,b)=>rank(a)-rank(b)||chN(b)-chN(a)||a.label.localeCompare(b.label,'he')); if(!arr.length) return ''; return `<div class="cmg"><h5>${lab} <small>(${arr.length})</small></h5>${arr.map(row).join('')}</div>`; }).join('')
+      +(doneN?`<div class="cmg"><h5>✅ הוזמנו / הושלמו (${doneN})</h5><button type="button" class="cmi" onclick="menuState='done';menuMode='topic';renderCatMenu()">הצגת הקטגוריות שהושלמו</button></div>`:'')
+      +'<p class="docnote">💡 לחצי על העיגול הצבעוני ליד קטגוריה כדי לשנות את הדחיפות שלה: 🔴 ← 🟠 ← 🟢 ← ללא.</p>';
+  } else if(menuMode==='topic'){
     const groups={}; cats.forEach(c=>{ (groups[c.group||'אחר']=groups[c.group||'אחר']||[]).push(c); });
     const order=[...GROUP_ORDER,...Object.keys(groups).filter(g=>!GROUP_ORDER.includes(g))];
     body=order.filter(g=>groups[g]).map(g=>`<div class="cmg"><h5>${esc(g)}</h5>${groups[g].map(item).join('')}</div>`).join('');
@@ -2778,7 +2804,7 @@ function renderCatMenu(){
     body=Object.keys(byL).map(L=>`<div class="cmg"><h5>${esc(L)}</h5>${byL[L].map(item).join('')}</div>`).join('');
   }
   if(!cats.length) body='<p class="docnote">לא נמצאה קטגוריה בשם הזה.</p>';
-  m.innerHTML=`<div class="cmTop"><input id="cmQ" placeholder="🔍 חיפוש קטגוריה או נושא…" value="${esc(menuQ)}" oninput="menuQ=this.value;renderCatMenu();"><span class="seg2"><button type="button" class="${menuMode==='topic'?'on':''}" onclick="menuMode='topic';renderCatMenu()">🗂 לפי נושא</button><button type="button" class="${menuMode==='alpha'?'on':''}" onclick="menuMode='alpha';renderCatMenu()">א–ת</button></span><button type="button" class="cmi" style="width:auto" onclick="pickCat('all')">✦ הכל</button></div>
+  m.innerHTML=`<div class="cmTop"><input id="cmQ" placeholder="🔍 חיפוש קטגוריה או נושא…" value="${esc(menuQ)}" oninput="menuQ=this.value;renderCatMenu();"><span class="seg2"><button type="button" class="${menuMode==='prio'?'on':''}" onclick="menuMode='prio';renderCatMenu()">🎯 לפי דחיפות</button><button type="button" class="${menuMode==='topic'?'on':''}" onclick="menuMode='topic';renderCatMenu()">🗂 לפי נושא</button><button type="button" class="${menuMode==='alpha'?'on':''}" onclick="menuMode='alpha';renderCatMenu()">א–ת</button></span><button type="button" class="cmi" style="width:auto" onclick="pickCat('all')">✦ הכל</button></div>
     <div class="cmSum"><span class="lab">מה נותר:</span>
       <button type="button" class="${menuState==='open'?'on':''}" onclick="menuState=menuState==='open'?null:'open';renderCatMenu()">🔴 ממתינות להחלטה <b>${stc.open}</b></button>
       <button type="button" class="${menuState==='pick'?'on':''}" onclick="menuState=menuState==='pick'?null:'pick';renderCatMenu()">🟡 נבחר, צריך להזמין <b>${stc.pick}</b></button>
