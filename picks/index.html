@@ -409,6 +409,7 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .featwide{max-width:min(980px,calc(100% - 20px))}.fmx{border-collapse:collapse;font-size:12.5px;width:100%}.fmx th,.fmx td{border-bottom:1px solid var(--line-2);padding:5px 6px;text-align:center;vertical-align:middle}.fmx th{position:sticky;top:0;background:var(--paper);font-weight:600;font-size:12px}.fmx td.nm{text-align:right;min-width:170px;max-width:260px}.fmx td.nm img{width:34px;height:34px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-inline-end:6px}.fmx tr.miss td.nm{background:#fff6f4}.fmx .colAct{display:block;font-size:10.5px;font-weight:400;color:var(--muted);background:none;border:0;cursor:pointer;text-decoration:underline;margin:2px auto 0}
 .featBar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.featBar select{font:inherit;font-size:13px;border:1.5px solid var(--line-2);border-radius:999px;padding:4px 10px;background:var(--paper)}
 .fe-row{display:grid;grid-template-columns:1.4fr 1.6fr auto auto;gap:6px;align-items:center;margin:6px 0}.fe-row input[type=text]{padding:6px 9px;border:1.5px solid var(--line-2);border-radius:9px;font:inherit;min-width:0}.fe-row label{font-size:12px;white-space:nowrap}.fe-row button{background:none;border:0;cursor:pointer;font-size:16px}
+.prow{position:relative;display:flex;align-items:flex-start;gap:4px}.prow.dragging{opacity:.4}.prow.dropB{box-shadow:0 -3px 0 0 var(--brass-d)}.prow.dropA{box-shadow:0 3px 0 0 var(--brass-d)}.pgrip{cursor:grab;color:var(--muted);padding:10px 2px;user-select:none;font-size:13px;letter-spacing:-2px}.pPillWrap{position:relative}.pPop{position:absolute;top:100%;inset-inline-start:0;z-index:30;background:var(--paper);border:1.5px solid var(--line-2);border-radius:12px;box-shadow:0 12px 30px -8px rgba(40,28,12,.4);padding:5px;display:flex;flex-direction:column;gap:2px;min-width:140px}.pPop button{border:0;background:none;text-align:start;padding:7px 10px;border-radius:8px;font:inherit;cursor:pointer;white-space:nowrap}.pPop button:hover,.pPop button.on{background:var(--brass-soft)}.pmv{display:flex;flex-direction:column;gap:0;padding-top:4px}.pmv button{border:0;background:none;font-size:10px;line-height:1.2;cursor:pointer;color:var(--muted);padding:1px 4px}.pmv button:hover{color:var(--ink)}.pEmpty{font-size:12px;color:var(--muted);border:1.5px dashed var(--line-2);border-radius:10px;padding:10px;text-align:center;margin:4px 0}
 .subQuick{margin:2px 0 6px}.subQuick select{font:inherit;font-size:12px;border:1px solid var(--line-2);border-radius:999px;padding:3px 10px;background:var(--paper);color:var(--ink-soft);max-width:100%;cursor:pointer}
 .subRow .auto{font-weight:700}
 .search{flex:1;min-width:180px;position:relative}
@@ -1454,6 +1455,40 @@ function toggleCatMenu(force){
   const m=document.getElementById('catMenu'); const open=force!==undefined?force:m.hidden; m.hidden=!open;
   if(open){ renderCatMenu(); setTimeout(()=>{const q=document.getElementById('cmQ'); if(q&&matchMedia('(min-width:700px)').matches)q.focus();},60); }
 }
+let prioPop=null, _dragKey=null;
+document.addEventListener('click',e=>{ if(prioPop&&!e.target.closest('.pPillWrap')){ prioPop=null; try{renderCatMenu();}catch(x){} } });
+function setCatMetaBatch(map){
+  shared.cats=shared.cats||{};
+  Object.entries(map).forEach(([key,o])=>{ shared.cats[key]={...(shared.cats[key]||{}),key,...o};
+    fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(key)}.json`,{method:'PATCH',body:JSON.stringify({key,...o})}).catch(()=>{}); });
+  rebuild(); tabsHTML(); renderCatStrip(); RE(); renderCatMenu();
+}
+function setCatPrio(key,v){ prioPop=null; const c=CATS.find(x=>x.key===key); if(!c) return;
+  const arr=(window._prioLv?window._prioLv(v):[]).filter(x=>x.key!==key); const m={}; m[key]={prio:v,pord:arr.length?Math.max(...arr.map(x=>x.pord==null?0:+x.pord))+10:10}; setCatMetaBatch(m); }
+function placeCatPrio(key,lv,beforeKey){
+  const arr=(window._prioLv?window._prioLv(lv):[]).filter(x=>x.key!==key).map(x=>x.key);
+  let i=beforeKey===null||beforeKey===undefined?arr.length:arr.indexOf(beforeKey); if(i<0) i=arr.length;
+  arr.splice(i,0,key); const m={}; arr.forEach((k,n)=>{ m[k]=k===key?{prio:lv,pord:(n+1)*10}:{pord:(n+1)*10}; }); prioPop=null; setCatMetaBatch(m);
+}
+function moveCatPrio(key,dir){
+  const c=CATS.find(x=>x.key===key); if(!c) return; const lv=Number(c.prio)||0; const arr=window._prioLv(lv).map(x=>x.key); const i=arr.indexOf(key);
+  if(i<0) return; const j=i+dir;
+  if(j<0||j>=arr.length){ // move across levels: up from first -> end of previous level, down from last -> start of next level
+    const order=[1,2,3]; const li=order.indexOf(lv); const nl=li<0?null:order[li+dir]; if(nl==null) return;
+    placeCatPrio(key,nl,dir<0?null:(window._prioLv(nl)[0]||{}).key); return; }
+  arr.splice(i,1); arr.splice(j,0,key); const m={}; arr.forEach((k,n)=>{ m[k]={pord:(n+1)*10}; }); setCatMetaBatch(m);
+}
+function prioDragStart(e,key){ _dragKey=key; try{ e.dataTransfer.setData('text/plain',key); e.dataTransfer.effectAllowed='move'; }catch(x){} e.currentTarget.classList.add('dragging'); }
+function prioDragEnd(){ _dragKey=null; document.querySelectorAll('.prow.dragging,.dropB,.dropA').forEach(e=>e.classList.remove('dragging','dropB','dropA')); }
+function prioDragOver(e){ if(!_dragKey) return; e.preventDefault(); const r=e.currentTarget; if(r.classList.contains('prow')){ const b=r.getBoundingClientRect(); const before=(e.clientY-b.top)<b.height/2; r.classList.toggle('dropB',before); r.classList.toggle('dropA',!before); } }
+function prioDrop(e,targetKey,lv){
+  if(!_dragKey) return; e.preventDefault(); e.stopPropagation(); const key=_dragKey; _dragKey=null;
+  if(targetKey===null){ placeCatPrio(key,lv,null); return; }
+  if(targetKey===key) { prioDragEnd(); return; }
+  const r=e.currentTarget.getBoundingClientRect(); const before=(e.clientY-r.top)<r.height/2;
+  const arr=window._prioLv(lv).map(x=>x.key).filter(k=>k!==key); let i=arr.indexOf(targetKey); if(i<0) i=arr.length; if(!before) i++;
+  placeCatPrio(key,lv,i>=arr.length?null:arr[i]);
+}
 function cycleCatPrio(key){
   const c=CATS.find(x=>x.key===key); if(!c) return;
   const cur=Number(c.prio)||0, nxt={0:1,1:2,2:3,3:0}[cur];
@@ -1487,10 +1522,13 @@ function renderCatMenu(){
     const doneN=cats.filter(c=>catState(c)==='done').length;
     const row=c=>{ const pr=Number(c.prio)||0, st=catState(c), cn=chN(c);
       const hint=st==='pick'?`🟡 נבחר — צריך להזמין${cn>1?' ('+cn+')':''}`:'';
-      return `<div class="prow"><button type="button" class="pPill p${pr}" onclick="cycleCatPrio('${esc(c.key)}')" title="לחצי כדי לשנות דחיפות">${['⚪','🔴','🟠','🟢'][pr]}</button><div class="pmain">${item(c)}${hint?`<small class="phint">${hint}</small>`:''}</div></div>`; };
-    body=LV.map(([lv,lab])=>{ const arr=live.filter(c=>(Number(c.prio)||0)===lv).sort((a,b)=>rank(a)-rank(b)||chN(b)-chN(a)||a.label.localeCompare(b.label,'he')); if(!arr.length) return ''; return `<div class="cmg"><h5>${lab} <small>(${arr.length})</small></h5>${arr.map(row).join('')}</div>`; }).join('')
+      const k=esc(c.key);
+      return `<div class="prow" draggable="true" data-k="${k}" ondragstart="prioDragStart(event,'${k}')" ondragend="prioDragEnd()" ondragover="prioDragOver(event)" ondragleave="this.classList.remove('dropB','dropA')" ondrop="prioDrop(event,'${k}',${pr})"><span class="pgrip" title="גרירה לשינוי סדר / דחיפות">⋮⋮</span><span class="pPillWrap"><button type="button" class="pPill p${pr}" onclick="event.stopPropagation();prioPop=(prioPop==='${k}'?null:'${k}');renderCatMenu()" title="בחירת דרגת דחיפות">${['⚪','🔴','🟠','🟢'][pr]}</button>${prioPop===c.key?`<div class="pPop" onclick="event.stopPropagation()">${[[1,'🔴 דחוף'],[2,'🟠 בקרוב'],[3,'🟢 אפשר לחכות'],[0,'⚪ ללא דחיפות']].map(([v,l])=>`<button type="button" class="${v===pr?'on':''}" onclick="setCatPrio('${k}',${v})">${l}</button>`).join('')}</div>`:''}</span><div class="pmain">${item(c)}${hint?`<small class="phint">${hint}</small>`:''}</div><span class="pmv"><button type="button" title="למעלה" onclick="moveCatPrio('${k}',-1)">▲</button><button type="button" title="למטה" onclick="moveCatPrio('${k}',1)">▼</button></span></div>`; };
+    const sortFn=(a,b)=>((a.pord==null?1e9:+a.pord)-(b.pord==null?1e9:+b.pord))||rank(a)-rank(b)||chN(b)-chN(a)||a.label.localeCompare(b.label,'he');
+    window._prioLv=lv=>live.filter(c=>(Number(c.prio)||0)===lv).sort(sortFn);
+    body=LV.map(([lv,lab])=>{ const arr=window._prioLv(lv); if(!arr.length&&lv===0) return ''; return `<div class="cmg" ondragover="prioDragOver(event)" ondrop="prioDrop(event,null,${lv})"><h5>${lab} <small>(${arr.length})</small></h5>${arr.length?arr.map(row).join(''):'<div class="pEmpty">גררי לכאן קטגוריה</div>'}</div>`; }).join('')
       +(doneN?`<div class="cmg"><h5>✅ הוזמנו / הושלמו (${doneN})</h5><button type="button" class="cmi" onclick="menuState='done';menuMode='topic';renderCatMenu()">הצגת הקטגוריות שהושלמו</button></div>`:'')
-      +'<p class="docnote">💡 לחצי על העיגול הצבעוני ליד קטגוריה כדי לשנות את הדחיפות שלה: 🔴 ← 🟠 ← 🟢 ← ללא.</p>';
+      +'<p class="docnote">💡 לחצי על העיגול הצבעוני כדי לבחור דרגת דחיפות, או גררי קטגוריה (⋮⋮) למקום אחר — גם בתוך אותה דרגה. בנייד: החצים ▲▼.</p>';
   } else if(menuMode==='topic'){
     const groups={}; cats.forEach(c=>{ (groups[c.group||'אחר']=groups[c.group||'אחר']||[]).push(c); });
     const order=[...GROUP_ORDER,...Object.keys(groups).filter(g=>!GROUP_ORDER.includes(g))];
