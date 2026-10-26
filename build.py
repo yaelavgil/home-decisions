@@ -41,6 +41,17 @@ for h in HANDLES:
     DATA.append({"id":h[0],"cat":"ידיות","type":"product","name":h[1]+" · "+h[2],
                  "price":None,"link":h[4],"img":"img/"+h[3],"tags":htags(h[1])})
 
+# --- handles added from Tirador HD (Furnipart) ---
+for _h in [
+ ("H7","ידית Cobra פליז מיושן · 320 מ״מ · Furnipart",104,"https://www.tiradorhd.co.il/items/8233371",["img/hd-cobra-1.jpg","img/hd-cobra-2.jpg","img/hd-cobra-3.jpg"],["פליז מיושן","ידית ארוכה","Furnipart","320 מ״מ"],
+  "ידית ארוכה בסגנון מודרני־אלגנטי מבית Furnipart (דנמרק), גימור פליז מיושן.\n✔ מידות: מרחק בין חורים 320 מ״מ · אורך כללי 330 מ״מ · גובה (בליטה מהחזית) 30 מ״מ · רוחב 12 מ״מ\n✔ חומר: מזק (סגסוגת אבץ) · גימור פליז מיושן F32 · ₪104 ליחידה · במלאי (לפי האתר)\n❓ לבדוק: כמה יחידות לפי חזיתות, משלוח, ושהאורך 330 מתאים לרוחב החזיתות",
+  "אורך כללי 330 · מרחק חורים 320 · גובה 30 · רוחב 12 מ״מ"),
+ ("H8","ידית Tocco פליז כהה מוברש · 160 מ״מ · Furnipart",56,"https://www.tiradorhd.co.il/items/5920270",["img/hd-tocco-1.jpg","img/hd-tocco-2.jpg","img/hd-tocco-3.jpg","img/hd-tocco-4.jpg"],["פליז כהה מוברש","Furnipart","160 מ״מ","עדינה"],
+  "ידית עדינה ואלגנטית בעיצוב סטודיו Meneghello Paolelli, גימור פליז כהה מוברש.\n✔ מידות: מרחק בין חורים 160 מ״מ · אורך כללי 192 מ״מ · גובה (בליטה) 34 מ״מ · רוחב 11 מ״מ\n✔ חומר: מזק (סגסוגת אבץ) · ₪56 ליחידה · במלאי (לפי האתר)\n❓ לבדוק: כמה יחידות לפי חזיתות, משלוח",
+  "אורך כללי 192 · מרחק חורים 160 · גובה 34 · רוחב 11 מ״מ"),
+]:
+    DATA.append({"id":_h[0],"cat":"ידיות","type":"product","name":_h[1],"price":_h[2],"link":_h[3],"img":_h[4][0],"imgs":_h[4],"tags":_h[5],"desc":_h[6],"dims":_h[7]})
+
 # --- Paint colors (Nirlat "Color Is") — pulled from home-picks ---
 COLORS=[("C1","White Kitten","IS 0022","dfdedb","נייטרלים"),("C2","Mission Hills","IS 0363","e1dbc6","נייטרלים"),
  ("C3","Flan","IS 0237","e1caad","נייטרלים"),("C4","Phelps Putty","NTC 109","c0bbab","נייטרלים"),
