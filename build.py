@@ -64,6 +64,14 @@ for c in COLORS:
     fan="https://nirlat.com/fan/#/category/wall/family//color-fan//hue/"+c[2].replace(" ","_")
     DATA.append({"id":c[0],"cat":"צבעים","type":"color","name":c[1],"code":c[2],
                  "hex":"#"+c[3],"price":None,"link":fan,"img":"","tags":[c[4]]})
+# --- entrance-cabinet shades (from entrance-cabinet/index.html) live under 'גוונים לבית' too, chosen + considered ---
+ENTR=[('Desert Mirage', 'IS 0231', '#D2CBBD', '✅ נבחר · נירלט', 'הגוון שנבחר סופית ב־9.10.2026 (הוצע ע"י נופר, אושר ע"י יעל). גריג׳ בהיר וחם, קרוב לשמנת־אבן. ההדמיה צבועה מחדש רק בדלתות, מעץ האלון והידיות נשארו כמו במקור.', 'https://nirlat.com/fan/#/category/wall/family//color-fan/hue/IS_0231'), ('Forest Found', '0951A', '#597667', 'טורקיז-אלגנטי', 'הכי כהה מבין הגוונים (LRV 16). נטייה טורקיזית-כחלחלה, אלגנטי ועל-זמני. סיכון: עלול "לבלוע" אור בכניסה חשוכה.', 'https://tambour.co.il/hue/forest-found-0951a/'), ('Western Meadow', '0937A', '#687960', 'זית-אדמתי', 'כמעט אותה עומק כמו Forest Found (LRV 17) אבל כיוון גוון שונה לגמרי — זית כהה וחם, לא טורקיזי. אם "עמוק" כן, אבל Forest Found מרגיש קריר מדי — זו האלטרנטיבה.', 'https://tambour.co.il/hue/western-meadow-0937a/'), ('Mountain Meadow', 'IS 0703', '#6E8D80', 'מנירלט, הכי עמוק מהשלושה', 'גוון של נירלט (לא טמבור) שהתבקש להשוואה (LRV 24) — קרוב מאוד ל-Shady מבחינת גוון וכיוון, אך עמוק ורווי יותר. שווה להשוות בעין מול Shady לפני החלטה בין המותגים.', 'https://nirlat.com/fan/#/category/wall/family//color-fan/hue/IS_0703'), ('Shady', '0949T/A', '#81968B', 'קריר-אפרפר יותר', 'אפרפר-ירקרק מעודן (LRV 28), קריר יותר מ-New Lawn. הכי קרוב ל-Mountain Meadow מנירלט, אך בהיר ורך יותר. שמור אצלכם כבר ב-13.', 'https://tambour.co.il/hue/shady-0949t-a/'), ('New Lawn', '0935T/A', '#8B9988', 'זית בהיר, שמור אצלכם', 'זית-שמנת מאוזן (LRV 30), שמור כבר ב-13 הגוונים שלכם. חם ואדמתי יותר מ-Shady, אך עדיין "בטוח" — לא נופל לכיוון ירוק בולט.', 'https://tambour.co.il/hue/new-lawn-0935t-a/'), ('Green Moor', '0934T', '#9DA99A', 'הכי אפור מהשניים', "ניטרלי-אפרפר, כמעט אפור עם רמז ירוק בלבד (LRV 38) — פחות ירוק מ-Nature's Abundance.", 'https://tambour.co.il/hue/green-moor-0934t/'), ("Nature's Abundance", '0885T', '#A2B6A0', 'הכי ירוק מהשניים', 'בדיוק אמצע הפלטה הכללית (LRV 43). רגוע ומזמין, ברור-ירוק יותר מ-Green Moor.', 'https://tambour.co.il/hue/natures-abundance-0885t/'), ('Clover Tint', '0851T', '#92C1AB', 'מנטה רווי', 'הרוויה הגבוהה ביותר מכל הגוונים כאן (LRV 47) — מנטה טרי ובהיר. ניגוד נועז אם רוצים שהארון "יקפוץ" ולא רק ישתלב.', 'https://tambour.co.il/hue/clover-tint-0851t/'), ('Aloe Vera Leaf', '0836P/T', '#B9CFB2', 'סאלווי פסטלי רך', 'הכי בהיר מכולם (LRV 58), אך עדיין לא דהוי כמו Mint Touch. פותח חלל כניסה קטן וחשוך, מרגיש טרי ואוורירי.', 'https://tambour.co.il/hue/aloe-vera-leaf-0836p-t/')]
+for _n,_e in enumerate(ENTR,1):
+    _ch=_n==1
+    DATA.append({"id":"EC%d"%_n,"cat":"צבעים","type":"color","name":_e[0],"code":_e[1],"hex":_e[2],"price":None,"link":_e[5],"img":"",
+                 "tags":["ארון כניסה"]+(["נבחר"] if _ch else []),"sub":"ארון כניסה — נבחר" if _ch else "ארון כניסה — נשקלו","desc":("✅ נבחר סופית ל־ארון הכניסה. " if _ch else "נשקל לארון הכניסה. ")+_e[3]+". "+_e[4]})
+for _d in DATA:
+    if _d["cat"]=="צבעים" and not _d.get("sub") and _d.get("tags"): _d["sub"]=_d["tags"][0]
 # --- Coffee makers — specs/prices/links verified 13-14.8.2026 ---
 COFFEE=[
  ("K1","Breville Barista Pro · BES878",3478,
@@ -1815,6 +1823,7 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .featBar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.featBar select{font:inherit;font-size:13px;border:1.5px solid var(--line-2);border-radius:999px;padding:4px 10px;background:var(--paper)}
 .fe-row{display:grid;grid-template-columns:1.4fr 1.6fr auto auto;gap:6px;align-items:center;margin:6px 0}.fe-row input[type=text]{padding:6px 9px;border:1.5px solid var(--line-2);border-radius:9px;font:inherit;min-width:0}.fe-row label{font-size:12px;white-space:nowrap}.fe-row button{background:none;border:0;cursor:pointer;font-size:16px}
 .prow{position:relative;display:flex;align-items:flex-start;gap:4px}.prow.dragging{opacity:.4}.prow.dropB{box-shadow:0 -3px 0 0 var(--brass-d)}.prow.dropA{box-shadow:0 3px 0 0 var(--brass-d)}.pgrip{cursor:grab;color:var(--muted);padding:10px 2px;user-select:none;font-size:13px;letter-spacing:-2px}.pPillWrap{position:relative}.pPop{position:absolute;top:100%;inset-inline-start:0;z-index:30;background:var(--paper);border:1.5px solid var(--line-2);border-radius:12px;box-shadow:0 12px 30px -8px rgba(40,28,12,.4);padding:5px;display:flex;flex-direction:column;gap:2px;min-width:140px}.pPop button{border:0;background:none;text-align:start;padding:7px 10px;border-radius:8px;font:inherit;cursor:pointer;white-space:nowrap}.pPop button:hover,.pPop button.on{background:var(--brass-soft)}.pmv{display:flex;flex-direction:column;gap:0;padding-top:4px}.pmv button{border:0;background:none;font-size:10px;line-height:1.2;cursor:pointer;color:var(--muted);padding:1px 4px}.pmv button:hover{color:var(--ink)}.pEmpty{font-size:12px;color:var(--muted);border:1.5px dashed var(--line-2);border-radius:10px;padding:10px;text-align:center;margin:4px 0}
+.homeGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.homeGrid>*{display:flex;flex-direction:column;gap:3px;align-items:flex-start;text-align:start;border:1.5px solid var(--line-2);background:var(--paper);border-radius:14px;padding:14px;font:inherit;cursor:pointer;text-decoration:none;color:var(--ink)}.homeGrid>*:hover{background:var(--brass-soft)}.homeGrid b{font-size:15px}.homeGrid small{color:var(--ink-soft);font-size:12px}
 .subQuick{margin:2px 0 6px}.subQuick select{font:inherit;font-size:12px;border:1px solid var(--line-2);border-radius:999px;padding:3px 10px;background:var(--paper);color:var(--ink-soft);max-width:100%;cursor:pointer}
 .subRow .auto{font-weight:700}
 .search{flex:1;min-width:180px;position:relative}
@@ -2099,10 +2108,8 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
     <div><div class="kicker">הבית שלנו · לוח משותף</div><h1>מה בוחרים לבית</h1></div>
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
       <a href="planner/" class="plannerlink">🛒 מתכנן קנייה חכם</a>
-      <a href="entrance-cabinet/" class="plannerlink">🚪 גוונים לארון כניסה</a>
       <a href="#" class="spendBig" id="spendChip" onclick="openSpend();return false" title="סך ההוצאות על הלבשת הבית והחצר — מתעדכן כשמסמנים הזמנה"><span class="sl">💰 הוצאנו עד כה על הבית והחצר</span><b id="spendTot">…</b><small id="spendSub"></small></a>
-      <a href="#" class="plannerlink" onclick="openStoresDlg();return false">🏪 חנויות ומסמכים</a>
-      <a href="#" class="plannerlink" onclick="openDocGallery('cat_תאורה','תוכניות תאורה');return false">🗺 תוכניות תאורה</a>
+      <a href="#" class="plannerlink" onclick="openHome();return false">🏠 הבית</a>
       <div class="whoami" id="whoami"></div>
     </div>
   </div>
@@ -2154,6 +2161,16 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="box"><button class="x" onclick="closeLB()" aria-label="סגירה">✕</button><div class="im"><img id="lbimg" src="" alt=""></div><div class="thumbs" id="lbthumbs"></div>
   <div class="info"><h3 id="lbname"></h3><div class="p" id="lbprice"></div><div class="loc" id="lbloc"></div><div class="lbfeats" id="lbfeats"></div><a class="store" id="lbstore" target="_blank" rel="noopener">לצפייה בחנות ↗</a><div class="lbord" id="lbord"></div></div></div>
 </div>
+
+<dialog id="homeDlg" class="catdlg"><div class="dh">🏠 הבית — כל מה שלא צריך בכל יום</div>
+  <div class="db"><div class="homeGrid">
+    <button type="button" onclick="document.getElementById('homeDlg').close();pickCat('צבעים')">🎨<b>גוונים לבית</b><small>כל הגוונים שנבחרו ונשקלו, כולל ארון הכניסה</small></button>
+    <a href="entrance-cabinet/" class="hbtn">🚪<b>הדמיות ארון כניסה</b><small>איך הגוונים נראים על הארון</small></a>
+    <button type="button" onclick="document.getElementById('homeDlg').close();openDocGallery('cat_תאורה','תוכניות תאורה')">🗺<b>תוכניות תאורה</b><small>התוכניות והתמונות של התאורה</small></button>
+    <button type="button" onclick="document.getElementById('homeDlg').close();openStoresDlg()">🏪<b>חנויות, הזמנות ומסמכים</b><small>מה נקנה ואצל מי, אסמכתאות</small></button>
+  </div></div>
+  <div class="df"><button class="tbtn" onclick="document.getElementById('homeDlg').close()">סגירה</button></div>
+</dialog>
 
 <dialog id="storesDlg" class="catdlg galdlg"><div class="dh">🏪 חנויות, הזמנות ומסמכים</div>
   <div class="db"><div class="cmTop"><input id="stQ" placeholder="🔍 חיפוש חנות…" oninput="renderStores()"><button type="button" class="tbtn" onclick="addStore()">＋ חנות / ספק חדש</button></div><div id="stBody"></div></div>
@@ -2653,6 +2670,7 @@ function rcOpen(id){ const it=byId[id]; if(!it) return; closeRecents(); selCats=
   setTimeout(()=>{ const c=els.get(id); if(c){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.add('flash'); setTimeout(()=>c.classList.remove('flash'),2000); } },250); }
 function recordFirstSeen(){ // custom items created straight in Firebase have no build-time stamp: remember when first loaded
   try{ const seen=(shared&&shared.seen)||{}; ITEMS.forEach(i=>{ if(!i.addedAt&&!seen[i.id]){ seen[i.id]=Date.now(); shared.seen=seen; fetch(`${DB}/picks/_catalog/seen/${encodeURIComponent(i.id)}.json`,{method:'PUT',body:String(seen[i.id])}).catch(()=>{}); } }); }catch(e){} }
+function openHome(){ const d=document.getElementById('homeDlg'); if(!d.open) d.showModal(); }
 function openStoresDlg(){ document.getElementById('stQ').value=''; renderStores(); const d=document.getElementById('storesDlg'); if(!d.open) d.showModal(); }
 function addStore(){ const n=prompt('שם החנות / הספק (למשל: הבית של עידה, נגר, חשמלאי):'); if(!n||!n.trim()) return; openDocs('store_'+n.trim(),n.trim()); }
 function renderStores(){
