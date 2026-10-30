@@ -455,6 +455,11 @@ for k in BINS:
     DATA.append({"id":k[0],"cat":"פח","type":"product","name":k[1],
                  "price":k[2],"link":k[3],"img":k[4],"tags":k[5],"desc":k[6]})
 
+# --- sensor bins for the kitchen (researched 30.10.2026): depth up to 40, shallower is better ---
+for _o in json.load(open(os.path.join(REPO,"bins.json"),encoding="utf-8")):
+    DATA.append({"id":_o["id"],"cat":"פח","sub":_o["sub"],"type":"product","name":_o["name"],"price":_o["price"],"link":_o["link"],
+                 "img":("img/"+_o["imgs"][0]) if _o["imgs"] else "","imgs":["img/"+x for x in _o["imgs"]],"tags":_o["tags"],"desc":_o["desc"],"dims":_o["dims"],"loc":_o["loc"]})
+
 # --- Small fridge for the pergola — checked 3.10.2026. Wanted: small, designed, with a freezer,
 # cheaper, energy class >= B. No small unit reaches B on the CURRENT label: stores show E/C for
 # 90L-class retro units; the "A/B" seen on Zap is the old Israeli scale (Midea's own Israeli page
@@ -1340,7 +1345,7 @@ for _f in sorted(glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__
                 if _k in _x: it[_k]=_x[_k]
 # --- default sub-categories + automatic assignment for the newer categories (items keep editable sub via Firebase) ---
 _SUBS={"bathroom-heater":["מפזר חום","תנור אינפרא"],"tv-console":["עומד על רגליים","תלוי על הקיר"],"towel-warmer":["מחמם מגבות","תנור אמבטיה"]}
-_ITEMSUB={"TR1":"לא נכנס — עומק 31.2 ס״מ (הפתח 25)","TR2":"לא נכנס — עומק 31.2 ס״מ (הפתח 25)","TR3":"לא נכנס — עומק 31.2 ס״מ (הפתח 25)","TR4":"לא נכנס — עומק 31.2 ס״מ (הפתח 25)","BN5":"נכנס בפתח 25×58","BN6":"קרוב — חורג ב־1 ס״מ בעומק","BN7":"קרוב — חורג ב־1 ס״מ בעומק","BH1":"מפזר חום","BH2":"תנור אינפרא","BH3":"תנור אינפרא","BH4":"תנור אינפרא","BH5":"מפזר חום","BH6":"מפזר חום","BH7":"מפזר חום","BH8":"תנור אינפרא","BH9":"מפזר חום","BH10":"מפזר חום",
+_ITEMSUB={"TR1":"טאץ׳ (לא חיישן) · נכנס בעומק 40","TR2":"טאץ׳ (לא חיישן) · נכנס בעומק 40","TR3":"טאץ׳ (לא חיישן) · נכנס בעומק 40","TR4":"טאץ׳ (לא חיישן) · נכנס בעומק 40","BN5":"חיישן · נכנס (30 ל׳)","BN6":"נדנדה (לא חיישן) · נכנס","BN7":"נדנדה (לא חיישן) · נכנס","BH1":"מפזר חום","BH2":"תנור אינפרא","BH3":"תנור אינפרא","BH4":"תנור אינפרא","BH5":"מפזר חום","BH6":"מפזר חום","BH7":"מפזר חום","BH8":"תנור אינפרא","BH9":"מפזר חום","BH10":"מפזר חום",
  "TC1":"עומד על רגליים","TC2":"עומד על רגליים","TC3":"תלוי על הקיר","TC4":"עומד על רגליים","MG1":"מגבות גוף","MG2":"מגבות גוף","MG3":"מגבות גוף","MG4":"מגבות גוף","MG5":"מגבות גוף","MG6":"מגבות גוף","MG9":"מגבות גוף","MH5":"מגבות ידיים ופנים","MG7":"מגבות גוף","MG8":"מגבות גוף","MH4":"מגבות ידיים ופנים","MH1":"מגבות ידיים ופנים","MH2":"מגבות ידיים ופנים","MH3":"מגבות ידיים ופנים","RG1":"חדר רחצה הורים","RG2":"חדר רחצה הורים","RG3":"חדר רחצה ילדים","RG4":"חדר רחצה ילדים","TC6":"עומד על רגליים","TC7":"עומד על רגליים","TC8":"עומד על רגליים","TC9":"עומד על רגליים","TC10":"עומד על רגליים","TC11":"עומד על רגליים","TC12":"עומד על רגליים","TC13":"עומד על רגליים",
  "TW5":"מחמם מגבות","TW13":"מחמם מגבות","TW14":"מחמם מגבות","TW6":"תנור אמבטיה","TW7":"תנור אמבטיה","TW8":"תנור אמבטיה"}
 for _d in DATA:
@@ -1358,7 +1363,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"מקרר","label":"מקרר","icon":"🧊","slug":"fridge"},
       {"key":"מיטת לילי","label":"מיטת לילי","icon":"🧸","slug":"lily-bed"},
       {"key":"מיטת אורחים","label":"מיטת אורחים","icon":"🛏️","slug":"guest-bed"},
-      {"key":"פח","label":"פח","icon":"🗑️","slug":"bin","subs":["נכנס בפתח 25×58","קרוב — חורג ב־1 ס״מ בעומק","לא נכנס — עומק 31.2 ס״מ (הפתח 25)"]},
+      {"key":"פח","label":"פח","icon":"🗑️","slug":"bin","subs":["חיישן · עומק עד 40 (נכנס)","חיישן · נכנס (30 ל׳)","טאץ׳ (לא חיישן) · נכנס בעומק 40","נדנדה (לא חיישן) · נכנס"]},
       {"key":"מקרר פרגולה","label":"מקרר פרגולה","icon":"🍦","slug":"pergola-fridge"},
       {"key":"תליה זמנית","label":"תליה זמנית","icon":"🧥","slug":"hanging"},
       {"key":"שולחן לדני","label":"שולחן לדני","icon":"🖥️","slug":"danny-desk"},
