@@ -55,6 +55,11 @@ for _h in [
 ]:
     DATA.append({"id":_h[0],"cat":"ידיות","type":"product","name":_h[1],"price":_h[2],"link":_h[3],"img":_h[4][0],"imgs":_h[4],"tags":_h[5],"desc":_h[6],"dims":_h[7]})
 
+# --- coffee / bronze handle options for the kitchen (192 + 320 needed), researched 1.11.2026 ---
+for _h in json.load(open(os.path.join(REPO,"handles2.json"),encoding="utf-8")):
+    DATA.append({"id":_h["id"],"cat":"ידיות","type":"product","name":_h["name"],"price":_h["price"],"link":_h["link"],
+                 "img":("img/"+_h["imgs"][0]) if _h["imgs"] else "","imgs":["img/"+x for x in _h["imgs"]],"tags":_h["tags"],"desc":_h["desc"],"dims":_h["dims"]})
+
 # --- Paint colors (Nirlat "Color Is") — pulled from home-picks ---
 COLORS=[("C1","White Kitten","IS 0022","dfdedb","נייטרלים"),("C2","Mission Hills","IS 0363","e1dbc6","נייטרלים"),
  ("C3","Flan","IS 0237","e1caad","נייטרלים"),("C4","Phelps Putty","NTC 109","c0bbab","נייטרלים"),
