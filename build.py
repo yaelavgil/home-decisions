@@ -59,8 +59,18 @@ for _h in [
 for _h in json.load(open(os.path.join(REPO,"handles2.json"),encoding="utf-8")):
     DATA.append({"id":_h["id"],"cat":"ידיות","type":"product","name":_h["name"],"price":_h["price"],"link":_h["link"],
                  "img":("img/"+_h["imgs"][0]) if _h["imgs"] else "","imgs":["img/"+x for x in _h["imgs"]],"tags":_h["tags"],"desc":_h["desc"],"dims":_h["dims"]})
+# --- flat-bar / bronze handle matches researched 1.11.2026 (imports + Israeli) ---
+for _f in ("handles3.json",):
+    _p=os.path.join(REPO,_f)
+    if os.path.exists(_p):
+        for _h in json.load(open(_p,encoding="utf-8")):
+            DATA.append({"id":_h["id"],"cat":"ידיות","type":"product","name":_h["name"],"price":_h["price"],"link":_h["link"],
+                         "img":_h["imgs"][0],"imgs":_h["imgs"],"tags":_h["tags"],"desc":_h["desc"],"dims":_h["dims"]})
 # 1.11.2026: she rejected every handle that is not a flat square-bar in coffee/bronze (like Domicile 5918 / C1180) -> hide the rest
 _HD_KEEP={"HD1","HD2"}
+for _d in DATA:
+    if _d["id"]=="HD1" and not _d["desc"].startswith("⭐"):
+        _d["desc"]="⭐ ברירת המחדל — ידית 33C חום קפה, בר שטוח, קיימת בכל המידות כולל 192 ו־320 (קצת יותר כפרית, עדיין עדינה)\n"+_d["desc"]
 for _d in DATA:
     if _d.get("cat")=="ידיות" and _d["id"] not in _HD_KEEP and not _d["id"].startswith("HX"):
         _d["hidden"]=True
