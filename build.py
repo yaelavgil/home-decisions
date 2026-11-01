@@ -4307,10 +4307,10 @@ for _c in [c for c in CATS if c["key"]!="all"]:
 
 # --- minimal shareable list page: /s/?i=id1,id2,...&t=title&c=category-slug (data embedded, read-only, no login) ---
 def _s_item(d):
-    imgs=d.get("imgs") or ([d["img"]] if d.get("img") else [])
+    imgs=(d.get("imgs") or ([d["img"]] if d.get("img") else []))[:4]
     lk=d.get("link") or ""
     if not str(lk).startswith("http"): lk=""
-    return [d["name"], d.get("price") if isinstance(d.get("price"),(int,float)) and d.get("price") else None, (imgs[0] if imgs else ""), lk, d.get("hex","") if d.get("type")=="color" else ""]
+    return [d["name"], d.get("price") if isinstance(d.get("price"),(int,float)) and d.get("price") else None, imgs, lk, d.get("hex","") if d.get("type")=="color" else ""]
 _S_ITEMS={d["id"]:_s_item(d) for d in DATA if d.get("type") in ("product","color") and not d.get("deleted")}
 _S_CATS={c["key"]:[c.get("slug") or c["key"],c["label"]] for c in CATS if c["key"]!="all"}
 _S_CAT_OF={d["id"]:d["cat"] for d in DATA if d.get("type") in ("product","color") and not d.get("deleted")}
@@ -4321,30 +4321,51 @@ _s_tpl=r"""<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8">
 <style>
 :root{--bg:#f7f5f1;--ink:#2a2724;--soft:#7a7269;--line:#e3ddd3;--btn:#2a2724;--btn-ink:#fff}
 @media(prefers-color-scheme:dark){:root{--bg:#1b1917;--ink:#efeae2;--soft:#a39b90;--line:#35312c;--btn:#efeae2;--btn-ink:#1b1917}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 'Heebo',system-ui,sans-serif}
-main{max-width:760px;margin:0 auto;padding:36px 18px 64px}
-h1{font-size:24px;font-weight:500;margin:0 0 4px;letter-spacing:-.01em}
-.sub{color:var(--soft);margin:0 0 26px;font-size:15px}
-.grid{display:grid;gap:26px 18px;grid-template-columns:1fr}@media(min-width:620px){.grid{grid-template-columns:1fr 1fr}}
-.it{margin:0}.ph{aspect-ratio:4/3;border-radius:14px;background:#fff center/contain no-repeat;border:1px solid var(--line)}
-.ph.sw{border:0}.nm{margin:10px 2px 0;font-size:16px;font-weight:500}.pr{margin:2px 2px 0;color:var(--soft);font-size:15px}
-.it a{display:inline-block;margin:6px 2px 0;color:var(--soft);font-size:14px;text-underline-offset:3px}
-.cta{display:block;margin:44px auto 0;text-align:center;background:var(--btn);color:var(--btn-ink);text-decoration:none;padding:14px 22px;border-radius:999px;font-weight:500;max-width:340px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 'Heebo',system-ui,sans-serif}
+main{max-width:1000px;margin:0 auto;padding:28px 14px 64px}
+h1{font-size:22px;font-weight:500;margin:0 0 2px;padding:0 4px}
+.sub{color:var(--soft);margin:0 0 18px;font-size:14px;padding:0 4px}
+.grid{display:grid;gap:10px;grid-template-columns:1fr 1fr}@media(min-width:760px){.grid{grid-template-columns:repeat(3,1fr);gap:14px}}
+.it{margin:0;cursor:pointer}.ph{aspect-ratio:1/1;border-radius:12px;background:#fff center/contain no-repeat;border:1px solid var(--line)}
+.ph.sw{border:0}.cap{display:flex;justify-content:space-between;gap:8px;margin:6px 3px 0;font-size:14px}.cap .nm{font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cap .pr{color:var(--soft);white-space:nowrap}
+.cta{display:block;margin:38px auto 0;text-align:center;background:var(--btn);color:var(--btn-ink);text-decoration:none;padding:14px 22px;border-radius:999px;font-weight:500;max-width:340px}
 .hint{text-align:center;color:var(--soft);font-size:13px;margin:10px 0 0}
+.lb{position:fixed;inset:0;background:#000e;display:none;flex-direction:column;z-index:10;color:#fff}.lb.on{display:flex}
+.lb .st{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:0;padding:14px}.lb img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;background:#fff}.lb .sw{width:min(80vw,520px);aspect-ratio:1;border-radius:14px}
+.lb .nv{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:#ffffff26;color:#fff;font-size:22px;cursor:pointer}.lb .nv.p{inset-inline-start:10px}.lb .nv.n{inset-inline-end:10px}
+.lb .x{position:absolute;top:10px;inset-inline-end:12px;width:40px;height:40px;border:0;border-radius:50%;background:#ffffff26;color:#fff;font-size:20px;cursor:pointer;z-index:2}
+.lb .bt{padding:10px 18px 22px;text-align:center}.lb .bt b{font-weight:500;font-size:17px;display:block}.lb .bt span{color:#cfc8bd;font-size:15px}.lb .bt a{display:inline-block;margin:8px 8px 0;color:#fff;font-size:14px}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:6px}.dots i{width:7px;height:7px;border-radius:50%;background:#ffffff55}.dots i.on{background:#fff}
 </style></head><body><main>
 <h1 id="h"></h1><p class="sub" id="s"></p><div class="grid" id="g"></div>
 <a class="cta" id="cta" href="__BASE__">לבחירה באפליקציה</a><p class="hint">שם אפשר לסמן מה נבחר ולהוסיף הערות</p>
-</main><script>
+</main>
+<div class="lb" id="lb"><button class="x" id="lx" aria-label="סגירה">✕</button><div class="st"><button class="nv p" id="lp" aria-label="הקודם">›</button><img id="li" alt=""><div class="sw" id="lsw" hidden></div><button class="nv n" id="ln" aria-label="הבא">‹</button></div><div class="bt"><b id="lnm"></b><span id="lpr"></span><div class="dots" id="ld"></div><a id="llk" target="_blank" rel="noopener">לצפייה במוצר ↗</a></div></div>
+<script>
 const BASE="__BASE__", ITEMS=__ITEMS__, CATS=__CATS__, CATOF=__CATOF__;
 const q=new URLSearchParams(location.search), ids=(q.get('i')||'').split(',').filter(x=>ITEMS[x]), esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const cats=[...new Set(ids.map(i=>CATOF[i]))], slug=q.get('c')||(cats.length===1?CATS[cats[0]][0]:'');
 const title=q.get('t')||(cats.length===1?CATS[cats[0]][1]:'כמה אפשרויות לבחירה');
+const short=n=>n.split(' · ').slice(0,2).join(' · ').slice(0,90), P=p=>p?'₪'+Math.round(p).toLocaleString('en-US'):'';
 document.getElementById('h').textContent=title; document.title=title;
-document.getElementById('s').textContent=ids.length?(ids.length===1?'אפשרות אחת':ids.length+' אפשרויות'):'הרשימה ריקה או שהקישור לא תקין';
-document.getElementById('g').innerHTML=ids.map(id=>{const [n,p,im,lk,hex]=ITEMS[id]; const nm=esc(n.split(' · ').slice(0,2).join(' · ').slice(0,90));
-  const ph=hex?`<div class="ph sw" style="background:#${esc(hex)}"></div>`:`<div class="ph" style="${im?`background-image:url('../${esc(im)}')`:''}"></div>`;
-  return `<figure class="it">${ph}<figcaption><div class="nm">${nm}</div>${p?`<div class="pr">₪${Math.round(p).toLocaleString('en-US')}</div>`:''}${lk?`<a href="${esc(lk)}" target="_blank" rel="noopener">לצפייה במוצר ↗</a>`:''}</figcaption></figure>`;}).join('');
+document.getElementById('s').textContent=ids.length?(ids.length===1?'אפשרות אחת · לחצי על תמונה להגדלה':ids.length+' אפשרויות · לחצי על תמונה להגדלה'):'הרשימה ריקה או שהקישור לא תקין';
+document.getElementById('g').innerHTML=ids.map((id,k)=>{const [n,p,im,lk,hex]=ITEMS[id];
+  const ph=hex?`<div class="ph sw" style="background:#${esc(hex)}"></div>`:`<div class="ph" style="${im[0]?`background-image:url('../${esc(im[0])}')`:''}"></div>`;
+  return `<figure class="it" data-k="${k}">${ph}<figcaption class="cap"><span class="nm">${esc(short(n))}</span><span class="pr">${P(p)}</span></figcaption></figure>`;}).join('');
 document.getElementById('cta').href=slug?BASE+'c/'+encodeURIComponent(slug)+'/':BASE;
+let cur=0, ci=0; const lb=document.getElementById('lb'), $=id=>document.getElementById(id);
+function show(){ const [n,p,im,lk,hex]=ITEMS[ids[cur]]; const hasI=!hex&&im.length;
+  $('li').style.display=hasI?'':'none'; $('lsw').hidden=!!hasI; if(hasI) $('li').src='../'+im[Math.min(ci,im.length-1)]; else $('lsw').style.background='#'+hex;
+  $('lnm').textContent=short(n); $('lpr').textContent=P(p); const a=$('llk'); a.hidden=!lk; if(lk) a.href=lk;
+  $('ld').innerHTML=(!hex&&im.length>1)?im.map((_,i)=>`<i class="${i===ci?'on':''}"></i>`).join(''):''; }
+function open_(k){ cur=k; ci=0; lb.classList.add('on'); show(); }
+function go(d){ cur=(cur+d+ids.length)%ids.length; ci=0; show(); }
+document.getElementById('g').addEventListener('click',e=>{const f=e.target.closest('.it'); if(f) open_(+f.dataset.k);});
+$('lx').onclick=()=>lb.classList.remove('on'); $('lp').onclick=()=>go(1); $('ln').onclick=()=>go(-1);
+$('li').onclick=()=>{ const im=ITEMS[ids[cur]][2]; if(im.length>1){ ci=(ci+1)%im.length; show(); } };
+document.addEventListener('keydown',e=>{ if(!lb.classList.contains('on')) return; if(e.key==='Escape') lb.classList.remove('on'); else if(e.key==='ArrowRight') go(1); else if(e.key==='ArrowLeft') go(-1); });
+let tx=null; lb.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true}); lb.addEventListener('touchend',e=>{ if(tx==null) return; const d=e.changedTouches[0].clientX-tx; tx=null; if(Math.abs(d)>50) go(d<0?-1:1); });
+if(location.hash==='#1'&&ids.length) open_(0);
 </script></body></html>"""
 os.makedirs(os.path.join(REPO,"s"),exist_ok=True)
 open(os.path.join(REPO,"s","index.html"),"w",encoding="utf-8").write(
