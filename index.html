@@ -1037,7 +1037,8 @@ function statusHTML(it,stt){
   else if(stt==='chosen') small=who+(by('no').length?' · ⚠ '+by('no').join(', ')+' לא אוהבים':'');
   else if(stt==='rejected') small=who+(by('yes').length?' · ❤ '+by('yes').join(', ')+' אהבו':'');
   else small=ms.length?ms.map(m=>(GL[m.status]||'')+' '+m.name).join(' · '):'עוד לא הוחלט';
-  return `${ST_LAB[stt]}<small>${esc(small)}</small>`;
+  if(stt==='ordered'&&it.received) small=(it.receivedAt?'התקבל '+fmtDate(it.receivedAt)+' · ':'')+small;
+  return `${ST_LAB[stt]}${stt==='ordered'&&it.received?' <b style="color:var(--ok,#2f7d4f)">✅ התקבל</b>':''}<small>${esc(small)}</small>`;
 }
 /* ----- permissions + decisions ----- */
 const ACT_LAB={reject:'להסיר פריטים מההזמנה',choose:'לבחור פריטים להזמנה',order:'לסמן שפריט הוזמן'};
@@ -2006,6 +2007,7 @@ function openOrderDlg(id){
   <div class="csf"><label>מחיר ששולם (₪) <input type="number" id="ordPaid" value="${it.paid!=null?esc(it.paid):''}" placeholder="${it.price!=null?esc(it.price):''}" style="width:120px"></label>
     <label>הערה <input id="ordNote" value="${esc(it.orderNote||'')}" placeholder="למשל: ×2, צבע, מספר הזמנה" style="width:260px"></label></div>
   <div class="csf"><label>נקנה מחנות <input id="ordStore" list="ordStores" value="${esc(guessStore(it))}" style="width:200px"><datalist id="ordStores">${storeNames().map(n=>`<option value="${esc(n)}">`).join('')}</datalist></label><button type="button" class="tbtn" onclick="openDocs('item_'+_ordId,(byId[_ordId]||{}).name||'פריט')">📎 קבלות / מסמכים של הפריט</button></div>
+  <div class="csf"><label><input type="checkbox" id="ordRecv" ${it.received?'checked':''}> התקבל / הגיע הביתה</label> <label>תאריך קבלה <input type="date" id="ordRecvDate" value="${it.receivedAt?(()=>{const r=new Date(it.receivedAt);return r.getFullYear()+'-'+String(r.getMonth()+1).padStart(2,'0')+'-'+String(r.getDate()).padStart(2,'0');})():''}"></label></div>
   <div class="csf"><label>קישור לאישור הזמנה <input id="ordLink" value="${esc(it.orderLink||'')}" dir="ltr" style="width:360px" placeholder="https://…"></label></div>
   ${it.ordered?'':'<p class="docnote">מסמנים את הפריט כהוזמן עם התאריך שנבחר — אפשר לתקן תאריך עבר.</p>'}`;
   document.getElementById('ordCancelBtn').style.display=it.ordered?'':'none';
@@ -2016,14 +2018,14 @@ function saveOrderDlg(){
   const link=document.getElementById('ordLink').value.trim(); if(link&&!/^https?:\/\//i.test(link)){ alert('הקישור צריך להתחיל ב-https://'); return; }
   const dv=document.getElementById('ordDate').value; const at=dv?new Date(dv+'T12:00:00').getTime():Date.now();
   const paid=document.getElementById('ordPaid').value;
-  const o={ordered:true,orderedBy:document.getElementById('ordBy').value.trim()||((me&&me.name)||'מישהו'),orderedAt:at,orderLink:link||null,orderStore:document.getElementById('ordStore').value.trim()||null,paid:paid!==''?Number(paid):null,orderNote:document.getElementById('ordNote').value.trim()||null};
+  const o={ordered:true,orderedBy:document.getElementById('ordBy').value.trim()||((me&&me.name)||'מישהו'),orderedAt:at,orderLink:link||null,orderStore:document.getElementById('ordStore').value.trim()||null,paid:paid!==''?Number(paid):null,orderNote:document.getElementById('ordNote').value.trim()||null,received:!!document.getElementById('ordRecv').checked,receivedAt:(document.getElementById('ordRecv').checked&&document.getElementById('ordRecvDate').value)?new Date(document.getElementById('ordRecvDate').value+'T12:00:00').getTime():null};
   Object.assign(it,o); st.ord[id]=o; save(); fbPushOrdered(id,o);
   document.getElementById('ordDlg').close(); paint(id); tabsHTML(); RE(); if(typeof renderLbOrd==='function'&&lbId===id) renderLbOrd();
 }
 function cancelOrder(){
   const id=_ordId, it=byId[id]; if(!it) return;
   if(!confirm('לבטל את הסימון "הוזמן" ל"'+(it.name||'')+'"?')) return;
-  const o={ordered:false,orderedBy:null,orderedAt:null,orderLink:null,paid:null,orderNote:null,orderStore:null};
+  const o={ordered:false,orderedBy:null,orderedAt:null,orderLink:null,paid:null,orderNote:null,orderStore:null,received:false,receivedAt:null};
   Object.assign(it,o); st.ord[id]=o; save(); fbPushOrdered(id,o);
   document.getElementById('ordDlg').close(); paint(id); tabsHTML(); RE(); say('↩ הסימון "הוזמן" בוטל',2500); if(typeof renderLbOrd==='function'&&lbId===id) renderLbOrd();
 }
