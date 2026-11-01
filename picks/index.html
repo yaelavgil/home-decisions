@@ -713,6 +713,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
     <button class="vbtn" data-v="hidden" onclick="setView('hidden')">🙈 הוסתרו<span class="c" id="hiddenCount" style="display:none"></span></button>
   </div>
     <div class="search"><span class="i">🔍</span><input id="q" placeholder="חיפוש…" oninput="RE()"></div>
+    <button class="tbtn" id="shareListBtn" type="button" onclick="shareList()" title="עמוד מינימלי לשיתוף של הרשימה המסוננת — כדי לשלוח להתרשמות עם קישור לאפליקציה">📄 עמוד לשיתוף</button>
     <select id="sort" onchange="featSort=null;buildFeatSort();RE()" title="מיון">
       <option value="def">מיון</option>
       <option value="pa">מחיר ↑</option>
@@ -1174,6 +1175,15 @@ function _spend_placeholder(){}
 function lineTotal(it){ return it.paid!=null?it.paid:(it.price||0)*qtyOf(it); }
 function storeNames(){ const set=new Set(ITEMS.filter(i=>i.ordered).map(guessStore)); Object.keys(docsMeta).filter(k=>k.startsWith('store_')).forEach(k=>set.add(k.slice(6))); Object.values(STORE_HOSTS).forEach(n=>set.add(n)); return [...set].filter(Boolean).sort((a,b)=>a.localeCompare(b,'he')); }
 
+function shareList(){
+  const base=onLiveSite()?SITE:location.origin+location.pathname.replace(/[^/]*$/,'');
+  const ids=visible().filter(i=>!i.hidden&&BITEMS.some(b=>b.id===i.id)).slice(0,60).map(i=>i.id);
+  if(!ids.length){ say('אין פריטים ברשימה הנוכחית',2500); return; }
+  const cs=[...selCats]; const cat=cs.length===1?CATS.find(c=>c.key===cs[0]):null;
+  const url=base+'s/?i='+ids.join(',')+(cat?'&c='+encodeURIComponent(cat.slug||cat.key):'');
+  const done=()=>say('📄 הקישור לעמוד המינימלי הועתק ('+ids.length+' פריטים)',4000);
+  (navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(done,()=>prompt('העתיקי את הקישור:',url));
+}
 function shareCat(key){
   const c=CATS.find(x=>x.key===key); if(!c) return; const slug=c.slug||c.key;
   const url=(onLiveSite()?SITE:location.origin+location.pathname.replace(/[^/]*$/,''))+'c/'+encodeURIComponent(slug)+'/';
