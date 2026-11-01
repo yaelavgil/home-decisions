@@ -59,6 +59,11 @@ for _h in [
 for _h in json.load(open(os.path.join(REPO,"handles2.json"),encoding="utf-8")):
     DATA.append({"id":_h["id"],"cat":"ידיות","type":"product","name":_h["name"],"price":_h["price"],"link":_h["link"],
                  "img":("img/"+_h["imgs"][0]) if _h["imgs"] else "","imgs":["img/"+x for x in _h["imgs"]],"tags":_h["tags"],"desc":_h["desc"],"dims":_h["dims"]})
+# 1.11.2026: she rejected every handle that is not a flat square-bar in coffee/bronze (like Domicile 5918 / C1180) -> hide the rest
+_HD_KEEP={"HD1","HD2"}
+for _d in DATA:
+    if _d.get("cat")=="ידיות" and _d["id"] not in _HD_KEEP and not _d["id"].startswith("HX"):
+        _d["hidden"]=True
 
 # --- Paint colors (Nirlat "Color Is") — pulled from home-picks ---
 COLORS=[("C1","White Kitten","IS 0022","dfdedb","נייטרלים"),("C2","Mission Hills","IS 0363","e1dbc6","נייטרלים"),
