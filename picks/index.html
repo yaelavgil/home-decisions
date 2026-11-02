@@ -288,6 +288,8 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .cmSum button{font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:5px 12px;cursor:pointer;color:var(--ink-soft)}
 .cmSum button.on{background:var(--brass-d);border-color:var(--brass-d);color:#fff}
 .cmSum .cmTot{margin-inline-start:auto;font-weight:700;color:#6f520d}
+.cmSum .cmClear{background:var(--paper);border-color:var(--brass-d);color:var(--brass-d)}
+.cmNow{margin:-6px 0 10px;padding:0 4px;font-size:13px;font-weight:700;color:var(--ink-soft)}
 .cmb{display:inline-flex;gap:4px;margin-inline-start:auto}
 .cc{font-size:11.5px;font-weight:800;border-radius:99px;padding:1px 7px}
 .cc.d{background:#eceff4;color:#475266}.cc.c{background:#f8e7bb;color:#6f520d}.cc.o{background:#e6f1e5;color:#2f6b38}
@@ -1477,7 +1479,8 @@ function toggleCatMenu(force){
   if(open){ renderCatMenu(); setTimeout(()=>{const q=document.getElementById('cmQ'); if(q&&matchMedia('(min-width:700px)').matches)q.focus();},60); }
 }
 let prioPop=null, _dragKey=null;
-document.addEventListener('click',e=>{ if(prioPop&&!e.target.closest('.pPillWrap')){ prioPop=null; try{renderCatMenu();}catch(x){} } });
+document.addEventListener('click',e=>{ const inPill=(e.composedPath?e.composedPath():[]).some(n=>n&&n.classList&&n.classList.contains('pPillWrap'))||e.target.closest('.pPillWrap');
+  if(prioPop&&!inPill){ prioPop=null; try{renderCatMenu();}catch(x){} } });
 function setCatMetaBatch(map){
   shared.cats=shared.cats||{};
   Object.entries(map).forEach(([key,o])=>{ shared.cats[key]={...(shared.cats[key]||{}),key,...o};
@@ -1565,14 +1568,22 @@ function renderCatMenu(){
       <button type="button" class="${menuState==='open'?'on':''}" onclick="menuState=menuState==='open'?null:'open';renderCatMenu()">🔴 ממתינות להחלטה <b>${stc.open}</b></button>
       <button type="button" class="${menuState==='pick'?'on':''}" onclick="menuState=menuState==='pick'?null:'pick';renderCatMenu()">🟡 נבחר, צריך להזמין <b>${stc.pick}</b></button>
       <button type="button" class="${menuState==='done'?'on':''}" onclick="menuState=menuState==='done'?null:'done';renderCatMenu()">🟢 הוזמנו <b>${stc.done}</b></button>
+      ${(menuState||menuQ.trim())?`<button type="button" class="cmClear" onclick="clearMenuFilters()">✕ ניקוי הסינון</button>`:''}
       <span class="cmTot">🛒 ${remOrder} פריטים נבחרו ועוד לא הוזמנו</span></div>
+    ${menuState||menuQ.trim()?`<div class="cmNow">מוצג בתפריט: ${menuState?({open:'🔴 ממתינות להחלטה',pick:'🟡 נבחר, צריך להזמין',done:'🟢 הוזמנו'}[menuState]):''}${menuState&&menuQ.trim()?' · ':''}${menuQ.trim()?'חיפוש ״'+esc(menuQ.trim())+'״':''} — ${cats.length} קטגוריות</div>`:''}
     <div class="cmCols">${body}</div>`;
   const qi=document.getElementById('cmQ');
   if(qi&&hadFocus){ qi.focus(); const p=caret==null?qi.value.length:caret; try{qi.setSelectionRange(p,p);}catch(e){} }
 }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') toggleCatMenu(false); });
-document.addEventListener('click',e=>{ const m=document.getElementById('catMenu'); if(m&&!m.hidden&&!e.target.closest('#catMenu')&&!e.target.closest('.allcats')) toggleCatMenu(false); });
+document.addEventListener('click',e=>{ const m=document.getElementById('catMenu'); if(!m||m.hidden) return;
+  /* renderCatMenu() מחליף את ה-innerHTML של התפריט באמצע הלחיצה, ולכן e.target כבר מנותק מהעץ ו-closest('#catMenu') מחזיר null —
+     התפריט נסגר בכל סינון. composedPath נקבע ברגע הלחיצה ולכן עדיין מכיל את התפריט. */
+  const path=(e.composedPath?e.composedPath():[]).filter(Boolean);
+  const inside=path.some(n=>n&&(n.id==='catMenu'||(n.classList&&n.classList.contains('allcats'))))||e.target.closest('#catMenu')||e.target.closest('.allcats');
+  if(!inside) toggleCatMenu(false); });
 function openCatPanel(){ toggleCatMenu(true); }
+function clearMenuFilters(){ menuState=null; menuQ=''; renderCatMenu(); }
 
 /* ===== bundles: an item made of several purchasable parts ===== */
 function paintParts(c,it){
