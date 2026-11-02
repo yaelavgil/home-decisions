@@ -1427,6 +1427,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"זרועות לטלוויזיה","label":"זרועות לטלוויזיה","icon":"📺","slug":"tv-arms"},
       {"key":"ספסל טיק","label":"ספסל טיק","icon":"🪵","slug":"teak-bench","group":"אמבטיה","multi":True,"subs":["80 ס״מ — חדר רחצה ילדים","קטן ומעוצב — חדר רחצה הורים (באלי)"]},
       {"key":"בסיס על גלגלים","label":"בסיס על גלגלים","icon":"🛞","slug":"appliance-bases","group":"מטבח","multi":True,"subs":["מקרר גדול","מקרר קטן","מכונת כביסה","מייבש"]},
+      {"key":"ריהוט מרפסת עליונה","label":"ריהוט למרפסת העליונה","icon":"☕","slug":"upper-balcony","group":"חוץ ופרגולה","multi":True,"subs":["פינת ישיבה (כורסאות + שולחן)","שולחן עבודה / ברים לליד הלפטופ","ספה / ספסל חוץ","שולחן צד / שרפרף / מאפרה"]},
       {"key":"משחקי חצר","label":"משחקי חצר","icon":"⚽","slug":"yard-games","group":"חוץ ופרגולה","multi":True,"subs":["טרמפולינה ריבועית / מלבנית — חצר קדמית","מתקן נינג׳ה (2×2 מ׳ עד 3×2.5 מ׳)","מתקני כושר וספורט בודדים בסגנון נינג׳ה (לגילאים שונים)","שער כדורגל עמיד / פריק / מתקפל — לחצר הקדמית"]},
       {"key":"ערסלים לגינה","label":"פינת ישיבה לגינה — ערסלים ומיטות רביצה","icon":"🛋️","slug":"garden-hammocks","group":"חוץ ופרגולה","multi":True,"subs":["כיסא תלוי / ערסל כיסא","ערסל תלייה — יחיד","ערסל זוגי","ערסל לשלושה / ספת תלייה","מיטת רביצה — טיק / עץ","מיטת רביצה — במבוק","מיטת רביצה — אלומיניום וראטן"]},
       {"key":"גלגלת צינור","label":"גלגלת צינור","icon":"🧵","slug":"hose-reel","group":"חוץ ופרגולה","multi":True,"subs":["אוטומטית מתכנסת — קיר","ידנית — מסגרת / קיר","עגלה ניידת"]},
@@ -4391,6 +4392,16 @@ if(location.hash==='#1'&&ids.length) open_(0);
 os.makedirs(os.path.join(REPO,"s"),exist_ok=True)
 open(os.path.join(REPO,"s","index.html"),"w",encoding="utf-8").write(
     _s_tpl.replace("__BASE__",BASE).replace("__ITEMS__",json.dumps(_S_ITEMS,ensure_ascii=False,separators=(",",":"))).replace("__CATS__",json.dumps(_S_CATS,ensure_ascii=False,separators=(",",":"))).replace("__CATOF__",json.dumps(_S_CAT_OF,ensure_ascii=False,separators=(",",":"))))
+
+# --- upper balcony (מרפסת עליונה, 269×455 printed, open to the sky) seating nook: laptop, morning coffee, a cigarette break ---
+DATA.append({"id":"UB1","cat":"ריהוט מרפסת עליונה","sub":"פינת ישיבה (כורסאות + שולחן)","type":"product",
+ "name":"רהיטי הסיטי · פינת חוץ דגם פטל · 2 כורסאות + שולחן קפה · שמנת","price":690,
+ "link":"https://www.rcity.co.il/product/%d7%a4%d7%99%d7%a0%d7%aa-%d7%97%d7%95%d7%a5-%d7%93%d7%92%d7%9d-%d7%a4%d7%98%d7%9c/",
+ "img":"img/ub-petel-1.jpg","imgs":["img/ub-petel-1.jpg","img/ub-petel-2.jpg","img/ub-petel-3.jpg","img/ub-petel-4.jpg"],
+ "tags":["שמנת","פלדה + Textilene","2 כורסאות","5 שנות אחריות","קומפקטי"],
+ "desc":"✔ מיועד ל: מרפסת עליונה — פינת ישיבה זוגית: 2 כורסאות נמוכות מרופדות + שולחן קפה · שלדת פלדה, מושב Textilene וכרית פוליאסטר · גוון שמנת, קומפקטי · משלוח 7–14 ימי עסקים, הרכבה בצוות המשלוח · 5 שנות אחריות\n✘ לא מתאים: שולחן הקפה נמוך (40 ס״מ) — טוב לכוס קפה, לא ללפטופ · התמונות באתר נראות כהדמיה (שולחן עגול בתמונות לעומת ״שולחן מרובע 60×60״ בטקסט) · לא כתוב עמידות לשמש/גשם (המרפסת פתוחה לשמיים) ולא כתוב ניקוי הכריות · לא ברור אם ₪690 כולל מע״מ (בנתוני האתר ״ללא מע״מ״) · שמנת מתלכלכת ומתאבקת בחוץ\n📐 כורסה 91×63×85 ס״מ (כל אחת) · שולחן קפה 60×60×40 ס״מ · 💰 ₪690 (במקום ₪1,190)",
+ "dims":"כורסה: רוחב 91 × עומק 63 × גובה 85 ס״מ (כל יחידה) · שולחן קפה: 60×60×40 ס״מ",
+ "loc":"מרפסת עליונה · 269×455 ס״מ (מודפס; קיר עם נקודת חשמל 250 במדידה) · פתוחה לשמיים — דרוש חומר חוץ עמיד לשמש וגשם · לישיבה עם לפטופ, קפה בבוקר, הפסקת סיגריה"})
 
 # guard: item ids must be unique — a shared id merges votes/orders of two different items (bug found 2.11.2026: bins BL1-4 vs lily beds)
 _dup=sorted({d["id"] for d in DATA if sum(1 for e in DATA if e["id"]==d["id"])>1})
