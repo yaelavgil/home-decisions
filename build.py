@@ -488,9 +488,11 @@ for _o in json.load(open(os.path.join(REPO,"recycling.json"),encoding="utf-8")):
                  "img":("img/"+_o["imgs"][0]) if _o["imgs"] else "","imgs":["img/"+x for x in _o["imgs"]],"tags":_o["tags"],"desc":_o["desc"],"dims":_o["dims"],"loc":_o["loc"]})
 
 # --- sensor bins for the kitchen (researched 30.10.2026): depth up to 40, shallower is better ---
+# 2.11.2026: she wants ONLY designed, quality, sensor bins ON LEGS from proven stores (not plain-looking) -> hide the rest (kept in bins.json, reversible)
+_BIN_KEEP={"BX1","BX3","BX6"}
 for _o in json.load(open(os.path.join(REPO,"bins.json"),encoding="utf-8")):
     DATA.append({"id":_o["id"],"cat":"פח","sub":_o["sub"],"type":"product","name":_o["name"],"price":_o["price"],"link":_o["link"],
-                 "img":("img/"+_o["imgs"][0]) if _o["imgs"] else "","imgs":["img/"+x for x in _o["imgs"]],"tags":_o["tags"],"desc":_o["desc"],"dims":_o["dims"],"loc":_o["loc"]})
+                 "img":("img/"+_o["imgs"][0]) if _o["imgs"] else "","imgs":["img/"+x for x in _o["imgs"]],"tags":_o["tags"],"desc":_o["desc"],"dims":_o["dims"],"loc":_o["loc"],"hidden":_o["id"] not in _BIN_KEEP})
 
 # --- Small fridge for the pergola — checked 3.10.2026. Wanted: small, designed, with a freezer,
 # cheaper, energy class >= B. No small unit reaches B on the CURRENT label: stores show E/C for
