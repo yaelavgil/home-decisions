@@ -4403,6 +4403,9 @@ DATA.append({"id":"UB1","cat":"ריהוט מרפסת עליונה","sub":"פינ
  "dims":"כורסה: רוחב 91 × עומק 63 × גובה 85 ס״מ (כל יחידה) · שולחן קפה: 60×60×40 ס״מ",
  "loc":"מרפסת עליונה · 269×455 ס״מ (מודפס; קיר עם נקודת חשמל 250 במדידה) · פתוחה לשמיים — דרוש חומר חוץ עמיד לשמש וגשם · לישיבה עם לפטופ, קפה בבוקר, הפסקת סיגריה"})
 
+for _o in json.load(open(os.path.join(REPO,"balcony.json"),encoding="utf-8")):
+    DATA.append(_o)
+
 # guard: item ids must be unique — a shared id merges votes/orders of two different items (bug found 2.11.2026: bins BL1-4 vs lily beds)
 _dup=sorted({d["id"] for d in DATA if sum(1 for e in DATA if e["id"]==d["id"])>1})
 if _dup: raise SystemExit("duplicate item ids: "+", ".join(_dup))
