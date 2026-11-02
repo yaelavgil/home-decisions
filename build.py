@@ -935,6 +935,9 @@ FSOFA=[
 ]
 for k in FSOFA:
     DATA.append({"id":k[0],"cat":"ספות לפינת משפחה","type":"product","name":k[1],"price":k[2],"link":k[3],"img":k[4][0],"imgs":k[4],"tags":k[5],"desc":k[6]})
+for _d in DATA:
+    if _d["id"]=="FS7": _d["loc"]="קומה עליונה — פינת המשפחה · הספה שיעל קנתה (2.11.2026), בז׳"
+
 
 KIDSWARD=[
  ("KW1","IKEA · BOAXEL · מערכת ארון פתוחה בעומק 40 ס״מ · לבן",1095,
