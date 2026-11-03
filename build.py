@@ -4521,6 +4521,13 @@ for _o in json.load(open(os.path.join(REPO,"arad_order.json"),encoding="utf-8"))
 for _o in json.load(open(os.path.join(REPO,"mops.json"),encoding="utf-8")):
     DATA.append(_o)
 
+for _o in json.load(open(os.path.join(REPO,"heaters2.json"),encoding="utf-8")):
+    DATA.append(_o)
+# 3.11.2026: she wants 3000W (white if possible) heaters for the open pergola -> hide the older 2000W picks (kept, reversible)
+for _d in DATA:
+    if _d.get("cat")=="תנורי פרגולה" and _d["id"] in {"HT%d"%i for i in range(1,13)}:
+        _d["hidden"]=True
+
 # guard: item ids must be unique — a shared id merges votes/orders of two different items (bug found 2.11.2026: bins BL1-4 vs lily beds)
 _dup=sorted({d["id"] for d in DATA if sum(1 for e in DATA if e["id"]==d["id"])>1})
 if _dup: raise SystemExit("duplicate item ids: "+", ".join(_dup))
