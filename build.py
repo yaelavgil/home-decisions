@@ -1887,6 +1887,7 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .ordbox{margin-top:8px;padding:8px 10px;background:var(--ordered-bg);border-radius:10px;font-size:12px;color:var(--ink-soft);line-height:1.7}
 .ordbox a{color:var(--ordered);font-weight:700;text-decoration:none}
 .ordbox a:hover{text-decoration:underline}
+.ordbox .ordDoc{font-size:11px;font-weight:600;color:var(--ordered)}
 .card.is-ordered{opacity:1}
 .hideb{margin-top:6px;align-self:flex-start;background:none;border:0;color:var(--muted);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;padding:2px 0}
 .hideb:hover{color:var(--no); text-decoration:underline}
@@ -2312,7 +2313,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="db">
     <div id="docList"></div>
     <div class="docadd">
-      <div class="frow"><select id="docKind"><option>קבלה</option><option>חשבונית</option><option>הצעת מחיר</option><option>הזמנה / אישור</option><option>תוכנית</option><option>אחר</option></select><input id="docName" placeholder="שם / תיאור (אופציונלי)"><input id="docUrl" placeholder="קישור (דרייב / מייל / אתר) — או העלי קובץ למטה" dir="ltr"></div>
+      <div class="frow"><select id="docKind"><option>קבלה</option><option>חשבונית</option><option>הצעת מחיר</option><option>הזמנה / אישור</option><option>מעקב משלוח</option><option>תוכנית</option><option>אחר</option></select><input id="docName" placeholder="שם / תיאור (אופציונלי)"><input id="docUrl" placeholder="קישור (דרייב / מייל / אתר) — או העלי קובץ למטה" dir="ltr"></div>
       <div class="frow"><button type="button" class="tbtn" onclick="addDocLink()">🔗 הוסיפי קישור</button><label class="tbtn">📎 העלי תמונה / PDF<input type="file" id="docFile" accept="image/*,application/pdf" hidden onchange="addDocFile(this)"></label></div>
       <p class="docnote">קבצים נשמרים בבסיס הנתונים המשותף (תמונות מוקטנות, PDF עד ~900KB). מסמכים עם פרטים אישיים רגישים — עדיף קישור לדרייב.</p>
     </div>
@@ -2628,8 +2629,22 @@ function dueRel(due){ const d=new Date(due+'T00:00:00'), n=new Date(); n.setHour
 function docsList(scope){ return Object.entries(docsMeta[scope]||{}).map(([id,m])=>({id,...m})).sort((a,b)=>(b.at||0)-(a.at||0)); }
 function fetchDocsMeta(){ fetch(`${DB}/docs/meta.json`).then(r=>r.json()).then(d=>{ d=d||{}; const sig=JSON.stringify(d); if(sig!==_docsSig){ _docsSig=sig; docsMeta=d; paintDocs(); } }).catch(()=>{}); }
 function paintDocs(){
-  els.forEach((c,id)=>{ const b=c.querySelector('.docBtn .dn'); if(b){ const n=docsList('item_'+id).length; b.textContent=n?('('+n+')'):''; } });
+  els.forEach((c,id)=>{ const b=c.querySelector('.docBtn .dn'); if(b){ const n=docsList('item_'+id).length; b.textContent=n?('('+n+')'):''; } const it=byId[id]; if(it&&it.ordered){ try{ paint(id); }catch(e){} } });
+  if(typeof renderLbOrd==='function'&&lbId&&document.getElementById('lb').classList.contains('on')) renderLbOrd();
   renderCatStrip(); renderHistory(); updateSpendChip(); if(!document.getElementById('spendFull').hidden) renderSpend(); if(document.getElementById('docDlg').open) renderDocList(); if(document.getElementById('storesDlg')&&document.getElementById('storesDlg').open) renderStores();
+}
+
+/* מסמכי הזמנה כלינקים קטנים: חשבונית / אישור הזמנה / מעקב — מופיעים רק אם קיים מסמך (קישור, מייל, PDF או תמונה) */
+const DOC_KINDS=[ [/חשבונית/,'🧾 חשבונית'], [/קבלה/,'🧾 קבלה'], [/הזמנה|אישור/,'📋 אישור הזמנה'], [/מעקב|משלוח/,'🚚 מעקב משלוח'] ];
+function ordDocNodes(it){
+  const out=[]; const used=new Set();
+  const docs=docsList('item_'+it.id);
+  DOC_KINDS.forEach(([re,lab])=>{
+    docs.filter(m=>re.test(m.k||'')&&!used.has(m.id)).forEach((m,i)=>{ used.add(m.id);
+      let n; if(m.t==='link'){ n=document.createElement('a'); n.href=m.u; n.target='_blank'; n.rel='noopener'; }
+      else { n=document.createElement('a'); n.href='#'; n.onclick=e=>{ e.preventDefault(); openDocFile(m); }; }
+      n.className='ordDoc'; n.title=(m.n||'')+(m.by?' · '+m.by:''); n.textContent=lab+(m.n&&docs.filter(x=>re.test(x.k||'')).length>1?' · '+m.n:'')+' ↗'; out.push(n); }); });
+  return out;
 }
 function openDocs(scope,title){ docScope=scope; document.getElementById('docTitle').textContent='📎 מסמכים — '+title; document.getElementById('docName').value=''; document.getElementById('docUrl').value=''; renderDocList(); const d=document.getElementById('docDlg'); if(!d.open) d.showModal(); }
 function renderDocList(){
@@ -3488,8 +3503,11 @@ function paint(id,c){
       const box=document.createElement('div'); box.className='ordbox';
       const meta=document.createElement('div'); meta.textContent='הוזמן'+(it.orderedBy?' ע״י '+it.orderedBy:'')+(it.orderedAt?' · '+fmtDate(it.orderedAt):'')+(it.paid!=null?' · שולם '+nis(it.paid):'')+(it.orderNote?' · '+it.orderNote:''); box.appendChild(meta);
       const row=document.createElement('div');
-      if(it.orderLink&&/^https?:\/\//i.test(it.orderLink)){ const a=document.createElement('a'); a.href=it.orderLink; a.target='_blank'; a.rel='noopener'; a.textContent='אישור הזמנה ↗'; row.appendChild(a); row.append(' · '); }
+      const dn=ordDocNodes(it); const hasConf=dn.some(n=>/אישור הזמנה/.test(n.textContent));
+      if(it.orderLink&&/^https?:\/\//i.test(it.orderLink)&&!hasConf){ const a=document.createElement('a'); a.href=it.orderLink; a.target='_blank'; a.rel='noopener'; a.className='ordDoc'; a.textContent='📋 אישור הזמנה ↗'; row.appendChild(a); row.append(' · '); }
+      dn.forEach(n=>{ row.appendChild(n); row.append(' · '); });
       const b1=document.createElement('button'); b1.type='button'; b1.className='ordAct'; b1.textContent='✎ עריכת הזמנה / ביטול'; b1.onclick=()=>openOrderDlg(id); row.appendChild(b1);
+      const b2=document.createElement('button'); b2.type='button'; b2.className='ordAct'; b2.textContent='📎 הוספת חשבונית / מעקב'; b2.onclick=()=>openDocs('item_'+id,(it.name||'').slice(0,40)); row.append(' '); row.appendChild(b2);
       box.appendChild(row); oi.appendChild(box);
     } else { oi.style.display='none'; } }
   const starEl=c.querySelector('.stars');
@@ -3779,7 +3797,9 @@ function renderLbOrd(){
   if(it.ordered){
     const meta=document.createElement('div'); meta.textContent='📦 הוזמן'+(it.orderedBy?' ע״י '+it.orderedBy:'')+(it.orderedAt?' · '+new Date(it.orderedAt).toLocaleDateString('he-IL'):''); box.appendChild(meta);
     const row=document.createElement('div');
-    if(it.orderLink&&/^https?:\/\//i.test(it.orderLink)){const a=document.createElement('a');a.href=it.orderLink;a.target='_blank';a.rel='noopener';a.textContent='אישור הזמנה ↗';row.appendChild(a);row.append(' · ');}
+    const dn=ordDocNodes(it); const hasConf=dn.some(n=>/אישור הזמנה/.test(n.textContent));
+    if(it.orderLink&&/^https?:\/\//i.test(it.orderLink)&&!hasConf){const a=document.createElement('a');a.href=it.orderLink;a.target='_blank';a.rel='noopener';a.className='ordDoc';a.textContent='📋 אישור הזמנה ↗';row.appendChild(a);row.append(' · ');}
+    dn.forEach(n=>{ row.appendChild(n); row.append(' · '); });
     row.appendChild(mk('✎ עריכת הזמנה / ביטול',()=>openOrderDlg(lbId),'ordAct'));
     box.appendChild(row);
   } else {
