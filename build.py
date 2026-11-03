@@ -4423,6 +4423,9 @@ for _o in json.load(open(os.path.join(REPO,"balcony.json"),encoding="utf-8")):
 for _o in json.load(open(os.path.join(REPO,"gardennook.json"),encoding="utf-8")):
     DATA.append(_o)
 
+for _o in json.load(open(os.path.join(REPO,"arad_order.json"),encoding="utf-8")):
+    DATA.append(_o)
+
 # guard: item ids must be unique — a shared id merges votes/orders of two different items (bug found 2.11.2026: bins BL1-4 vs lily beds)
 _dup=sorted({d["id"] for d in DATA if sum(1 for e in DATA if e["id"]==d["id"])>1})
 if _dup: raise SystemExit("duplicate item ids: "+", ".join(_dup))
