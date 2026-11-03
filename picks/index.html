@@ -2017,7 +2017,7 @@ function cardEl(it){
 }
 function paint(id,c){
   c=c||els.get(id); if(!c)return; const s=S(id); const it=byId[id]||{};
-  c.className="card"+(it.pick?" is-pick":"")+(s.status!=='none'?" s-"+s.status:"")+(it.ordered?" is-ordered":"")+(it.type==='color'?'':" st-"+itemStatus(it))+(it.hidden?" is-hidden":"");
+  c.className="card"+(it.pick?" is-pick":"")+(s.status!=='none'?" s-"+s.status:"")+(it.ordered?" is-ordered":"")+(it.type==='color'?'':" st-"+itemStatus(it))+(it.hidden?" is-hidden":"")+(c.classList.contains('hidden')?" hidden":""); // keep the filter's 'hidden' flag: late repaints (Firebase sync, docs) must not re-show cards from other categories
   c.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.classList.contains(s.status)));
   const ta=c.querySelector('textarea'); if(ta&&ta.value!==s.note)ta.value=s.note;
   const qv=c.querySelector('.qv'); if(qv)qv.textContent=s.qty||1;
