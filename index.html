@@ -394,6 +394,22 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .ordbox{margin-top:8px;padding:8px 10px;background:var(--ordered-bg);border-radius:10px;font-size:12px;color:var(--ink-soft);line-height:1.7}
 .ordbox a{color:var(--ordered);font-weight:700;text-decoration:none}
 .ordbox a:hover{text-decoration:underline}
+.ordRow{display:flex;align-items:center;gap:5px;margin-top:8px;flex-wrap:wrap}
+.ordChip{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12px;font-weight:700;color:var(--ordered);background:var(--ordered-bg);border:0;border-radius:99px;padding:5px 12px;cursor:pointer}
+.ordChip b{font-weight:700;opacity:.7}
+.ordChip:hover{filter:brightness(.96)}
+.ordIcon{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ordered-bg);text-decoration:none;font-size:13px}
+.ordIcon:hover{filter:brightness(.94)}
+.ordInfo .db{display:flex;flex-direction:column;gap:14px}
+.oiName{font-weight:700;font-size:15px;line-height:1.4}
+.oiList{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:14px}
+.oiList dt{color:var(--muted);font-size:13px}.oiList dd{margin:0;overflow-wrap:anywhere}
+.oiH{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin-bottom:6px}
+.oiDocs{display:flex;flex-direction:column;gap:6px}
+.oiDoc{display:block;padding:9px 12px;border-radius:10px;background:var(--ordered-bg);color:var(--ordered);font-weight:700;font-size:13.5px;text-decoration:none}
+.oiDoc:hover{filter:brightness(.96)}
+.oiEmpty{color:var(--muted);font-size:13px}
+
 .ordbox .ordDoc{font-size:11px;font-weight:600;color:var(--ordered)}
 .card.is-ordered{opacity:1}
 .hideb{margin-top:6px;align-self:flex-start;background:none;border:0;color:var(--muted);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;padding:2px 0}
@@ -482,6 +498,9 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .storeChip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--ink);background:var(--paper);border:1.5px solid var(--line-2);border-radius:999px;padding:3px 10px;text-decoration:none;line-height:1.3;max-width:100%}
 .storeChip:hover{border-color:var(--brass);color:var(--brass-d)}
 .desc{font-size:12.5px;line-height:1.45;color:var(--ink-soft);background:var(--brass-soft);border-radius:9px;padding:7px 9px;white-space:pre-line}
+.desc.hid{display:none}
+.useTag{display:inline-block;max-width:100%;margin:6px 0 2px;padding:3px 10px;border-radius:99px;background:var(--brass-soft);color:var(--brass-d);font-size:12px;font-weight:700;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ordNote{margin-top:4px;font-size:12px}.ordNote summary{cursor:pointer;color:var(--ordered);font-weight:700}
 .desc.clamped{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .descToggle{font-size:11.5px;font-weight:700;color:var(--brass-d);cursor:pointer;margin:3px 0 0;display:inline-block;background:none;border:0;padding:0}
 .descToggle:hover{text-decoration:underline}
@@ -782,6 +801,11 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="df"><button class="tbtn primary" onclick="saveOrderDlg()">שמירה</button><button class="tbtn danger" id="ordCancelBtn" onclick="cancelOrder()">↩ ביטול סימון "הוזמן"</button><button class="tbtn" onclick="document.getElementById('ordDlg').close()">סגור</button></div>
 </dialog>
 
+<dialog id="ordInfoDlg" class="catdlg ordInfo"><div class="dh" id="ordInfoTitle">📦 פרטי הזמנה</div>
+  <div class="db" id="ordInfoBody"></div>
+  <div class="df"><button class="tbtn primary" onclick="oiEdit()">✎ עריכת הזמנה</button><button class="tbtn" onclick="oiAddDoc()">📎 הוספת מסמך</button><button class="tbtn" onclick="document.getElementById('ordInfoDlg').close()">סגור</button></div>
+</dialog>
+
 <dialog id="subDlg" class="catdlg"><div class="dh" id="subTitle">✎ תתי־קטגוריות</div>
   <div class="db" id="subBody"></div>
   <div class="df"><button class="tbtn primary" onclick="saveSubMgr()">שמירה</button><button class="tbtn" onclick="document.getElementById('subDlg').close()">ביטול</button></div>
@@ -1080,7 +1104,7 @@ function paintStatus(c,id){
     seg.querySelectorAll('.ds').forEach(b=>{ const k=b.classList.contains('c')?'chosen':'rejected'; const on=(k===stt); b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false');
       b.classList.toggle('deny',!canDo(it.cat,k==='chosen'?'choose':'reject')); });
     if(meta){ const t=decMetaText(it,stt); meta.textContent=t; meta.style.display=t?'':'none'; }
-    od.style.display=(stt==='chosen'||stt==='ordered')?'':'none'; od.textContent=stt==='ordered'?'✎ עריכת הזמנה / ביטול':'📦 סימון כהוזמן'; od.classList.toggle('deny',!canDo(it.cat,'order')); }
+    od.style.display=(stt==='chosen')?'':'none'; od.textContent=stt==='ordered'?'✎ עריכת הזמנה / ביטול':'📦 סימון כהוזמן'; od.classList.toggle('deny',!canDo(it.cat,'order')); }
 }
 function viewCounts(){
   const pool=ITEMS.filter(i=>!i.hidden&&inCats(i)), c={active:0,toorder:0,tochoose:0,ordered:0,rejected:0,all:pool.length};
@@ -1138,6 +1162,7 @@ function fetchDocsMeta(){ fetch(`${DB}/docs/meta.json`).then(r=>r.json()).then(d
 function paintDocs(){
   els.forEach((c,id)=>{ const b=c.querySelector('.docBtn .dn'); if(b){ const n=docsList('item_'+id).length; b.textContent=n?('('+n+')'):''; } const it=byId[id]; if(it&&it.ordered){ try{ paint(id); }catch(e){} } });
   if(typeof renderLbOrd==='function'&&lbId&&document.getElementById('lb').classList.contains('on')) renderLbOrd();
+  if(document.getElementById('ordInfoDlg')&&document.getElementById('ordInfoDlg').open) renderOrdInfo();
   renderCatStrip(); renderHistory(); updateSpendChip(); if(!document.getElementById('spendFull').hidden) renderSpend(); if(document.getElementById('docDlg').open) renderDocList(); if(document.getElementById('storesDlg')&&document.getElementById('storesDlg').open) renderStores();
 }
 
@@ -1936,7 +1961,7 @@ function cardEl(it){
       :`<div class="thumb ph" onclick="openLB('${it.id}')">${badge}<span class="phico">${(CATS.find(x=>x.key===it.cat)||{}).icon||'📦'}</span></div>`;
   const nameEl=it.link?`<a class="name" href="${it.link}" target="_blank" rel="noopener">${it.name}</a>`:`<span class="name">${it.name}</span>`;
   const sub=it.type==='color'?`<div class="code">${it.code||''}</div>`
-    :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div>${it.link?`<a class="storeChip" href="${it.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="המחיר נלקח מהחנות הזו — הקישור מוביל לדף המוצר שלה">🛒 ${esc(guessStore(it))} ↗</a>`:''}</div>`:`<div class="price muted">המחיר בחשבון שלך בחנות</div>`)+dimsRow(it)+featChips(it);
+    :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div>${it.link?`<a class="storeChip" href="${it.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="המחיר נלקח מהחנות הזו — הקישור מוביל לדף המוצר שלה">🛒 ${esc(guessStore(it))} ↗</a>`:''}</div>`:`<div class="price muted">המחיר בחשבון שלך בחנות</div>`)+dimsRow(it)+featChips(it)+useLabel(it);
   const featRow=(it.featTags||[]).length?`<div class="featBadges">${(it.featTags||[]).map(t=>`<span class="featBadge">${t}</span>`).join('')}</div>`:'';
   const stars=it.type==='product'?`<div class="stars" data-id="${it.id}">${[1,2,3,4,5].map(n=>`<button type="button" class="star" data-n="${n}" onclick="event.stopPropagation();setRating('${it.id}',${n})">★</button>`).join('')}<span class="ratedBy"></span></div>`:'';
   const qty=it.type==='product'
@@ -1944,7 +1969,7 @@ function cardEl(it){
   const hasPts=(it.points||[]).length>0;
   const shopHTML=(it.stores&&it.stores.length)?storesHTML(it):'';
   const pts=it.points||[], ptsTop=pts.slice(0,3), ptsRest=pts.slice(3);
-  const descHTML=it.desc?`<div class="desc${hasPts?'':' clamped'}" id="desc-${it.id}">${it.desc}</div>${hasPts?'':`<button type="button" class="descToggle" onclick="toggleDesc('${it.id}')">הצג פרטים ⌄</button>`}`:'';
+  const descHTML=it.desc?`<div class="desc${hasPts?'':' hid'}" id="desc-${it.id}">${it.desc}</div>${hasPts?'':`<button type="button" class="descToggle" onclick="toggleDesc('${it.id}')">הצג פרטים והערות ⌄</button>`}`:'';
   const moreInner=`${hasPts?specRowsHTML(it,true):''}
         ${it.pick&&it.pickWhy&&shortTxt(it.pickWhy,110)!==it.pickWhy?`<div class="pickWhyFull">⭐ ${esc(it.pickWhy)}</div>`:''}
         ${pts.length&&pts.some(p=>shortTxt(String(p).split(/\s[—–]\s/)[0].length>=14?String(p).split(/\s[—–]\s/)[0]:p,56)!==p)?`<div class="ptsFullH">פירוט מלא</div><ol class="pts">${pts.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:(ptsRest.length?`<ol class="pts" start="4">${ptsRest.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:'')}
@@ -2006,17 +2031,8 @@ function paint(id,c){
     hb.textContent=it.hidden?'↩️ שחזר ללוח':'🙈 הסתר'; }
   const oi=c.querySelector('.ordinfo');
   if(oi){ oi.innerHTML='';
-    if(it.ordered){ oi.style.display='';
-      const box=document.createElement('div'); box.className='ordbox';
-      const meta=document.createElement('div'); meta.textContent='הוזמן'+(it.orderedBy?' ע״י '+it.orderedBy:'')+(it.orderedAt?' · '+fmtDate(it.orderedAt):'')+(it.paid!=null?' · שולם '+nis(it.paid):'')+(it.orderNote?' · '+it.orderNote:''); box.appendChild(meta);
-      const row=document.createElement('div');
-      const dn=ordDocNodes(it); const hasConf=dn.some(n=>/אישור הזמנה/.test(n.textContent));
-      if(it.orderLink&&/^https?:\/\//i.test(it.orderLink)&&!hasConf){ const a=document.createElement('a'); a.href=it.orderLink; a.target='_blank'; a.rel='noopener'; a.className='ordDoc'; a.textContent='📋 אישור הזמנה ↗'; row.appendChild(a); row.append(' · '); }
-      dn.forEach(n=>{ row.appendChild(n); row.append(' · '); });
-      const b1=document.createElement('button'); b1.type='button'; b1.className='ordAct'; b1.textContent='✎ עריכת הזמנה / ביטול'; b1.onclick=()=>openOrderDlg(id); row.appendChild(b1);
-      const b2=document.createElement('button'); b2.type='button'; b2.className='ordAct'; b2.textContent='📎 הוספת חשבונית / מעקב'; b2.onclick=()=>openDocs('item_'+id,(it.name||'').slice(0,40)); row.append(' '); row.appendChild(b2);
-      box.appendChild(row); oi.appendChild(box);
-    } else { oi.style.display='none'; } }
+    if(it.ordered){ oi.style.display=''; oi.appendChild(ordCompactRow(it)); }
+    else { oi.style.display='none'; } }
   const starEl=c.querySelector('.stars');
   if(starEl){ const r=it.rating||0;
     starEl.querySelectorAll('.star').forEach(b=>b.classList.toggle('on',Number(b.dataset.n)<=r));
@@ -2079,11 +2095,76 @@ function shortTxt(t,max){ // one short line: first clause of a long sentence; th
   const ds=[' — ','; ',' · ',': ','. ',' ('], idx=ds.map(d=>t.indexOf(d,22)).filter(i=>i>0&&i<=max+14);
   let r=idx.length?t.slice(0,Math.min(...idx)):t.slice(0,max).replace(/\s+\S*$/,'');
   return r.replace(/[\s,;:·—-]+$/,'')+'…'; }
+
+
+/* ---- הזמנה: שורה קטנה בכרטיס + חלון פרטים נקי ---- */
+const shortD=ts=>{ if(!ts) return ''; const d=new Date(ts); return d.getDate()+'.'+(d.getMonth()+1); };
+function ordDocs(it){ /* [{lab,icon,href|m}] לפי סוג: חשבונית / קבלה / אישור הזמנה / מעקב */
+  const out=[]; const docs=docsList('item_'+it.id); const used=new Set();
+  const kinds=[[/חשבונית/,'🧾','חשבונית'],[/קבלה/,'💳','קבלה'],[/הזמנה|אישור/,'📋','אישור הזמנה'],[/מעקב|משלוח/,'🚚','מעקב משלוח']];
+  kinds.forEach(([re,ic,lab])=>docs.filter(m=>re.test(m.k||'')&&!used.has(m.id)).forEach(m=>{ used.add(m.id); out.push({ic,lab,name:m.n||'',m}); }));
+  docs.filter(m=>!used.has(m.id)).forEach(m=>out.push({ic:m.t==='link'?'🔗':'📄',lab:m.k||'מסמך',name:m.n||'',m}));
+  if(it.orderLink&&/^https?:\/\//i.test(it.orderLink)&&!out.some(x=>x.lab==='אישור הזמנה')) out.unshift({ic:'📋',lab:'אישור הזמנה',name:'',m:{t:'link',u:it.orderLink}});
+  return out;
+}
+function docNode(d,cls){ const m=d.m; let n;
+  if(m.t==='link'){ n=document.createElement('a'); n.href=m.u; n.target='_blank'; n.rel='noopener'; }
+  else { n=document.createElement('a'); n.href='#'; n.onclick=e=>{ e.preventDefault(); openDocFile(m); }; }
+  n.className=cls; n.title=d.lab+(d.name?' — '+d.name:''); return n; }
+function ordCompactRow(it){
+  const row=document.createElement('div'); row.className='ordRow';
+  const pay=it.paid!=null?it.paid:(it.price!=null?it.price:null);
+  const chip=document.createElement('button'); chip.type='button'; chip.className='ordChip'; chip.title='פרטי ההזמנה';
+  chip.onclick=e=>{ e.stopPropagation(); openOrdInfo(it.id); };
+  chip.innerHTML=`<span>📦 ${it.received?'התקבל':'הוזמן'}${it.orderedAt?' · '+shortD(it.orderedAt):''}${pay!=null?' · '+nis(pay):''}</span><b>›</b>`;
+  row.appendChild(chip);
+  ordDocs(it).forEach(d=>{ const n=docNode(d,'ordIcon'); n.textContent=d.ic; row.appendChild(n); });
+  return row;
+}
+let _oiId=null;
+function openOrdInfo(id){ _oiId=id; renderOrdInfo(); const d=document.getElementById('ordInfoDlg'); if(!d.open) d.showModal(); }
+function renderOrdInfo(){
+  const it=byId[_oiId]; if(!it) return; const box=document.getElementById('ordInfoBody'); box.innerHTML='';
+  document.getElementById('ordInfoTitle').textContent='📦 פרטי הזמנה';
+  const pay=it.paid!=null?it.paid:null;
+  const h=document.createElement('div'); h.className='oiName'; h.textContent=it.name||''; box.appendChild(h);
+  const rows=[
+    ['סטטוס',it.received?('התקבל'+(it.receivedAt?' · '+fmtDate(it.receivedAt):'')):'הוזמן'],
+    ['תאריך הזמנה',it.orderedAt?fmtDate(it.orderedAt):''],
+    ['הוזמן על ידי',it.orderedBy||''],
+    ['חנות',it.orderStore||guessStore(it)||''],
+    ['שולם',pay!=null?nis(pay):(it.price!=null?nis(it.price)+' (מחיר ברשימה)':'')],
+    ['הערות',it.orderNote||'']
+  ].filter(r=>r[1]);
+  const dl=document.createElement('dl'); dl.className='oiList';
+  rows.forEach(([k,v])=>{ const a=document.createElement('dt'); a.textContent=k; const b=document.createElement('dd'); b.textContent=v; dl.append(a,b); });
+  box.appendChild(dl);
+  const sec=document.createElement('div'); sec.className='oiDocs'; const t=document.createElement('div'); t.className='oiH'; t.textContent='מסמכים'; sec.appendChild(t);
+  const ds=ordDocs(it);
+  if(!ds.length){ const p=document.createElement('div'); p.className='oiEmpty'; p.textContent='אין עדיין חשבונית, אישור הזמנה או מעקב.'; sec.appendChild(p); }
+  ds.forEach(d=>{ const n=docNode(d,'oiDoc'); n.textContent=d.ic+' '+d.lab+(d.name?' · '+d.name:'')+' ↗'; sec.appendChild(n); });
+  box.appendChild(sec);
+}
+function oiEdit(){ const id=_oiId; document.getElementById('ordInfoDlg').close(); openOrderDlg(id); }
+function oiAddDoc(){ const it=byId[_oiId]; if(!it) return; openDocs('item_'+_oiId,(it.name||'').slice(0,40)); }
+
+/* תווית קצרה ״מיועד ל…״ על גבי הכרטיס; ההערות המלאות רק בפתיחה */
+function useLabel(it){
+  if(it.type==='color') return '';
+  const d=String(it.desc||''); let t='';
+  const m=d.match(/מיועד ל:?\s*([^\n]+)/); if(m) t=m[1];
+  if(!t&&it.loc) t=String(it.loc);
+  if(!t) return '';
+  t=t.split(/\s[—–]\s|\s·\s|\s\(|;|\./)[0].replace(/^[\s:—-]+|[\s,:—-]+$/g,'');
+  if(t.length>34) t=t.slice(0,32).replace(/\s+\S*$/,'')+'…';
+  return t?`<div class="useTag" title="${esc(String(it.loc||t))}">🎯 ${esc(t)}</div>`:'';
+}
 function toggleDesc(id){
   const el=document.getElementById('desc-'+id); if(!el)return;
-  const nowClamped=el.classList.toggle('clamped');
+  const hid=el.classList.contains('hid');
+  const nowClamped=hid?el.classList.toggle('hid'):el.classList.toggle('clamped');
   const btn=el.nextElementSibling;
-  if(btn) btn.textContent=nowClamped?(byId[id]&&(byId[id].points||[]).length?'פרטים מלאים ⌄':'הצג פרטים ⌄'):'הסתר ⌃';
+  if(btn) btn.textContent=(hid?!el.classList.contains('hid'):!nowClamped)?'הסתר ⌃':((byId[id]&&(byId[id].points||[]).length)?'פרטים מלאים ⌄':'הצג פרטים והערות ⌄');
 }
 function dimsOf(it){
   if(it.dims) return String(it.dims);
@@ -2300,18 +2381,8 @@ let lbId=null;
 function renderLbOrd(){
   const box=document.getElementById('lbord'); if(!box)return; box.innerHTML='';
   const it=byId[lbId]; if(!it||it.type==='color')return;
-  const mk=(txt,fn,cls)=>{const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=txt;b.onclick=()=>{fn();renderLbOrd();};return b;};
-  if(it.ordered){
-    const meta=document.createElement('div'); meta.textContent='📦 הוזמן'+(it.orderedBy?' ע״י '+it.orderedBy:'')+(it.orderedAt?' · '+new Date(it.orderedAt).toLocaleDateString('he-IL'):''); box.appendChild(meta);
-    const row=document.createElement('div');
-    const dn=ordDocNodes(it); const hasConf=dn.some(n=>/אישור הזמנה/.test(n.textContent));
-    if(it.orderLink&&/^https?:\/\//i.test(it.orderLink)&&!hasConf){const a=document.createElement('a');a.href=it.orderLink;a.target='_blank';a.rel='noopener';a.className='ordDoc';a.textContent='📋 אישור הזמנה ↗';row.appendChild(a);row.append(' · ');}
-    dn.forEach(n=>{ row.appendChild(n); row.append(' · '); });
-    row.appendChild(mk('✎ עריכת הזמנה / ביטול',()=>openOrderDlg(lbId),'ordAct'));
-    box.appendChild(row);
-  } else {
-    box.appendChild(mk('📦 סמן כהוזמן',()=>toggleOrdered(lbId),'markOrd'));
-  }
+  if(it.ordered){ box.appendChild(ordCompactRow(it)); }
+  else { const b=document.createElement('button'); b.type='button'; b.className='markOrd'; b.textContent='📦 סמן כהוזמן'; b.onclick=()=>{ toggleOrdered(lbId); renderLbOrd(); }; box.appendChild(b); }
 }
 function closeLB(){document.getElementById('lb').classList.remove('on');}
 function resetAll(){if(confirm("לאפס את כל הבחירות וההערות?")){st.s={};save();els.forEach((c,id)=>paint(id));RE();}}
