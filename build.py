@@ -1431,6 +1431,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"ספסל טיק","label":"ספסל טיק","icon":"🪵","slug":"teak-bench","group":"אמבטיה","multi":True,"subs":["80 ס״מ — חדר רחצה ילדים","קטן ומעוצב — חדר רחצה הורים (באלי)"]},
       {"key":"בסיס על גלגלים","label":"בסיס על גלגלים","icon":"🛞","slug":"appliance-bases","group":"מטבח","multi":True,"subs":["מקרר גדול","מקרר קטן","מכונת כביסה","מייבש"]},
       {"key":"ריהוט מרפסת עליונה","label":"ריהוט למרפסת העליונה","icon":"☕","slug":"upper-balcony","group":"חוץ ופרגולה","multi":True,"subs":["פינת ישיבה (כורסאות + שולחן)","שולחן עבודה / ברים לליד הלפטופ","ספה / ספסל חוץ","שולחן צד / שרפרף / מאפרה"]},
+      {"key":"מגבים לרצפה","label":"מגבים לרצפה","icon":"🧽","slug":"mops","group":"אחר"},
       {"key":"משחקי חצר","label":"משחקי חצר","icon":"⚽","slug":"yard-games","group":"חוץ ופרגולה","multi":True,"subs":["טרמפולינה ריבועית / מלבנית — חצר קדמית","מתקן נינג׳ה (2×2 מ׳ עד 3×2.5 מ׳)","מתקני כושר וספורט בודדים בסגנון נינג׳ה (לגילאים שונים)","שער כדורגל עמיד / פריק / מתקפל — לחצר הקדמית"]},
       {"key":"ערסלים לגינה","label":"פינת ישיבה לגינה — ערסלים ומיטות רביצה","icon":"🛋️","slug":"garden-hammocks","group":"חוץ ופרגולה","multi":True,"subs":["פינת קפה — שולחן + 2 כסאות","כיסא תלוי / ערסל כיסא","ערסל תלייה — יחיד","ערסל זוגי","ערסל לשלושה / ספת תלייה","מיטת רביצה — טיק / עץ","מיטת רביצה — במבוק","מיטת רביצה — אלומיניום וראטן"]},
       {"key":"גלגלת צינור","label":"גלגלת צינור","icon":"🧵","slug":"hose-reel","group":"חוץ ופרגולה","multi":True,"subs":["אוטומטית מתכנסת — קיר","ידנית — מסגרת / קיר","עגלה ניידת"]},
@@ -4515,6 +4516,9 @@ for _o in json.load(open(os.path.join(REPO,"gardennook.json"),encoding="utf-8"))
     DATA.append(_o)
 
 for _o in json.load(open(os.path.join(REPO,"arad_order.json"),encoding="utf-8")):
+    DATA.append(_o)
+
+for _o in json.load(open(os.path.join(REPO,"mops.json"),encoding="utf-8")):
     DATA.append(_o)
 
 # guard: item ids must be unique — a shared id merges votes/orders of two different items (bug found 2.11.2026: bins BL1-4 vs lily beds)
