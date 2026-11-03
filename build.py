@@ -4525,7 +4525,7 @@ for _o in json.load(open(os.path.join(REPO,"heaters2.json"),encoding="utf-8")):
     DATA.append(_o)
 # 3.11.2026: she wants 3000W (white if possible) heaters for the open pergola -> hide the older 2000W picks (kept, reversible)
 for _d in DATA:
-    if _d.get("cat")=="תנורי פרגולה" and _d["id"] in {"HT%d"%i for i in range(1,13)}:
+    if _d.get("cat")=="תנורי פרגולה" and (_d["id"] in {"HT%d"%i for i in range(1,13)} or _d["id"]=="HT15"):  # HT15 = 2500W; she chose 3000W (3.11)
         _d["hidden"]=True
 
 # guard: item ids must be unique — a shared id merges votes/orders of two different items (bug found 2.11.2026: bins BL1-4 vs lily beds)
