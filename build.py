@@ -1432,6 +1432,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"בסיס על גלגלים","label":"בסיס על גלגלים","icon":"🛞","slug":"appliance-bases","group":"מטבח","multi":True,"subs":["מקרר גדול","מקרר קטן","מכונת כביסה","מייבש"]},
       {"key":"ריהוט מרפסת עליונה","label":"ריהוט למרפסת העליונה","icon":"☕","slug":"upper-balcony","group":"חוץ ופרגולה","multi":True,"subs":["פינת ישיבה (כורסאות + שולחן)","שולחן עבודה / ברים לליד הלפטופ","ספה / ספסל חוץ","שולחן צד / שרפרף / מאפרה"]},
       {"key":"מגבים לרצפה","label":"מגבים לרצפה","icon":"🧽","slug":"mops","group":"אחר"},
+      {"key":"פתרונות אחסון","label":"פתרונות אחסון","icon":"🧺","slug":"storage","group":"אחר"},
       {"key":"משחקי חצר","label":"משחקי חצר","icon":"⚽","slug":"yard-games","group":"חוץ ופרגולה","multi":True,"subs":["טרמפולינה ריבועית / מלבנית — חצר קדמית","מתקן נינג׳ה (2×2 מ׳ עד 3×2.5 מ׳)","מתקני כושר וספורט בודדים בסגנון נינג׳ה (לגילאים שונים)","שער כדורגל עמיד / פריק / מתקפל — לחצר הקדמית"]},
       {"key":"ערסלים לגינה","label":"פינת ישיבה לגינה — ערסלים ומיטות רביצה","icon":"🛋️","slug":"garden-hammocks","group":"חוץ ופרגולה","multi":True,"subs":["פינת קפה — שולחן + 2 כסאות","כיסא תלוי / ערסל כיסא","ערסל תלייה — יחיד","ערסל זוגי","ערסל לשלושה / ספת תלייה","מיטת רביצה — טיק / עץ","מיטת רביצה — במבוק","מיטת רביצה — אלומיניום וראטן"]},
       {"key":"גלגלת צינור","label":"גלגלת צינור","icon":"🧵","slug":"hose-reel","group":"חוץ ופרגולה","multi":True,"subs":["אוטומטית מתכנסת — קיר","ידנית — מסגרת / קיר","עגלה ניידת"]},
@@ -4285,6 +4286,9 @@ for _o in json.load(open(os.path.join(REPO,"heaters2.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"heaters3.json"),encoding="utf-8")):
     DATA.append(_o)
+for _f in ("mops2.json","storage.json"):
+    for _o in json.load(open(os.path.join(REPO,_f),encoding="utf-8")):
+        DATA.append(_o)
 # 3.11.2026: she wants 3000W (white if possible) heaters for the open pergola -> hide the older 2000W picks (kept, reversible)
 for _d in DATA:
     if _d.get("cat")=="תנורי פרגולה" and _d["id"] in ({"HT%d"%i for i in range(1,13)} | {"HT14","HT16","HT18"}):  # 3.11: remote + several levels are mandatory; HT14/16/18 have no remote
