@@ -4283,6 +4283,8 @@ for _o in json.load(open(os.path.join(REPO,"mops.json"),encoding="utf-8")):
 
 for _o in json.load(open(os.path.join(REPO,"heaters2.json"),encoding="utf-8")):
     DATA.append(_o)
+for _o in json.load(open(os.path.join(REPO,"heaters3.json"),encoding="utf-8")):
+    DATA.append(_o)
 # 3.11.2026: she wants 3000W (white if possible) heaters for the open pergola -> hide the older 2000W picks (kept, reversible)
 for _d in DATA:
     if _d.get("cat")=="תנורי פרגולה" and _d["id"] in ({"HT%d"%i for i in range(1,13)} | {"HT14","HT16","HT18"}):  # 3.11: remote + several levels are mandatory; HT14/16/18 have no remote
