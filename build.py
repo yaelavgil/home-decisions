@@ -1433,6 +1433,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"ריהוט מרפסת עליונה","label":"ריהוט למרפסת העליונה","icon":"☕","slug":"upper-balcony","group":"חוץ ופרגולה","multi":True,"subs":["פינת ישיבה (כורסאות + שולחן)","שולחן עבודה / ברים לליד הלפטופ","ספה / ספסל חוץ","שולחן צד / שרפרף / מאפרה"]},
       {"key":"מגבים לרצפה","label":"מגבים לרצפה","icon":"🧽","slug":"mops","group":"אחר"},
       {"key":"פתרונות אחסון","label":"פתרונות אחסון","icon":"🧺","slug":"storage","group":"אחר"},
+      {"key":"כיסויי מיטה / כירבוליות","label":"כיסויי מיטה / כירבוליות","icon":"🛏️","slug":"bedspreads","group":"חדרי שינה וילדים"},
       {"key":"משחקי חצר","label":"משחקי חצר","icon":"⚽","slug":"yard-games","group":"חוץ ופרגולה","multi":True,"subs":["טרמפולינה ריבועית / מלבנית — חצר קדמית","מתקן נינג׳ה (2×2 מ׳ עד 3×2.5 מ׳)","מתקני כושר וספורט בודדים בסגנון נינג׳ה (לגילאים שונים)","שער כדורגל עמיד / פריק / מתקפל — לחצר הקדמית"]},
       {"key":"ערסלים לגינה","label":"פינת ישיבה לגינה — ערסלים ומיטות רביצה","icon":"🛋️","slug":"garden-hammocks","group":"חוץ ופרגולה","multi":True,"subs":["פינת קפה — שולחן + 2 כסאות","כיסא תלוי / ערסל כיסא","ערסל תלייה — יחיד","ערסל זוגי","ערסל לשלושה / ספת תלייה","מיטת רביצה — טיק / עץ","מיטת רביצה — במבוק","מיטת רביצה — אלומיניום וראטן"]},
       {"key":"גלגלת צינור","label":"גלגלת צינור","icon":"🧵","slug":"hose-reel","group":"חוץ ופרגולה","multi":True,"subs":["אוטומטית מתכנסת — קיר","ידנית — מסגרת / קיר","עגלה ניידת"]},
@@ -4299,7 +4300,7 @@ for _o in json.load(open(os.path.join(REPO,"heaters2.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"heaters3.json"),encoding="utf-8")):
     DATA.append(_o)
-for _f in ("mops2.json","storage.json"):
+for _f in ("mops2.json","storage.json","bedspreads.json"):
     for _o in json.load(open(os.path.join(REPO,_f),encoding="utf-8")):
         DATA.append(_o)
 # 3.11.2026: she wants 3000W (white if possible) heaters for the open pergola -> hide the older 2000W picks (kept, reversible)
