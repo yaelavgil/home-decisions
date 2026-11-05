@@ -4300,7 +4300,7 @@ for _o in json.load(open(os.path.join(REPO,"heaters2.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"heaters3.json"),encoding="utf-8")):
     DATA.append(_o)
-for _f in ("mops2.json","storage.json","bedspreads.json"):
+for _f in ("mops2.json","storage.json","bedspreads.json","bedspreads2.json"):
     for _o in json.load(open(os.path.join(REPO,_f),encoding="utf-8")):
         DATA.append(_o)
 # 3.11.2026: she wants 3000W (white if possible) heaters for the open pergola -> hide the older 2000W picks (kept, reversible)
