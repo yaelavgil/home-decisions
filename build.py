@@ -1431,6 +1431,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"ספסל טיק","label":"ספסל טיק","icon":"🪵","slug":"teak-bench","group":"אמבטיה","multi":True,"subs":["80 ס״מ — חדר רחצה ילדים","קטן ומעוצב — חדר רחצה הורים (באלי)"]},
       {"key":"בסיס על גלגלים","label":"בסיס על גלגלים","icon":"🛞","slug":"appliance-bases","group":"מטבח","multi":True,"subs":["מקרר גדול","מקרר קטן","מכונת כביסה","מייבש"]},
       {"key":"ריהוט מרפסת עליונה","label":"ריהוט למרפסת העליונה","icon":"☕","slug":"upper-balcony","group":"חוץ ופרגולה","multi":True,"subs":["פינת ישיבה (כורסאות + שולחן)","שזלונג / מרבץ / פוף רביצה (להתכרבל)","שולחן עבודה / ברים לליד הלפטופ","ספה / ספסל חוץ","שולחן צד / שרפרף / מאפרה"]},
+      {"key":"שולחן אוכל לפרגולה","label":"שולחן אוכל לפרגולה","icon":"🍽️","slug":"pergola-dining","group":"חוץ ופרגולה","multi":True,"subs":["נפתח — עץ","נפתח — אלומיניום","קבוע / מתקפל"]},
       {"key":"מגבים לרצפה","label":"מגבים לרצפה","icon":"🧽","slug":"mops","group":"אחר"},
       {"key":"פתרונות אחסון","label":"פתרונות אחסון","icon":"🧺","slug":"storage","group":"אחר"},
       {"key":"כיסויי מיטה / כירבוליות","label":"כיסויי מיטה / כירבוליות","icon":"🛏️","slug":"bedspreads","group":"חדרי שינה וילדים"},
@@ -4292,6 +4293,8 @@ for _d in DATA:  # balcony2.json item subs -> the category's existing sub-topics
     if _d["id"] in ("UB10","UB12","UB14","UB15"): _d["sub"]=_UB_WORK
     elif _d["id"] in ("UB9","UB11","UB13","UB16"): _d["sub"]="פינת ישיבה (כורסאות + שולחן)"
 
+for _o in json.load(open(os.path.join(REPO,"pergola-dining.json"),encoding="utf-8")):
+    DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"gardennook.json"),encoding="utf-8")):
     DATA.append(_o)
 
