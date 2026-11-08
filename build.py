@@ -1412,7 +1412,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"וילון לממד","label":"וילון גלילה לממד (חדר דני)","icon":"🪟","slug":"mamad-blind","group":"חדרי שינה וילדים","multi":True,"subs":["זול ומהיר","מידה אישית — מראה טבעי","פרימיום — קסטה / דאבל / תעלות צד"]},
       {"key":"תנורי פרגולה","label":"תנורי פרגולה","icon":"🌡️","slug":"pergola-heater"},
       {"key":"מחמם מגבות","label":"מחמם מגבות","icon":"🧖","slug":"towel-warmer","subs":["מחמם מגבות", "תנור אמבטיה"]},
-      {"key":"תנור לחדרי רחצה","label":"תנור לחדרי רחצה","icon":"🔥","slug":"bathroom-heater","subs":["מפזר חום", "תנור אינפרא"]},
+      {"key":"תנור לחדרי רחצה","label":"תנור לחדרי רחצה","icon":"🔥","slug":"bathroom-heater","subs":["מפזר חום", "תנור אינפרא", "חדר רחצה אורחים — עיצוב בוטיק"]},
       {"key":"סיפון לכיור","label":"סיפון לכיור (מקלחת אורחים)","icon":"🚰","slug":"sink-siphon"},
       {"key":"מגבות","label":"מגבות","icon":"🧴","slug":"towels","subs":["מגבות גוף","מגבות ידיים ופנים"]},
       {"key":"שטיחוני רחצה","label":"שטיחוני רחצה","icon":"🧼","slug":"bath-mats","subs":["חדר רחצה הורים","חדר רחצה ילדים"]},
@@ -4297,6 +4297,8 @@ for _d in DATA:  # balcony2.json item subs -> the category's existing sub-topics
 for _o in json.load(open(os.path.join(REPO,"pergola-dining.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"vanity.json"),encoding="utf-8")):
+    DATA.append(_o)
+for _o in json.load(open(os.path.join(REPO,"bathroom-heater2.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"gardennook.json"),encoding="utf-8")):
     DATA.append(_o)
