@@ -724,18 +724,51 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 }
 @media(max-width:560px){ .tools #sort{flex:1 1 80px;min-width:0} .tbtn{white-space:nowrap} .plannerlink{font-size:12px;padding:6px 10px} }
 @media(max-width:400px){ .tbtn.ic .t{display:none} .tbtn.ic{padding:9px 12px} .tools{gap:6px} }
+/* ===== UX pass: calm header, one tools row, floating add/cart ===== */
+header .hrow{flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:10px}
+header h1{font-size:clamp(18px,3vw,23px);white-space:nowrap}
+.hright{display:flex;align-items:center;gap:8px;min-width:0}
+.hright .whoami{max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spendBig{flex-direction:row!important;align-items:center;gap:6px;padding:6px 13px!important;border-radius:999px!important;box-shadow:none!important}
+.spendBig .sl,.spendBig small{display:none}
+.spendBig::before{content:"💰";font-size:14px}
+.spendBig b{font-size:14.5px!important;font-weight:800}
+.more{position:relative}
+.more>summary{list-style:none;cursor:pointer;font:inherit;font-size:13px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:5px 12px;color:var(--brass-d);font-weight:800}
+.more>summary::-webkit-details-marker{display:none}
+.hmore .moreBox{position:absolute;inset-inline-end:0;top:calc(100% + 6px);z-index:80;background:var(--paper);border:1.5px solid var(--line-2);border-radius:14px;padding:6px;display:flex;flex-direction:column;gap:2px;min-width:200px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.hmore .moreBox>a,.hmore .moreBox>button{display:block;border:0;background:none;border-radius:9px;text-align:start;padding:9px 11px;font:inherit;font-size:14px;font-weight:600;color:var(--ink);text-decoration:none;cursor:pointer}
+.hmore .moreBox>a:hover,.hmore .moreBox>button:hover{background:var(--brass-soft)}
+.hmore .vbtn.on{background:var(--brass-soft);color:var(--brass-d);box-shadow:none}
+.tools .search{order:1;flex:1 1 200px;min-width:0}
+.tools #filterBtn{order:2}
+.tools #sort{order:3}
+.tools .views{order:4;flex:1 1 100%;width:100%;display:flex}
+.tools .views .vbtn{flex:1}
+.tools .featSortRow{order:5;flex:1 1 100%}
+.qfabs{position:fixed;inset-inline-end:14px;inset-block-end:calc(14px + env(safe-area-inset-bottom,0px));z-index:70;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.qfab{border:0;cursor:pointer;font:inherit;font-weight:800;border-radius:999px;box-shadow:0 10px 24px -8px rgba(60,40,10,.55);transition:transform .15s}
+.qfab:active{transform:scale(.95)}
+.qfab.add{width:46px;height:46px;font-size:24px;line-height:1;background:var(--paper);color:var(--brass-d);border:1.5px solid var(--brass)}
+.qfab.cart{padding:12px 18px;font-size:14.5px;background:linear-gradient(180deg,#bf9760,var(--brass-d));color:#fff}
+@media(max-width:560px){.qfab.cart .t{display:none}.qfab.cart{padding:13px 15px;font-size:18px}.hright .whoami{max-width:96px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
   <div class="hrow">
-    <div><div class="kicker">הבית שלנו · לוח משותף</div><h1>מה בוחרים לבית</h1></div>
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-      <a href="planner/" class="plannerlink">🛒 מתכנן קנייה חכם</a>
-      <a href="#" class="spendBig" id="spendChip" onclick="openSpend();return false" title="סך ההוצאות על הלבשת הבית והחצר — מתעדכן כשמסמנים הזמנה"><span class="sl">💰 הוצאנו עד כה על הבית והחצר</span><b id="spendTot">…</b><small id="spendSub"></small></a>
-      <a href="#" class="plannerlink" onclick="openHome();return false">🏠 הבית</a>
+    <h1>מה בוחרים לבית</h1>
+    <div class="hright">
       <div class="whoami" id="whoami"></div>
+      <a href="#" class="spendBig" id="spendChip" onclick="openSpend();return false" title="סך ההוצאות על הלבשת הבית והחצר — מתעדכן כשמסמנים הזמנה"><span class="sl">💰 הוצאנו עד כה על הבית והחצר</span><b id="spendTot">…</b><small id="spendSub"></small></a>
+      <details class="more hmore"><summary title="עוד">⋯</summary><div class="moreBox">
+        <a href="#" onclick="openHome();return false">🏠 הבית</a>
+        <a href="planner/">🛒 מתכנן קנייה חכם</a>
+        <button type="button" id="shareListBtn" onclick="shareList()" title="עמוד מינימלי לשיתוף של הרשימה המסוננת">📄 עמוד לשיתוף</button>
+        <button class="vbtn" data-v="hidden" onclick="setView('hidden')">🙈 הוסתרו<span class="c" id="hiddenCount" style="display:none"></span></button>
+        <button type="button" onclick="resetAll()">↺ איפוס סינונים</button>
+      </div></details>
     </div>
   </div>
 </header>
@@ -748,10 +781,8 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
     <button class="vbtn" data-v="toorder" onclick="setView('toorder')">🛒 להזמין<span class="vc" data-c="toorder"></span></button>
     <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 הוזמנו<span class="vc" data-c="ordered"></span></button>
     <button class="vbtn" data-v="rejected" onclick="setView('rejected')">↩ הוסרו מההזמנה<span class="vc" data-c="rejected"></span></button>
-    <button class="vbtn" data-v="hidden" onclick="setView('hidden')">🙈 הוסתרו<span class="c" id="hiddenCount" style="display:none"></span></button>
   </div>
     <div class="search"><span class="i">🔍</span><input id="q" placeholder="חיפוש…" oninput="RE()"></div>
-    <button class="tbtn" id="shareListBtn" type="button" onclick="shareList()" title="עמוד מינימלי לשיתוף של הרשימה המסוננת — כדי לשלוח להתרשמות עם קישור לאפליקציה">📄 עמוד לשיתוף</button>
     <select id="sort" onchange="featSort=null;buildFeatSort();RE()" title="מיון">
       <option value="def">מיון</option>
       <option value="pa">מחיר ↑</option>
@@ -763,9 +794,6 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
     <div class="featSortRow" id="featSortRow"></div>
     <button class="tbtn fbtn" id="filterBtn" onclick="toggleFilters()" title="סינון מתקדם">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M3 5h18l-7 8.2V19l-4 2v-7.8z"/></svg>סינון<span class="fbadge" id="fbadge"></span></button>
-    <button class="tbtn ic" onclick="openAdd()" title="הוסף פריט">➕<span class="t"> הוסף</span></button>
-    <button class="tbtn primary ic" onclick="openCart()" title="עגלה / הזמנה">🛒<span class="t"> עגלה</span></button>
-    <button class="tbtn ic ghost" onclick="resetAll()" title="איפוס">↺</button>
   </div>
   <div class="filters" id="filters" hidden>
     <div class="frow"><span class="flabel">מי בחר</span><div class="chips" id="pplchips"></div></div>
@@ -775,6 +803,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
   <div class="summ" id="summ"></div>
 </div>
 
+<div class="qfabs"><button class="qfab add" onclick="openAdd()" title="הוסף פריט" aria-label="הוסף פריט">＋</button><button class="qfab cart" onclick="openCart()" title="עגלה / הזמנה">🛒 <span class="t">עגלה</span></button></div>
 <div class="catStrip" id="catStrip" style="display:none"></div>
 <div class="subRow" id="subRow" style="display:none"></div>
 <div class="subRow" id="placeRow" style="display:none"></div>
