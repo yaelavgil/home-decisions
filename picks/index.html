@@ -98,6 +98,12 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .crow .tg{font-size:12px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:3px 10px;cursor:pointer;font:inherit;font-size:12px;color:var(--brass-d);font-weight:650;white-space:nowrap}
 
 .catStrip{margin:10px 0 0;background:var(--paper);border:1.5px solid var(--line-2);border-radius:14px;padding:10px 12px;font-size:13.5px;display:flex;flex-direction:column;gap:6px}
+.catStrip .more{position:relative;margin-inline-start:auto}
+.catStrip .more>summary{list-style:none;cursor:pointer;font:inherit;font-size:12.5px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:3px 12px;color:var(--brass-d);font-weight:700}
+.catStrip .more>summary::-webkit-details-marker{display:none}
+.catStrip .moreBox{position:absolute;inset-inline-end:0;top:calc(100% + 6px);z-index:40;background:var(--paper);border:1.5px solid var(--line-2);border-radius:14px;padding:6px;display:flex;flex-direction:column;gap:2px;min-width:220px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.catStrip .moreBox button{border:0;border-radius:9px;text-align:start;padding:8px 10px;font-size:13.5px;color:var(--ink)}
+.catStrip .moreBox button:hover{background:var(--brass-soft)}
 .catStrip .csrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .catStrip .st{font-weight:800}
 .catStrip .due.over{color:#b35a4a;font-weight:800}
@@ -1390,6 +1396,7 @@ function setCatMeta(key,o){
   fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(key)}.json`,{method:'PATCH',body:JSON.stringify({key,...o})}).catch(()=>{});
   rebuild(); tabsHTML(); renderCatStrip(); RE();
 }
+document.addEventListener('click',e=>{ document.querySelectorAll('details.more[open]').forEach(d=>{ if(!d.contains(e.target)||e.target.closest('.moreBox button')) d.open=false; }); });
 function renderCatStrip(){
   const el=document.getElementById('catStrip'); if(!el) return;
   const cat=selCats.size===1?CATS.find(c=>selCats.has(c.key)):null;
@@ -1400,8 +1407,21 @@ function renderCatStrip(){
   const goal=cat.due?`🎯 יעד קנייה: <b>${fmtDate(cat.due)}</b> ${stt==='done'?'':dueRel(cat.due)}`:(cat.wishlist?'💭 Wishlist — בלי תאריך':'⏳ אין יעד קנייה');
   const dn=docsList('cat_'+cat.key).length;
   const vc=viewCounts();
-  let h=`<div class="statline"><button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button><button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button><button class="r" onclick="setView('rejected')">↩ הוסרו ${vc.rejected}</button></div>
-  <div class="csrow"><span class="st">${stLab}</span><span>${goal}</span><button type="button" onclick="shareCat('${esc(cat.key)}')">🔗 שיתוף הקטגוריה</button><button type="button" onclick="openCatSettings('${esc(cat.key)}')">⚙ הגדרות הקטגוריה</button><button type="button" onclick="askResearch('${esc(cat.key)}',normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),true)">🔎 חיפוש מחדש</button><button type="button" onclick="openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')">📎 מסמכי הקטגוריה${dn?' ('+dn+')':''}</button>${imgDocs('cat_'+cat.key).length?`<button type="button" onclick="openDocGallery('cat_${esc(cat.key)}','${esc(cat.label)} — תוכניות ותמונות')">🗺 תוכניות / תמונות (${imgDocs('cat_'+cat.key).length})</button>`:''}</div>`;
+  const fs=catFeats(cat.key), miss=fs.length?its.filter(i=>featMissing(i).length).length:0, nImg=imgDocs('cat_'+cat.key).length, subsN=(cat.subs||[]).length;
+  const mi=(fn,lab)=>`<button type="button" onclick="${fn}">${lab}</button>`;
+  const menu=`<details class="more"><summary title="עוד פעולות בקטגוריה">⋯ עוד</summary><div class="moreBox">`
+    +mi(`shareCat('${esc(cat.key)}')`,'🔗 שיתוף הקטגוריה')
+    +mi(`setQpMode(${!qpMode})`,qpMode?'✓ שיוך מהיר למקומות (פעיל)':'⚡ שיוך מהיר למקומות')
+    +mi(`openCatSettings('${esc(cat.key)}')`,'⚙ הגדרות הקטגוריה')
+    +mi(`openSubMgr('${esc(cat.key)}')`,subsN?'✎ ניהול תתי־קטגוריות':'＋ הוספת תת־קטגוריה')
+    +(fs.length?mi(`openFeatDlg('${esc(cat.key)}')`,'🏷 שיוך מהיר של פיצ\'רים'+(miss?` (${miss} חסרים)`:'')):'')
+    +mi(`openFeatMgr('${esc(cat.key)}')`,fs.length?'⚙ ניהול פיצ\'רים':'＋ פיצ\'רים / לייבלים')
+    +mi(`askResearch('${esc(cat.key)}',normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),normSearch(CATS.find(x=>x.key==='${esc(cat.key)}').search),true)`,'🔎 חיפוש מחדש')
+    +mi(`openDocs('cat_${esc(cat.key)}','${esc(cat.label)}')`,'📎 מסמכי הקטגוריה'+(dn?' ('+dn+')':''))
+    +(nImg?mi(`openDocGallery('cat_${esc(cat.key)}','${esc(cat.label)} — תוכניות ותמונות')`,`🗺 תוכניות / תמונות (${nImg})`):'')
+    +`</div></details>`;
+  const sl=[vc.ordered?`<button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button>`:'',vc.toorder?`<button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button>`:'',vc.rejected?`<button class="r" onclick="setView('rejected')">↩ הוסרו ${vc.rejected}</button>`:''].join('');
+  let h=`<div class="csrow"><span class="st">${stLab}</span><span>${goal}</span>${sl?`<span class="statline">${sl}</span>`:''}${menu}</div>`;
   h+=researchStripHTML(cat);
   if(chosenN>1&&!cat.multi) h+=`<div class="warnB">⚠ שימי לב: נבחרו ${chosenN} פריטים בקטגוריה. אם זה מכוון (למשל כמה פריטים לאותו חלל), אפשר לאשר בהגדרות הקטגוריה — "מותר לבחור כמה".</div>`;
   ord.forEach(i=>{ const n=docsList('item_'+i.id).length;
@@ -1704,7 +1724,7 @@ function qpToggle(btn){ const id=btn.dataset.id, n=btn.dataset.n, it=byId[id]; i
   const cur=new Set(itemPlaces(it)); const on=!cur.has(n); on?cur.add(n):cur.delete(n);
   const sel=[...cur]; it.places=sel.length?sel:['__none']; patchItem(id,{places:it.places});
   say('📍 '+n+(on?' ✓':' — הוסר'),1100); paintLoc(els.get(id),it); renderPlaceRow(); if(placef.size) RE(); }
-function setQpMode(v){ qpMode=v; try{ localStorage.setItem('qpMode',v?'1':''); }catch(e){} ITEMS.forEach(it=>{ const c=els.get(it.id); if(c) paintLoc(c,it); }); renderPlaceRow(); }
+function setQpMode(v){ qpMode=v; try{ localStorage.setItem('qpMode',v?'1':''); }catch(e){} ITEMS.forEach(it=>{ const c=els.get(it.id); if(c) paintLoc(c,it); }); renderPlaceRow(); renderCatStrip(); }
 function renderPlaceRow(){
   const el=document.getElementById('placeRow'); if(!el) return;
   const its=ITEMS.filter(i=>inCats(i)&&!i.hidden); const cnt=new Map(); let none=0;
@@ -1715,7 +1735,7 @@ function renderPlaceRow(){
     +`<button type="button" class="${placef.size?'':'on'}" onclick="placef.clear();renderPlaceRow();RE()">📍 כל המקומות<small>${its.length}</small></button>`
     +names.map(n=>chip(n,n,cnt.get(n)||0)).join('')
     +(none||placef.has('__none')?chip('__none','ללא מיקום',none).replace('<button type="button" class="','<button type="button" class="warn '):'');
-  el.style.display=its.length?'flex':'none';
+  el.style.display=(its.length&&(names.length>=2||placef.size||qpMode))?'flex':'none';
 }
 function togglePlaceF(k){ placef.has(k)?placef.delete(k):placef.add(k); renderPlaceRow(); RE(); }
 
@@ -1733,7 +1753,6 @@ function renderSubRow(){
       +subs.map(k=>`<button type="button" class="${subf===k?'on':''}" onclick="subf='${esc(k)}';renderSubRow();RE()">${esc(k)}<small>${cnt(k)}</small></button>`).join('')
       +(none?`<button type="button" class="warn ${subf==='__none'?'on':''}" onclick="subf='__none';renderSubRow();RE()">⚠ ללא שיוך<small>${none}</small></button><button type="button" class="mgr auto" onclick="autoAssignSubs('${esc(cat.key)}')">⚡ שיוך אוטומטי</button>`:'');
   }
-  h+=`<button type="button" class="mgr" onclick="openSubMgr('${esc(cat.key)}')">${subs.length?'✎ ניהול תתי־קטגוריות':'＋ הוספת תת־קטגוריה'}</button>`;
   h+=featBarHTML(cat,its);
   el.innerHTML=h; el.style.display='flex';
 }
@@ -2294,9 +2313,7 @@ function featBarHTML(cat,its){
     h+=`<select onchange="featf=this.value||null;renderSubRow();RE()" title="סינון לפי פיצ'ר"><option value="">🏷 כל הפיצ'רים</option>`
       +fs.map(f=>(f.v&&f.v.length)?(Array.isArray(f.v)?f.v:Object.values(f.v)).map(x=>`<option value="${f.id}=${esc(x)}" ${featf===f.id+'='+x?'selected':''}>${esc(f.l.replace(/\s*\(.*$/,''))}: ${esc(x)}</option>`).join(''):`<option value="${f.id}" ${featf===f.id?'selected':''}>${esc(f.l)}</option>`).join('')
       +`<option value="__miss" ${featf==='__miss'?'selected':''}>⚠ עם פיצ'רים לא משויכים (${miss})</option></select>`;
-    h+=`<button type="button" class="mgr ${miss?'auto':''}" onclick="openFeatDlg('${esc(cat.key)}')">🏷 שיוך מהיר${miss?` (${miss} פריטים חסרים)`:''}</button>`;
   }
-  h+=`<button type="button" class="mgr" onclick="openFeatMgr('${esc(cat.key)}')">${fs.length?'⚙ ניהול פיצ\'רים':'＋ פיצ\'רים / לייבלים'}</button>`;
   return h;
 }
 let _featKey=null, _featOnlyMiss=false, _featFocus=null;
