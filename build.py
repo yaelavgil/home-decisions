@@ -1939,6 +1939,10 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .chips{display:flex;gap:7px;flex-wrap:wrap;padding:10px 2px 2px}
 .chip{border:1.5px solid var(--line-2);background:var(--paper);border-radius:999px;padding:6px 13px;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;transition:.15s}
 .chip:hover{border-color:var(--faint)}
+.qpBar{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 2px}
+.qp{border:1.5px solid var(--line-2);background:var(--paper);border-radius:999px;padding:4px 10px;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink-soft);cursor:pointer}
+.qp.on{background:var(--brass-soft);border-color:var(--brass);color:var(--brass-d)}
+.qp.more{border-style:dashed}
 .tagSearch{border:1.5px solid var(--line-2);border-radius:999px;padding:6px 13px;font:inherit;font-size:12.5px;min-width:140px;background:var(--paper);color:var(--ink)}
 .chip.on{background:var(--brass-soft);border-color:var(--brass);color:var(--brass-d)}
 .chip.st-yes.on{background:var(--yes-bg);border-color:var(--yes);color:var(--yes)}
@@ -2265,6 +2269,7 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 
 <div class="catStrip" id="catStrip" style="display:none"></div>
 <div class="subRow" id="subRow" style="display:none"></div>
+<div class="subRow" id="placeRow" style="display:none"></div>
 <div class="history" id="history" style="display:none"></div>
 <div class="specBar" id="specBar"></div>
 <div id="grid" class="grid"></div>
@@ -2477,11 +2482,12 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 const BITEMS=__DATA__, BCATS=__CATS__, BCRIT=__CRIT__;
 const DB="__DBURL__";
 const KEY="ida-board-v1";
+try{ window._qp0=!!localStorage.getItem('qpMode'); }catch(e){ window._qp0=false; }
 let st=JSON.parse(localStorage.getItem(KEY)||"{}"); st.s=st.s||{}; st.custom=st.custom||{cats:[],items:[],seq:0}; st.ord=st.ord||{}; st.dec=st.dec||{};
 let me=JSON.parse(localStorage.getItem('ida-me')||'null'); // {pk,name}
 let remote={}; // {pk:{name,items:{id:{s,n,q}}}}
 let _psig="";
-let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="all", featSort=null, subf=null, placef=null, featf=null;
+let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="all", featSort=null, subf=null, placef=new Set(), featf=null, qpMode=!!window._qp0;
 let ITEMS=[],CATS=[],byId={};
 let shared={items:{},cats:{}}; // shared catalog from Firebase (/picks/_catalog)
 function modelKey(s){ if(!s)return''; const m=String(s).toUpperCase().match(/[A-Z]{2,4}-? ?\d{3}[A-Z0-9]*/); return m?m[0].replace(/[- ]/g,''):''; }
@@ -2545,7 +2551,7 @@ function applyHash(){
   if(found.size){selCats=found;tagf.clear();}
 }
 function setCat(k){
-  subf=null; placef=null; featf=null;
+  subf=null; placef.clear(); featf=null;
   if(k==='all') selCats.clear();
   else if(selCats.has(k)) selCats.delete(k);
   else selCats.add(k);
@@ -2817,7 +2823,7 @@ function renderRecents(){
       <div class="mt"><span class="cat">${c.icon||''} ${esc(c.label||it.cat)}</span><span>${ST_LAB[stt]}</span><span>${ago2(ts)}</span></div>
       <div class="acts"><button type="button" class="go" onclick="rcOpen('${it.id}')">פתיחה בקטגוריה</button>${it.link?`<a class="tbtn" style="flex:none;padding:6px 10px;text-decoration:none" href="${esc(it.link)}" target="_blank" rel="noopener" title="לחנות">↗</a>`:''}</div></div></div>`; }).join('')+'</div>').join('');
 }
-function rcOpen(id){ const it=byId[id]; if(!it) return; closeRecents(); selCats=new Set([it.cat]); subf=null; placef=null; featf=null; tagf.clear(); if(viewMode!=='all') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true);
+function rcOpen(id){ const it=byId[id]; if(!it) return; closeRecents(); selCats=new Set([it.cat]); subf=null; placef.clear(); featf=null; tagf.clear(); if(viewMode!=='all') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true);
   setTimeout(()=>{ const c=els.get(id); if(c){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.add('flash'); setTimeout(()=>c.classList.remove('flash'),2000); } },250); }
 function recordFirstSeen(){ // custom items created straight in Firebase have no build-time stamp: remember when first loaded
   try{ const seen=(shared&&shared.seen)||{}; ITEMS.forEach(i=>{ if(!i.addedAt&&!seen[i.id]){ seen[i.id]=Date.now(); shared.seen=seen; fetch(`${DB}/picks/_catalog/seen/${encodeURIComponent(i.id)}.json`,{method:'PUT',body:String(seen[i.id])}).catch(()=>{}); } }); }catch(e){} }
@@ -2897,7 +2903,7 @@ function renderCatStrip(){
   if(chosenN>1&&!cat.multi) h+=`<div class="warnB">⚠ שימי לב: נבחרו ${chosenN} פריטים בקטגוריה. אם זה מכוון (למשל כמה פריטים לאותו חלל), אפשר לאשר בהגדרות הקטגוריה — "מותר לבחור כמה".</div>`;
   ord.forEach(i=>{ const n=docsList('item_'+i.id).length;
     h+=`<div class="bought">📦 נקנה: <b>${esc(i.name)}</b> · ${i.price!=null?nis(i.price):''} · ${i.orderedAt?fmtDate(i.orderedAt):''}${i.orderedBy?' · '+esc(i.orderedBy):''} · 🏪 ${esc(guessStore(i))}${i.orderLink?` · <a href="${esc(i.orderLink)}" target="_blank" rel="noopener">אישור הזמנה ↗</a>`:''} <button type="button" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎 קבלה / מסמכים${n?' ('+n+')':''}</button><button type="button" onclick="openOrderDlg('${i.id}')">✎ עריכה / ביטול</button></div>`; });
-  el.innerHTML=h; el.style.display='flex';
+  el.innerHTML=h; el.style.display='flex'; renderPlaceRow();
 }
 
 /* ===== category search parameters + research requests + suggestions ===== */
@@ -3070,7 +3076,7 @@ function cycleCatPrio(key){
   setCatMeta(key,{prio:nxt}); renderCatMenu();
 }
 function pickCat(key,sub){
-  selCats=key==='all'?new Set():new Set([key]); subf=sub||null; placef=null; tagf.clear();
+  selCats=key==='all'?new Set():new Set([key]); subf=sub||null; placef.clear(); tagf.clear();
   const c=CATS.find(x=>x.key===key); if(c&&catState(c)==='done'&&viewMode==='active') setView('all');
   syncHash(); buildChips(); tabsHTML(); RE(true); toggleCatMenu(false); window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -3171,15 +3177,45 @@ const DEFAULT_PLACES=[
  {n:'חדר אורחים',alias:['אורחים']},{n:'ממ״ד',alias:['ממ"ד','ממ״ד']},{n:'חדר שינה הורים',alias:['שינה הורים','חדרי שינה (הורים']},{n:'חדר ארונות הורים',alias:['ארונות הורים']},
  {n:'חדר רחצה הורים',alias:['רחצה הורים']},{n:'חדר ילדים — לילי',alias:['לילי']},{n:'חדר ילדים — דני',alias:['דני']},{n:'חדר רחצה ילדים',alias:['רחצה ילדים']},
  {n:'מקלחת אורחים'},{n:'חדר עבודה'},{n:'פרגולה'},{n:'גינה / חצר',alias:['חצר','גינה']},{n:'חזית וחניה',alias:['חניה']},{n:'מרפסת'}];
-function placesList(){ const p=shared&&shared.places; return (p&&Object.keys(p).length)?Object.values(p):DEFAULT_PLACES; }
-function detectPlaces(loc){ if(!loc) return []; const out=[]; placesList().forEach(pl=>{ const keys=[pl.n,...(pl.alias||[])]; if(keys.some(k=>loc.includes(k))) out.push(pl.n); }); return out; }
-function itemPlaces(it){ return (it.places&&it.places.length)?Object.values(it.places):detectPlaces(it.loc); }
-function locText(it){ const pl=itemPlaces(it); if(it.places&&it.places.length&&it.loc&&pl.every(x=>it.loc.includes(x))) return it.loc; const base=(it.places&&it.places.length)?pl.join(' · ')+(it.loc?' — '+it.loc:''):(it.loc||''); return base; }
+const ALWAYS_PLACES=['מרפסת עליונה','מרפסת תחתונה'];
+function placesList(){ const p=shared&&shared.places; const base=(p&&Object.keys(p).length)?Object.values(p):DEFAULT_PLACES; const have=new Set(base.map(x=>x.n)); return base.concat(ALWAYS_PLACES.filter(n=>!have.has(n)).map(n=>({n}))); }
+function detectPlaces(loc){ if(!loc) return []; const out=[]; placesList().forEach(pl=>{ const keys=[pl.n,...(pl.alias||[])]; if(keys.some(k=>loc.includes(k))) out.push(pl.n); }); return out.filter(n=>!out.some(m=>m!==n&&m.includes(n))); }
+function itemPlaces(it){ const p=it.places&&Object.values(it.places); if(p&&p.length) return p.filter(x=>x!=='__none'); return detectPlaces(it.loc); }
+function locText(it){ const pl=itemPlaces(it); const has=it.places&&it.places.length; if(has&&!pl.length) return it.loc||''; if(has&&it.loc&&pl.every(x=>it.loc.includes(x))) return it.loc; return has?pl.join(' · ')+(it.loc?' — '+it.loc:''):(it.loc||''); }
 function paintLoc(c,it){
   const l=c&&c.querySelector('.locLine'); if(!l||!it) return; const cc=CATS.find(x=>x.key===it.cat)||{}; const t=locText(it);
   l.className='loc locLine'+((!t&&cc.needsLoc)?' warn':''); 
   l.innerHTML=t?('📍 '+esc(t)+' <button type="button" class="addloc" onclick="openPlaceDlg(\''+it.id+'\')">✎</button>'):('<button type="button" class="addloc" onclick="openPlaceDlg(\''+it.id+'\')">'+(cc.needsLoc?'⚠ חסר שיוך לחלל — ':'')+'＋ מיקום בבית</button>');
+  let b=c.querySelector('.qpBar');
+  if(!qpMode){ if(b) b.remove(); return; }
+  if(!b){ b=document.createElement('div'); b.className='qpBar'; l.after(b); }
+  const cur=new Set(itemPlaces(it)), show=new Set([...qpTop(),...cur]);
+  b.innerHTML=placesList().filter(pl=>show.has(pl.n)).map(pl=>`<button type="button" class="qp${cur.has(pl.n)?' on':''}" data-id="${esc(it.id)}" data-n="${esc(pl.n)}" onclick="qpToggle(this)">${cur.has(pl.n)?'✓ ':''}${esc(pl.n)}</button>`).join('')
+    +`<button type="button" class="qp more" title="עוד מקומות" onclick="openPlaceDlg('${esc(it.id)}')">＋</button>`;
 }
+let _qpC=null;
+function qpTop(){ if(_qpC) return _qpC; const cnt=new Map(); ITEMS.forEach(i=>{ if(i.hidden||(selCats.size&&!selCats.has(i.cat))) return; itemPlaces(i).forEach(n=>cnt.set(n,(cnt.get(n)||0)+1)); });
+  const top=[...cnt.keys()].sort((a,b)=>cnt.get(b)-cnt.get(a)).slice(0,8);
+  ['מרפסת עליונה','סלון','פרגולה','גינה / חצר'].forEach(n=>{ if(top.length<6&&!top.includes(n)) top.push(n); }); return _qpC=top; }
+function qpToggle(btn){ const id=btn.dataset.id, n=btn.dataset.n, it=byId[id]; if(!it) return;
+  const cur=new Set(itemPlaces(it)); const on=!cur.has(n); on?cur.add(n):cur.delete(n);
+  const sel=[...cur]; it.places=sel.length?sel:['__none']; patchItem(id,{places:it.places});
+  say('📍 '+n+(on?' ✓':' — הוסר'),1100); paintLoc(els.get(id),it); renderPlaceRow(); if(placef.size) RE(); }
+function setQpMode(v){ qpMode=v; try{ localStorage.setItem('qpMode',v?'1':''); }catch(e){} ITEMS.forEach(it=>{ const c=els.get(it.id); if(c) paintLoc(c,it); }); renderPlaceRow(); }
+function renderPlaceRow(){
+  const el=document.getElementById('placeRow'); if(!el) return;
+  const its=ITEMS.filter(i=>inCats(i)&&!i.hidden); const cnt=new Map(); let none=0;
+  its.forEach(i=>{ const p=itemPlaces(i); if(!p.length) none++; p.forEach(n=>cnt.set(n,(cnt.get(n)||0)+1)); });
+  const names=placesList().map(p=>p.n).filter(n=>cnt.has(n)||placef.has(n));
+  const chip=(k,lab,n)=>`<button type="button" class="${placef.has(k)?'on':''}" data-k="${esc(k)}" onclick="togglePlaceF(this.dataset.k)">${esc(lab)}<small>${n}</small></button>`;
+  el.innerHTML=`<button type="button" class="mgr${qpMode?' on':''}" onclick="setQpMode(${!qpMode})" title="סימון מקומות ישירות על כל כרטיס — לחיצה אחת, בלי חלון">${qpMode?'✓ ':''}⚡ שיוך מהיר למקומות</button>`
+    +`<button type="button" class="${placef.size?'':'on'}" onclick="placef.clear();renderPlaceRow();RE()">📍 כל המקומות<small>${its.length}</small></button>`
+    +names.map(n=>chip(n,n,cnt.get(n)||0)).join('')
+    +(none||placef.has('__none')?chip('__none','ללא מיקום',none).replace('<button type="button" class="','<button type="button" class="warn '):'');
+  el.style.display=its.length?'flex':'none';
+}
+function togglePlaceF(k){ placef.has(k)?placef.delete(k):placef.add(k); renderPlaceRow(); RE(); }
+
 function renderSubRow(){
   const el=document.getElementById('subRow'); if(!el) return;
   const cat=selCats.size===1?CATS.find(c=>selCats.has(c.key)):null;
@@ -3196,7 +3232,6 @@ function renderSubRow(){
   }
   h+=`<button type="button" class="mgr" onclick="openSubMgr('${esc(cat.key)}')">${subs.length?'✎ ניהול תתי־קטגוריות':'＋ הוספת תת־קטגוריה'}</button>`;
   h+=featBarHTML(cat,its);
-  if(usedPlaces.length) h+=`<select onchange="placef=this.value||null;renderSubRow();RE()"><option value="">📍 כל המקומות</option>${usedPlaces.map(n=>`<option value="${esc(n)}" ${placef===n?'selected':''}>${esc(n)}</option>`).join('')}<option value="__none" ${placef==='__none'?'selected':''}>ללא מיקום</option></select>`;
   el.innerHTML=h; el.style.display='flex';
 }
 let _subKey=null;
@@ -3249,7 +3284,7 @@ function savePlaceDlg(){
   const extra=document.getElementById('plNew').value.trim();
   if(extra){ sel.push(extra); if(document.getElementById('plAdd').checked&&!placesList().some(p=>p.n===extra)){ const list=[...placesList(),{n:extra}]; savePlacesList(list); } }
   const note=document.getElementById('plNote').value.trim();
-  it.places=sel; it.loc=note; patchItem(id,{places:sel.length?sel:null,loc:note});
+  it.places=sel.length?sel:['__none']; it.loc=note; patchItem(id,{places:it.places,loc:note});
   document.getElementById('placeDlg').close(); paintLoc(els.get(id),it); renderSubRow(); RE();
 }
 function savePlacesList(list){ shared.places=Object.fromEntries(list.map((p,i)=>['p'+String(i).padStart(3,'0'),{n:p.n,alias:p.alias||undefined}]));
@@ -3314,6 +3349,7 @@ function buildChips(){
     tc.insertBefore(inp,tc.firstChild);
   }
   updateFilterBadge();
+  renderPlaceRow();
   buildFeatSort();
   buildSpecBar();
 }
@@ -3363,7 +3399,7 @@ function visible(){
     &&(!q||i.name.includes(q))
     &&(tagf.size===0||(i.tags||[]).some(t=>tagf.has(t)))
     &&(!subf||(subf==='__none'?!i.sub:i.sub===subf))
-    &&(!placef||(placef==='__none'?!itemPlaces(i).length:itemPlaces(i).includes(placef)))
+    &&(placef.size===0||[...placef].some(p=>p==='__none'?!itemPlaces(i).length:itemPlaces(i).includes(p)))
     &&passFeat(i)
     &&passView(i)&&passPerson(i)&&passSpec(i));
   const s=document.getElementById('sort').value, rank={yes:0,maybe:1,none:2,no:3};
@@ -3854,7 +3890,7 @@ function toggleHidden(id){
 function fbPushHidden(id,val){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,hidden:val})}).catch(()=>{}); }
 function updateHiddenCount(){ const n=ITEMS.filter(i=>i.hidden).length; const el=document.getElementById('hiddenCount'); if(el){el.textContent=n||''; el.style.display=n?'inline-flex':'none';} }
 function RE(animate){
-  ITEMS.forEach(it=>cardEl(it));
+  _qpC=null; ITEMS.forEach(it=>cardEl(it));
   ITEMS.forEach(it=>paint(it.id)); // re-apply ordered/status classes — cardEl() only paints once, at creation
   const vis=visible(), visSet=new Set(vis.map(v=>v.id));
   // FLIP: measure first
