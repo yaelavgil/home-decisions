@@ -442,6 +442,7 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .chips{display:flex;gap:7px;flex-wrap:wrap;padding:10px 2px 2px}
 .chip{border:1.5px solid var(--line-2);background:var(--paper);border-radius:999px;padding:6px 13px;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;transition:.15s}
 .chip:hover{border-color:var(--faint)}
+.tagSearch{border:1.5px solid var(--line-2);border-radius:999px;padding:6px 13px;font:inherit;font-size:12.5px;min-width:140px;background:var(--paper);color:var(--ink)}
 .chip.on{background:var(--brass-soft);border-color:var(--brass);color:var(--brass-d)}
 .chip.st-yes.on{background:var(--yes-bg);border-color:var(--yes);color:var(--yes)}
 .chip.st-maybe.on{background:var(--maybe-bg);border-color:var(--maybe);color:var(--maybe)}
@@ -1794,11 +1795,27 @@ function buildChips(){
     const c=document.createElement('button'); c.className="chip "+cls+(stf.has(k)?" on":""); c.textContent=lab;
     c.onclick=()=>{stf.has(k)?stf.delete(k):stf.add(k);buildChips();RE();}; sc.appendChild(c);
   });
-  const pool=ITEMS.filter(inCats).flatMap(i=>i.tags||[]);
-  const uniq=[...new Set(pool)];
+  const cnt=new Map(); ITEMS.filter(inCats).forEach(i=>new Set(i.tags||[]).forEach(tg=>cnt.set(tg,(cnt.get(tg)||0)+1)));
+  const all=[...cnt.keys()].sort((a,b)=>(tagf.has(b)-tagf.has(a))||(cnt.get(b)-cnt.get(a))||a.localeCompare(b,'he'));
+  const q=(window._tagQ||'').trim();
+  const TOP=12;
+  let show;
+  if(q) show=all.filter(t=>t.includes(q));
+  else if(window._tagAll) show=all;
+  else show=all.filter((t,k)=>tagf.has(t)||(cnt.get(t)>1&&k<TOP));
   const tc=document.getElementById('tagchips'); tc.innerHTML="";
-  uniq.forEach(tg=>{const c=document.createElement('button'); c.className="chip"+(tagf.has(tg)?" on":""); c.textContent=tg;
+  show.forEach(tg=>{const c=document.createElement('button'); c.className="chip"+(tagf.has(tg)?" on":""); c.innerHTML=esc(tg)+' <small style="opacity:.55;font-weight:500">'+cnt.get(tg)+'</small>';
     c.onclick=()=>{tagf.has(tg)?tagf.delete(tg):tagf.add(tg);buildChips();RE();}; tc.appendChild(c);});
+  if(all.length>show.length||window._tagAll||q){
+    const m=document.createElement('button'); m.className="chip more"; m.style.borderStyle='dashed';
+    m.textContent=(window._tagAll||q)?'▲ פחות':'＋ עוד '+(all.length-show.length)+' תגיות';
+    m.onclick=()=>{window._tagAll=!(window._tagAll||q); window._tagQ=''; buildChips();}; tc.appendChild(m);
+  }
+  if(window._tagAll||q){
+    const inp=document.createElement('input'); inp.type='search'; inp.placeholder='חיפוש תגית…'; inp.value=window._tagQ||''; inp.className='tagSearch';
+    inp.oninput=()=>{window._tagQ=inp.value; const pos=inp.selectionStart; buildChips(); const n=document.querySelector('.tagSearch'); if(n){n.focus(); n.setSelectionRange(pos,pos);}};
+    tc.insertBefore(inp,tc.firstChild);
+  }
   updateFilterBadge();
   buildFeatSort();
   buildSpecBar();
