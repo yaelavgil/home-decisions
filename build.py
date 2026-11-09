@@ -4604,6 +4604,8 @@ for _o in json.load(open(os.path.join(REPO,"pergola-dining.json"),encoding="utf-
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"vanity.json"),encoding="utf-8")):
     DATA.append(_o)
+for _o in json.load(open(os.path.join(REPO,"tvconsole2.json"),encoding="utf-8")):
+    DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"bathroom-heater2.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"balcony-heater.json"),encoding="utf-8")):
