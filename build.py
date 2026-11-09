@@ -1682,6 +1682,8 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .cmTop .seg2 button.on{background:var(--brass-d);color:#fff}
 .cmCols{columns:3 230px;column-gap:18px}
 .cmg{break-inside:avoid;margin:0 0 14px}
+.cmi .pcyc{flex:none;padding:2px 3px;border-radius:99px;font-size:13px;line-height:1;cursor:pointer}
+.cmi .pcyc:hover{background:var(--brass-soft)}
 .prioBar{column-span:all;position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--paper);border:1.5px dashed var(--brass);border-radius:12px;padding:6px 8px;margin:0 0 12px;font-size:12.5px;font-weight:700;color:var(--ink-soft)}
 .prioBar .pz{padding:6px 12px;border-radius:99px;border:1.5px solid var(--line-2);background:var(--bg);color:var(--ink)}
 .prioBar .pz.over{background:var(--brass-soft);border-color:var(--brass);transform:scale(1.05)}
@@ -3166,7 +3168,7 @@ function renderCatMenu(){
   const item=c=>{ const n=ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length, stt=catState(c), sg=catSuggs?catSuggs(c.key).length:0, b=brk[c.key]||{d:0,c:0,o:0};
     const subs=menuMode==='prio'?[]:(c.subs||[]).filter(x=>!q||c.label.includes(q)||x.includes(q));
     const pp=Number(c.prio)||0, dr=menuMode!=='prio'&&!menuQ.trim();
-    return `<div${dr?` draggable="true" ondragstart="prioDragStart(event,'${esc(c.key)}')" ondragend="prioDragEnd()" title="גררי לאזור הדחיפות למעלה"`:''}><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span>${pp?['','🔴','🟠','🟢'][pp]+' ':''}${esc(c.label)}${sg?' 💡':''}<small class="cmb">${b.c?`<span class="cc c" title="נבחר — להזמין">🛒${b.c}</span>`:''}${b.o?`<span class="cc o" title="הוזמן">📦${b.o}</span>`:''}</small></button>`
+    return `<div${dr?` draggable="true" ondragstart="prioDragStart(event,'${esc(c.key)}')" ondragend="prioDragEnd()" title="גררי לאזור הדחיפות למעלה"`:''}><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span><span class="pcyc" role="button" title="לחיצה משנה דחיפות: ⚪ ← 🔴 ← 🟠 ← 🟢" onclick="event.stopPropagation();cycleCatPrio('${esc(c.key)}')">${['⚪','🔴','🟠','🟢'][pp]}</span>${esc(c.label)}${sg?' 💡':''}<small class="cmb">${b.c?`<span class="cc c" title="נבחר — להזמין">🛒${b.c}</span>`:''}${b.o?`<span class="cc o" title="הוזמן">📦${b.o}</span>`:''}</small></button>`
       +(subs.length?`<div class="cmsubs">${subs.map(x=>`<button type="button" onclick="pickCat('${esc(c.key)}','${esc(x)}')">${esc(x)}</button>`).join('')}</div>`:'')+`</div>`; };
   let body='';
   if(menuMode==='prio'){
@@ -3193,7 +3195,7 @@ function renderCatMenu(){
     sorted.forEach(c=>{ const L=c.label.trim()[0]||'#'; (byL[L]=byL[L]||[]).push(c); });
     body=Object.keys(byL).map(L=>`<div class="cmg"><h5>${esc(L)}</h5>${byL[L].map(item).join('')}</div>`).join('');
   }
-  if(menuMode!=='prio') body=`<div class="prioBar"><span>↕ גררי קטגוריה לכאן לשינוי דחיפות:</span>${[[1,'🔴 דחוף'],[2,'🟠 בקרוב'],[3,'🟢 אפשר לחכות'],[0,'⚪ ללא']].map(([lv,l])=>`<div class="pz" ondragover="prioDragOver(event);this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="this.classList.remove('over');prioDrop(event,null,${lv})">${l}</div>`).join('')}<button type="button" onclick="menuMode='prio';renderCatMenu()">🎯 סדר מלא</button></div>`+body;
+  if(menuMode!=='prio') body=`<div class="prioBar"><span>↕ גררי קטגוריה לכאן, או לחצי על העיגול שלידה לשינוי דחיפות:</span>${[[1,'🔴 דחוף'],[2,'🟠 בקרוב'],[3,'🟢 אפשר לחכות'],[0,'⚪ ללא']].map(([lv,l])=>`<div class="pz" ondragover="prioDragOver(event);this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="this.classList.remove('over');prioDrop(event,null,${lv})">${l}</div>`).join('')}<button type="button" onclick="menuMode='prio';renderCatMenu()">🎯 סדר מלא</button></div>`+body;
   if(!cats.length) body='<p class="docnote">לא נמצאה קטגוריה בשם הזה.</p>';
   m.innerHTML=`<div class="cmTop"><input id="cmQ" placeholder="🔍 חיפוש קטגוריה או נושא…" value="${esc(menuQ)}" oninput="menuQ=this.value;renderCatMenu();"><span class="seg2"><button type="button" class="${menuMode==='prio'?'on':''}" onclick="menuMode='prio';renderCatMenu()">🎯 לפי דחיפות</button><button type="button" class="${menuMode==='topic'?'on':''}" onclick="menuMode='topic';renderCatMenu()">🗂 לפי נושא</button><button type="button" class="${menuMode==='alpha'?'on':''}" onclick="menuMode='alpha';renderCatMenu()">א–ת</button></span><button type="button" class="cmi" style="width:auto" onclick="pickCat('all')">✦ הכל</button></div>
     <div class="cmSum"><span class="lab">מה נותר:</span>
