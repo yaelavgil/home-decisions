@@ -1682,6 +1682,10 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .cmTop .seg2 button.on{background:var(--brass-d);color:#fff}
 .cmCols{columns:3 230px;column-gap:18px}
 .cmg{break-inside:avoid;margin:0 0 14px}
+.prioBar{column-span:all;position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--paper);border:1.5px dashed var(--brass);border-radius:12px;padding:6px 8px;margin:0 0 12px;font-size:12.5px;font-weight:700;color:var(--ink-soft)}
+.prioBar .pz{padding:6px 12px;border-radius:99px;border:1.5px solid var(--line-2);background:var(--bg);color:var(--ink)}
+.prioBar .pz.over{background:var(--brass-soft);border-color:var(--brass);transform:scale(1.05)}
+.prioBar button{margin-inline-start:auto;font:inherit;font-size:12.5px;border:1.5px solid var(--line-2);background:none;border-radius:99px;padding:5px 11px;color:var(--brass-d);cursor:pointer;font-weight:700}
 .cmg h5{margin:0 0 5px;font-size:13px;color:var(--brass-d);letter-spacing:.02em;border-bottom:1.5px solid var(--line);padding-bottom:3px}
 .cmi{display:flex;align-items:center;gap:7px;width:100%;text-align:start;background:none;border:0;padding:6px 6px;border-radius:9px;font:inherit;font-size:14px;font-weight:650;color:var(--ink);cursor:pointer}
 .cmi:hover{background:var(--brass-soft)}
@@ -3110,7 +3114,7 @@ function moveCatPrio(key,dir){
   arr.splice(i,1); arr.splice(j,0,key); const m={}; arr.forEach((k,n)=>{ m[k]={pord:(n+1)*10}; }); setCatMetaBatch(m);
 }
 function prioDragStart(e,key){ _dragKey=key; try{ e.dataTransfer.setData('text/plain',key); e.dataTransfer.effectAllowed='move'; }catch(x){} e.currentTarget.classList.add('dragging'); }
-function prioDragEnd(){ _dragKey=null; document.querySelectorAll('.prow.dragging,.dropB,.dropA').forEach(e=>e.classList.remove('dragging','dropB','dropA')); }
+function prioDragEnd(){ _dragKey=null; document.querySelectorAll('.prow.dragging,.dropB,.dropA').forEach(e=>e.classList.remove('dragging','dropB','dropA')); if(window._cmPending){ window._cmPending=false; renderCatMenu(); } }
 function prioDragOver(e){ if(!_dragKey) return; e.preventDefault(); const r=e.currentTarget; if(r.classList.contains('prow')){ const b=r.getBoundingClientRect(); const before=(e.clientY-b.top)<b.height/2; r.classList.toggle('dropB',before); r.classList.toggle('dropA',!before); } }
 function prioDrop(e,targetKey,lv){
   if(!_dragKey) return; e.preventDefault(); e.stopPropagation(); const key=_dragKey; _dragKey=null;
@@ -3131,6 +3135,7 @@ function pickCat(key,sub){
   syncHash(); buildChips(); tabsHTML(); RE(true); toggleCatMenu(false); window.scrollTo({top:0,behavior:'smooth'});
 }
 function renderCatMenu(){
+  if(_dragKey){ window._cmPending=true; return; }
   const m=document.getElementById('catMenu'), q=menuQ.trim();
   /* שדה החיפוש יושב בתוך המכולה שנבנית כאן מחדש, ולכן כל הקלדה הורסת אותו
      ויוצרת אותו מחדש עם סמן באפס. בלי לשחזר את מיקום הסמן כל תו חדש נדחף
@@ -3142,7 +3147,8 @@ function renderCatMenu(){
   const cats=allCats.filter(c=>!menuState||catState(c)===menuState).filter(c=>!q||c.label.includes(q)||(c.group||'').includes(q)||(c.subs||[]).some(x=>x.includes(q)));
   const item=c=>{ const n=ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length, stt=catState(c), sg=catSuggs?catSuggs(c.key).length:0, b=brk[c.key]||{d:0,c:0,o:0};
     const subs=menuMode==='prio'?[]:(c.subs||[]).filter(x=>!q||c.label.includes(q)||x.includes(q));
-    return `<div><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span>${esc(c.label)}${sg?' 💡':''}<small class="cmb">${b.c?`<span class="cc c" title="נבחר — להזמין">🛒${b.c}</span>`:''}${b.o?`<span class="cc o" title="הוזמן">📦${b.o}</span>`:''}</small></button>`
+    const pp=Number(c.prio)||0, dr=menuMode!=='prio'&&!menuQ.trim();
+    return `<div${dr?` draggable="true" ondragstart="prioDragStart(event,'${esc(c.key)}')" ondragend="prioDragEnd()" title="גררי לאזור הדחיפות למעלה"`:''}><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span>${pp?['','🔴','🟠','🟢'][pp]+' ':''}${esc(c.label)}${sg?' 💡':''}<small class="cmb">${b.c?`<span class="cc c" title="נבחר — להזמין">🛒${b.c}</span>`:''}${b.o?`<span class="cc o" title="הוזמן">📦${b.o}</span>`:''}</small></button>`
       +(subs.length?`<div class="cmsubs">${subs.map(x=>`<button type="button" onclick="pickCat('${esc(c.key)}','${esc(x)}')">${esc(x)}</button>`).join('')}</div>`:'')+`</div>`; };
   let body='';
   if(menuMode==='prio'){
@@ -3169,6 +3175,7 @@ function renderCatMenu(){
     sorted.forEach(c=>{ const L=c.label.trim()[0]||'#'; (byL[L]=byL[L]||[]).push(c); });
     body=Object.keys(byL).map(L=>`<div class="cmg"><h5>${esc(L)}</h5>${byL[L].map(item).join('')}</div>`).join('');
   }
+  if(menuMode!=='prio') body=`<div class="prioBar"><span>↕ גררי קטגוריה לכאן לשינוי דחיפות:</span>${[[1,'🔴 דחוף'],[2,'🟠 בקרוב'],[3,'🟢 אפשר לחכות'],[0,'⚪ ללא']].map(([lv,l])=>`<div class="pz" ondragover="prioDragOver(event);this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="this.classList.remove('over');prioDrop(event,null,${lv})">${l}</div>`).join('')}<button type="button" onclick="menuMode='prio';renderCatMenu()">🎯 סדר מלא</button></div>`+body;
   if(!cats.length) body='<p class="docnote">לא נמצאה קטגוריה בשם הזה.</p>';
   m.innerHTML=`<div class="cmTop"><input id="cmQ" placeholder="🔍 חיפוש קטגוריה או נושא…" value="${esc(menuQ)}" oninput="menuQ=this.value;renderCatMenu();"><span class="seg2"><button type="button" class="${menuMode==='prio'?'on':''}" onclick="menuMode='prio';renderCatMenu()">🎯 לפי דחיפות</button><button type="button" class="${menuMode==='topic'?'on':''}" onclick="menuMode='topic';renderCatMenu()">🗂 לפי נושא</button><button type="button" class="${menuMode==='alpha'?'on':''}" onclick="menuMode='alpha';renderCatMenu()">א–ת</button></span><button type="button" class="cmi" style="width:auto" onclick="pickCat('all')">✦ הכל</button></div>
     <div class="cmSum"><span class="lab">מה נותר:</span>
