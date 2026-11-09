@@ -4610,6 +4610,10 @@ for _o in json.load(open(os.path.join(REPO,"bathroom-heater2.json"),encoding="ut
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"balcony-heater.json"),encoding="utf-8")):
     DATA.append(_o)
+for _f in ("balcony-heater2a.json","balcony-heater2b.json"):
+    if os.path.exists(os.path.join(REPO,_f)):
+        for _o in json.load(open(os.path.join(REPO,_f),encoding="utf-8")):
+            DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"snooker.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"gardennook.json"),encoding="utf-8")):
