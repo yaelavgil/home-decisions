@@ -1,0 +1,382 @@
+{
+ "cat": "שולחן אוכל לפרגולה",
+ "criteria": [
+  {
+   "k": "closed",
+   "label": "אורך סגור (≥6 סועדים)",
+   "unit": "ס״מ",
+   "type": "num",
+   "weight": 5,
+   "higherBetter": true,
+   "goal": {
+    "min": 190
+   },
+   "goalNote": "דרישה קשיחה: סגור חייב להושיב 6 — כ־190 ס״מ ומעלה (3 לכל צד)",
+   "filter": true,
+   "sort": true
+  },
+  {
+   "k": "open",
+   "label": "אורך פתוח",
+   "unit": "ס״מ",
+   "type": "num",
+   "weight": 4,
+   "higherBetter": true,
+   "goal": {
+    "min": 280,
+    "max": 350,
+    "ideal": 300
+   },
+   "goalNote": "פרגולה 7.3 מ׳ — פתוח עד ≈3–3.5 מ׳ נכנס; מעל 3.5 גדול",
+   "filter": true,
+   "sort": true
+  },
+  {
+   "k": "width",
+   "label": "רוחב",
+   "unit": "ס״מ",
+   "type": "num",
+   "weight": 2,
+   "goal": {
+    "min": 90,
+    "max": 110
+   },
+   "goalNote": "עומק הפרגולה 2.9 מ׳; שולחן 100 + כיסאות ≈2.2–2.3 מ׳",
+   "sort": true
+  },
+  {
+   "k": "material",
+   "label": "חומר",
+   "type": "text",
+   "weight": 3,
+   "scoreMap": {
+    "טיק מלא": 1,
+    "אלומיניום + טיק": 0.95,
+    "אלומיניום + עץ אקליפטוס": 0.85,
+    "אלומיניום + קרמיקה": 0.7,
+    "אלומיניום": 0.6
+   }
+  },
+  {
+   "k": "warranty",
+   "label": "אחריות",
+   "unit": "חודשים",
+   "type": "num",
+   "weight": 2,
+   "higherBetter": true,
+   "goal": {
+    "min": 12
+   }
+  },
+  {
+   "k": "rain",
+   "label": "עמידות חוץ",
+   "type": "text",
+   "weight": 1
+  }
+ ],
+ "items": {
+  "PD1": {
+   "specs": {
+    "closed": 217,
+    "open": 267,
+    "width": 90,
+    "material": "אלומיניום + עץ אקליפטוס",
+    "rain": "לא צוין",
+    "warranty": 12
+   },
+   "stores": [
+    {
+     "n": "קויה דיזיין",
+     "p": 1890,
+     "l": "https://koyadesign.co.il/product/%D7%A9%D7%95%D7%9C%D7%97%D7%9F-%D7%90%D7%9C%D7%95%D7%9E%D7%99%D7%A0%D7%99%D7%95%D7%9D-%D7%A0%D7%A4%D7%AA%D7%97-%D7%91%D7%A0%D7%93%D7%99%D7%92%D7%95-267/",
+     "rec": true,
+     "note": "במלאי; אספקה עד 7 ימי עסקים"
+    }
+   ]
+  },
+  "PD2": {
+   "specs": {
+    "closed": 218,
+    "open": 305,
+    "width": 100,
+    "material": "אלומיניום",
+    "rain": "עמיד למים/שמש/חלודה (לפי הדף)",
+    "warranty": 6
+   },
+   "stores": [
+    {
+     "n": "אורבן – אפור כהה",
+     "p": 2399,
+     "l": "https://urban-shop.co.il/106014.html",
+     "rec": true,
+     "note": "משלוח חינם, 14 ימי עסקים"
+    },
+    {
+     "n": "אורבן – שמפניה",
+     "p": 3239,
+     "l": "https://urban-shop.co.il/106013.html",
+     "note": "אותו דגם בשמפניה"
+    }
+   ]
+  },
+  "PD3": {
+   "specs": {
+    "closed": 260,
+    "open": 260,
+    "width": 100,
+    "material": "אלומיניום + טיק",
+    "rain": "לא צוין",
+    "warranty": 12
+   },
+   "stores": [
+    {
+     "n": "שבירו",
+     "p": 2883,
+     "l": "https://www.shviro.net/products/big-dylan-dining-table",
+     "rec": true,
+     "note": "קבוע; 7 ימי עסקים"
+    }
+   ]
+  },
+  "PD4": {
+   "specs": {
+    "closed": 210,
+    "open": 300,
+    "width": 100,
+    "material": "אלומיניום",
+    "rain": "לא צוין",
+    "warranty": 12
+   },
+   "stores": [
+    {
+     "n": "קויה דיזיין",
+     "p": 3390,
+     "l": "https://koyadesign.co.il/product/%D7%A9%D7%95%D7%9C%D7%97%D7%9F-%D7%90%D7%9C%D7%95%D7%9E%D7%99%D7%A0%D7%99%D7%95%D7%9D-%D7%A0%D7%A4%D7%AA%D7%97-%D7%93%D7%92%D7%9D-%D7%92%D7%95%D7%9C%D7%9F-300/",
+     "rec": true,
+     "note": "אפור כהה/לבן במלאי"
+    }
+   ]
+  },
+  "PD5": {
+   "specs": {
+    "closed": 200,
+    "open": 300,
+    "width": 110,
+    "material": "אלומיניום",
+    "rain": "לא צוין · מומלץ כיסוי בגשם",
+    "warranty": 12
+   },
+   "stores": [
+    {
+     "n": "שבירו",
+     "p": 4495,
+     "l": "https://www.shviro.net/products/spade-extension-dining-table",
+     "rec": true,
+     "note": "במלאי; 7 ימי עסקים"
+    }
+   ],
+   "points": [
+    "הקו הנקי והמינימליסטי ביותר מבין הנפתחים",
+    "200→300×110, 6–8 סגור / עד 12 פתוח",
+    "אחריות 12 חודשים (7 על ריתוכים) · כיסוי בגשם",
+    "במלאי, 7 ימי עסקים"
+   ]
+  },
+  "PD6": {
+   "specs": {
+    "closed": 220,
+    "open": 300,
+    "width": 100,
+    "material": "טיק מלא",
+    "rain": "לא צוין",
+    "warranty": 12
+   },
+   "stores": [
+    {
+     "n": "קויה דיזיין",
+     "p": 4900,
+     "l": "https://koyadesign.co.il/product/%D7%A9%D7%95%D7%9C%D7%97%D7%9F-%D7%98%D7%99%D7%A7-%D7%A0%D7%A4%D7%AA%D7%97-%D7%93%D7%92%D7%9D-%D7%9C%D7%99%D7%A0%D7%A7%D7%95%D7%9C%D7%9F-%D7%9E%D7%92%D7%95%D7%95%D7%9F-%D7%9E%D7%99%D7%93%D7%95%D7%AA/",
+     "rec": true,
+     "note": "מ־₪3,990; וריאציות לא עקביות בדף — לאשר"
+    }
+   ]
+  },
+  "PD7": {
+   "specs": {
+    "closed": 200,
+    "open": 300,
+    "width": 100,
+    "material": "אלומיניום + קרמיקה",
+    "rain": "לא צוין · קרמיקה עמידה",
+    "warranty": 12
+   },
+   "stores": [
+    {
+     "n": "שבירו",
+     "p": 6313,
+     "l": "https://www.shviro.net/products/%D7%9C%D7%90%D7%92%D7%95%D7%A1-%D7%A9%D7%95%D7%9C%D7%97%D7%9F-%D7%A0%D7%A4%D7%AA%D7%97",
+     "rec": true,
+     "note": "במלאי; 7 ימי עסקים"
+    }
+   ]
+  },
+  "PD8": {
+   "specs": {
+    "closed": 215,
+    "open": 315,
+    "width": 110,
+    "material": "אלומיניום",
+    "rain": "לא צוין"
+   },
+   "stores": [
+    {
+     "n": "גרין ישראל (סט + 6 כיסאות)",
+     "p": 6990,
+     "l": "https://green-israel.co.il/product/%D7%A4%D7%99%D7%A0%D7%AA-%D7%90%D7%95%D7%9B%D7%9C-kanun-215-chic-%D7%90%D7%91%D7%9F/",
+     "rec": true,
+     "note": "Pre-Sale; מועד אספקה לא עדכני"
+    }
+   ]
+  },
+  "PD9": {
+   "specs": {
+    "closed": 200,
+    "open": 300,
+    "width": 100,
+    "material": "אלומיניום",
+    "rain": "עמיד בפני מזג אוויר, לא מחליד (לפי הדף)",
+    "warranty": 6
+   },
+   "stores": [
+    {
+     "n": "אורבן – שמפניה (שולחן בלבד)",
+     "p": 1399,
+     "l": "https://urban-shop.co.il/104808.html",
+     "rec": true,
+     "note": "אחריות 6 חודשים"
+    },
+    {
+     "n": "אורבן – לבן (שולחן בלבד)",
+     "p": 2159,
+     "l": "https://urban-shop.co.il/112042.html"
+    },
+    {
+     "n": "מחסני חשמל – לבן + 6 כיסאות רומיאו (סט)",
+     "p": 3149,
+     "l": "https://www.payngo.co.il/388079.html",
+     "note": "משלוח חינם עד 14 ימי אספקה; מחיר ללא הכיסאות לא נמצא"
+    }
+   ],
+   "pick": true,
+   "pickWhy": "בדיוק הדגם שהצבעת עליו (סיאול 200→300): סגור 2 מ׳ — 8 סועדים לפי הדף, אלומיניום עמיד, והכי זול (₪1,399; סט עם 6 כיסאות במחסני חשמל ₪3,149). אם חשוב אחריות 12 חודשים וגימור משופר — ספייד (PD5).",
+   "points": [
+    "סגור 2 מ׳ — 8 סועדים לפי הדף; פתוח 3 מ׳",
+    "בדיוק הסגנון שהצבעת עליו; מחיר הכי נמוך",
+    "אחריות 6 חודשים בלבד · משלוח לשמפניה לא צוין",
+    "אותו דגם בלבן + 6 כיסאות במחסני חשמל ₪3,149"
+   ]
+  },
+  "PD10": {
+   "specs": {
+    "closed": 216,
+    "open": 300,
+    "width": 100,
+    "material": "אלומיניום",
+    "rain": "Powder Coating + Anti-Scratch (דירוג לא צוין)",
+    "warranty": 12
+   },
+   "stores": [
+    {
+     "n": "לה גן – קומו BIG",
+     "p": 1890,
+     "l": "https://www.la-gan.co.il/product/%D7%A9%D7%95%D7%9C%D7%97%D7%9F-%D7%A0%D7%A4%D7%AA%D7%97-%D7%A7%D7%95%D7%9E%D7%95-big/",
+     "rec": true,
+     "note": "משלוח ₪250–500 לא כולל הרכבה"
+    },
+    {
+     "n": "לה גן – הוואי BIG (200→320)",
+     "p": 1890,
+     "l": "https://www.la-gan.co.il/product/%D7%A9%D7%95%D7%9C%D7%97%D7%9F-%D7%90%D7%95%D7%9B%D7%9C-%D7%94%D7%95%D7%95%D7%90%D7%99-big-%D7%9C%D7%9C%D7%90-%D7%9B%D7%A1%D7%90%D7%95%D7%AA/"
+    }
+   ]
+  },
+  "PD11": {
+   "specs": {
+    "closed": 220,
+    "open": 330,
+    "width": 107,
+    "material": "אלומיניום + טיק",
+    "rain": "לא צוין · מומלץ כיסוי בגשם",
+    "warranty": 12
+   },
+   "stores": [
+    {
+     "n": "שבירו – שולחן בלבד",
+     "p": 6490,
+     "l": "https://www.shviro.net/products/charles-dining-table",
+     "rec": true
+    },
+    {
+     "n": "שבירו – פינת אוכל עם כיסאות",
+     "p": 8890,
+     "l": "https://www.shviro.net/products/charles-dining-corner"
+    }
+   ],
+   "points": [
+    "עץ טיק אמיתי (משטח) + אלומיניום — קו נקי",
+    "220→330×107, 6–8 סגור / עד 12 פתוח",
+    "יקר (₪6,490)",
+    "טיק בחוץ: שמן/כיסוי"
+   ]
+  },
+  "PD12": {
+   "specs": {
+    "closed": 231,
+    "open": 346,
+    "width": 104,
+    "material": "אלומיניום",
+    "rain": "לא צוין · מומלץ כיסוי בגשם",
+    "warranty": 12
+   },
+   "stores": [
+    {
+     "n": "שבירו – סט עם 6 כיסאות",
+     "p": 4792,
+     "l": "https://www.shviro.net/products/sydney-extension-dining-corner",
+     "rec": true,
+     "note": "20% Black November"
+    },
+    {
+     "n": "שבירו – שולחן בלבד",
+     "p": 3665,
+     "l": "https://www.shviro.net/products/sydney-extension-dining-table"
+    }
+   ]
+  },
+  "PD13": {
+   "specs": {
+    "closed": 225,
+    "open": 300,
+    "width": 110,
+    "material": "אלומיניום",
+    "rain": "אלומיניום אל חלד בצביעת אבקה (דירוג לא צוין)",
+    "warranty": 12
+   },
+   "stores": [
+    {
+     "n": "קויה דיזיין – קיוטו 300",
+     "p": 2490,
+     "l": "https://koyadesign.co.il/product/%D7%A9%D7%95%D7%9C%D7%97%D7%9F-%D7%A0%D7%A4%D7%AA%D7%97-%D7%93%D7%92%D7%9D-%D7%A7%D7%99%D7%95%D7%98%D7%95-300-%D7%A1%D7%9E/",
+     "rec": true,
+     "note": "מבצע 20% עד 10.11.2026; אחר כך ₪3,500"
+    },
+    {
+     "n": "קויה דיזיין – דלהי 300",
+     "p": 2490,
+     "l": "https://koyadesign.co.il/product/%D7%A9%D7%95%D7%9C%D7%97%D7%9F-%D7%93%D7%9C%D7%94%D7%99-%D7%90%D7%9C%D7%95%D7%9E%D7%99%D7%A0%D7%99%D7%95%D7%9D-%D7%A0%D7%A4%D7%AA%D7%97-300-%D7%A1%D7%9E/"
+    }
+   ]
+  }
+ }
+}
