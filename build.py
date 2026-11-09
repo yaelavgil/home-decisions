@@ -2206,6 +2206,9 @@ dialog::backdrop{background:rgba(50,38,24,.42);backdrop-filter:blur(3px)}
 .ctotal b{color:var(--brass-d);font-size:20px;margin-inline-start:4px}
 .cempty{color:var(--muted);font-size:13.5px;padding:10px 0}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(16px);opacity:0;background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-weight:600;font-size:14px;transition:.28s;z-index:90;pointer-events:none}
+.undoBar{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(16px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:14px;background:var(--ink);color:#fff;padding:10px 12px 10px 20px;border-radius:999px;font-weight:600;font-size:14px;z-index:95;transition:.25s;max-width:calc(100vw - 24px)}
+.undoBar.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.undoBar button{border:0;border-radius:99px;background:#fff;color:var(--ink);font:inherit;font-weight:800;padding:6px 14px;cursor:pointer}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(max-width:560px){
   header{padding:7px 4px 0}
@@ -2550,6 +2553,11 @@ function rebuild(){
   st.custom.cats.forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
   Object.values(shared.cats||{}).forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
   ITEMS=Object.values(im).filter(i=>!i.deleted); CATS=Object.values(cm);
+  /* a sub-category list the user edited in the app (stored in shared.cats) is the source of truth: names she deleted
+     must not come back from the built-in list or from item data that still carries the old name */
+  const _managed=new Set(Object.values(shared.cats||{}).filter(c=>c&&c.key&&c.subs!==undefined).map(c=>c.key));
+  CATS.forEach(c=>{ if(c.subs&&typeof c.subs==='object') c.subs=Object.values(c.subs).filter(x=>x!=='__none'); });
+  ITEMS.forEach(i=>{ if(i.sub&&_managed.has(i.cat)){ const cc=CATS.find(x=>x.key===i.cat); if(cc&&!(cc.subs||[]).includes(i.sub)) i.sub=''; } });
   ITEMS.forEach(i=>{ const b=(typeof BITEMS!=='undefined'?BITEMS.find(x=>x.id===i.id):null); if(b&&b.feats&&i.feats!==b.feats) i.feats={...b.feats,...(i.feats||{})}; });
   ITEMS.forEach(i=>{ if(i.cat==='תאורת חוץ'){ i.cat='תאורה'; i.sub=i.sub||'תאורת חוץ'; } });
   ITEMS.forEach(i=>{ if(i.parts&&Object.keys(i.parts).length){ i.parts=Object.values(i.parts); i.price=i.parts.reduce((a,p)=>a+(Number(p.p)||0)*(Number(p.q)||1),0); } });
@@ -2622,6 +2630,15 @@ function statusHTML(it,stt){
 const ACT_LAB={reject:'להסיר פריטים מההזמנה',choose:'לבחור פריטים להזמנה',order:'לסמן שפריט הוזמן'};
 function permNames(p){ return Array.isArray(p)?p:Object.values(p||{}); }
 function canDo(catKey,act){ const c=CATS.find(x=>x.key===catKey); const p=c&&c.perms&&c.perms[act]; if(!p||p==='all') return true; if(!me) return false; return permNames(p).includes(me.name); }
+let _undoT=null,_undoCommit=null;
+function undoToast(msg,undoFn,commitFn){
+  if(_undoCommit){ const f=_undoCommit; _undoCommit=null; f(); }
+  let b=document.getElementById('undoBar'); if(!b){ b=document.createElement('div'); b.id='undoBar'; b.className='undoBar'; b.innerHTML='<span></span><button type="button">↩ ביטול</button>'; document.body.appendChild(b); }
+  b.firstChild.textContent=msg; _undoCommit=commitFn||null;
+  b.lastChild.onclick=()=>{ clearTimeout(_undoT); _undoCommit=null; b.classList.remove('show'); undoFn(); };
+  b.classList.add('show'); clearTimeout(_undoT);
+  _undoT=setTimeout(()=>{ b.classList.remove('show'); if(_undoCommit){ const f=_undoCommit; _undoCommit=null; f(); } },9000);
+}
 function say(msg,ms){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(say._t); say._t=setTimeout(()=>{t.classList.remove('show'); t.textContent='✓ הועתק';},ms||3000); }
 function denyMsg(catKey,act){ const c=CATS.find(x=>x.key===catKey)||{}; if(!me){ openMe(); return; } say('אין הרשאה '+ACT_LAB[act]+' בקטגוריה "'+(c.label||'')+'" — רק: '+permNames(c.perms[act]).join(', '),4500); }
 function setDecision(id,val){
@@ -2915,11 +2932,12 @@ async function openDocFile(m){
   catch(e){ if(w) w.close(); alert('לא הצלחתי לפתוח את הקובץ'); }
 }
 function delDoc(m){
-  if(!confirm('למחוק את "'+(m.n||'מסמך')+'"?')) return;
-  if(docsMeta[docScope]) delete docsMeta[docScope][m.id]; _docsSig=JSON.stringify(docsMeta);
-  fetch(`${DB}/docs/meta/${encodeURIComponent(docScope)}/${m.id}.json`,{method:'DELETE'}).catch(()=>{});
-  if(m.t==='file') fetch(`${DB}/docs/data/${m.id}.json`,{method:'DELETE'}).catch(()=>{});
-  paintDocs();
+  const scope=docScope, prev=docsMeta[scope]&&docsMeta[scope][m.id];
+  if(docsMeta[scope]) delete docsMeta[scope][m.id]; _docsSig=JSON.stringify(docsMeta); paintDocs();
+  undoToast('🗑 "'+(m.n||'מסמך')+'" נמחק',()=>{ docsMeta[scope]=docsMeta[scope]||{}; if(prev) docsMeta[scope][m.id]=prev; _docsSig=JSON.stringify(docsMeta); if(docScope===scope) paintDocs(); },()=>{
+    fetch(`${DB}/docs/meta/${encodeURIComponent(scope)}/${m.id}.json`,{method:'DELETE'}).catch(()=>{});
+    if(m.t==='file') fetch(`${DB}/docs/data/${m.id}.json`,{method:'DELETE'}).catch(()=>{});
+  });
 }
 function setCatMeta(key,o){
   Object.keys(o).forEach(k=>{ if(o[k]===undefined) delete o[k]; });
@@ -3317,7 +3335,7 @@ function saveSubMgr(){
   keep.forEach(r=>{ if(r.orig&&r.orig!==r.name) its.filter(i=>i.sub===r.orig).forEach(i=>{ i.sub=r.name; patchItem(i.id,{sub:r.name}); }); });
   const keptOrig=new Set(keep.map(r=>r.orig).filter(Boolean));
   rows.forEach(r=>{ if(r.orig&&!keptOrig.has(r.orig)) its.filter(i=>i.sub===r.orig).forEach(i=>{ i.sub=''; patchItem(i.id,{sub:''}); }); });
-  setCatMeta(key,{subs:names});
+  setCatMeta(key,{subs:names.length?names:['__none']});
   if(subf&&!names.includes(subf)) subf=null;
   document.getElementById('subDlg').close(); renderSubRow(); RE();
   its.forEach(i=>{ const e=els.get(i.id); if(e){ e.remove(); els.delete(i.id); } }); autoAssignSubs(key,true); renderSubRow(); RE();
@@ -3689,10 +3707,11 @@ function saveOrderDlg(){
 }
 function cancelOrder(){
   const id=_ordId, it=byId[id]; if(!it) return;
-  if(!confirm('לבטל את הסימון "הוזמן" ל"'+(it.name||'')+'"?')) return;
+  const prevO={ordered:it.ordered,orderedBy:it.orderedBy||null,orderedAt:it.orderedAt||null,orderLink:it.orderLink||null,paid:it.paid==null?null:it.paid,orderNote:it.orderNote||null,orderStore:it.orderStore||null,received:!!it.received,receivedAt:it.receivedAt||null};
   const o={ordered:false,orderedBy:null,orderedAt:null,orderLink:null,paid:null,orderNote:null,orderStore:null,received:false,receivedAt:null};
   Object.assign(it,o); st.ord[id]=o; save(); fbPushOrdered(id,o);
-  document.getElementById('ordDlg').close(); paint(id); tabsHTML(); RE(); say('↩ הסימון "הוזמן" בוטל',2500); if(typeof renderLbOrd==='function'&&lbId===id) renderLbOrd();
+  document.getElementById('ordDlg').close(); paint(id); tabsHTML(); RE(); if(typeof renderLbOrd==='function'&&lbId===id) renderLbOrd();
+  undoToast('↩ הסימון "הוזמן" בוטל',()=>{ Object.assign(it,prevO); st.ord[id]=prevO; save(); fbPushOrdered(id,prevO); paint(id); tabsHTML(); RE(); if(typeof renderLbOrd==='function'&&lbId===id) renderLbOrd(); });
 }
 function setOrderLink(id){
   const it=byId[id]; if(!it)return;
@@ -3902,6 +3921,12 @@ function setDims(id){
   it.dims=v.trim(); patchItem(id,{dims:it.dims});
   const e=els.get(id); if(e){ e.remove(); els.delete(id); } RE();
 }
+function refreshSubSels(vis){ const cache={};
+  vis.forEach(it=>{ const c=els.get(it.id); if(!c) return;
+    c.querySelectorAll('select[onchange^="setSub"]').forEach(sel=>{
+      let subs=cache[it.cat]; if(!subs){ const cc=CATS.find(x=>x.key===it.cat)||{}; subs=cache[it.cat]=[...new Set([...(cc.subs||[]),...ITEMS.filter(i=>i.cat===it.cat).map(i=>i.sub).filter(Boolean)])]; }
+      const sig=subs.join('|')+'#'+(it.sub||''); if(sel.dataset.sig===sig) return; sel.dataset.sig=sig;
+      sel.innerHTML='<option value="">— ללא שיוך</option>'+subs.map(x=>`<option ${it.sub===x?'selected':''}>${esc(x)}</option>`).join(''); }); }); }
 function subQuick(it){
   const cc=CATS.find(x=>x.key===it.cat)||{};
   const subs=[...new Set([...(cc.subs||[]),...ITEMS.filter(i=>i.cat===it.cat).map(i=>i.sub).filter(Boolean)])];
@@ -3923,35 +3948,45 @@ function autoAssignSubs(key,silent){
 }
 function deleteItem(id){
   const it=byId[id]; if(!it) return;
-  if(!confirm('למחוק את "'+(it.name||'')+'" לצמיתות מהקטגוריה?\nהפעולה מוחקת את הפריט מהלוח לגמרי ולא ניתנת לשחזור.')) return;
-  const builtin=BITEMS.some(b=>b.id===id);
+  const builtin=BITEMS.some(b=>b.id===id), nm=it.name||'';
+  const prevShared=(shared.items&&shared.items[id])?JSON.parse(JSON.stringify(shared.items[id])):null;
+  const prevLocal=(st.custom.items||[]).find(x=>x.id===id)||null;
+  const prevSt={ord:st.ord[id],dec:st.dec&&st.dec[id],s:st.s[id]};
   const tomb=builtin?{id,deleted:true}:{id,deleted:true,cat:it.cat};
   shared.items=shared.items||{}; shared.items[id]=builtin?{...(shared.items[id]||{}),...tomb}:tomb;
   fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:builtin?'PATCH':'PUT',body:JSON.stringify(tomb)}).catch(()=>{});
   st.custom.items=(st.custom.items||[]).filter(x=>x.id!==id); delete st.ord[id]; if(st.dec) delete st.dec[id]; delete st.s[id]; save();
   const c=els.get(id); if(c){ c.remove(); els.delete(id); }
-  rebuild(); tabsHTML(); updateHiddenCount(); renderSubRow(); RE(true); say('🗑 הפריט נמחק מהלוח',2500);
+  rebuild(); tabsHTML(); updateHiddenCount(); renderSubRow(); RE(true);
+  undoToast('🗑 "'+(nm.length>34?nm.slice(0,34)+'…':nm)+'" נמחק',()=>{
+    const orig=prevShared||prevLocal;
+    if(builtin){ if(prevShared) shared.items[id]=prevShared; else delete shared.items[id]; fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,deleted:null})}).catch(()=>{}); }
+    else if(orig){ shared.items[id]=orig; fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PUT',body:JSON.stringify(orig)}).catch(()=>{}); if(prevLocal) st.custom.items.push(prevLocal); }
+    if(prevSt.ord!==undefined) st.ord[id]=prevSt.ord; if(prevSt.dec!==undefined){ st.dec=st.dec||{}; st.dec[id]=prevSt.dec; } if(prevSt.s!==undefined) st.s[id]=prevSt.s; save();
+    rebuild(); tabsHTML(); updateHiddenCount(); buildChips(); renderSubRow(); RE(true);
+  });
 }
 function toggleHidden(id){
   const it=byId[id]; if(!it)return;
   const val=!it.hidden;
-  if(val && !confirm('להסתיר את "'+it.name+'"?\nהפריט לא נמחק — אפשר לשחזר אותו מתצוגת "🙈 הוסתרו".')) return;
   Object.assign(it,{hidden:val});
   fbPushHidden(id,val); paint(id);
   updateHiddenCount();
   RE(true);
+  if(val) undoToast('🙈 "'+(it.name.length>34?it.name.slice(0,34)+'…':it.name)+'" הוסתר',()=>{ Object.assign(it,{hidden:false}); fbPushHidden(id,false); paint(id); updateHiddenCount(); RE(true); });
 }
 function fbPushHidden(id,val){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,hidden:val})}).catch(()=>{}); }
 function updateHiddenCount(){ const n=ITEMS.filter(i=>i.hidden).length; const el=document.getElementById('hiddenCount'); if(el){el.textContent=n||''; el.style.display=n?'inline-flex':'none';} }
 function RE(animate){
-  _qpC=null; ITEMS.forEach(it=>cardEl(it));
+  const _y=window.scrollY; _qpC=null; ITEMS.forEach(it=>cardEl(it));
   ITEMS.forEach(it=>paint(it.id)); // re-apply ordered/status classes — cardEl() only paints once, at creation
   const vis=visible(), visSet=new Set(vis.map(v=>v.id));
   // FLIP: measure first
   const first=new Map();
   els.forEach((c,id)=>{if(!c.classList.contains('hidden'))first.set(id,c.getBoundingClientRect());});
   // reorder + toggle
-  vis.forEach(v=>grid.appendChild(els.get(v.id)));
+  const _cur=[...grid.children].filter(c=>c.dataset&&c.dataset.id&&visSet.has(c.dataset.id)).map(c=>c.dataset.id);
+  if(!(_cur.length===vis.length&&_cur.every((id,i)=>id===vis[i].id))) vis.forEach(v=>grid.appendChild(els.get(v.id)));
   els.forEach((c,id)=>c.classList.toggle('hidden',!visSet.has(id)));
   // measure last + animate
   els.forEach((c,id)=>{
@@ -3973,6 +4008,8 @@ function RE(animate){
     grid.appendChild(d);}
   updateSumm(vis);
   renderCatStrip(); renderHistory(); updateViewCounts(); renderRejNote(); renderSubRow(); updateSpendChip(); updateRecentsBadge(); if(!document.getElementById('spendFull').hidden) renderSpend();
+  refreshSubSels(vis);
+  if(!animate&&Math.abs(window.scrollY-_y)>40) window.scrollTo(0,_y);
 }
 function updateSumm(vis){
   document.getElementById('summ').innerHTML=`מוצג: <b>${vis.length}</b> פריטים`;
@@ -4003,7 +4040,8 @@ function renderLbOrd(){
   else { const b=document.createElement('button'); b.type='button'; b.className='markOrd'; b.textContent='📦 סמן כהוזמן'; b.onclick=()=>{ toggleOrdered(lbId); renderLbOrd(); }; box.appendChild(b); }
 }
 function closeLB(){document.getElementById('lb').classList.remove('on');}
-function resetAll(){if(confirm("לאפס את כל הבחירות וההערות?")){st.s={};save();els.forEach((c,id)=>paint(id));RE();}}
+function resetAll(){ const prev=st.s; st.s={}; save(); els.forEach((c,id)=>paint(id)); RE();
+  undoToast('↺ כל הבחירות וההערות אופסו',()=>{ st.s=prev; save(); els.forEach((c,id)=>paint(id)); RE(); }); }
 function openSummary(){
   const who=personf==='all'?(me&&me.name):personf;
   const label=who==(me&&me.name)?'אני':who;
@@ -4209,10 +4247,11 @@ function submitAdd(){
   if(!editId&&type!=='color') autoAssignSubs(secKey,true);
 }
 function removeCustom(id){
-  if(!confirm('להסיר את הפריט מהלוח של כולם?'))return;
+  const prev=(st.custom.items||[]).find(x=>x.id===id), prevS=st.s[id], nm=(prev&&prev.name)||'';
   st.custom.items=st.custom.items.filter(x=>x.id!==id); delete st.s[id]; save();
   fbDelCatalogItem(id); if(me) fetch(`${DB}/picks/${me.pk}/items/${encodeURIComponent(id)}.json`,{method:'DELETE'}).catch(()=>{});
   const el=els.get(id); if(el){el.remove();els.delete(id);} rebuild(); buildChips(); tabsHTML(); RE();
+  undoToast('🗑 "'+(nm.length>34?nm.slice(0,34)+'…':nm)+'" הוסר',()=>{ if(prev){ st.custom.items.push(prev); fbPushCatalogItem(prev); } if(prevS!==undefined) st.s[id]=prevS; save(); fbPushMark(id); rebuild(); buildChips(); tabsHTML(); RE(); });
 }
 /* ---------- shared backend (Firebase RTDB via REST) ---------- */
 function pkFromName(n){ let s='p_'; for(const ch of (n||'').trim()) s+=ch.codePointAt(0).toString(16)+'-'; return s; }
