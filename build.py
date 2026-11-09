@@ -1428,7 +1428,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"ספות לפינת משפחה","label":"ספות לפינת משפחה","icon":"🛋️","slug":"family-sofas"},
       {"key":"מראה לכניסה","label":"מראה לכניסה","icon":"🪞","slug":"entrance-mirror"},
       {"key":"ארון לחדר אורחים","label":"ארונות וקומבינציה לחדר אורחים","icon":"🚪","slug":"guest-wardrobe","multi":True,"subs":["קומבינציה מלאה 290","שולחן כתיבה / טואלט","ארונות צד"]},
-      {"key":"ארונות לחדרי הילדים","label":"ארונות לחדרי הילדים","icon":"🚪","slug":"kids-wardrobes"},
+      {"key":"ארונות לחדרי הילדים","label":"ארונות לחדרי הילדים","icon":"🚪","slug":"kids-wardrobes","subs":["ארונות פתיחה","ארונות הזזה"]},
       {"key":"זרועות לטלוויזיה","label":"זרועות לטלוויזיה","icon":"📺","slug":"tv-arms"},
       {"key":"ספסל טיק","label":"ספסל טיק","icon":"🪵","slug":"teak-bench","group":"אמבטיה","multi":True,"subs":["80 ס״מ — חדר רחצה ילדים","קטן ומעוצב — חדר רחצה הורים (באלי)"]},
       {"key":"בסיס על גלגלים","label":"בסיס על גלגלים","icon":"🛞","slug":"appliance-bases","group":"מטבח","multi":True,"subs":["מקרר גדול","מקרר קטן","מכונת כביסה","מייבש"]},
@@ -4595,6 +4595,11 @@ for _d in DATA:  # balcony2.json item subs -> the category's existing sub-topics
     if _d["id"] in ("UB10","UB12","UB14","UB15"): _d["sub"]=_UB_WORK
     elif _d["id"] in ("UB9","UB11","UB13","UB16"): _d["sub"]="פינת ישיבה (כורסאות + שולחן)"
 
+for _o in json.load(open(os.path.join(REPO,"wardrobes.json"),encoding="utf-8")):
+    DATA.append(_o)
+for _d in DATA:  # kids-wardrobes sub-categories: hinged vs sliding
+    if _d["id"] in ("KW2","KW4","KW7"): _d["sub"]="ארונות הזזה"
+    elif _d["id"] in ("KW5","KW6"): _d["sub"]="ארונות פתיחה"
 for _o in json.load(open(os.path.join(REPO,"pergola-dining.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"vanity.json"),encoding="utf-8")):
