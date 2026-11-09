@@ -1684,6 +1684,18 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .cmg{break-inside:avoid;margin:0 0 14px}
 .cmi .pcyc{flex:none;padding:2px 3px;border-radius:99px;font-size:13px;line-height:1;cursor:pointer}
 .cmi .pcyc:hover{background:var(--brass-soft)}
+.reopen{font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--brass);background:var(--brass-soft);color:var(--brass-d);border-radius:99px;padding:3px 11px;cursor:pointer;margin:2px 6px}
+.doneRow{display:flex;align-items:center;gap:6px}.doneRow .cmi{flex:1;min-width:0}
+.rgSec{margin:0 0 16px}.rgSec h4{margin:0 0 6px}
+.rgCard{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;border:1.5px solid var(--line-2);border-radius:12px;padding:8px 10px;margin:0 0 7px;background:var(--paper)}
+.rgK{grid-column:1/-1;font-size:11px;font-weight:800;color:var(--brass-d);letter-spacing:.04em}
+.rgW{font-size:13.5px}.rgW small{color:var(--muted);font-weight:700}.rgWhy{grid-column:1;font-size:12px;color:var(--ink-soft)}
+.rgCard .reopen{grid-column:2;grid-row:2/4;align-self:center}
+.rgQ{width:100%;margin:8px 0 6px;padding:8px 12px;border:1.5px solid var(--line-2);border-radius:99px;font:inherit;background:var(--paper);color:var(--ink)}
+.rgList{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:2px 10px;max-height:190px;overflow:auto;border:1.5px solid var(--line-2);border-radius:10px;padding:8px;font-size:13px}
+.rgOpt{display:flex;flex-direction:column;gap:4px;margin:10px 0;font-size:13px}.rgOpt input[type=text],#rgName{padding:6px 10px;border:1.5px solid var(--line-2);border-radius:9px;font:inherit;min-width:220px}
+.phOrd{color:#2f6b38;font-weight:700}
+.prioOpt{column-span:all;display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:13px;font-weight:650;color:var(--ink-soft);cursor:pointer}
 .prioBar{column-span:all;position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--paper);border:1.5px dashed var(--brass);border-radius:12px;padding:6px 8px;margin:0 0 12px;font-size:12.5px;font-weight:700;color:var(--ink-soft)}
 .prioBar .pz{padding:6px 12px;border-radius:99px;border:1.5px solid var(--line-2);background:var(--bg);color:var(--ink)}
 .prioBar .pz.over{background:var(--brass-soft);border-color:var(--brass);transform:scale(1.05)}
@@ -2390,6 +2402,7 @@ header h1{font-size:clamp(18px,3vw,23px);white-space:nowrap}
   <div class="df"><button class="tbtn" onclick="document.getElementById('sgDlg').close()">סגור</button></div>
 </dialog>
 
+<dialog id="reorgDlg" class="catdlg" style="max-width:720px"><div class="dh">🧩 ארגון קטגוריות — איחוד, פיצול ותתי־קטגוריות</div><div class="db" id="reorgBody" style="max-height:72vh;overflow:auto"></div><div class="df"><button class="tbtn" onclick="document.getElementById('reorgDlg').close()">סגירה</button></div></dialog>
 <dialog id="catSetDlg" class="catdlg"><div class="dh" id="csTitle">⚙ הגדרות קטגוריה</div>
   <div class="db csform" id="csBody"></div>
   <div class="df"><button class="tbtn primary" onclick="saveCatSettings()">שמירה</button><button class="tbtn" onclick="document.getElementById('catSetDlg').close()">ביטול</button></div>
@@ -2532,6 +2545,7 @@ let st=JSON.parse(localStorage.getItem(KEY)||"{}"); st.s=st.s||{}; st.custom=st.
 let me=JSON.parse(localStorage.getItem('ida-me')||'null'); // {pk,name}
 let remote={}; // {pk:{name,items:{id:{s,n,q}}}}
 let _psig="";
+let ARCHIVED_CATS=[], ARCHIVED_ITEMS=[];
 let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="all", featSort=null, subf=null, placef=new Set(), featf=null, qpMode=!!window._qp0;
 let ITEMS=[],CATS=[],byId={};
 let shared={items:{},cats:{}}; // shared catalog from Firebase (/picks/_catalog)
@@ -2555,6 +2569,7 @@ function rebuild(){
   st.custom.cats.forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
   Object.values(shared.cats||{}).forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
   ITEMS=Object.values(im).filter(i=>!i.deleted); CATS=Object.values(cm);
+  { const _ar=new Set(CATS.filter(c=>c.archived).map(c=>c.key)); ARCHIVED_CATS=CATS.filter(c=>_ar.has(c.key)); ARCHIVED_ITEMS=ITEMS.filter(i=>_ar.has(i.cat)); CATS=CATS.filter(c=>!_ar.has(c.key)); ITEMS=ITEMS.filter(i=>!_ar.has(i.cat)); }
   /* a sub-category list the user edited in the app (stored in shared.cats) is the source of truth: names she deleted
      must not come back from the built-in list or from item data that still carries the old name */
   const _managed=new Set(Object.values(shared.cats||{}).filter(c=>c&&c.key&&c.subs!==undefined).map(c=>c.key));
@@ -2964,6 +2979,8 @@ function renderCatStrip(){
     +mi(`shareCat('${esc(cat.key)}')`,'🔗 שיתוף הקטגוריה')
     +mi(`setQpMode(${!qpMode})`,qpMode?'✓ שיוך מהיר למקומות (פעיל)':'⚡ שיוך מהיר למקומות')
     +mi(`openCatSettings('${esc(cat.key)}')`,'⚙ הגדרות הקטגוריה')
+    +mi(`openReorg()`,'🧩 איחוד / פיצול קטגוריות')
+    +mi(`archiveCat('${esc(cat.key)}')`,'🗄 מחיקת הקטגוריה (נשמרת בארכיון)')
     +mi(`openSubMgr('${esc(cat.key)}')`,subsN?'✎ ניהול תתי־קטגוריות':'＋ הוספת תת־קטגוריה')
     +(fs.length?mi(`openFeatDlg('${esc(cat.key)}')`,'🏷 שיוך מהיר של פיצ\'רים'+(miss?` (${miss} חסרים)`:'')):'')
     +mi(`openFeatMgr('${esc(cat.key)}')`,fs.length?'⚙ ניהול פיצ\'רים':'＋ פיצ\'רים / לייבלים')
@@ -2972,7 +2989,7 @@ function renderCatStrip(){
     +(nImg?mi(`openDocGallery('cat_${esc(cat.key)}','${esc(cat.label)} — תוכניות ותמונות')`,`🗺 תוכניות / תמונות (${nImg})`):'')
     +`</div></details>`;
   const sl=[vc.ordered?`<button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button>`:'',vc.toorder?`<button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button>`:'',vc.rejected?`<button class="r" onclick="setView('rejected')">↩ הוסרו ${vc.rejected}</button>`:''].join('');
-  let h=`<div class="csrow"><span class="st">${stLab}</span><span>${goal}</span>${sl?`<span class="statline">${sl}</span>`:''}${menu}</div>`;
+  let h=`<div class="csrow"><span class="st">${stLab}</span>${stt==='done'?`<button type="button" class="reopen" onclick="reopenCat('${esc(cat.key)}')" title="לקנות עוד מהקטגוריה או לרענן אותה במוצרים חדשים / דגשים אחרים">↩ להחזיר להחלטה</button>`:''}<span>${goal}</span>${sl?`<span class="statline">${sl}</span>`:''}${menu}</div>`;
   h+=researchStripHTML(cat);
   if(chosenN>1&&!cat.multi) h+=`<div class="warnB">⚠ שימי לב: נבחרו ${chosenN} פריטים בקטגוריה. אם זה מכוון (למשל כמה פריטים לאותו חלל), אפשר לאשר בהגדרות הקטגוריה — "מותר לבחור כמה".</div>`;
   ord.forEach(i=>{ const n=docsList('item_'+i.id).length;
@@ -3109,7 +3126,7 @@ function toggleCatMenu(force){
   const m=document.getElementById('catMenu'); const open=force!==undefined?force:m.hidden; m.hidden=!open;
   if(open){ renderCatMenu(); setTimeout(()=>{const q=document.getElementById('cmQ'); if(q&&matchMedia('(min-width:700px)').matches)q.focus();},60); }
 }
-let prioPop=null, _dragKey=null;
+let prioPop=null, _dragKey=null, prioHideOrd=false; try{ prioHideOrd=!!localStorage.getItem('prioHideOrd'); }catch(e){}
 document.addEventListener('click',e=>{ const inPill=(e.composedPath?e.composedPath():[]).some(n=>n&&n.classList&&n.classList.contains('pPillWrap'))||e.target.closest('.pPillWrap');
   if(prioPop&&!inPill){ prioPop=null; try{renderCatMenu();}catch(x){} } });
 function setCatMetaBatch(map){
@@ -3168,7 +3185,8 @@ function renderCatMenu(){
   const item=c=>{ const n=ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length, stt=catState(c), sg=catSuggs?catSuggs(c.key).length:0, b=brk[c.key]||{d:0,c:0,o:0};
     const subs=menuMode==='prio'?[]:(c.subs||[]).filter(x=>!q||c.label.includes(q)||x.includes(q));
     const pp=Number(c.prio)||0, dr=menuMode!=='prio'&&!menuQ.trim();
-    return `<div${dr?` draggable="true" ondragstart="prioDragStart(event,'${esc(c.key)}')" ondragend="prioDragEnd()" title="גררי לאזור הדחיפות למעלה"`:''}><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span><span class="pcyc" role="button" title="לחיצה משנה דחיפות: ⚪ ← 🔴 ← 🟠 ← 🟢" onclick="event.stopPropagation();cycleCatPrio('${esc(c.key)}')">${['⚪','🔴','🟠','🟢'][pp]}</span>${esc(c.label)}${sg?' 💡':''}<small class="cmb">${b.c?`<span class="cc c" title="נבחר — להזמין">🛒${b.c}</span>`:''}${b.o?`<span class="cc o" title="הוזמן">📦${b.o}</span>`:''}</small></button>`
+    return `<div${dr?` draggable="true" ondragstart="prioDragStart(event,'${esc(c.key)}')" ondragend="prioDragEnd()" title="גררי לאזור הדחיפות למעלה"`:''}><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span><span class="pcyc" role="button" title="לחיצה משנה דחיפות: ⚪ ← 🔴 ← 🟠 ← 🟢" onclick="event.stopPropagation();cycleCatPrio('${esc(c.key)}')">${['⚪','🔴','🟠','🟢'][pp]}</span>${esc(c.label)}${sg?' 💡':''}<small class="cmb">${b.c?`<span class="cc c" title="נבחר — להזמין">🛒${b.c}</span>`:''}${b.o&&menuMode!=='prio'?`<span class="cc o" title="הוזמן">📦${b.o}</span>`:''}</small></button>`
+      +(stt==='done'?`<button type="button" class="reopen" onclick="reopenCat('${esc(c.key)}')" title="להחזיר לממתין להחלטה — לקנות עוד או לרענן עם מוצרים חדשים">↩ להחזיר להחלטה</button>`:'')
       +(subs.length?`<div class="cmsubs">${subs.map(x=>`<button type="button" onclick="pickCat('${esc(c.key)}','${esc(x)}')">${esc(x)}</button>`).join('')}</div>`:'')+`</div>`; };
   let body='';
   if(menuMode==='prio'){
@@ -3178,13 +3196,15 @@ function renderCatMenu(){
     const live=cats.filter(c=>catState(c)!=='done'&&ITEMS.some(i=>i.cat===c.key&&!i.hidden));
     const doneN=cats.filter(c=>catState(c)==='done').length;
     const row=c=>{ const pr=Number(c.prio)||0, st=catState(c), cn=chN(c);
-      const hint=st==='pick'?`🟡 נבחר — צריך להזמין${cn>1?' ('+cn+')':''}`:'';
+      const on=(brk[c.key]||{}).o||0;
+      const hint=[st==='pick'?`🟡 נבחר — צריך להזמין${cn>1?' ('+cn+')':''}`:'', on?`<span class="phOrd">✓ כבר הוזמנו ${on} פריטים — הקטגוריה נשארת פתוחה להמשך</span>`:''].filter(Boolean).join(' · ');
       const k=esc(c.key);
       return `<div class="prow" draggable="true" data-k="${k}" ondragstart="prioDragStart(event,'${k}')" ondragend="prioDragEnd()" ondragover="prioDragOver(event)" ondragleave="this.classList.remove('dropB','dropA')" ondrop="prioDrop(event,'${k}',${pr})"><span class="pgrip" title="גרירה לשינוי סדר / דחיפות">⋮⋮</span><span class="pPillWrap"><button type="button" class="pPill p${pr}" onclick="event.stopPropagation();prioPop=(prioPop==='${k}'?null:'${k}');renderCatMenu()" title="בחירת דרגת דחיפות">${['⚪','🔴','🟠','🟢'][pr]}</button>${prioPop===c.key?`<div class="pPop" onclick="event.stopPropagation()">${[[1,'🔴 דחוף'],[2,'🟠 בקרוב'],[3,'🟢 אפשר לחכות'],[0,'⚪ ללא דחיפות']].map(([v,l])=>`<button type="button" class="${v===pr?'on':''}" onclick="setCatPrio('${k}',${v})">${l}</button>`).join('')}</div>`:''}</span><div class="pmain">${item(c)}${hint?`<small class="phint">${hint}</small>`:''}</div><span class="pmv"><button type="button" title="למעלה" onclick="moveCatPrio('${k}',-1)">▲</button><button type="button" title="למטה" onclick="moveCatPrio('${k}',1)">▼</button></span></div>`; };
     const sortFn=(a,b)=>((a.pord==null?1e9:+a.pord)-(b.pord==null?1e9:+b.pord))||rank(a)-rank(b)||chN(b)-chN(a)||a.label.localeCompare(b.label,'he');
-    window._prioLv=lv=>live.filter(c=>(Number(c.prio)||0)===lv).sort(sortFn);
-    body=LV.map(([lv,lab])=>{ const arr=window._prioLv(lv); if(!arr.length&&lv===0) return ''; return `<div class="cmg" ondragover="prioDragOver(event)" ondrop="prioDrop(event,null,${lv})"><h5>${lab} <small>(${arr.length})</small></h5>${arr.length?arr.map(row).join(''):'<div class="pEmpty">גררי לכאן קטגוריה</div>'}</div>`; }).join('')
-      +(doneN?`<div class="cmg"><h5>✅ הוזמנו / הושלמו (${doneN})</h5><button type="button" class="cmi" onclick="menuState='done';menuMode='topic';renderCatMenu()">הצגת הקטגוריות שהושלמו</button></div>`:'')
+    const liveV=prioHideOrd?live.filter(c=>!((brk[c.key]||{}).o)):live, hidOrd=live.length-liveV.length, ordN=live.filter(c=>(brk[c.key]||{}).o).length;
+    window._prioLv=lv=>liveV.filter(c=>(Number(c.prio)||0)===lv).sort(sortFn);
+    body=(ordN?`<label class="prioOpt"><input type="checkbox" ${prioHideOrd?'checked':''} onchange="prioHideOrd=this.checked;try{localStorage.setItem('prioHideOrd',this.checked?'1':'')}catch(e){}renderCatMenu()"> הסתר קטגוריות שכבר הוזמן בהן משהו (${ordN})</label>`:'')+LV.map(([lv,lab])=>{ const arr=window._prioLv(lv); if(!arr.length&&lv===0) return ''; return `<div class="cmg" ondragover="prioDragOver(event)" ondrop="prioDrop(event,null,${lv})"><h5>${lab} <small>(${arr.length})</small></h5>${arr.length?arr.map(row).join(''):'<div class="pEmpty">גררי לכאן קטגוריה</div>'}</div>`; }).join('')
+      +(doneN?`<div class="cmg"><h5>✅ הוזמנו / הושלמו (${doneN}) <small>— לחיצה על ↩ מחזירה לממתין להחלטה</small></h5>${cats.filter(c=>catState(c)==='done').map(c=>`<div class="doneRow"><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span>${c.icon}</span>${esc(c.label)}<small class="cmb"><span class="cc o">✓ הוזמנו ${(brk[c.key]||{}).o||0}</span></small></button><button type="button" class="reopen" onclick="reopenCat('${esc(c.key)}')" title="להחזיר לממתין להחלטה — לקנות עוד או לרענן עם מוצרים חדשים">↩ להחלטה</button></div>`).join('')}</div>`:'')
       +'<p class="docnote">💡 לחצי על העיגול הצבעוני כדי לבחור דרגת דחיפות, או גררי קטגוריה (⋮⋮) למקום אחר — גם בתוך אותה דרגה. בנייד: החצים ▲▼.</p>';
   } else if(menuMode==='topic'){
     const groups={}; cats.forEach(c=>{ (groups[c.group||'אחר']=groups[c.group||'אחר']||[]).push(c); });
@@ -3197,14 +3217,16 @@ function renderCatMenu(){
   }
   if(menuMode!=='prio') body=`<div class="prioBar"><span>↕ גררי קטגוריה לכאן, או לחצי על העיגול שלידה לשינוי דחיפות:</span>${[[1,'🔴 דחוף'],[2,'🟠 בקרוב'],[3,'🟢 אפשר לחכות'],[0,'⚪ ללא']].map(([lv,l])=>`<div class="pz" ondragover="prioDragOver(event);this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="this.classList.remove('over');prioDrop(event,null,${lv})">${l}</div>`).join('')}<button type="button" onclick="menuMode='prio';renderCatMenu()">🎯 סדר מלא</button></div>`+body;
   if(!cats.length) body='<p class="docnote">לא נמצאה קטגוריה בשם הזה.</p>';
-  m.innerHTML=`<div class="cmTop"><input id="cmQ" placeholder="🔍 חיפוש קטגוריה או נושא…" value="${esc(menuQ)}" oninput="menuQ=this.value;renderCatMenu();"><span class="seg2"><button type="button" class="${menuMode==='prio'?'on':''}" onclick="menuMode='prio';renderCatMenu()">🎯 לפי דחיפות</button><button type="button" class="${menuMode==='topic'?'on':''}" onclick="menuMode='topic';renderCatMenu()">🗂 לפי נושא</button><button type="button" class="${menuMode==='alpha'?'on':''}" onclick="menuMode='alpha';renderCatMenu()">א–ת</button></span><button type="button" class="cmi" style="width:auto" onclick="pickCat('all')">✦ הכל</button></div>
+  if(menuState==='archive') body='<div class="cmg" style="column-span:all"><h5>🗄 ארכיון הקטגוריות — לא מופיעות ברשימה ובסינונים</h5>'+(ARCHIVED_CATS.length?ARCHIVED_CATS.filter(c=>!q||c.label.includes(q)).map(c=>`<div class="doneRow"><span class="cmi" style="cursor:default"><span>${c.icon}</span>${esc(c.label)}<small class="cmb">${ARCHIVED_ITEMS.filter(i=>i.cat===c.key).length} פריטים</small></span><button type="button" class="reopen" onclick="restoreCat('${esc(c.key)}')">↩ שחזור</button></div>`).join(''):'<p class="docnote">הארכיון ריק.</p>')+'</div>';
+  m.innerHTML=`<div class="cmTop"><input id="cmQ" placeholder="🔍 חיפוש קטגוריה או נושא…" value="${esc(menuQ)}" oninput="menuQ=this.value;renderCatMenu();"><span class="seg2"><button type="button" class="${menuMode==='prio'?'on':''}" onclick="menuMode='prio';renderCatMenu()">🎯 לפי דחיפות</button><button type="button" class="${menuMode==='topic'?'on':''}" onclick="menuMode='topic';renderCatMenu()">🗂 לפי נושא</button><button type="button" class="${menuMode==='alpha'?'on':''}" onclick="menuMode='alpha';renderCatMenu()">א–ת</button></span><button type="button" class="cmi" style="width:auto" onclick="pickCat('all')">✦ הכל</button><button type="button" class="cmi" style="width:auto" onclick="openReorg()" title="איחוד, פיצול ותתי־קטגוריות">🧩 ארגון</button></div>
     <div class="cmSum"><span class="lab">מה נותר:</span>
       <button type="button" class="${menuState==='open'?'on':''}" onclick="menuState=menuState==='open'?null:'open';renderCatMenu()">🔴 ממתינות להחלטה <b>${stc.open}</b></button>
       <button type="button" class="${menuState==='pick'?'on':''}" onclick="menuState=menuState==='pick'?null:'pick';renderCatMenu()">🟡 נבחר, צריך להזמין <b>${stc.pick}</b></button>
       <button type="button" class="${menuState==='done'?'on':''}" onclick="menuState=menuState==='done'?null:'done';renderCatMenu()">🟢 הוזמנו <b>${stc.done}</b></button>
+      ${ARCHIVED_CATS.length?`<button type="button" class="${menuState==='archive'?'on':''}" onclick="menuState=menuState==='archive'?null:'archive';renderCatMenu()">🗄 ארכיון <b>${ARCHIVED_CATS.length}</b></button>`:''}
       ${(menuState||menuQ.trim())?`<button type="button" class="cmClear" onclick="clearMenuFilters()">✕ ניקוי הסינון</button>`:''}
       <span class="cmTot">🛒 ${remOrder} פריטים נבחרו ועוד לא הוזמנו</span></div>
-    ${menuState||menuQ.trim()?`<div class="cmNow">מוצג בתפריט: ${menuState?({open:'🔴 ממתינות להחלטה',pick:'🟡 נבחר, צריך להזמין',done:'🟢 הוזמנו'}[menuState]):''}${menuState&&menuQ.trim()?' · ':''}${menuQ.trim()?'חיפוש ״'+esc(menuQ.trim())+'״':''} — ${cats.length} קטגוריות</div>`:''}
+    ${menuState||menuQ.trim()?`<div class="cmNow">מוצג בתפריט: ${menuState?({open:'🔴 ממתינות להחלטה',pick:'🟡 נבחר, צריך להזמין',done:'🟢 הוזמנו',archive:'🗄 ארכיון'}[menuState]):''}${menuState&&menuQ.trim()?' · ':''}${menuQ.trim()?'חיפוש ״'+esc(menuQ.trim())+'״':''} — ${cats.length} קטגוריות</div>`:''}
     <div class="cmCols">${body}</div>`;
   const qi=document.getElementById('cmQ');
   if(qi&&hadFocus){ qi.focus(); const p=caret==null?qi.value.length:caret; try{qi.setSelectionRange(p,p);}catch(e){} }
@@ -3383,6 +3405,136 @@ saveSubMgr=function(){
   savePlacesList(keep.map(r=>{ const o=old.find(p=>p.n===(r.orig||r.name)); return {n:r.name,alias:(o&&o.alias)||undefined}; }));
   _subKey=null; document.getElementById('subDlg').close(); ITEMS.forEach(i=>paintLoc(els.get(i.id),i)); renderSubRow(); RE();
 };
+
+/* ===== reorganise categories: merge / nest / split, with suggestions and undo ===== */
+const REORG=[
+ {id:'m-danny',kind:'merge',mode:'flat',cats:['שולחן לדני','שולחן לימודים לדני'],name:'שולחן לדני',why:'אותו מוצר (שולחן ללימודים של דני) מפוצל לשתי קטגוריות'},
+ {id:'m-bathheat',kind:'merge',mode:'nested',cats:['תנור לחדרי רחצה','מחמם מגבות'],name:'חימום לחדרי רחצה',why:'כל מה שמחמם בחדרי הרחצה — מפזרי חום, אינפרא ומחממי מגבות — במקום אחד'},
+ {id:'m-outheat',kind:'merge',mode:'nested',cats:['תנורי פרגולה','תנור למרפסת העליונה'],name:'תנורי חימום לחוץ',why:'שני תנורי חוץ — פרגולה ומרפסת — עם אותן דרישות מהשוק'},
+ {id:'m-kitchenapp',kind:'merge',mode:'nested',cats:['מקרר','מדיח','כיריים','תנור','מיקרוגל','מכונות קפה'],name:'מכשירי חשמל למטבח',why:'שש קטגוריות קטנות של 3–5 פריטים — מכשיר אחד לכל תת־קטגוריה'},
+ {id:'m-beds',kind:'merge',mode:'nested',cats:['מיטת לילי','מיטת אורחים'],name:'מיטות',why:'אותו סוג מוצר, חדר אחר לכל מיטה'},
+ {id:'m-wardrobes',kind:'merge',mode:'nested',cats:['ארון לחדר אורחים','ארונות לחדרי הילדים'],name:'ארונות לחדרי שינה',why:'ארונות לחדרים שונים — השוואה ביניהם במקום אחד'},
+ {id:'m-security',kind:'merge',mode:'nested',cats:['מנעול חכם','אינטרקום וידאו'],name:'אבטחה וכניסה חכמה',why:'שתי קטגוריות קטנות של בית חכם בכניסה'},
+ {id:'m-tv',kind:'merge',mode:'nested',cats:['מזנון לטלוויזיה','זרועות לטלוויזיה'],name:'טלוויזיה',why:'מזנון וזרועות הם חלק מאותה החלטה על הקיר'},
+ {id:'m-trash',kind:'merge',mode:'nested',cats:['פח','מחזור במטבח'],name:'פח ומחזור',why:'פחים ומחזור במטבח — אותה פינה'},
+ {id:'m-bathacc',kind:'merge',mode:'nested',cats:['סל כביסה','סיפון לכיור','שטיחוני רחצה','ספסל טיק'],name:'אביזרי חדרי רחצה',why:'ארבע קטגוריות קטנות של אביזרים לחדרי רחצה'},
+ {id:'m-organize',kind:'merge',mode:'nested',cats:['ארגון מזווה','ארגוניות למגירות','פתרונות אחסון'],name:'ארגון ואחסון',why:'שלוש קטגוריות של קופסאות וארגוניות שחוזרות על אותן חנויות ומוצרים'},
+ {id:'m-garden',kind:'merge',mode:'nested',cats:['גלגלת צינור','קוטל יתושים'],name:'אביזרי גינה',why:'קוטל יתושים הוא פריט אחד — לא קטגוריה שלמה'},
+ {id:'s-mirror',kind:'subs',cat:'מראה לכניסה',why:'17 מראות בלי חלוקה — לפי צורה',rules:[['קשת|ארך','קשת'],['אובל|חצי עיגול','אובלית / חצי עגולה'],['מלבנ|HOVET|ELINK|Konto','מלבנית / ארוכה']],dflt:'דקורטיבית / אחר'},
+ {id:'s-lilibed',kind:'subs',cat:'מיטת לילי',why:'16 מיטות בלי חלוקה — לפי סוג',rules:[['נפתח|חבר|Twins|זוגית','נפתחת / עם מיטת חבר'],['מונטסורית|מעקה|מעקות|מגודר|נמוכה|גובה 5','נמוכה / עם מעקה']],dflt:'מיטת עץ יחיד'},
+ {id:'s-hang',kind:'subs',cat:'תליה זמנית',why:'8 פריטים משלושה סוגים',rules:[['במבוק','מתלה במבוק'],['WORD|מדפים','יחידת מדפים + מוט'],['מתלה בגדים|RIGGA','מתלה בגדים מתכת']],dflt:'אחר'},
+ {id:'s-mop',kind:'subs',cat:'מגבים לרצפה',why:'10 מגבים בשתי טכנולוגיות',rules:[['ריסוס|Spray|PicoSpray|הפלא','מגב ריסוס']],dflt:'מגב שטוח + דלי'},
+ {id:'s-bathheat',kind:'subs',cat:'תנור לחדרי רחצה',why:'10 מתוך 15 עדיין בלי תת־קטגוריה',rules:[['מחמם מגבות|Roda|KERAMOS|AURA|מוט מחמם','מחמם מגבות / קרמי'],['אינפרא|Heliosa|Pic-Heat','תנור אינפרא']],dflt:'אחר'},
+ {id:'p-light',kind:'split',cat:'תאורה',why:'100 פריטים בקטגוריה אחת — לפי סוג התאורה',groups:[
+   {label:'תאורת חוץ ומרפסת',icon:'🌙',subs:['תאורת חוץ','מרפסת עליונה — גוף ארוך לחוץ (חיבור משמאל)']},
+   {label:'תאורת קיר',icon:'💡',subs:['תאורת קיר','תאורת קיר לילדים (הדלקה עצמית)']},
+   {label:'תאורת תקרה וספוטים',icon:'🔆',subs:['תאורת תקרה','מאווררי תקרה עם תאורה','ספוט על זרוע — פינת עבודה וחלל מרכזי (11)','ספוטים — חדר ארונות וחדר שינה הורים (7)']},
+   {label:'תאורה לחדר רחצה הורים',icon:'🛁',subs:['חדר רחצה הורים — תלויים ארוגים בפינה (2)','חדר רחצה הורים — גופי מרכז (2)']}]}
+];
+let _reorgUndoCats=null;
+const safeKey=n=>String(n||'').trim().replace(/[.#$\[\]\/]/g,'-');
+function planMerge(keys,mode,name){
+  const cats=keys.map(k=>CATS.find(c=>c.key===k)).filter(Boolean); if(cats.length<2||!String(name||'').trim()) return null;
+  const nk=safeKey(name), label=String(name).trim(), srcMatch=cats.find(c=>c.key===nk||c.label===label);
+  const moves=[], subs=[];
+  const addSub=x=>{ if(x&&!subs.includes(x)) subs.push(x); };
+  cats.forEach(c=>{
+    if(mode==='flat') (c.subs||[]).forEach(addSub);
+    ITEMS.filter(i=>i.cat===c.key).forEach(i=>{
+      let sub=i.sub||''; if(mode==='nested') sub=i.sub?(i.sub.includes(c.label)?i.sub:c.label+' · '+i.sub):c.label;
+      moves.push({id:i.id,cat:srcMatch?srcMatch.key:nk,sub,oldCat:i.cat,oldSub:i.sub||''}); addSub(sub); });
+    if(mode==='nested') addSub(c.label);
+  });
+  const target=srcMatch?srcMatch.key:nk, prios=cats.map(c=>Number(c.prio)||0).filter(Boolean);
+  const plan={moves,archive:cats.filter(c=>c.key!==target).map(c=>({key:c.key,into:target})),create:[],update:[]};
+  const meta={subs:subs.length?subs:['__none']};
+  if(srcMatch) plan.update.push({key:target,...meta}); else plan.create.push({key:nk,label,icon:cats[0].icon,group:cats[0].group,multi:true,prio:prios.length?Math.min(...prios):0,...meta});
+  plan.title='🔗 "'+label+'" — איחוד '+cats.length+' קטגוריות ('+moves.length+' פריטים)'; return plan;
+}
+function planSubs(pr){
+  const cat=CATS.find(c=>c.key===pr.cat); if(!cat) return null;
+  const rules=pr.rules.map(([re,sub])=>[new RegExp(re,'i'),sub]), moves=[], subs=[...(cat.subs||[])];
+  ITEMS.filter(i=>i.cat===cat.key&&!i.sub&&i.type!=='color').forEach(i=>{ const r=rules.find(([re])=>re.test(i.name||'')); const sub=r?r[1]:pr.dflt; moves.push({id:i.id,cat:cat.key,sub,oldCat:cat.key,oldSub:''}); if(!subs.includes(sub)) subs.push(sub); });
+  if(!moves.length) return null;
+  return {moves,archive:[],create:[],update:[{key:cat.key,subs}],title:'🗂 "'+cat.label+'" — חולקה ל־'+new Set(moves.map(m=>m.sub)).size+' תתי־קטגוריות ('+moves.length+' פריטים)'};
+}
+function planSplit(pr){
+  const cat=CATS.find(c=>c.key===pr.cat); if(!cat) return null;
+  const moves=[], create=[];
+  pr.groups.forEach(g=>{ const its=ITEMS.filter(i=>i.cat===cat.key&&g.subs.includes(i.sub)); if(!its.length) return;
+    const nk=safeKey(g.label); its.forEach(i=>moves.push({id:i.id,cat:nk,sub:i.sub,oldCat:cat.key,oldSub:i.sub||''}));
+    create.push({key:nk,label:g.label,icon:g.icon||cat.icon,group:cat.group,multi:true,prio:Number(cat.prio)||0,subs:[...new Set(its.map(i=>i.sub))]}); });
+  if(!moves.length) return null;
+  return {moves,archive:[],create,update:[],title:'✂ "'+cat.label+'" — פוצלה ל־'+create.length+' קטגוריות ('+moves.length+' פריטים)'};
+}
+function planOf(pr){ return pr.kind==='merge'?planMerge(pr.cats,pr.mode,pr.name):pr.kind==='subs'?planSubs(pr):planSplit(pr); }
+function reorgApply(plan){
+  const prevCats={}, undo={moves:plan.moves.map(m=>({id:m.id,cat:m.oldCat,sub:m.oldSub})),create:plan.create.map(c=>c.key),update:[],archive:plan.archive.map(a=>a.key)};
+  plan.update.forEach(u=>{ const c=CATS.find(x=>x.key===u.key); undo.update.push({key:u.key,subs:(c&&c.subs&&c.subs.length)?[...c.subs]:null}); });
+  const catWrites=[];
+  plan.create.forEach(c=>{ shared.cats=shared.cats||{}; shared.cats[c.key]={...c}; catWrites.push(['PUT',c.key,c]); });
+  plan.update.forEach(u=>{ shared.cats=shared.cats||{}; shared.cats[u.key]={...(shared.cats[u.key]||{}),key:u.key,subs:u.subs}; catWrites.push(['PATCH',u.key,{key:u.key,subs:u.subs}]); });
+  plan.archive.forEach(a=>{ shared.cats=shared.cats||{}; shared.cats[a.key]={...(shared.cats[a.key]||{}),key:a.key,archived:true,mergedInto:a.into}; catWrites.push(['PATCH',a.key,{key:a.key,archived:true,mergedInto:a.into}]); });
+  catWrites.forEach(([m,k,b])=>fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(k)}.json`,{method:m,body:JSON.stringify(b)}).catch(()=>{}));
+  const body={}; shared.items=shared.items||{};
+  plan.moves.forEach(m=>{ body[m.id+'/id']=m.id; body[m.id+'/cat']=m.cat; body[m.id+'/sub']=m.sub||''; shared.items[m.id]={...(shared.items[m.id]||{}),id:m.id,cat:m.cat,sub:m.sub||''}; });
+  if(plan.moves.length) fetch(`${DB}/picks/_catalog/items.json`,{method:'PATCH',body:JSON.stringify(body)}).catch(()=>{});
+  const wasSel=[...selCats].some(k=>plan.archive.some(a=>a.key===k)||plan.moves.some(m=>m.oldCat===k));
+  if(wasSel){ selCats=new Set(); subf=null; syncHash(); }
+  rebuild(); tabsHTML(); buildChips(); RE(true); renderCatMenu(); if(document.getElementById('reorgDlg').open) renderReorg();
+  undoToast(plan.title,()=>reorgUndo(undo));
+}
+function reorgUndo(u){
+  const body={}; shared.items=shared.items||{};
+  u.moves.forEach(m=>{ body[m.id+'/id']=m.id; body[m.id+'/cat']=m.cat; body[m.id+'/sub']=m.sub||''; shared.items[m.id]={...(shared.items[m.id]||{}),id:m.id,cat:m.cat,sub:m.sub||''}; });
+  if(u.moves.length) fetch(`${DB}/picks/_catalog/items.json`,{method:'PATCH',body:JSON.stringify(body)}).catch(()=>{});
+  u.create.forEach(k=>{ if(shared.cats) delete shared.cats[k]; fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(k)}.json`,{method:'DELETE'}).catch(()=>{}); });
+  u.update.forEach(x=>{ const subs=x.subs||null; shared.cats=shared.cats||{}; shared.cats[x.key]={...(shared.cats[x.key]||{}),key:x.key,subs}; fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(x.key)}.json`,{method:'PATCH',body:JSON.stringify({key:x.key,subs})}).catch(()=>{}); });
+  u.archive.forEach(k=>{ shared.cats=shared.cats||{}; shared.cats[k]={...(shared.cats[k]||{}),key:k,archived:null,mergedInto:null}; fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(k)}.json`,{method:'PATCH',body:JSON.stringify({key:k,archived:null,mergedInto:null})}).catch(()=>{}); });
+  rebuild(); tabsHTML(); buildChips(); RE(true); renderCatMenu(); if(document.getElementById('reorgDlg').open) renderReorg();
+}
+let _mergeSel=new Set(), _mergeQ='', _mergeMode='nested', _mergeName='';
+function openReorg(){ document.getElementById('reorgDlg').showModal(); renderReorg(); }
+function applyReorg(id){ const pr=REORG.find(x=>x.id===id); const plan=pr&&planOf(pr); if(plan) reorgApply(plan); }
+function renderReorg(){
+  const b=document.getElementById('reorgBody'); if(!b) return;
+  const items=REORG.map(pr=>({pr,plan:planOf(pr)})).filter(x=>x.plan);
+  const kindLab={merge:'איחוד',subs:'חלוקה לתתי־קטגוריות',split:'פיצול'};
+  const sug=items.map(({pr,plan})=>{
+    let what='';
+    if(pr.kind==='merge') what=pr.cats.map(k=>{const c=CATS.find(x=>x.key===k); return c?`${c.icon} ${esc(c.label)} <small>${ITEMS.filter(i=>i.cat===k).length}</small>`:''}).filter(Boolean).join(' + ')+` → <b>${esc(pr.name)}</b> <small>(${pr.mode==='nested'?'כל קטגוריה הופכת לתת־קטגוריה':'כל הפריטים ביחד'})</small>`;
+    else if(pr.kind==='subs'){ const c={}; plan.moves.forEach(m=>c[m.sub]=(c[m.sub]||0)+1); what=`<b>${esc(pr.cat)}</b>: `+Object.entries(c).map(([k,v])=>`${esc(k)} <small>${v}</small>`).join(' · '); }
+    else what=`<b>${esc(pr.cat)}</b> → `+plan.create.map(c=>`${c.icon} ${esc(c.label)} <small>${plan.moves.filter(m=>m.cat===c.key).length}</small>`).join(' · ');
+    return `<div class="rgCard"><div class="rgK">${kindLab[pr.kind]}</div><div class="rgW">${what}</div><div class="rgWhy">${esc(pr.why)}</div><button type="button" class="reopen" onclick="applyReorg('${pr.id}')">החלי</button></div>`; }).join('');
+  const names=[..._mergeSel].map(k=>(CATS.find(c=>c.key===k)||{}).label).filter(Boolean);
+  if(!_mergeName||(_mergeSel.size&&!names.includes(_mergeName)&&_mergeName===window._mergeAuto)) { _mergeName=names[0]||''; window._mergeAuto=_mergeName; }
+  const q=_mergeQ.trim(), list=CATS.filter(c=>c.key!=='all'&&(!q||c.label.includes(q))).sort((a,b)=>a.label.localeCompare(b.label,'he'));
+  const tot=[..._mergeSel].reduce((n,k)=>n+ITEMS.filter(i=>i.cat===k).length,0);
+  b.innerHTML=`<div class="rgSec"><h4>💡 הצעות לארגון מחדש (${items.length})</h4><p class="docnote">כל החלה ניתנת לביטול מיד אחרי. שמות הקטגוריות, הפריטים וההחלטות נשמרים — רק השיוך משתנה, והקטגוריות שמתאחדות עוברות לארכיון.</p>${sug||'<p class="docnote">אין הצעות פתוחות.</p>'}</div>
+  <details class="rgSec"><summary><b>🔗 איחוד ידני של קטגוריות</b></summary>
+    <input class="rgQ" placeholder="חיפוש קטגוריה…" value="${esc(_mergeQ)}" oninput="_mergeQ=this.value;renderReorg();const i=document.querySelector('.rgQ');i.focus();i.setSelectionRange(i.value.length,i.value.length)">
+    <div class="rgList">${list.map(c=>`<label><input type="checkbox" ${_mergeSel.has(c.key)?'checked':''} onchange="this.checked?_mergeSel.add('${esc(c.key)}'):_mergeSel.delete('${esc(c.key)}');renderReorg()"> ${c.icon} ${esc(c.label)} <small>${ITEMS.filter(i=>i.cat===c.key).length}</small></label>`).join('')}</div>
+    <div class="rgOpt"><label><input type="radio" name="mm" ${_mergeMode==='nested'?'checked':''} onchange="_mergeMode='nested';renderReorg()"> כל קטגוריה הופכת לתת־קטגוריה תחת קטגוריה כללית</label><label><input type="radio" name="mm" ${_mergeMode==='flat'?'checked':''} onchange="_mergeMode='flat';renderReorg()"> איחוד לקטגוריה אחת עם כל הפריטים ביחד</label></div>
+    <div class="rgOpt">שם הקטגוריה: <input id="rgName" list="rgNames" value="${esc(_mergeName)}" oninput="_mergeName=this.value;window._mergeAuto=null" placeholder="אחד מהשמות או שם חדש"><datalist id="rgNames">${names.map(n=>`<option value="${esc(n)}">`).join('')}</datalist></div>
+    <button type="button" class="tbtn primary" ${_mergeSel.size>=2&&_mergeName.trim()?'':'disabled'} onclick="applyManualMerge()">איחוד ${_mergeSel.size>=2?_mergeSel.size+' קטגוריות · '+tot+' פריטים':''}</button>
+  </details>`;
+}
+function applyManualMerge(){ const plan=planMerge([..._mergeSel],_mergeMode,_mergeName); if(!plan){ say('בחרי לפחות שתי קטגוריות ושם',2500); return; } _mergeSel=new Set(); _mergeName=''; reorgApply(plan); }
+function archiveCat(key){
+  const c=CATS.find(x=>x.key===key); if(!c) return;
+  if(ITEMS.some(i=>i.cat===key&&i.ordered)){ say('בקטגוריה יש פריטים שכבר הוזמנו (הם נספרים בהוצאות) — אי אפשר להעביר אותה לארכיון',4500); return; }
+  const wasSel=selCats.has(key);
+  setCatMeta(key,{archived:true});
+  if(wasSel){ selCats.delete(key); syncHash(); buildChips(); tabsHTML(); RE(true); window.scrollTo({top:0,behavior:'smooth'}); }
+  renderCatMenu();
+  undoToast('🗄 "'+c.label+'" הועברה לארכיון',()=>{ setCatMeta(key,{archived:null}); renderCatMenu(); });
+}
+function restoreCat(key){ setCatMeta(key,{archived:null}); renderCatMenu(); say('↩ הקטגוריה חזרה לרשימה',2500); }
+function reopenCat(key){
+  const c=CATS.find(x=>x.key===key); if(!c) return; const prev=c.closed;
+  setCatMeta(key,{closed:false}); renderCatMenu();
+  undoToast('↩ "'+c.label+'" חזרה לממתין להחלטה',()=>{ setCatMeta(key,{closed:prev===undefined?null:prev}); renderCatMenu(); });
+}
 function setCatClosed(key,val){
   shared.cats=shared.cats||{}; shared.cats[key]={...(shared.cats[key]||{}),key,closed:val};
   fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(key)}.json`,{method:'PATCH',body:JSON.stringify({key,closed:val})}).catch(()=>{});
