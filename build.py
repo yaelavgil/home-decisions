@@ -1411,6 +1411,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"שולחן לימודים לדני","label":"שולחן לימודים לדני","icon":"📚","slug":"danny-study-desk"},
       {"key":"וילון לממד","label":"וילון גלילה לממד (חדר דני)","icon":"🪟","slug":"mamad-blind","group":"חדרי שינה וילדים","multi":True,"subs":["זול ומהיר","מידה אישית — מראה טבעי","פרימיום — קסטה / דאבל / תעלות צד"]},
       {"key":"תנורי פרגולה","label":"תנורי פרגולה","icon":"🌡️","slug":"pergola-heater"},
+      {"key":"שולחן סנוקר לחצר","label":"שולחן סנוקר לחצר (עם כיסוי)","icon":"🎱","slug":"snooker-table","group":"חוץ ופרגולה","multi":True,"prio":3},
       {"key":"תנור למרפסת העליונה","label":"תנור עומד למרפסת העליונה","icon":"🍄","slug":"balcony-heater","group":"חוץ ופרגולה","multi":True},
       {"key":"מחמם מגבות","label":"מחמם מגבות","icon":"🧖","slug":"towel-warmer","subs":["מחמם מגבות", "תנור אמבטיה"]},
       {"key":"תנור לחדרי רחצה","label":"תנור לחדרי רחצה","icon":"🔥","slug":"bathroom-heater","subs":["מפזר חום", "תנור אינפרא", "חדר רחצה אורחים — עיצוב בוטיק"]},
@@ -4601,6 +4602,8 @@ for _o in json.load(open(os.path.join(REPO,"vanity.json"),encoding="utf-8")):
 for _o in json.load(open(os.path.join(REPO,"bathroom-heater2.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"balcony-heater.json"),encoding="utf-8")):
+    DATA.append(_o)
+for _o in json.load(open(os.path.join(REPO,"snooker.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"gardennook.json"),encoding="utf-8")):
     DATA.append(_o)
