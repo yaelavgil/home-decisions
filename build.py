@@ -2275,8 +2275,8 @@ header h1{font-size:clamp(18px,3vw,23px);white-space:nowrap}
 @media(max-width:560px){.qfab.cart .t{display:none}.qfab.cart{padding:13px 15px;font-size:18px}.hright .whoami{max-width:96px}}
 
 /* ---- curation / star ranking ---- */
-.cstars{display:none;align-items:center;gap:8px;flex-wrap:wrap;order:-1;background:#fff7e0;border:1.5px solid #f0d28a;border-radius:12px;padding:4px 8px}
-body.cur-mark .cstars{display:flex}
+.cstars{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:auto;background:#fff7e0;border:1.5px solid #f0d28a;border-radius:12px;padding:4px 8px}
+body.cur-mark .cstars{order:-1;margin-top:0}
 body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .shoprow,body.cur-mark .docBtn{display:none!important}
 .cstars .cl{font-size:13px;color:var(--muted);font-weight:600;flex:1;order:0}
 .cstars .cs{display:flex;gap:0;direction:ltr;order:2;flex:1 1 100%;justify-content:space-between}
@@ -2294,7 +2294,41 @@ body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .s
 .cs button.pop .sv{animation:starpop .38s cubic-bezier(.2,.9,.3,1.3)}
 .cstars .cl.lit{color:#8a5a00;font-weight:800}
 .cstars .cs>button{flex:1 1 0;width:0;min-width:0;max-width:54px;padding:3px 1px;height:38px}
+.card .stars{display:none!important} /* old shared rating replaced by per-person stars */
+/* minimal card: details live in the item dialog */
+.grid>.card :is(.partsBox,.scoreRow,.pickWhy,.keySpecs,ol.pts,.desc,.descToggle,.loc,.locLine,.people,.storeLine,.dimsRow,.useTag,.subQuick,.moreBtn,.docBtn,.shoprow,.more,.ordinfo,.featMiss,.pickWhyFull){display:none!important}
+.grid>.card .body>div:has(>.subtag){display:none}
+.grid>.card .featChips .featChip:nth-child(n+4){display:none}
+.grid>.card .name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.openBtn{display:none;width:100%;border:1.5px solid var(--line-2);background:var(--paper);border-radius:11px;padding:8px 0;font:inherit;font-size:13px;font-weight:700;color:var(--brass-d);cursor:pointer}
+.grid>.card .openBtn{display:block}
+.itemdlg{max-width:620px;width:94%;max-height:92vh;overflow:auto}
+.itemdlg .dh{display:flex;justify-content:space-between;gap:10px;position:sticky;top:0;background:var(--surface);z-index:3}
+.itemdlg .idx{border:0;background:var(--paper);width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer;flex-shrink:0}
+.itemdlg .db{padding:12px}
+.itemdlg .card.detail{box-shadow:none;border:0;max-width:100%;transform:none!important}
 .cstars .cs{min-width:0;overflow:hidden}
+/* compact (regular view): my stars + average chip on one line */
+.card .cstars{background:none;border:0;padding:0;gap:6px 8px;flex-wrap:wrap;justify-content:space-between}
+.card .cstars .cl,.card .cstars .cno{display:none}
+.card .cstars .cs{flex:0 0 auto;order:0;overflow:visible;justify-content:flex-start}
+.card .cstars .cs>button{flex:0 0 auto;width:26px;height:28px;max-width:none;padding:2px}
+.card .cstars .avg{order:1;margin-inline-start:auto}
+.avg{border:1px solid #c3d1de;background:#eaf0f5;color:#3b5368;border-radius:999px;padding:3px 10px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.avg[hidden]{display:none}
+.voteList{display:none;flex-wrap:wrap;gap:6px 10px;font-size:12.5px;background:#eaf0f5;border-radius:10px;padding:6px 10px}
+.voteList.open{display:flex}
+.voteList .vr{display:inline-flex;gap:5px;align-items:center}
+.voteList .vs{direction:ltr;color:#e0a21a;letter-spacing:1px}
+.voteList .vs i{font-style:normal;color:#c9d3dc}
+.voteList .vr.me b{color:#8a5a00}
+/* mark mode: bigger version */
+body.cur-mark .card .cstars{background:#fff7e0;border:1.5px solid #f0d28a;padding:4px 8px}
+body.cur-mark .card .cstars .cl{display:block}
+body.cur-mark .card .cstars .cno{display:inline-block}
+body.cur-mark .card .cstars .cs{flex:1 1 100%;order:2;overflow:hidden;justify-content:space-between}
+body.cur-mark .card .cstars .cs>button{flex:1 1 0;width:0;max-width:54px;height:38px;padding:3px 1px}
+body.cur-mark .card .cstars .avg{margin-inline-start:0}
 .cstars .cno{border:1.5px solid var(--line-2);background:var(--paper);border-radius:10px;padding:6px 10px;font:inherit;font-size:12.5px;font-weight:700;color:var(--no);cursor:pointer;order:1}
 .myStar{position:absolute;top:10px;inset-inline-start:10px;background:#e0a21a;color:#fff;font-weight:800;font-size:12.5px;padding:3px 9px;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.25);z-index:2}
 .pchip .ph{color:#c98c0c;font-size:11.5px}
@@ -2520,6 +2554,7 @@ body.cur-drag{overscroll-behavior:none}
 </div>
 <div class="toast" id="toast">✓ הועתק</div>
 
+<dialog id="itemDlg" class="itemdlg"><div class="dh"><span id="itemDlgT"></span><button type="button" class="idx" onclick="closeItem()" aria-label="סגירה">✕</button></div><div class="db" id="itemDlgB"></div></dialog>
 <dialog id="meDlg"><div class="dh">👋 מי את/ה?</div>
   <div class="db">
     <p>בחרו שם — כל הסימונים שלכם יופיעו לכולם על אותו לוח, תחת השם הזה.</p>
@@ -3684,6 +3719,23 @@ function setH(id,n){ if(!me){ openMe(); return; } const s=S(id); n=(s.h===n)?0:n
   if(n>0) s.status='yes'; else if(s.status==='yes') s.status='none';
   save(); paint(id); fbPushMark(id); renderPeople(); updateSumm(visible()); if(cur) curRefresh();
   const pb=els.get(id)&&els.get(id).querySelector('.cs button[data-n="'+n+'"]'); if(pb&&n){ pb.classList.remove('pop'); void pb.offsetWidth; pb.classList.add('pop'); } }
+let _itemOpen=null;
+function openItem(id){ const c=els.get(id), it=byId[id]; if(!c||!it) return; _itemOpen=id; renderItemDlg(); const d=document.getElementById('itemDlg'); if(!d.open) d.showModal(); }
+function closeItem(){ _itemOpen=null; const d=document.getElementById('itemDlg'); if(d.open) d.close(); }
+function renderItemDlg(){ const id=_itemOpen, c=els.get(id), it=byId[id]; if(!c||!it) return; const d=document.getElementById('itemDlg'), b=document.getElementById('itemDlgB');
+  const y=d.scrollTop, cl=c.cloneNode(true); cl.classList.add('detail'); cl.classList.remove('hidden');
+  cl.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+  cl.querySelectorAll('.openBtn,.moreBtn,.descToggle,.editb').forEach(e=>e.remove());
+  const m=cl.querySelector('div.more'); if(m) m.hidden=false; cl.querySelectorAll('.desc.hid').forEach(e=>e.classList.remove('hid'));
+  cl.querySelectorAll('.thumb').forEach(t=>t.setAttribute('onclick',"openLB('"+id+"')"));
+  const ta=cl.querySelector('textarea'); if(ta) ta.value=(st.s[id]&&st.s[id].note)||'';
+  const pp=cl.querySelector('.people'); if(pp&&pp.innerHTML.trim()) pp.style.display='';
+  document.getElementById('itemDlgT').textContent=it.name.length>60?it.name.slice(0,60)+'…':it.name;
+  b.innerHTML=''; b.appendChild(cl); d.scrollTop=y; }
+function refreshItemDlg(){ if(!_itemOpen) return; const d=document.getElementById('itemDlg'); if(!d.open){ _itemOpen=null; return; } const a=document.activeElement; if(a&&a.tagName==='TEXTAREA'&&d.contains(a)) return; renderItemDlg(); }
+document.addEventListener('close',e=>{ if(e.target&&e.target.id==='itemDlg') _itemOpen=null; },true);
+function voteHTML(v){ return v.map(m=>`<span class="vr${m.mine?' me':''}"><b>${esc(m.mine?'אני':m.name)}</b><span class="vs">${'★'.repeat(m.h)}<i>${'★'.repeat(5-m.h)}</i></span></span>`).join(''); }
+function showVotes(id){ const c=els.get(id), vl=c&&c.querySelector('.voteList'); if(!vl) return; const open=!vl.classList.contains('open'); vl.classList.toggle('open',open); vl.innerHTML=open?voteHTML(marksFor(id).filter(m=>m.h>0)):''; }
 function curNo(id){ const s=S(id), prev={status:s.status,h:s.h||0}; s.status='no'; s.h=0; save(); fbPushMark(id); paint(id); renderPeople(); RE(); curRefresh();
   const it=byId[id]||{}; undoToast('✕ "'+String(it.name||'').slice(0,30)+'" לא מתאים',()=>{ const t=S(id); t.status=prev.status; t.h=prev.h; save(); fbPushMark(id); paint(id); renderPeople(); RE(); curRefresh(); }); }
 function curRemove(id){ const s=S(id), prev={status:s.status,h:s.h||0}; s.h=0; if(s.status==='yes') s.status='none'; save(); fbPushMark(id); paint(id); renderPeople(); curRefresh();
@@ -3888,10 +3940,10 @@ function cardEl(it){
   const c=document.createElement('div'); c.dataset.id=it.id;
   const badge='';
   const media=it.type==='color'
-    ?`<div class="thumb swatch" style="background:${it.hex}" onclick="openLB('${it.id}')">${badge}</div>`
+    ?`<div class="thumb swatch" style="background:${it.hex}" onclick="openItem('${it.id}')">${badge}</div>`
     :it.img
-      ?`<div class="thumb" onclick="openLB('${it.id}')">${badge}<img src="${it.img}" alt="${it.name}">${it.imgs&&it.imgs.length>1?`<span class="badge-n">📷 ${it.imgs.length}</span>`:''}</div>`
-      :`<div class="thumb ph" onclick="openLB('${it.id}')">${badge}<span class="phico">${(CATS.find(x=>x.key===it.cat)||{}).icon||'📦'}</span></div>`;
+      ?`<div class="thumb" onclick="openItem('${it.id}')">${badge}<img src="${it.img}" alt="${it.name}">${it.imgs&&it.imgs.length>1?`<span class="badge-n">📷 ${it.imgs.length}</span>`:''}</div>`
+      :`<div class="thumb ph" onclick="openItem('${it.id}')">${badge}<span class="phico">${(CATS.find(x=>x.key===it.cat)||{}).icon||'📦'}</span></div>`;
   const nameEl=it.link?`<a class="name" href="${it.link}" target="_blank" rel="noopener">${it.name}</a>`:`<span class="name">${it.name}</span>`;
   const sub=it.type==='color'?`<div class="code">${it.code||''}</div>`
     :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div></div>${storeLine(it)}`:`<div class="price muted">המחיר בחשבון שלך בחנות</div>`)+dimsRow(it)+featChips(it)+useLabel(it);
@@ -3931,15 +3983,11 @@ function cardEl(it){
       ${it.sub?`<div><span class="subtag">${esc(it.sub)}</span></div>`:''}
       <div class="ordinfo" style="display:none"></div>
       <div class="people" style="display:none"></div>
-      ${it.type==='product'?`<div class="cstars" data-id="${it.id}"><span class="cl">הדירוג שלי</span><span class="cs">${[1,2,3,4,5].map(n=>`<button type="button" data-n="${n}" aria-label="${n} כוכבים" onclick="event.stopPropagation();setH('${it.id}',${n})">${SV}</button>`).join('')}</span><button type="button" class="cno" onclick="event.stopPropagation();curNo('${it.id}')">✕ לא מתאים</button></div>`:''}
-      <div class="seg">
-        <button class="yes" title="אהבתי" onclick="setS('${it.id}','yes')">✓</button>
-        <button class="maybe" title="אולי" onclick="setS('${it.id}','maybe')">?</button>
-        <button class="no" title="לא מתאים לי" onclick="setS('${it.id}','no')">✕</button>
-      </div>
+      ${it.type==='product'?`<div class="cstars" data-id="${it.id}"><span class="cl">הדירוג שלי</span><span class="cs">${[1,2,3,4,5].map(n=>`<button type="button" data-n="${n}" aria-label="${n} כוכבים" onclick="event.stopPropagation();setH('${it.id}',${n})">${SV}</button>`).join('')}</span><button type="button" class="cno" onclick="event.stopPropagation();curNo('${it.id}')">✕ לא מתאים</button><button type="button" class="avg" hidden onclick="event.stopPropagation();showVotes('${it.id}')"></button></div><div class="voteList"></div>`:''}
       ${it.type==='product'?`<div class="decRow"><div class="decSeg" role="group" aria-label="ההחלטה על הפריט"><button type="button" class="ds c" onclick="decPick('${it.id}','chosen')">✅ נבחר להזמנה</button><button type="button" class="ds r" onclick="decPick('${it.id}','rejected')">↩ הוסר</button></div><div class="decMeta"></div><button type="button" class="dOrder" onclick="toggleOrdered('${it.id}')">📦 סימון כהוזמן</button></div>`:''}
       ${shopHTML?shopHTML:''}
       ${!shopHTML&&it.type==='product'&&it.zap?`<div class="shoprow">${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div>`:''}
+      <button type="button" class="openBtn" onclick="openItem('${it.id}')">פרטים מלאים ←</button>
       <button type="button" class="moreBtn" onclick="toggleMore('${it.id}')">פרטים והשוואה ⌄</button>
       ${it.type==='product'?`<button type="button" class="docBtn" onclick="openDocs('item_${it.id}',this.closest('.card').querySelector('.name').textContent)">📎 מסמכים<span class="dn"></span></button>`:''}
       <div class="more" id="more-${it.id}" hidden>
@@ -4598,14 +4646,15 @@ function renderPeople(){
     box.innerHTML=ms.map(m=>{
       const qty=(m.qty&&m.qty>1)?` <b>×${m.qty}</b>`:'';
       const note=(!m.mine&&m.note&&m.note.trim())?`<span class="pnote">${m.note.trim().replace(/</g,'&lt;')}</span>`:'';
-      return `<div class="pmark"><span class="pchip s-${m.status||'none'}${m.mine?' me':''}"><span class="g">${GL[m.status]||'💬'}</span>${m.name}${qty}${m.h?` <b class="ph">★${m.h}</b>`:''}</span>${note}</div>`;
+      return `<div class="pmark"><span class="pchip s-${m.status||'none'}${m.mine?' me':''}"><span class="g">${GL[m.status]||'💬'}</span>${m.name}${qty}</span>${note}</div>`;
     }).join('');
     box.style.display=ms.length?'':'none';
-    { const w=(personf==='all'?(me&&me.name):personf), mm=ms.find(m=>m.name===w), th=c.querySelector('.thumb'); let b=c.querySelector('.myStar');
-      if(mm&&mm.h>0&&th){ if(!b){ b=document.createElement('span'); b.className='myStar'; th.appendChild(b); } b.textContent='★ '+mm.h; b.title='הדירוג של '+w; } else if(b) b.remove(); }
+    { const v=ms.filter(m=>m.h>0), btn=c.querySelector('.cstars .avg'), vl=c.querySelector('.voteList');
+      if(btn){ if(!v.length||(v.length===1&&v[0].mine)){ btn.hidden=true; if(vl){ vl.classList.remove('open'); vl.innerHTML=''; } }
+        else { const avg=v.reduce((t,m)=>t+m.h,0)/v.length; btn.hidden=false; btn.textContent='ממוצע '+avg.toFixed(1).replace(/\.0$/,'')+' ★ ('+v.length+')'; btn.title='ממוצע הכוכבים של '+v.length+' מצביעים — לחצי לפירוט'; if(vl&&vl.classList.contains('open')) vl.innerHTML=voteHTML(v); } } }
     paintStatus(c,id);
     const lk=c.querySelector('.likeB'); if(lk){ const y=ms.filter(m=>m.status==='yes'); if(y.length){ lk.style.display=''; lk.textContent='❤ '+y.map(m=>m.name).join(', '); } else lk.style.display='none'; } });
-  updateViewCounts(); renderRejNote(); renderCatStrip();
+  updateViewCounts(); renderRejNote(); renderCatStrip(); refreshItemDlg();
   const names=namesList();
   const el=document.getElementById('whoami');
   if(el) el.innerHTML=(me?`אני: <b>${me.name}</b> <button class="linkbtn" onclick="openMe()">(החלף)</button>`:'')
