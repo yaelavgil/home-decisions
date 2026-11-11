@@ -2307,6 +2307,10 @@ body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .s
 .itemdlg .idx{border:0;background:var(--paper);width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer;flex-shrink:0}
 .itemdlg .db{padding:12px}
 .itemdlg .card.detail{box-shadow:none;border:0;max-width:100%;transform:none!important}
+.itemdlg .igt{display:flex;gap:6px;padding:8px 12px 2px;overflow-x:auto;direction:rtl}
+.itemdlg .igt img{width:62px;height:62px;object-fit:cover;border-radius:9px;border:2px solid transparent;cursor:pointer;flex:none;background:#fbf8f2}
+.itemdlg .igt img.on{border-color:var(--brass-d)}
+.itemdlg .lb{z-index:200}
 .cstars .cs{min-width:0;overflow:hidden}
 /* compact (regular view): my stars + average chip on one line */
 .card .cstars{background:none;border:0;padding:0;gap:6px 8px;flex-wrap:wrap;justify-content:space-between}
@@ -3720,14 +3724,21 @@ function setH(id,n){ if(!me){ openMe(); return; } const s=S(id); n=(s.h===n)?0:n
   save(); paint(id); fbPushMark(id); renderPeople(); updateSumm(visible()); if(cur) curRefresh();
   const pb=els.get(id)&&els.get(id).querySelector('.cs button[data-n="'+n+'"]'); if(pb&&n){ pb.classList.remove('pop'); void pb.offsetWidth; pb.classList.add('pop'); } }
 let _itemOpen=null;
-function openItem(id){ const c=els.get(id), it=byId[id]; if(!c||!it) return; _itemOpen=id; renderItemDlg(); const d=document.getElementById('itemDlg'); if(!d.open) d.showModal(); }
-function closeItem(){ _itemOpen=null; const d=document.getElementById('itemDlg'); if(d.open) d.close(); }
+function openItem(id){ const c=els.get(id), it=byId[id]; if(!c||!it) return; if(_itemOpen!==id) _igIdx=0; _itemOpen=id; renderItemDlg(); const d=document.getElementById('itemDlg'); if(!d.open) d.showModal(); }
+let _igIdx=0;
+function closeItem(){ _itemOpen=null; closeLB(); const d=document.getElementById('itemDlg'); if(d.open) d.close(); }
 function renderItemDlg(){ const id=_itemOpen, c=els.get(id), it=byId[id]; if(!c||!it) return; const d=document.getElementById('itemDlg'), b=document.getElementById('itemDlgB');
   const y=d.scrollTop, cl=c.cloneNode(true); cl.classList.add('detail'); cl.classList.remove('hidden');
   cl.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
   cl.querySelectorAll('.openBtn,.moreBtn,.descToggle,.editb').forEach(e=>e.remove());
   const m=cl.querySelector('div.more'); if(m) m.hidden=false; cl.querySelectorAll('.desc.hid').forEach(e=>e.classList.remove('hid'));
   cl.querySelectorAll('.thumb').forEach(t=>t.setAttribute('onclick',"openLB('"+id+"')"));
+  { const imgs=(it.imgs&&it.imgs.length>1)?it.imgs:null, th=cl.querySelector('.thumb');
+    if(imgs&&th){ const ix=Math.min(_igIdx,imgs.length-1), mi=th.querySelector('img'); if(mi) mi.src=imgs[ix];
+      const bn=th.querySelector('.badge-n'); if(bn) bn.textContent='📷 '+(ix+1)+'/'+imgs.length;
+      const strip=document.createElement('div'); strip.className='igt';
+      imgs.forEach((u,i)=>{ const t=document.createElement('img'); t.src=u; t.loading='lazy'; t.alt=''; if(i===ix) t.className='on'; t.onclick=()=>{ _igIdx=i; renderItemDlg(); }; strip.appendChild(t); });
+      th.after(strip); } }
   const ta=cl.querySelector('textarea'); if(ta) ta.value=(st.s[id]&&st.s[id].note)||'';
   const pp=cl.querySelector('.people'); if(pp&&pp.innerHTML.trim()) pp.style.display='';
   document.getElementById('itemDlgT').textContent=it.name.length>60?it.name.slice(0,60)+'…':it.name;
@@ -4365,6 +4376,7 @@ function setS(id,v){const s=S(id); s.status=(s.status===v)?'none':v; if(s.status
 function setN(id,v){S(id).note=v;save();fbPushMark(id);}
 function setQ(id,d){const s=S(id);s.qty=Math.max(1,(s.qty||1)+d);save();paint(id);fbPushMark(id);updateSumm(visible());}
 function openLB(id){const it=byId[id];
+  { const _d=document.getElementById('itemDlg'), _l=document.getElementById('lb'); if(_d&&_d.open){ if(_l.parentNode!==_d) _d.appendChild(_l); } else if(_l.parentNode!==document.body) document.body.appendChild(_l); }
   const im=document.querySelector('.lb .im'), img=document.getElementById('lbimg');
   if(it.type==='color'){img.style.display='none';im.style.background=it.hex;}
   else if(it.img){img.style.display='';im.style.background='';img.src=it.img;}
