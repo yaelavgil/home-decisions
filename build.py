@@ -2311,6 +2311,12 @@ body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .s
 .itemdlg .igt img{width:62px;height:62px;object-fit:cover;border-radius:9px;border:2px solid transparent;cursor:pointer;flex:none;background:#fbf8f2}
 .itemdlg .igt img.on{border-color:var(--brass-d)}
 .itemdlg .lb{z-index:200}
+.izoom{position:fixed;inset:0;z-index:300;background:rgba(20,14,8,.94);display:flex;align-items:center;justify-content:center;padding:16px}
+.izoom img{max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-out;border-radius:6px}
+.izoom .zx{position:absolute;top:14px;left:14px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.92);font-size:18px;cursor:pointer;z-index:2}
+.izoom .zn{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.85);font-size:26px;cursor:pointer;z-index:2}
+.izoom .zp{right:12px}.izoom .zf{left:12px}
+.izoom .zc{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,.45);padding:3px 12px;border-radius:12px;font-size:13px}
 .cstars .cs{min-width:0;overflow:hidden}
 /* compact (regular view): my stars + average chip on one line */
 .card .cstars{background:none;border:0;padding:0;gap:6px 8px;flex-wrap:wrap;justify-content:space-between}
@@ -2437,7 +2443,7 @@ body.cur-drag{overscroll-behavior:none}
 </div>
 
 <div class="lb" id="lb" onclick="if(event.target===this)closeLB()">
-  <div class="box"><button class="x" onclick="closeLB()" aria-label="סגירה">✕</button><div class="im"><img id="lbimg" src="" alt=""></div><div class="thumbs" id="lbthumbs"></div>
+  <div class="box"><button class="x" onclick="closeLB()" aria-label="סגירה">✕</button><div class="im"><img id="lbimg" src="" alt="" onclick="zoomLB()" style="cursor:zoom-in"></div><div class="thumbs" id="lbthumbs"></div>
   <div class="info"><h3 id="lbname"></h3><div class="p" id="lbprice"></div><div class="loc" id="lbloc"></div><div class="lbfeats" id="lbfeats"></div><a class="store" id="lbstore" target="_blank" rel="noopener">לצפייה בחנות ↗</a><div class="lbord" id="lbord"></div></div></div>
 </div>
 
@@ -3725,14 +3731,27 @@ function setH(id,n){ if(!me){ openMe(); return; } const s=S(id); n=(s.h===n)?0:n
   const pb=els.get(id)&&els.get(id).querySelector('.cs button[data-n="'+n+'"]'); if(pb&&n){ pb.classList.remove('pop'); void pb.offsetWidth; pb.classList.add('pop'); } }
 let _itemOpen=null;
 function openItem(id){ const c=els.get(id), it=byId[id]; if(!c||!it) return; if(_itemOpen!==id) _igIdx=0; _itemOpen=id; renderItemDlg(); const d=document.getElementById('itemDlg'); if(!d.open) d.showModal(); }
-let _igIdx=0;
-function closeItem(){ _itemOpen=null; closeLB(); const d=document.getElementById('itemDlg'); if(d.open) d.close(); }
+let _igIdx=0, _zi=null;
+function closeZoom(){ if(_zi){ _zi.remove(); _zi=null; } }
+function zoomImg(list,ix){ list=(list||[]).filter(Boolean); if(!list.length) return; closeZoom();
+  const dl=document.getElementById('itemDlg'), host=(dl&&dl.open)?dl:document.body, o=document.createElement('div'); o.className='izoom';
+  o.innerHTML='<button class="zx" aria-label="סגירה">✕</button>'+(list.length>1?'<button class="zn zp" aria-label="הקודם">›</button><button class="zn zf" aria-label="הבא">‹</button><span class="zc"></span>':'')+'<img alt="">';
+  const img=o.querySelector('img'), c=o.querySelector('.zc'); let i=Math.max(0,Math.min(ix||0,list.length-1));
+  const show=()=>{ img.src=list[i]; if(c) c.textContent=(i+1)+'/'+list.length; };
+  o.onclick=e=>{ if(e.target===o||e.target.classList.contains('zx')||e.target===img) closeZoom(); };
+  const pz=o.querySelector('.zp'), nz=o.querySelector('.zf');
+  if(pz) pz.onclick=e=>{ e.stopPropagation(); i=(i-1+list.length)%list.length; show(); };
+  if(nz) nz.onclick=e=>{ e.stopPropagation(); i=(i+1)%list.length; show(); };
+  host.appendChild(o); show(); _zi=o; }
+function zoomLB(){ const it=byId[lbId]; if(!it||it.type==='color') return; const list=(it.imgs&&it.imgs.length)?it.imgs:[it.img], cur=document.getElementById('lbimg').src; zoomImg(list,Math.max(0,list.findIndex(u=>u&&cur.endsWith(u)))); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&_zi){ e.preventDefault(); e.stopPropagation(); closeZoom(); } },true);
+function closeItem(){ _itemOpen=null; closeLB(); closeZoom(); const d=document.getElementById('itemDlg'); if(d.open) d.close(); }
 function renderItemDlg(){ const id=_itemOpen, c=els.get(id), it=byId[id]; if(!c||!it) return; const d=document.getElementById('itemDlg'), b=document.getElementById('itemDlgB');
   const y=d.scrollTop, cl=c.cloneNode(true); cl.classList.add('detail'); cl.classList.remove('hidden');
   cl.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
   cl.querySelectorAll('.openBtn,.moreBtn,.descToggle,.editb').forEach(e=>e.remove());
   const m=cl.querySelector('div.more'); if(m) m.hidden=false; cl.querySelectorAll('.desc.hid').forEach(e=>e.classList.remove('hid'));
-  cl.querySelectorAll('.thumb').forEach(t=>t.setAttribute('onclick',"openLB('"+id+"')"));
+  cl.querySelectorAll('.thumb').forEach(t=>t.setAttribute('onclick',"zoomImg(byId['"+id+"'].imgs&&byId['"+id+"'].imgs.length?byId['"+id+"'].imgs:[byId['"+id+"'].img],_igIdx)"));
   { const imgs=(it.imgs&&it.imgs.length>1)?it.imgs:null, th=cl.querySelector('.thumb');
     if(imgs&&th){ const ix=Math.min(_igIdx,imgs.length-1), mi=th.querySelector('img'); if(mi) mi.src=imgs[ix];
       const bn=th.querySelector('.badge-n'); if(bn) bn.textContent='📷 '+(ix+1)+'/'+imgs.length;
@@ -3951,10 +3970,10 @@ function cardEl(it){
   const c=document.createElement('div'); c.dataset.id=it.id;
   const badge='';
   const media=it.type==='color'
-    ?`<div class="thumb swatch" style="background:${it.hex}" onclick="openItem('${it.id}')">${badge}</div>`
+    ?`<div class="thumb swatch" style="background:${it.hex}" onclick="openLB('${it.id}')">${badge}</div>`
     :it.img
-      ?`<div class="thumb" onclick="openItem('${it.id}')">${badge}<img src="${it.img}" alt="${it.name}">${it.imgs&&it.imgs.length>1?`<span class="badge-n">📷 ${it.imgs.length}</span>`:''}</div>`
-      :`<div class="thumb ph" onclick="openItem('${it.id}')">${badge}<span class="phico">${(CATS.find(x=>x.key===it.cat)||{}).icon||'📦'}</span></div>`;
+      ?`<div class="thumb" onclick="openLB('${it.id}')">${badge}<img src="${it.img}" alt="${it.name}">${it.imgs&&it.imgs.length>1?`<span class="badge-n">📷 ${it.imgs.length}</span>`:''}</div>`
+      :`<div class="thumb ph" onclick="openLB('${it.id}')">${badge}<span class="phico">${(CATS.find(x=>x.key===it.cat)||{}).icon||'📦'}</span></div>`;
   const nameEl=it.link?`<a class="name" href="${it.link}" target="_blank" rel="noopener">${it.name}</a>`:`<span class="name">${it.name}</span>`;
   const sub=it.type==='color'?`<div class="code">${it.code||''}</div>`
     :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div></div>${storeLine(it)}`:`<div class="price muted">המחיר בחשבון שלך בחנות</div>`)+dimsRow(it)+featChips(it)+useLabel(it);
