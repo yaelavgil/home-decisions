@@ -118,6 +118,17 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .history td.n{font-weight:700}
 .history td.p{white-space:nowrap;font-weight:800;color:var(--brass-d)}
 .history .tot{margin-top:6px;font-weight:800}
+.history .hlist{display:flex;flex-direction:column}
+.history .hrow{display:flex;align-items:center;gap:10px;padding:7px 2px;border-bottom:1px solid var(--line-2)}
+.history .hrow:last-child{border-bottom:0}
+.history .hth{width:56px;height:56px;flex:none;border-radius:9px;object-fit:cover;background:var(--paper-2,#f3efe8)}
+.history .hth.ph{display:flex;align-items:center;justify-content:center;font-size:22px}
+.history .hm{flex:1;min-width:0}
+.history .hn{font-weight:700;font-size:13px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.history .hs{font-size:11.5px;color:var(--muted,#7a7468);margin-top:2px}
+.history .hp{white-space:nowrap;font-weight:800;color:var(--brass-d);font-size:13px}
+.history .ha{display:flex;gap:4px;flex:none}
+.history h4 .tot{margin:0 8px;font-weight:700;color:var(--brass-d);font-size:13px}
 .docadd .frow{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
 .docadd input[type=text],.docadd input:not([type]){flex:1;min-width:140px;padding:7px 10px;border:1.5px solid var(--line-2);border-radius:9px;font:inherit}
 .docnote{font-size:11.5px;color:var(--muted);margin:2px 0}
@@ -904,6 +915,7 @@ body.cur-drag{overscroll-behavior:none}
   <div class="tools">
     <div class="views" id="views">
     <button class="vbtn on" data-v="all" onclick="setView('all')">הכל<span class="vc" data-c="all"></span></button>
+    <button class="vbtn" data-v="notordered" onclick="setView('notordered')">⏳ טרם הוזמנו<span class="vc" data-c="notordered"></span></button>
     <button class="vbtn" data-v="toorder" onclick="setView('toorder')">🛒 להזמין<span class="vc" data-c="toorder"></span></button>
     <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 הוזמנו<span class="vc" data-c="ordered"></span></button>
     <button class="vbtn" data-v="rejected" onclick="setView('rejected')">↩ הוסרו מההזמנה<span class="vc" data-c="rejected"></span></button>
@@ -1305,6 +1317,7 @@ function paintStatus(c,id){
 function viewCounts(){
   const pool=ITEMS.filter(i=>!i.hidden&&inCats(i)), c={active:0,toorder:0,tochoose:0,ordered:0,rejected:0,all:pool.length};
   pool.forEach(i=>{ const t=itemStatus(i); if(t==='chosen'){c.active++;c.toorder++;} else if(t==='discuss'){ c.active++; c.tochoose++; } else c[t]++; });
+  c.notordered=pool.length-(c.ordered||0)-(c.rejected||0);
   return c;
 }
 function updateViewCounts(){ const c=viewCounts(); document.querySelectorAll('.vc').forEach(e=>{ const n=c[e.dataset.c]; e.textContent=n?(' '+n):''; }); }
@@ -1603,8 +1616,6 @@ function renderCatStrip(){
   let h=`<div class="csrow"><span class="st">${stLab}</span>${stt==='done'?`<button type="button" class="reopen" onclick="reopenCat('${esc(cat.key)}')" title="לקנות עוד מהקטגוריה או לרענן אותה במוצרים חדשים / דגשים אחרים">↩ להחזיר להחלטה</button>`:''}<span>${goal}</span>${sl?`<span class="statline">${sl}</span>`:''}${menu}</div>`;
   h+=researchStripHTML(cat);
   if(chosenN>1&&!cat.multi) h+=`<div class="warnB">⚠ שימי לב: נבחרו ${chosenN} פריטים בקטגוריה. אם זה מכוון (למשל כמה פריטים לאותו חלל), אפשר לאשר בהגדרות הקטגוריה — "מותר לבחור כמה".</div>`;
-  ord.forEach(i=>{ const n=docsList('item_'+i.id).length;
-    h+=`<div class="bought">📦 נקנה: <b>${esc(i.name)}</b> · ${i.price!=null?nis(i.price):''} · ${i.orderedAt?fmtDate(i.orderedAt):''}${i.orderedBy?' · '+esc(i.orderedBy):''} · 🏪 ${esc(guessStore(i))}${i.orderLink?` · <a href="${esc(i.orderLink)}" target="_blank" rel="noopener">אישור הזמנה ↗</a>`:''} <button type="button" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎 קבלה / מסמכים${n?' ('+n+')':''}</button><button type="button" onclick="openOrderDlg('${i.id}')">✎ עריכה / ביטול</button></div>`; });
   el.innerHTML=h; el.style.display='flex'; renderPlaceRow();
 }
 
@@ -1727,7 +1738,9 @@ function renderHistory(){
   const list=ITEMS.filter(i=>i.ordered&&!i.hidden&&inCats(i)).sort((a,b)=>(b.orderedAt||0)-(a.orderedAt||0));
   let tot=0; list.forEach(i=>{ tot+=(i.paid!=null?i.paid:(i.price||0)); });
   const catLab=k=>(CATS.find(c=>c.key===k)||{}).label||k;
-  el.innerHTML=`<h4>📦 היסטוריית הזמנות (${list.length})</h4>`+(list.length?`<table>`+list.map(i=>{ const n=docsList('item_'+i.id).length;
+  const thumb=i=>i.img?`<img class="hth" src="${esc(i.img)}" alt="" loading="lazy">`:`<span class="hth ph">${(CATS.find(x=>x.key===i.cat)||{}).icon||'📦'}</span>`;
+  el.innerHTML=`<h4>📦 הוזמנו (${list.length}) <span class="tot">סה״כ ${nis(tot)}</span></h4>`+(list.length?`<div class="hlist">`+list.map(i=>{ const n=docsList('item_'+i.id).length;
+    return `<div class="hrow">${thumb(i)}<div class="hm"><div class="hn">${esc(i.name)}</div><div class="hs">${i.orderedAt?fmtDate(i.orderedAt)+' · ':''}${esc(catLab(i.cat))} · ${esc(guessStore(i))}${i.orderedBy?' · '+esc(i.orderedBy):''}${i.orderLink?` · <a href="${esc(i.orderLink)}" target="_blank" rel="noopener">אישור הזמנה ↗</a>`:''}</div></div><div class="hp">${i.paid!=null?nis(i.paid):(i.price!=null?nis(i.price):'')}</div><div class="ha"><button type="button" class="docBtn" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎${n?' ('+n+')':''}</button><button type="button" class="docBtn" onclick="openOrderDlg('${i.id}')">✎</button></div></div>`; }).join('')+`</div>`:'<p class="docnote">עוד לא סומן שום פריט כמוזמן.</p>');
     return `<tr><td>${i.orderedAt?fmtDate(i.orderedAt):'—'}</td><td class="n">${esc(i.name)}</td><td>${esc(catLab(i.cat))}</td><td>${esc(guessStore(i))}</td><td class="p">${i.paid!=null?nis(i.paid):(i.price!=null?nis(i.price):'')}</td><td>${esc(i.orderedBy||'')}</td><td><button type="button" class="docBtn" onclick="openDocs('item_${i.id}','${esc(i.name)}')">📎${n?' ('+n+')':''}</button> <button type="button" class="docBtn" onclick="openOrderDlg('${i.id}')">✎ עריכה / ביטול</button></td></tr>`; }).join('')+`</table><div class="tot">סה״כ: ${nis(tot)}</div>`:'<p class="docnote">עוד לא סומן שום פריט כמוזמן.</p>');
   el.style.display='block';
 }
@@ -2212,6 +2225,7 @@ function passView(i){
   if(viewMode==='all') return true;
   const stt=itemStatus(i);
   if(viewMode==='active') return stt==='chosen'||stt==='discuss';
+  if(viewMode==='notordered') return stt!=='ordered'&&stt!=='rejected';
   if(viewMode==='toorder') return stt==='chosen';
   if(viewMode==='tochoose') return stt==='discuss';
   if(viewMode==='ordered') return stt==='ordered';
