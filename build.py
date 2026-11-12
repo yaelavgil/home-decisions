@@ -4941,9 +4941,15 @@ def build_decision_doc(cat,cfg):
         ok=ok2 or ok
         fit=""; sp=(cfg.get("specs") or {}).get(it["id"])
         if sl.get("hole"):
-            H=sl["hole"]
-            if not sp: fit=f'<p class="fit q">❓ קדח לא ידוע — לבדוק מול קדח קיים Ø{H}</p>'
-            elif sp["cut"]>H: fit=f'<p class="fit bad">✗ דורש הרחבת הקדח (קדח חיתוך Ø{sp["cut"]} מול Ø{H} קיים)</p>'
+            H=sl["hole"]; HM=sl.get("hole_max",H)
+            if sp and sp.get("surf"):
+                bs=sp.get("base")
+                if bs is None: fit=f'<p class="fit q">❓ צמוד תקרה — לוודא שהבסיס מכסה את הקדח הקיים Ø{H}</p>'
+                elif bs>=H: fit=f'<p class="fit good">✓ צמוד תקרה — הבסיס (Ø{bs}) מכסה את הקדח הקיים Ø{H}</p>'
+                else: fit=f'<p class="fit bad">✗ הבסיס (Ø{bs}) קטן מהקדח הקיים Ø{H} — יישאר חור גלוי</p>'
+            elif not sp: fit=f'<p class="fit q">❓ קדח לא ידוע — לבדוק מול קדח קיים Ø{H}</p>'
+            elif sp["cut"]>HM: fit=f'<p class="fit bad">✗ קדח החיתוך (Ø{sp["cut"]}) גדול מהמותר (Ø{HM})</p>'
+            elif sp["cut"]>H: fit=f'<p class="fit warn">⚠ דורש הרחבת הקדח מ־Ø{H} ל־Ø{sp["cut"]} (מותר עד Ø{HM})</p>'
             elif sp["out"]<H: fit=f'<p class="fit bad">✗ הגוף קטן מהקדח (חיצוני Ø{sp["out"]}) — יישאר חור גלוי</p>'
             elif sp["out"]-H<5: fit=f'<p class="fit warn">⚠ מכסה בקושי (חיצוני Ø{sp["out"]} מול קדח Ø{H})</p>'
             else: fit=f'<p class="fit good">✓ נכנס בקדח הקיים Ø{H} ומכסה אותו (חיצוני Ø{sp["out"]}, קדח חיתוך Ø{sp["cut"]})</p>'
@@ -4965,10 +4971,12 @@ def build_decision_doc(cat,cfg):
         for sl in g["slots"]:
             its=[_byid[i] for i in sl["items"] if not _byid[i].get("hidden")]
             def _fitrank(x,sl=sl):
-                sp=(cfg.get("specs") or {}).get(x["id"]); H=sl.get("hole")
+                sp=(cfg.get("specs") or {}).get(x["id"]); H=sl.get("hole"); HM=sl.get("hole_max",H)
                 if not H: return 0
                 if not sp: return 3
-                if sp["cut"]>H or sp["out"]<H: return 4
+                if sp.get("surf"): return 1 if (sp.get("base") or 0)>=H else (3 if sp.get("base") is None else 4)
+                if sp["cut"]>HM or sp["out"]<H: return 4
+                if sp["cut"]>H: return 2
                 return 1 if sp["out"]-H>=5 else 2
             its.sort(key=lambda x:(_fitrank(x), 0 if (x.get("desc") or "").startswith("⭐") else 1, x.get("price") or 0))
             body+=(f'<section class="slot" id="{e(sl["id"])}"><header><h3>{e(sl["name"])}</h3><span class="qty">כמות: {e(sl["qty"])}</span></header>'
