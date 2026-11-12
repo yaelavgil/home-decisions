@@ -813,7 +813,16 @@ body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .s
 .grid>.card :is(.partsBox,.scoreRow,.pickWhy,.keySpecs,ol.pts,.desc,.descToggle,.loc,.locLine,.people,.storeLine,.dimsRow,.useTag,.subQuick,.moreBtn,.docBtn,.shoprow,.more,.ordinfo,.featMiss,.pickWhyFull){display:none!important}
 .grid>.card .body>div:has(>.subtag){display:none}
 .grid>.card .featChips .featChip:nth-child(n+4){display:none}
-.grid>.card .name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.grid>.card :is(.cstars,.voteList,.decRow,.openBtn,.stpill,.partsBox,.featChips,.featBadges,.code,.sub){display:none!important}
+.grid>.card .name{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;order:1}
+.grid>.card .storeRow{order:2}.grid>.card .priceRow{order:3}.grid>.card .priceRow .price{font-size:17px}
+.grid>.card{cursor:pointer}
+.storeRow{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:650;color:var(--ink-soft);min-height:18px}
+.storeRow .slogo{width:16px;height:16px;border-radius:4px;flex:none;object-fit:contain;background:#fff}
+.storeRow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.itemdlg .storeRow{display:none}
+.itemdlg .dact{display:flex;gap:6px;flex:none}
+.itemdlg .dh .idx.act{background:var(--brass-soft)}
 .openBtn{display:none;width:100%;border:1.5px solid var(--line-2);background:var(--paper);border-radius:11px;padding:8px 0;font:inherit;font-size:13px;font-weight:700;color:var(--brass-d);cursor:pointer}
 .grid>.card .openBtn{display:block}
 .itemdlg{max-width:620px;width:94%;max-height:92vh;overflow:auto}
@@ -1080,7 +1089,7 @@ body.cur-drag{overscroll-behavior:none}
 </div>
 <div class="toast" id="toast">✓ הועתק</div>
 
-<dialog id="itemDlg" class="itemdlg"><div class="dh"><span id="itemDlgT"></span><button type="button" class="idx" onclick="closeItem()" aria-label="סגירה">✕</button></div><div class="db" id="itemDlgB"></div></dialog>
+<dialog id="itemDlg" class="itemdlg"><div class="dh"><span id="itemDlgT"></span><span class="dact"><button type="button" class="idx act" onclick="itemDlgEdit()" title="עריכה" aria-label="עריכה">✎</button><button type="button" class="idx act" onclick="itemDlgDelete()" title="מחיקה" aria-label="מחיקה">🗑</button><button type="button" class="idx" onclick="closeItem()" aria-label="סגירה">✕</button></span></div><div class="db" id="itemDlgB"></div></dialog>
 <dialog id="meDlg"><div class="dh">👋 מי את/ה?</div>
   <div class="db">
     <p>בחרו שם — כל הסימונים שלכם יופיעו לכולם על אותו לוח, תחת השם הזה.</p>
@@ -2276,6 +2285,8 @@ function zoomImg(list,ix){ list=(list||[]).filter(Boolean); if(!list.length) ret
   host.appendChild(o); show(); _zi=o; }
 function zoomLB(){ const it=byId[lbId]; if(!it||it.type==='color') return; const list=(it.imgs&&it.imgs.length)?it.imgs:[it.img], cur=document.getElementById('lbimg').src; zoomImg(list,Math.max(0,list.findIndex(u=>u&&cur.endsWith(u)))); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&_zi){ e.preventDefault(); e.stopPropagation(); closeZoom(); } },true);
+function itemDlgEdit(){ const id=_itemOpen; if(!id) return; closeItem(); editItem(id); }
+function itemDlgDelete(){ const id=_itemOpen; if(!id) return; closeItem(); deleteItem(id); }
 function closeItem(){ _itemOpen=null; closeLB(); closeZoom(); const d=document.getElementById('itemDlg'); if(d.open) d.close(); }
 function renderItemDlg(){ const id=_itemOpen, c=els.get(id), it=byId[id]; if(!c||!it) return; const d=document.getElementById('itemDlg'), b=document.getElementById('itemDlgB');
   const y=d.scrollTop, cl=c.cloneNode(true); cl.classList.add('detail'); cl.classList.remove('hidden');
@@ -2497,6 +2508,12 @@ function buildSpecBar(){
   bar.innerHTML=head+'<div class="sbBody">'+h+picks.filter(p=>p.pickWhy).map(p=>`<div class="sum">⭐ ההמלצה שלנו${p.sub?' ('+esc(p.sub)+')':''}: ${esc(p.name)} — ${esc(p.pickWhy)}</div>`).join('')+'</div>';
   bar.classList.toggle('open',specBarOpen); bar.style.display='block';
 }
+function storeRowHTML(it){
+  if(it.type==='color') return '';
+  const r=(typeof recStore==='function')?recStore(it):null, href=(r&&r.l)||it.link||'', h=hostOf(href), nm=guessStore(it);
+  if(!nm||nm==='לא ידוע') return '';
+  return `<div class="storeRow">${h?`<img class="slogo" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(h)}&sz=64" alt="" loading="lazy" onerror="this.remove()">`:''}<span>${esc(nm)}</span></div>`;
+}
 function cardEl(it){
   if(els.has(it.id))return els.get(it.id);
   const c=document.createElement('div'); c.dataset.id=it.id;
@@ -2506,7 +2523,8 @@ function cardEl(it){
     :it.img
       ?`<div class="thumb" onclick="openLB('${it.id}')">${badge}<img src="${it.img}" alt="${it.name}">${it.imgs&&it.imgs.length>1?`<span class="badge-n">📷 ${it.imgs.length}</span>`:''}</div>`
       :`<div class="thumb ph" onclick="openLB('${it.id}')">${badge}<span class="phico">${(CATS.find(x=>x.key===it.cat)||{}).icon||'📦'}</span></div>`;
-  const nameEl=it.link?`<a class="name" href="${it.link}" target="_blank" rel="noopener">${it.name}</a>`:`<span class="name">${it.name}</span>`;
+  const _tt=String(it.name||'').replace(/"/g,'&quot;').replace(/<[^>]*>/g,'');
+  const nameEl=it.link?`<a class="name" href="${it.link}" target="_blank" rel="noopener" title="${_tt}">${it.name}</a>`:`<span class="name" title="${_tt}">${it.name}</span>`;
   const sub=it.type==='color'?`<div class="code">${it.code||''}</div>`
     :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div></div>${storeLine(it)}`:`<div class="price muted">המחיר בחשבון שלך בחנות</div>`)+dimsRow(it)+featChips(it)+useLabel(it);
   const featRow=(it.featTags||[]).length?`<div class="featBadges">${(it.featTags||[]).map(t=>`<span class="featBadge">${t}</span>`).join('')}</div>`:'';
@@ -2533,6 +2551,7 @@ function cardEl(it){
     <div class="body">
       ${it.type==='color'?'':'<div class="stpill discuss"></div>'}
       ${nameEl}
+      ${storeRowHTML(it)}
       ${sub}
       ${subQuick(it)}
       <div class="partsBox" style="display:none"></div>
@@ -2558,6 +2577,12 @@ function cardEl(it){
     </div>`;
   els.set(it.id,c); grid.appendChild(c); paint(it.id,c); return c;
 }
+document.addEventListener('click',e=>{
+  const c=e.target.closest&&e.target.closest('.grid>.card'); if(!c||c.classList.contains('detail')) return;
+  if(e.target.closest('.editb,.newTag,.qpBar,.docBtn,select,textarea,input,.stars')) return;
+  if(!c.dataset.id||!byId[c.dataset.id]) return;
+  e.preventDefault(); e.stopPropagation(); openItem(c.dataset.id);
+},true);
 function paint(id,c){
   c=c||els.get(id); if(!c)return; const s=S(id); const it=byId[id]||{};
   c.className="card"+(it.pick?" is-pick":"")+(s.status!=='none'?" s-"+s.status:"")+(it.ordered?" is-ordered":"")+(it.type==='color'?'':" st-"+itemStatus(it))+(it.hidden?" is-hidden":"")+(c.classList.contains('hidden')?" hidden":""); // keep the filter's 'hidden' flag: late repaints (Firebase sync, docs) must not re-show cards from other categories
