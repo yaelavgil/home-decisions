@@ -4868,6 +4868,8 @@ for _o in json.load(open(os.path.join(REPO,"heaters2.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"heaters3.json"),encoding="utf-8")):
     DATA.append(_o)
+for _o in json.load(open(os.path.join(REPO,"heaters4.json"),encoding="utf-8")):
+    DATA.append(_o)
 for _f in ("mops2.json","storage.json","bedspreads.json","bedspreads2.json","bedspreads3.json"):
     for _o in json.load(open(os.path.join(REPO,_f),encoding="utf-8")):
         DATA.append(_o)
