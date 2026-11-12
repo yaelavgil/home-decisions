@@ -4939,10 +4939,21 @@ def build_decision_doc(cat,cfg):
         if ok.startswith("מיועד"): ok2=_line("\n".join(l for l in it["desc"].split("\n") if not l.startswith("✔ מיועד")),"✔")
         else: ok2=ok
         ok=ok2 or ok
+        fit=""; sp=(cfg.get("specs") or {}).get(it["id"])
+        if sl.get("hole"):
+            H=sl["hole"]
+            if not sp: fit=f'<p class="fit q">❓ קדח לא ידוע — לבדוק מול קדח קיים Ø{H}</p>'
+            elif sp["cut"]>H: fit=f'<p class="fit bad">✗ דורש הרחבת הקדח (קדח חיתוך Ø{sp["cut"]} מול Ø{H} קיים)</p>'
+            elif sp["out"]<H: fit=f'<p class="fit bad">✗ הגוף קטן מהקדח (חיצוני Ø{sp["out"]}) — יישאר חור גלוי</p>'
+            elif sp["out"]-H<5: fit=f'<p class="fit warn">⚠ מכסה בקושי (חיצוני Ø{sp["out"]} מול קדח Ø{H})</p>'
+            else: fit=f'<p class="fit good">✓ נכנס בקדח הקיים Ø{H} ומכסה אותו (חיצוני Ø{sp["out"]}, קדח חיתוך Ø{sp["cut"]})</p>'
+        tot=""
+        if sl.get("n") and it.get("price") and not it.get("parts"):
+            tot=f'<span class="tot">ל־{sl["n"]}: {_nis(it["price"]*sl["n"])}</span>'
         return (f'<article class="opt" data-slot="{e(sl["id"])}" data-id="{e(it["id"])}">'
                 f'<a class="im" href="{e(it.get("link") or "#")}" target="_blank" rel="noopener">{im}</a>'
                 f'<div class="ob">{star}<h4>{e(it["name"])}</h4>'
-                f'<div class="pr"><b>{_nis(it.get("price"))}</b><span>{e(_store(it))}</span></div>'
+                f'<div class="pr"><b>{_nis(it.get("price"))}</b>{tot}<span>{e(_store(it))}</span></div>{fit}'
                 +(f'<p class="y">✔ {e(ok)}</p>' if ok else "")+(f'<p class="n">✘ {e(no)}</p>' if no else "")
                 +f'<div class="ac"><a href="{e(it.get("link") or "#")}" target="_blank" rel="noopener">🔗 לדף המוצר</a>'
                 f'<button type="button" class="fav" aria-pressed="false">♡ מעניין</button>'
@@ -4953,7 +4964,13 @@ def build_decision_doc(cat,cfg):
         body+=f'<h2 class="floor">{e(g["floor"])}</h2>'
         for sl in g["slots"]:
             its=[_byid[i] for i in sl["items"] if not _byid[i].get("hidden")]
-            its.sort(key=lambda x:(0 if (x.get("desc") or "").startswith("⭐") else 1, x.get("price") or 0))
+            def _fitrank(x,sl=sl):
+                sp=(cfg.get("specs") or {}).get(x["id"]); H=sl.get("hole")
+                if not H: return 0
+                if not sp: return 3
+                if sp["cut"]>H or sp["out"]<H: return 4
+                return 1 if sp["out"]-H>=5 else 2
+            its.sort(key=lambda x:(_fitrank(x), 0 if (x.get("desc") or "").startswith("⭐") else 1, x.get("price") or 0))
             body+=(f'<section class="slot" id="{e(sl["id"])}"><header><h3>{e(sl["name"])}</h3><span class="qty">כמות: {e(sl["qty"])}</span></header>'
                    f'<p class="need">🎯 {e(sl["need"])}</p><div class="chosen" data-for="{e(sl["id"])}"></div>'
                    +("".join(card(sl,i) for i in its) and f'<div class="grid">{"".join(card(sl,i) for i in its)}</div>' or '<p class="gap">עדיין אין כאן אופציות — מחפשים.</p>')
@@ -4986,6 +5003,7 @@ h2.floor{{font-size:20px;margin:34px 0 4px;padding-bottom:6px;border-bottom:2px 
 .ob{{padding:10px 12px 12px;display:flex;flex-direction:column;gap:5px;flex:1}}.ob h4{{margin:0;font-size:14px;line-height:1.35}}
 .star{{font-size:11.5px;font-weight:800;color:var(--star)}}.pr{{display:flex;justify-content:space-between;gap:8px;align-items:baseline}}.pr b{{font-size:17px}}.pr span{{font-size:12px;color:var(--soft)}}
 .ob p{{margin:0;font-size:12.5px;line-height:1.45}}.y{{color:var(--ok)}}.n{{color:var(--no)}}
+.fit{{font-weight:700}}.fit.good{{color:var(--ok)}}.fit.bad{{color:var(--no)}}.fit.warn{{color:var(--star)}}.fit.q{{color:var(--soft)}}.tot{{font-size:12px;font-weight:700;color:var(--brass)}}
 .ac{{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:6px;align-items:center}}.ac a{{font-size:12.5px;font-weight:700;color:var(--brass);text-decoration:none;margin-inline-end:auto}}
 .ac button{{font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:99px;padding:3px 10px;cursor:pointer}}
 .ac button[aria-pressed="true"]{{background:var(--brass);border-color:var(--brass);color:#fff}}.ac .pick[aria-pressed="true"]{{background:var(--ok);border-color:var(--ok)}}
