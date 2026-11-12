@@ -4905,6 +4905,15 @@ if _dup: raise SystemExit("duplicate item ids: "+", ".join(_dup))
 import html as _h, re as _re
 SLOTS=json.load(open(os.path.join(REPO,"slots.json"),encoding="utf-8")) if os.path.exists(os.path.join(REPO,"slots.json")) else {}
 _byid={d["id"]:d for d in DATA}
+def _gone_ids():
+    # items she deleted / hid on the live board (stored in Firebase) — keep the public doc in sync
+    try:
+        import urllib.request
+        raw=json.load(urllib.request.urlopen(DBURL+"/picks/_catalog/items.json",timeout=15)) or {}
+        return {k for k,v in raw.items() if isinstance(v,dict) and (v.get("deleted") or v.get("hidden"))}
+    except Exception as ex:
+        print("WARN: could not read deleted items from Firebase:",ex); return set()
+_GONE=_gone_ids()
 for _cat,_cfg in SLOTS.items():
     for _g in _cfg["groups"]:
         for _sl in _g["slots"]:
@@ -4969,7 +4978,7 @@ def build_decision_doc(cat,cfg):
         toc+=f'<span class="fl">{e(g["floor"])}</span>'+"".join(f'<a href="#{e(sl["id"])}">{e(sl["name"])}</a>' for sl in g["slots"])
         body+=f'<h2 class="floor">{e(g["floor"])}</h2>'
         for sl in g["slots"]:
-            its=[_byid[i] for i in sl["items"] if not _byid[i].get("hidden")]
+            its=[_byid[i] for i in sl["items"] if not _byid[i].get("hidden") and i not in _GONE]
             def _fitrank(x,sl=sl):
                 sp=(cfg.get("specs") or {}).get(x["id"]); H=sl.get("hole"); HM=sl.get("hole_max",H)
                 if not H: return 0
@@ -5040,6 +5049,8 @@ document.addEventListener('click',ev=>{{const b=ev.target.closest('button');if(!
  if(o){{const s=o.dataset.slot,i=o.dataset.id;if(b.classList.contains('fav')){{const k=s+'|'+i;st.fav[k]?delete st.fav[k]:st.fav[k]=1;}}if(b.classList.contains('pick')){{st.pick[s]===i?delete st.pick[s]:st.pick[s]=i;}}save();paint();}}
  if(b.id==='cp'){{const t=window._txt||'';(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>b.textContent='✓ הועתק',()=>{{const r=document.createRange();r.selectNodeContents(document.getElementById('lst'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);b.textContent='סומן — העתיקי ידנית'}});}}}});
 paint();
+try{{fetch('{DBURL}/picks/_catalog/items.json').then(r=>r.json()).then(m=>{{if(!m)return;Object.keys(m).forEach(k=>{{const v=m[k];if(v&&(v.deleted||v.hidden))document.querySelectorAll('.opt[data-id="'+k+'"]').forEach(o=>o.remove());}});
+ document.querySelectorAll('.slot').forEach(sec=>{{const g=sec.querySelector('.grid');if(g&&!g.children.length){{g.outerHTML='<p class="gap">עדיין אין כאן אופציות — מחפשים.</p>';}}}});}}).catch(()=>{{}});}}catch(e){{}}
 </script></body></html>"""
     d=os.path.join(REPO,"d",slug); os.makedirs(d,exist_ok=True)
     open(os.path.join(d,"index.html"),"w",encoding="utf-8").write(page)
