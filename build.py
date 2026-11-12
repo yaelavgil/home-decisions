@@ -1724,6 +1724,8 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .subRow::-webkit-scrollbar{display:none}
 .subRow button{flex:none;font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:6px 13px;cursor:pointer;color:var(--ink-soft)}
 .subRow button.on{background:var(--brass-d);border-color:var(--brass-d);color:#fff}
+.subRow .fl{flex:none;align-self:center;font-size:11.5px;font-weight:800;color:var(--muted);padding:0 4px 0 8px}
+.subRow .docLink{flex:none;align-self:center;font-size:13px;font-weight:800;color:var(--brass-d);text-decoration:none;padding:6px 10px;border:1.5px dashed var(--brass-d);border-radius:99px}
 .subRow button.warn{border-color:#e2b94f;color:#8a6a1f}
 .subRow button small{margin-inline-start:5px;opacity:.8}
 .loc.warn{color:#b5701a;font-weight:700}
@@ -2446,6 +2448,7 @@ body.cur-drag{overscroll-behavior:none}
 <div class="catStrip" id="catStrip" style="display:none"></div>
 <div class="subRow" id="subRow" style="display:none"></div>
 <div class="subRow" id="placeRow" style="display:none"></div>
+<div class="subRow slotRow" id="slotRow" style="display:none"></div>
 <div class="history" id="history" style="display:none"></div>
 <div class="specBar" id="specBar"></div>
 <div class="curBar" id="curBar" hidden></div>
@@ -2668,7 +2671,7 @@ let me=JSON.parse(localStorage.getItem('ida-me')||'null'); // {pk,name}
 let remote={}; // {pk:{name,items:{id:{s,n,q}}}}
 let _psig="";
 let ARCHIVED_CATS=[], ARCHIVED_ITEMS=[];
-let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="all", featSort=null, subf=null, placef=new Set(), featf=null, qpMode=!!window._qp0;
+let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="all", featSort=null, subf=null, placef=new Set(), slotf=new Set(), featf=null, qpMode=!!window._qp0;
 let ITEMS=[],CATS=[],byId={};
 let shared={items:{},cats:{}}; // shared catalog from Firebase (/picks/_catalog)
 function modelKey(s){ if(!s)return''; const m=String(s).toUpperCase().match(/[A-Z]{2,4}-? ?\d{3}[A-Z0-9]*/); return m?m[0].replace(/[- ]/g,''):''; }
@@ -2738,7 +2741,7 @@ function applyHash(){
   if(found.size){selCats=found;tagf.clear();}
 }
 function setCat(k){
-  subf=null; placef.clear(); featf=null;
+  subf=null; placef.clear();slotf.clear(); featf=null;
   if(k==='all') selCats.clear();
   else if(selCats.has(k)) selCats.delete(k);
   else selCats.add(k);
@@ -3020,7 +3023,7 @@ function renderRecents(){
       <div class="mt"><span class="cat">${c.icon||''} ${esc(c.label||it.cat)}</span><span>${ST_LAB[stt]}</span><span>${ago2(ts)}</span></div>
       <div class="acts"><button type="button" class="go" onclick="rcOpen('${it.id}')">פתיחה בקטגוריה</button>${it.link?`<a class="tbtn" style="flex:none;padding:6px 10px;text-decoration:none" href="${esc(it.link)}" target="_blank" rel="noopener" title="לחנות">↗</a>`:''}</div></div></div>`; }).join('')+'</div>').join('');
 }
-function rcOpen(id){ const it=byId[id]; if(!it) return; closeRecents(); selCats=new Set([it.cat]); subf=null; placef.clear(); featf=null; tagf.clear(); if(viewMode!=='all') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true);
+function rcOpen(id){ const it=byId[id]; if(!it) return; closeRecents(); selCats=new Set([it.cat]); subf=null; placef.clear();slotf.clear(); featf=null; tagf.clear(); if(viewMode!=='all') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true);
   setTimeout(()=>{ const c=els.get(id); if(c){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.add('flash'); setTimeout(()=>c.classList.remove('flash'),2000); } },250); }
 function recordFirstSeen(){ // custom items created straight in Firebase have no build-time stamp: remember when first loaded
   try{ const seen=(shared&&shared.seen)||{}; ITEMS.forEach(i=>{ if(!i.addedAt&&!seen[i.id]){ seen[i.id]=Date.now(); shared.seen=seen; fetch(`${DB}/picks/_catalog/seen/${encodeURIComponent(i.id)}.json`,{method:'PUT',body:String(seen[i.id])}).catch(()=>{}); } }); }catch(e){} }
@@ -3289,7 +3292,7 @@ function cycleCatPrio(key){
   setCatMeta(key,{prio:nxt}); renderCatMenu();
 }
 function pickCat(key,sub){
-  selCats=key==='all'?new Set():new Set([key]); subf=sub||null; placef.clear(); tagf.clear();
+  selCats=key==='all'?new Set():new Set([key]); subf=sub||null; placef.clear();slotf.clear(); tagf.clear();
   const c=CATS.find(x=>x.key===key); if(c&&catState(c)==='done'&&viewMode==='active') setView('all');
   syncHash(); buildChips(); tabsHTML(); RE(true); toggleCatMenu(false); window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -3423,14 +3426,28 @@ function qpToggle(btn){ const id=btn.dataset.id, n=btn.dataset.n, it=byId[id]; i
   const sel=[...cur]; it.places=sel.length?sel:['__none']; patchItem(id,{places:it.places});
   say('📍 '+n+(on?' ✓':' — הוסר'),1100); paintLoc(els.get(id),it); renderPlaceRow(); if(placef.size) RE(); }
 function setQpMode(v){ qpMode=v; try{ localStorage.setItem('qpMode',v?'1':''); }catch(e){} ITEMS.forEach(it=>{ const c=els.get(it.id); if(c) paintLoc(c,it); }); renderPlaceRow(); renderCatStrip(); }
+const SLOTS=__SLOTS__; const BASE_DOC='__BASE__';
+function renderSlotRow(){
+  const el=document.getElementById('slotRow'); if(!el) return;
+  const cat=selCats.size===1?[...selCats][0]:null, cfg=cat&&SLOTS[cat];
+  if(!cfg){ el.style.display='none'; el.innerHTML=''; return; }
+  const its=ITEMS.filter(i=>inCats(i)&&!i.hidden); const cnt=new Map();
+  its.forEach(i=>(i.slots||[]).forEach(x=>cnt.set(x,(cnt.get(x)||0)+1)));
+  let h=`<button type="button" class="${slotf.size?'':'on'}" onclick="slotf.clear();RE()">🎯 כל הייעודים<small>${its.length}</small></button>`;
+  cfg.groups.forEach(g=>{ h+=`<span class="fl">${esc(g.floor)}</span>`+g.slots.map(sl=>`<button type="button" class="${slotf.has(sl.id)?'on':''}" data-k="${esc(sl.id)}" title="${esc(sl.need||'')}" onclick="toggleSlotF(this.dataset.k)">${esc(sl.name)}<small>${cnt.get(sl.id)||0}</small></button>`).join(''); });
+  h+=`<a class="docLink" href="${BASE_DOC}d/${esc(cfg.slug)}/" target="_blank" rel="noopener">📄 מסמך התלבטויות לפי מיקום ↗</a>`;
+  el.innerHTML=h; el.style.display='flex';
+}
+function toggleSlotF(k){ slotf.has(k)?slotf.delete(k):slotf.add(k); RE(); }
 function renderPlaceRow(){
+  try{ renderSlotRow(); }catch(e){}
   const el=document.getElementById('placeRow'); if(!el) return;
   const its=ITEMS.filter(i=>inCats(i)&&!i.hidden); const cnt=new Map(); let none=0;
   its.forEach(i=>{ const p=itemPlaces(i); if(!p.length) none++; p.forEach(n=>cnt.set(n,(cnt.get(n)||0)+1)); });
   const names=placesList().map(p=>p.n).filter(n=>cnt.has(n)||placef.has(n));
   const chip=(k,lab,n)=>`<button type="button" class="${placef.has(k)?'on':''}" data-k="${esc(k)}" onclick="togglePlaceF(this.dataset.k)">${esc(lab)}<small>${n}</small></button>`;
   el.innerHTML=`<button type="button" class="mgr${qpMode?' on':''}" onclick="setQpMode(${!qpMode})" title="סימון מקומות ישירות על כל כרטיס — לחיצה אחת, בלי חלון">${qpMode?'✓ ':''}⚡ שיוך מהיר למקומות</button>`
-    +`<button type="button" class="${placef.size?'':'on'}" onclick="placef.clear();renderPlaceRow();RE()">📍 כל המקומות<small>${its.length}</small></button>`
+    +`<button type="button" class="${placef.size?'':'on'}" onclick="placef.clear();slotf.clear();renderPlaceRow();RE()">📍 כל המקומות<small>${its.length}</small></button>`
     +names.map(n=>chip(n,n,cnt.get(n)||0)).join('')
     +(none||placef.has('__none')?chip('__none','ללא מיקום',none).replace('<button type="button" class="','<button type="button" class="warn '):'');
   el.style.display=(its.length&&(names.length>=2||placef.size||qpMode))?'flex':'none';
@@ -3863,6 +3880,7 @@ function visible(){
     &&(tagf.size===0||(i.tags||[]).some(t=>tagf.has(t)))
     &&(!subf||(subf==='__none'?!i.sub:i.sub===subf))
     &&(placef.size===0||[...placef].some(p=>p==='__none'?!itemPlaces(i).length:itemPlaces(i).includes(p)))
+    &&(slotf.size===0||(i.slots||[]).some(x=>slotf.has(x)))
     &&passFeat(i)
     &&passView(i)&&passPerson(i)&&passSpec(i)&&passCur(i));
   const s=document.getElementById('sort').value, rank={yes:0,maybe:1,none:2,no:3};
@@ -4882,10 +4900,130 @@ for _d in DATA:
 _dup=sorted({d["id"] for d in DATA if sum(1 for e in DATA if e["id"]==d["id"])>1})
 if _dup: raise SystemExit("duplicate item ids: "+", ".join(_dup))
 
+
+# ---- per-category "slots" (ייעוד / מיקום): filter chips in the board + a public decision document per category ----
+import html as _h, re as _re
+SLOTS=json.load(open(os.path.join(REPO,"slots.json"),encoding="utf-8")) if os.path.exists(os.path.join(REPO,"slots.json")) else {}
+_byid={d["id"]:d for d in DATA}
+for _cat,_cfg in SLOTS.items():
+    for _g in _cfg["groups"]:
+        for _sl in _g["slots"]:
+            _sl["items"]=[i for i in _sl["items"] if i in _byid]
+            for _i in _sl["items"]:
+                _byid[_i].setdefault("slots",[])
+                if _sl["id"] not in _byid[_i]["slots"]: _byid[_i]["slots"].append(_sl["id"])
+_HOSTS={"lighting.co.il":"מחסני תאורה","led4light.co.il":"led4light","ksp.co.il":"KSP","aliexpress.com":"עלי אקספרס","etsy.com":"Etsy","ikea.com":"IKEA","kualastyle.com":"קואלה","dealteora.co.il":"דיל תאורה","ida-home.co.il":"הבית של עידה","nadivwood.co.il":"נדיב עץ","darmarrakech.co.il":"דאר מרקש","lumins.co.il":"לומינס","bug.co.il":"Bug","amperel.co.il":"אמפראל"}
+def _store(it):
+    from urllib.parse import urlsplit
+    h=urlsplit(it.get("link") or "").netloc.lower().replace("www.","")
+    for k,v in _HOSTS.items():
+        if k in h: return v
+    return h
+def _nis(p):
+    try: return "₪"+("{:,.0f}".format(p) if float(p)==int(p) else "{:,.2f}".format(p))
+    except Exception: return ""
+def _line(desc,mark,n=190):
+    for ln in (desc or "").split("\n"):
+        if ln.startswith(mark):
+            t=_re.sub(r"^[✔✘⚠❓💰💡⭐]+\s*(מתאים|מתאימה|לא מתאים|לא מתאימה)?:?\s*","",ln).strip()
+            return t if len(t)<=n else t[:n].rsplit(" ",1)[0]+"…"
+    return ""
+def build_decision_doc(cat,cfg):
+    slug=cfg["slug"]; title=cfg["title"]; groups=cfg["groups"]
+    e=_h.escape
+    def card(sl,it):
+        img=(it.get("img") or "")
+        im=f'<img src="../../{e(img)}" alt="" loading="lazy">' if img else '<div class="noimg">💡</div>'
+        star='<span class="star">⭐ המלצה</span>' if (it.get("desc") or "").startswith("⭐") else ""
+        ok=_line(it.get("desc"),"✔"); no=_line(it.get("desc"),"✘")
+        if ok.startswith("מיועד"): ok2=_line("\n".join(l for l in it["desc"].split("\n") if not l.startswith("✔ מיועד")),"✔")
+        else: ok2=ok
+        ok=ok2 or ok
+        return (f'<article class="opt" data-slot="{e(sl["id"])}" data-id="{e(it["id"])}">'
+                f'<a class="im" href="{e(it.get("link") or "#")}" target="_blank" rel="noopener">{im}</a>'
+                f'<div class="ob">{star}<h4>{e(it["name"])}</h4>'
+                f'<div class="pr"><b>{_nis(it.get("price"))}</b><span>{e(_store(it))}</span></div>'
+                +(f'<p class="y">✔ {e(ok)}</p>' if ok else "")+(f'<p class="n">✘ {e(no)}</p>' if no else "")
+                +f'<div class="ac"><a href="{e(it.get("link") or "#")}" target="_blank" rel="noopener">🔗 לדף המוצר</a>'
+                f'<button type="button" class="fav" aria-pressed="false">♡ מעניין</button>'
+                f'<button type="button" class="pick" aria-pressed="false">✓ בוחרים</button></div></div></article>')
+    toc=""; body=""
+    for g in groups:
+        toc+=f'<span class="fl">{e(g["floor"])}</span>'+"".join(f'<a href="#{e(sl["id"])}">{e(sl["name"])}</a>' for sl in g["slots"])
+        body+=f'<h2 class="floor">{e(g["floor"])}</h2>'
+        for sl in g["slots"]:
+            its=[_byid[i] for i in sl["items"] if not _byid[i].get("hidden")]
+            its.sort(key=lambda x:(0 if (x.get("desc") or "").startswith("⭐") else 1, x.get("price") or 0))
+            body+=(f'<section class="slot" id="{e(sl["id"])}"><header><h3>{e(sl["name"])}</h3><span class="qty">כמות: {e(sl["qty"])}</span></header>'
+                   f'<p class="need">🎯 {e(sl["need"])}</p><div class="chosen" data-for="{e(sl["id"])}"></div>'
+                   +("".join(card(sl,i) for i in its) and f'<div class="grid">{"".join(card(sl,i) for i in its)}</div>' or '<p class="gap">עדיין אין כאן אופציות — מחפשים.</p>')
+                   +'</section>')
+    slotnames={sl["id"]:sl["name"] for g in groups for sl in g["slots"]}
+    meta={i["id"]:{"n":i["name"],"p":i.get("price")} for g in groups for sl in g["slots"] for i in [_byid[x] for x in sl["items"]]}
+    page=f"""<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{e(title)} · הבית שלנו</title>
+<meta name="robots" content="noindex"><meta name="description" content="כל אפשרויות {e(cat)} לפי מיקום בבית — להתלבטות ולהחלטה אחת אחת.">
+<meta property="og:title" content="{e(title)}"><meta property="og:description" content="כל האפשרויות לפי מיקום בבית — לבחור אחת אחת.">
+<meta property="og:image" content="{BASE}og/{e(slug)}.jpg"><meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{{--bg:#faf7f2;--card:#fff;--ink:#332c25;--soft:#645a4f;--line:#e6ddd0;--brass:#9a7338;--brass-s:#f3e9d6;--ok:#2f6a3d;--no:#9a4a2e;--star:#b8860b}}
+@media (prefers-color-scheme:dark){{:root:not([data-theme="light"]){{--bg:#1d1a16;--card:#27231e;--ink:#eee6da;--soft:#b9ad9c;--line:#3b352d;--brass:#d6ad66;--brass-s:#3a3122;--ok:#7bc58c;--no:#e0987c;--star:#e3b94a}}}}
+*{{box-sizing:border-box}}body{{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Heebo,system-ui,sans-serif;padding:0 16px 90px}}
+.wrap{{max-width:1040px;margin:0 auto}}
+h1{{font-size:26px;margin:22px 0 4px}}.sub{{color:var(--soft);margin:0 0 14px}}
+.toc{{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0 6px}}.toc .fl{{font-weight:800;font-size:12px;color:var(--soft);margin-inline:6px 2px}}
+.toc a{{text-decoration:none;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:99px;padding:4px 12px;font-size:13px;font-weight:600}}
+h2.floor{{font-size:20px;margin:34px 0 4px;padding-bottom:6px;border-bottom:2px solid var(--brass)}}
+.slot{{margin:18px 0 28px;scroll-margin-top:12px}}.slot header{{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}}
+.slot h3{{margin:0;font-size:19px}}.qty{{font-size:12.5px;font-weight:700;background:var(--brass-s);color:var(--brass);border-radius:99px;padding:2px 10px}}
+.need{{margin:4px 0 10px;color:var(--soft)}}.gap{{color:var(--soft);font-style:italic}}
+.grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}}
+.opt{{background:var(--card);border:1.5px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}}
+.opt.is-pick{{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok) inset}}.opt.is-fav:not(.is-pick){{border-color:var(--brass)}}
+.im{{display:block;aspect-ratio:4/3;background:#f1ece4}}.im img{{width:100%;height:100%;object-fit:cover;display:block}}.noimg{{display:flex;height:100%;align-items:center;justify-content:center;font-size:32px}}
+.ob{{padding:10px 12px 12px;display:flex;flex-direction:column;gap:5px;flex:1}}.ob h4{{margin:0;font-size:14px;line-height:1.35}}
+.star{{font-size:11.5px;font-weight:800;color:var(--star)}}.pr{{display:flex;justify-content:space-between;gap:8px;align-items:baseline}}.pr b{{font-size:17px}}.pr span{{font-size:12px;color:var(--soft)}}
+.ob p{{margin:0;font-size:12.5px;line-height:1.45}}.y{{color:var(--ok)}}.n{{color:var(--no)}}
+.ac{{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:6px;align-items:center}}.ac a{{font-size:12.5px;font-weight:700;color:var(--brass);text-decoration:none;margin-inline-end:auto}}
+.ac button{{font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:99px;padding:3px 10px;cursor:pointer}}
+.ac button[aria-pressed="true"]{{background:var(--brass);border-color:var(--brass);color:#fff}}.ac .pick[aria-pressed="true"]{{background:var(--ok);border-color:var(--ok)}}
+.chosen{{margin:0 0 8px;font-weight:700;color:var(--ok)}}.chosen:empty{{display:none}}
+#sum{{position:fixed;inset-inline:0;bottom:0;background:var(--card);border-top:2px solid var(--brass);padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px));z-index:5}}
+#sum summary{{cursor:pointer;font-weight:800;max-width:1040px;margin:0 auto}}#sum .in{{max-width:1040px;margin:8px auto 0;max-height:46vh;overflow:auto;font-size:13.5px}}
+#sum li{{margin:3px 0}}#sum button{{font:inherit;font-weight:700;border:1.5px solid var(--brass);background:var(--brass);color:#fff;border-radius:99px;padding:4px 14px;cursor:pointer;margin-top:8px}}
+footer{{margin-top:36px;color:var(--soft);font-size:12.5px}}footer a{{color:var(--brass)}}
+</style></head><body><div class="wrap">
+<h1>{e(title)}</h1>
+<p class="sub">כל האפשרויות לפי מיקום בבית. ⭐ = המלצה · ♡ מעניין · ✓ בוחרים (בחירה אחת לכל מיקום). הסימונים נשמרים רק בדפדפן שלך — בסוף אפשר להעתיק סיכום ולשלוח.</p>
+<nav class="toc">{toc}</nav>
+{body}
+<footer>מחירים בש״ח כפי שנמצאו בחנויות בתאריך הבנייה ({__import__("datetime").date.today().strftime("%d.%m.%Y")}); מוצרים מיובאים — בלי מע״מ ומשלוח. לבדיקה לפני הזמנה. · <a href="{BASE}#{e(slug)}">לכל הקטגוריה בלוח ההחלטות ↗</a></footer>
+</div>
+<details id="sum"><summary>📋 סיכום הבחירות שלי (<span id="cnt">0</span>)</summary><div class="in"><ul id="lst" style="padding-inline-start:18px;margin:0"></ul><button type="button" id="cp">📎 העתקת הסיכום</button></div></details>
+<script>
+const META={json.dumps(meta,ensure_ascii=False)};const SLOT={json.dumps(slotnames,ensure_ascii=False)};
+const KEY='dec-{e(slug)}';let st={{fav:{{}},pick:{{}}}};try{{st=JSON.parse(localStorage.getItem(KEY))||st}}catch(e){{}}
+function save(){{try{{localStorage.setItem(KEY,JSON.stringify(st))}}catch(e){{}}}}
+function paint(){{document.querySelectorAll('.opt').forEach(o=>{{const s=o.dataset.slot,i=o.dataset.id,f=!!st.fav[s+'|'+i],p=st.pick[s]===i;o.classList.toggle('is-fav',f);o.classList.toggle('is-pick',p);o.querySelector('.fav').setAttribute('aria-pressed',f);o.querySelector('.pick').setAttribute('aria-pressed',p);}});
+ let n=0,h='',txt='';document.querySelectorAll('.chosen').forEach(c=>{{const s=c.dataset.for,i=st.pick[s];c.textContent=i&&META[i]?'✓ נבחר: '+META[i].n+(META[i].p?' · ₪'+META[i].p:''):'';}});
+ Object.keys(SLOT).forEach(s=>{{const i=st.pick[s];if(i&&META[i]){{n++;h+='<li><b>'+SLOT[s]+':</b> '+META[i].n+(META[i].p?' · ₪'+META[i].p:'')+'</li>';txt+=SLOT[s]+': '+META[i].n+(META[i].p?' · ₪'+META[i].p:'')+'\\n';}}}});
+ document.getElementById('cnt').textContent=n;document.getElementById('lst').innerHTML=h||'<li>עוד לא נבחר כלום</li>';window._txt=txt;}}
+document.addEventListener('click',ev=>{{const b=ev.target.closest('button');if(!b)return;const o=b.closest('.opt');
+ if(o){{const s=o.dataset.slot,i=o.dataset.id;if(b.classList.contains('fav')){{const k=s+'|'+i;st.fav[k]?delete st.fav[k]:st.fav[k]=1;}}if(b.classList.contains('pick')){{st.pick[s]===i?delete st.pick[s]:st.pick[s]=i;}}save();paint();}}
+ if(b.id==='cp'){{const t=window._txt||'';(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>b.textContent='✓ הועתק',()=>{{const r=document.createRange();r.selectNodeContents(document.getElementById('lst'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);b.textContent='סומן — העתיקי ידנית'}});}}}});
+paint();
+</script></body></html>"""
+    d=os.path.join(REPO,"d",slug); os.makedirs(d,exist_ok=True)
+    open(os.path.join(d,"index.html"),"w",encoding="utf-8").write(page)
+for _cat,_cfg in SLOTS.items(): build_decision_doc(_cat,_cfg)
+
 out=(tpl.replace("__DATA__",json.dumps(DATA,ensure_ascii=False))
         .replace("__CATS__",json.dumps(CATS,ensure_ascii=False))
         .replace("__CRIT__",json.dumps(CRIT,ensure_ascii=False))
         .replace("__DBURL__",DBURL)
+        .replace("__SLOTS__",json.dumps(SLOTS,ensure_ascii=False))
         .replace("__SHARE__",BASE+"picks/")
         .replace("__BASE__",BASE))
 open(os.path.join(REPO,"index.html"),"w",encoding="utf-8").write(out)
