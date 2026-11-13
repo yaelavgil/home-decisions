@@ -2482,6 +2482,10 @@ body.fsOpen{overflow:hidden}
 @media(min-width:700px){
   .fsPanel{top:0;bottom:0;inset-inline-start:0;width:min(440px,92vw);border-start-end-radius:20px;border-end-end-radius:20px;box-shadow:10px 0 40px -10px rgba(40,28,12,.5);animation:fsIn .22s}
 }
+.coverBtn{display:block;margin:8px auto 0;font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--brass);background:var(--brass-soft);color:var(--brass-d);border-radius:99px;padding:6px 16px;cursor:pointer}
+.coverBtn:disabled,.coverBtn.is{border-color:var(--line-2);background:none;color:var(--muted);cursor:default}
+.oosb{position:absolute;inset-inline:0;bottom:0;z-index:5;background:rgba(150,52,44,.94);color:#fff;text-align:center;font-weight:800;font-size:13.5px;padding:7px 8px;pointer-events:none}
+.card.is-oos .thumb>img{filter:grayscale(.55) opacity(.78)}
 </style>
 </head>
 <body>
@@ -3932,11 +3936,16 @@ function renderItemDlg(){ const id=_itemOpen, c=els.get(id), it=byId[id]; if(!c|
       const bn=th.querySelector('.badge-n'); if(bn) bn.textContent='📷 '+(ix+1)+'/'+imgs.length;
       const strip=document.createElement('div'); strip.className='igt';
       imgs.forEach((u,i)=>{ const t=document.createElement('img'); t.src=u; t.loading='lazy'; t.alt=''; if(i===ix) t.className='on'; t.onclick=()=>{ _igIdx=i; renderItemDlg(); }; strip.appendChild(t); });
-      th.after(strip); } }
+      th.after(strip);
+      const cb=document.createElement('button'); cb.type='button'; cb.className='coverBtn'+(ix===0?' is':''); cb.disabled=(ix===0);
+      cb.textContent=ix===0?'⭐ זו התמונה הראשית':'⭐ קבעי תמונה זו כראשית'; cb.onclick=()=>setCover(id); strip.after(cb); } }
   const ta=cl.querySelector('textarea'); if(ta) ta.value=(st.s[id]&&st.s[id].note)||'';
   const pp=cl.querySelector('.people'); if(pp&&pp.innerHTML.trim()) pp.style.display='';
   document.getElementById('itemDlgT').textContent=it.name.length>60?it.name.slice(0,60)+'…':it.name;
   b.innerHTML=''; b.appendChild(cl); renderSlotBox(); refreshSelBar(); d.scrollTop=y; }
+function setCover(id){ const it=byId[id]; if(!it) return; const list=(it.imgs&&it.imgs.length)?[...it.imgs]:[it.img]; const ix=Math.min(_igIdx,list.length-1); if(ix<=0) return;
+  const u=list[ix], nl=[u,...list.filter((_,k)=>k!==ix)]; it.imgs=nl; it.img=u; patchItem(id,{img:u,imgs:nl}); _igIdx=0;
+  const c=els.get(id); if(c){ c.remove(); els.delete(id); } RE(); renderItemDlg(); say('⭐ התמונה הוגדרה כראשית',1800); }
 function refreshItemDlg(){ if(!_itemOpen) return; const d=document.getElementById('itemDlg'); if(!d.open){ _itemOpen=null; return; } const a=document.activeElement; if(a&&a.tagName==='TEXTAREA'&&d.contains(a)) return; renderItemDlg(); }
 document.addEventListener('close',e=>{ if(e.target&&e.target.id==='itemDlg') _itemOpen=null; },true);
 function voteHTML(v){ return v.map(m=>`<span class="vr${m.mine?' me':''}"><b>${esc(m.mine?'אני':m.name)}</b><span class="vs">${'★'.repeat(m.h)}<i>${'★'.repeat(5-m.h)}</i></span></span>`).join(''); }
@@ -4228,6 +4237,10 @@ function paint(id,c){
   const pim=c.querySelector('.thumb img'); if(pim&&it.img&&pim.getAttribute('src')!==it.img){pim.src=it.img;} // card is built once; follow later image fixes (e.g. from the shared catalog)
   paintStatus(c,id); paintLoc(c,it); paintParts(c,it);
   { let nt=c.querySelector('.newTag'); const isNew=addedTs(it)>rcLastSeen()&&it.type!=='color'; if(isNew&&!nt){ nt=document.createElement('span'); nt.className='newTag'; nt.textContent='חדש'; c.appendChild(nt); } else if(!isNew&&nt) nt.remove(); }
+  { const th=c.querySelector('.thumb'); let ob=c.querySelector('.oosb');
+    if(it.oos&&th&&!ob){ ob=document.createElement('div'); ob.className='oosb'; ob.textContent='אזל מהמלאי'; th.appendChild(ob); } else if(!it.oos&&ob){ ob.remove(); ob=null; }
+    if(ob&&it.oosChecked) ob.title='נבדק אוטומטית מול החנות: '+new Date(it.oosChecked).toLocaleString('he-IL');
+    c.classList.toggle('is-oos',!!it.oos); }
   const od=c.querySelector('.orderb .od'); if(od)od.textContent=it.orderedAt?new Date(it.orderedAt).toLocaleDateString('he-IL'):'';
   const mo=c.querySelector('.markOrd'); if(mo)mo.style.display=it.ordered?'none':'';
   const hb=c.querySelector('.hideb');
