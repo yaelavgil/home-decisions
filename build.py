@@ -5014,7 +5014,9 @@ def build_decision_doc(cat,cfg):
                 return 1 if sp["out"]-H>=5 else 2
             its.sort(key=lambda x:(_fitrank(x), 0 if (x.get("desc") or "").startswith("⭐") else 1, x.get("price") or 0))
             body+=(f'<section class="slot" id="{e(sl["id"])}"><header><h3>{e(sl["name"])}</h3><span class="qty">כמות: {e(sl["qty"])}</span></header>'
-                   f'<p class="need">🎯 {e(sl["need"])}</p><div class="chosen" data-for="{e(sl["id"])}"></div>'
+                   f'<p class="need">🎯 {e(sl["need"])}</p>'
+                   +(('<div class="ph">'+"".join(f'<figure><a href="../../{e(x["src"])}" target="_blank" rel="noopener"><img src="../../{e(x["src"])}" alt="{e(x["cap"])}" loading="lazy"></a><figcaption>{e(x["cap"])}</figcaption></figure>' for x in sl["photos"])+'</div>') if sl.get("photos") else "")
+                   +f'<div class="chosen" data-for="{e(sl["id"])}"></div>'
                    +("".join(card(sl,i) for i in its) and f'<div class="grid">{"".join(card(sl,i) for i in its)}</div>' or '<p class="gap">עדיין אין כאן אופציות — מחפשים.</p>')
                    +'</section>')
     slotnames={sl["id"]:sl["name"] for g in groups for sl in g["slots"]}
@@ -5037,6 +5039,7 @@ h1{{font-size:26px;margin:22px 0 4px}}.sub{{color:var(--soft);margin:0 0 14px}}
 h2.floor{{font-size:20px;margin:34px 0 4px;padding-bottom:6px;border-bottom:2px solid var(--brass)}}
 .slot{{margin:18px 0 28px;scroll-margin-top:12px}}.slot header{{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}}
 .slot h3{{margin:0;font-size:19px}}.qty{{font-size:12.5px;font-weight:700;background:var(--brass-s);color:var(--brass);border-radius:99px;padding:2px 10px}}
+.ph{{display:flex;gap:10px;overflow-x:auto;margin:0 0 14px;padding-bottom:4px}}.ph figure{{margin:0;flex:none;width:min(260px,72vw)}}.ph img{{width:100%;height:170px;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:block}}.ph figcaption{{font-size:12px;color:var(--soft);margin-top:4px;line-height:1.35}}
 .need{{margin:4px 0 10px;color:var(--soft)}}.gap{{color:var(--soft);font-style:italic}}
 .grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}}
 .opt{{background:var(--card);border:1.5px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}}
