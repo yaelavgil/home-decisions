@@ -118,6 +118,7 @@ function render(){
     return '<section class="loc" id="g'+gi+'" style="--c:'+COL[gi%COL.length]+'"><div class="lh"><span class="ic">'+ico(g.n)+'</span><div><div class="fl">'+esc(g.f||'')+'</div><h2>'+esc(g.n)+'</h2></div><div class="cnt"><b>'+its.length+'</b>אפשרויות'+(g.q?'<br>צריך: '+esc(g.q):'')+'</div></div><div class="lb">'
   +(opt.rule?ruler(its):'')+'<div class="grid">'+its.map((x,i)=>card(x,i,ME[x.id])).join('')+'</div>'+(opt.tab?table(its):'')+'</div></section>';}).join('');
 }
+window.addEventListener('beforeprint',()=>document.querySelectorAll('img[loading=lazy]').forEach(i=>{i.loading='eager';}));
 render();
 fetch(DB+'/picks.json').then(r=>r.json()).then(d=>{d=d||{};CAT=(d._catalog&&d._catalog.items)||{};Object.keys(d).forEach(k=>{if(k[0]!=='_'&&d[k]&&d[k].name==='יעל')ME=d[k].items||{};});
  const ci=(d._catalog&&d._catalog.items)||{};render();}).catch(()=>{});
