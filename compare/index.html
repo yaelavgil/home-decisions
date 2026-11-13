@@ -20,7 +20,7 @@
 .lh .ic{font-size:34px;line-height:1}.lh h2{margin:0;font-size:23px;line-height:1.2;font-weight:900}.lh .fl{font-size:12.5px;opacity:.88;font-weight:600}.lh .cnt{margin-inline-start:auto;text-align:center;background:rgba(255,255,255,.2);border-radius:14px;padding:4px 14px;font-weight:800;font-size:13px;line-height:1.25}.lh .cnt b{display:block;font-size:22px}
 .lb{background:var(--card);border:1.5px solid var(--line);border-top:0;border-radius:0 0 18px 18px;padding:14px 16px 18px}
 .ruler{margin:4px 4px 18px}.rt{position:relative;height:8px;border-radius:99px;background:linear-gradient(90deg,var(--brass-s),var(--c));opacity:.9;margin:26px 12px 6px}
-.rt .d{position:absolute;top:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:#fff;border:2.5px solid var(--c);font-size:11.5px;font-weight:900;display:flex;align-items:center;justify-content:center;color:var(--c);text-decoration:none}
+.rt .d{position:absolute;top:50%;transform:translate(50%,-50%);width:22px;height:22px;border-radius:50%;background:#fff;border:2.5px solid var(--c);font-size:11.5px;font-weight:900;display:flex;align-items:center;justify-content:center;color:var(--c);text-decoration:none}
 .rl{display:flex;justify-content:space-between;font-size:12px;color:var(--soft);font-weight:700;margin:0 4px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:14px}
 .it{position:relative;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);display:flex;flex-direction:column;break-inside:avoid}
@@ -79,7 +79,7 @@ function groupOf(items){const G=new Map();
  const add=(k,meta,x)=>{if(!G.has(k))G.set(k,Object.assign({k,items:[]},meta));G.get(k).items.push(x);};
  items.forEach(x=>{const sl=eff(x).filter(s=>SM[s]&&(!Q.get('c')||SM[s].c===x.cat));
   if(sl.length)sl.forEach(s=>add('s:'+s,{n:SM[s].n,f:SM[s].f,q:SM[s].q,o:SM[s].o},x));
-  else{const pl=places(x);if(pl.length)pl.forEach(p=>add('p:'+p,{n:p,f:'',q:'',o:900},x));else add('c:'+x.cat,{n:(CT[x.cat]||{}).l||'ללא מיקום',f:'מיקום לא נקבע',q:'',o:1000},x);}});
+  else{const pl=places(x);if(pl.length)pl.forEach(p=>add('p:'+p,{n:p,f:'',q:'',o:900},x));else add('c:'+x.cat,{n:'ללא מיקום מוגדר · '+((CT[x.cat]||{}).l||''),f:'עוד לא שויכו למיקום בבית',q:'',o:1000},x);}});
  return [...G.values()].sort((a,b)=>a.o-b.o||a.n.localeCompare(b.n,'he'));}
 function chips(x){const t=x.n+' '+x.dm,o=[];let m;
  if(m=t.match(/IP\s?(\d{2})/i))o.push('<i class="ip">IP'+m[1]+'</i>');
@@ -91,7 +91,7 @@ function chips(x){const t=x.n+' '+x.dm,o=[];let m;
 function imgsrc(s){return !s?'':/^(https?:|data:)/.test(s)?s:s;}
 function card(x,i,mk){const m=mk;const th=(x.imgs||[]).filter(s=>s!==x.img).slice(0,4);
  return '<article class="it'+(m&&(m.s==='yes'||m.h>0)?' star':'')+'" id="x-'+esc(x.id)+'"><span class="no">'+(i+1)+'</span>'
- +(m&&(m.s==='yes'||m.h>0)?'<span class="mk">⭐ סימנתי</span>':m&&m.s==='maybe'?'<span class="mk m">אולי</span>':x.pk?'<span class="mk">המלצה</span>':'')
+ +(CAT[x.id]&&CAT[x.id].ordered?'<span class="mk m">📦 הוזמן</span>':m&&(m.s==='yes'||m.h>0)?'<span class="mk">⭐ סימנתי</span>':m&&m.s==='maybe'?'<span class="mk m">אולי</span>':x.pk?'<span class="mk">המלצה</span>':'')
  +'<a class="ph" href="'+esc(x.l||'#')+'" target="_blank" rel="noopener">'+(x.img?'<img src="'+esc(imgsrc(x.img))+'" alt="" loading="lazy">':'<div class="ni">💡</div>')+'</a>'
  +(th.length?'<div class="th">'+th.map(s=>'<img src="'+esc(imgsrc(s))+'" alt="" loading="lazy">').join('')+'</div>':'')
  +'<div class="bd"><h3>'+esc(x.n)+'</h3><div class="pr"><b>'+esc(nis(x.p)||'—')+'</b><span>'+esc(x.st||'')+'</span></div>'+chips(x)
@@ -99,9 +99,9 @@ function card(x,i,mk){const m=mk;const th=(x.imgs||[]).filter(s=>s!==x.img).slic
  +(x.ok?'<p class="y">✔ '+esc(x.ok)+'</p>':(x.pts&&x.pts[0]?'<p class="y">✔ '+esc(x.pts[0])+'</p>':''))+(x.no?'<p class="n">✘ '+esc(x.no)+'</p>':'')
  +(m&&m.n?'<p class="nt">📝 '+esc(m.n)+'</p>':'')
  +'<a class="go" href="'+esc(x.l||'#')+'" target="_blank" rel="noopener">🔗 לדף המוצר</a></div><button class="rm" onclick="rm(\''+esc(x.id)+'\')">✕ הסר</button></article>';}
-function ruler(its){const ps=its.map(x=>x.p).filter(p=>p!=null);if(its.length<2||!ps.length)return '';
+function ruler(its){const ps=its.map(x=>x.p).filter(p=>p>0);if(its.length<2||!ps.length)return '';
  const mn=Math.min(...ps),mx=Math.max(...ps),sp=mx-mn||1;
- return '<div class="ruler"><div class="rt">'+its.map((x,i)=>x.p==null?'':'<a class="d" href="#x-'+esc(x.id)+'" style="left:'+(2+96*(x.p-mn)/sp).toFixed(1)+'%" title="'+esc(x.n)+' · '+esc(nis(x.p))+'">'+(i+1)+'</a>').join('')+'</div><div class="rl"><span>'+esc(nis(mn))+'</span><span>ציר מחירים</span><span>'+esc(nis(mx))+'</span></div></div>';}
+ return '<div class="ruler"><div class="rt">'+its.map((x,i)=>!(x.p>0)?'':'<a class="d" href="#x-'+esc(x.id)+'" style="right:'+(2+96*(x.p-mn)/sp).toFixed(1)+'%" title="'+esc(x.n)+' · '+esc(nis(x.p))+'">'+(i+1)+'</a>').join('')+'</div><div class="rl"><span>'+esc(nis(mn))+'</span><span>ציר מחירים</span><span>'+esc(nis(mx))+'</span></div></div>';}
 function table(its){return '<div class="tw"><table><thead><tr><th>#</th><th></th><th>מוצר</th><th>חנות</th><th>מחיר</th><th>מידות / נתונים</th><th></th></tr></thead><tbody>'
  +its.map((x,i)=>'<tr><td class="num">'+(i+1)+'</td><td>'+(x.img?'<img src="'+esc(imgsrc(x.img))+'" alt="" loading="lazy">':'')+'</td><td><a href="#x-'+esc(x.id)+'">'+esc(x.n)+'</a></td><td>'+esc(x.st||'')+'</td><td class="pp">'+esc(nis(x.p)||'—')+'</td><td>'+esc(x.dm||'')+'</td><td><a href="'+esc(x.l||'#')+'" target="_blank" rel="noopener">🔗</a></td></tr>').join('')+'</tbody></table></div>';}
 function render(){
@@ -110,13 +110,12 @@ function render(){
  else if(Q.get('c')&&CT[Q.get('c')])document.getElementById('ht').textContent='השוואה — '+CT[Q.get('c')].l;
  document.getElementById('hk').textContent='מסמך השוואה לפי מיקום בבית';
  if(!items.length){out.innerHTML='<div class="empty">אין פריטים להצגה. בחרי מוצרים בלוח (כפתור ⚖ על הכרטיס) וצרי מסמך מחדש.</div>';document.getElementById('kpis').innerHTML='';document.getElementById('nav').innerHTML='';document.getElementById('hp').textContent='';return;}
- const G=groupOf(items),ps=items.map(x=>x.p).filter(p=>p!=null),stores=new Set(items.map(x=>x.st).filter(Boolean));
+ const G=groupOf(items),ps=items.map(x=>x.p).filter(p=>p>0),stores=new Set(items.map(x=>x.st).filter(Boolean));
  document.getElementById('hp').textContent=new Date().toLocaleDateString('he-IL')+' · לחיצה על תמונה או על "לדף המוצר" פותחת את החנות';
  document.getElementById('kpis').innerHTML=[[items.length,'מוצרים'],[G.length,'מיקומים'],[stores.size,'חנויות'],[ps.length?nis(Math.min(...ps))+'–'+nis(Math.max(...ps)):'—','טווח מחירים']].map(([b,s])=>'<div class="kpi"><b>'+esc(b)+'</b><span>'+s+'</span></div>').join('');
  document.getElementById('nav').innerHTML=G.map((g,i)=>'<a href="#g'+i+'"><i>'+ico(g.n)+'</i>'+esc(g.n)+' <small>'+g.items.length+'</small></a>').join('');
  out.innerHTML=G.map((g,gi)=>{const its=g.items.slice().sort((a,b)=>{if(opt.sort==='s'){const sa=(ME[a.id]&&(ME[a.id].s==='yes'||ME[a.id].h>0))?0:1,sb=(ME[b.id]&&(ME[b.id].s==='yes'||ME[b.id].h>0))?0:1;if(sa!==sb)return sa-sb;}return (a.p==null)-(b.p==null)||a.p-b.p;});
-  const pr=its.map(x=>x.p).filter(p=>p!=null);
-  return '<section class="loc" id="g'+gi+'" style="--c:'+COL[gi%COL.length]+'"><div class="lh"><span class="ic">'+ico(g.n)+'</span><div><div class="fl">'+esc(g.f||'')+'</div><h2>'+esc(g.n)+'</h2></div><div class="cnt"><b>'+its.length+'</b>אפשרויות'+(g.q?'<br>צריך: '+esc(g.q):'')+'</div></div><div class="lb">'
+    return '<section class="loc" id="g'+gi+'" style="--c:'+COL[gi%COL.length]+'"><div class="lh"><span class="ic">'+ico(g.n)+'</span><div><div class="fl">'+esc(g.f||'')+'</div><h2>'+esc(g.n)+'</h2></div><div class="cnt"><b>'+its.length+'</b>אפשרויות'+(g.q?'<br>צריך: '+esc(g.q):'')+'</div></div><div class="lb">'
   +(opt.rule?ruler(its):'')+'<div class="grid">'+its.map((x,i)=>card(x,i,ME[x.id])).join('')+'</div>'+(opt.tab?table(its):'')+'</div></section>';}).join('');
 }
 render();
