@@ -3766,8 +3766,8 @@ function expCreate(copy){ return (async()=>{
   catch(e){ if(w) w.close(); say('לא הצלחתי לשמור את העמוד — נסי שוב',3000); return; }
   if(copy){ try{ await navigator.clipboard.writeText(url); say('🔗 הקישור הועתק — אפשר לשלוח',2600); }catch(e){ prompt('העתיקי את הקישור:',url); } }
   else if(w) w.location.href=url; else location.href=url;})(); }
-/* "בהתלבטות": marked by me (❤ / אולי / כוכבים), not ordered, not removed */
-function _isWavering(i){ if(i.hidden) return false; const t=itemStatus(i); if(t==='ordered'||t==='rejected') return false; const x=S(i.id)||{}; return x.status==='yes'||x.status==='maybe'||(x.h||0)>0; }
+/* "בהתלבטות": still on the table — not ordered, not chosen yet, not removed, and I did not mark it ✕ */
+function _isWavering(i){ if(i.hidden||i.type==='color') return false; if(itemStatus(i)!=='discuss') return false; const x=S(i.id)||{}; return x.status!=='no'; }
 { const _pv=passView; passView=function(i){ return viewMode==='wavering'?_isWavering(i):_pv(i); };
   const _vc=viewCounts; viewCounts=function(){ const c=_vc(); c.wavering=ITEMS.filter(i=>inCats(i)&&_isWavering(i)).length; return c; }; }
 rebuild(); applyHash(); tabsHTML(); buildChips(); RE(true); if(selCats.size) syncHash(); cmpBarPaint();
