@@ -2432,6 +2432,56 @@ body.cur-rank #grid,body.cur-rank .catStrip,body.cur-rank .subRow,body.cur-rank 
 .rcGhost{position:fixed;z-index:200;pointer-events:none;opacity:.92;box-shadow:0 10px 28px rgba(0,0,0,.35);transform:rotate(2deg)}
 body.cur-drag{overscroll-behavior:none}
 .rkHint{font-size:12.5px;color:var(--muted)}
+
+/* ===== modern filtering (13.11): compact bar + active chips + filter sheet ===== */
+.tools{flex-wrap:nowrap;gap:8px}
+.tools .search{flex:1 1 auto;min-width:0}
+.tools .search input{padding-block:9px}
+.tools #sort{flex:0 0 auto;max-width:130px;border-radius:99px;padding:8px 12px}
+.tools .tbtn{white-space:nowrap}
+.tools .curBtn .lbl{display:inline}
+.summ{display:none}
+.afRow{display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:none;padding:8px 2px 2px;min-height:34px}
+.afRow::-webkit-scrollbar{display:none}
+.afN{flex:none;font-size:12.5px;color:var(--ink-soft);padding-inline-end:4px;white-space:nowrap}
+.afN b{color:var(--ink)}
+.afc{flex:none;display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--brass);background:var(--brass-soft);color:var(--brass-d);border-radius:99px;padding:4px 6px 4px 11px;cursor:pointer;white-space:nowrap;max-width:240px}
+.afc .afx{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;background:var(--brass-d);color:#fff;font-size:10px;line-height:1}
+.afc.afclr{border-style:dashed;background:none;padding:4px 11px}
+.fsheet[hidden]{display:none}
+.fsheet{position:fixed;inset:0;z-index:140}
+.fsScrim{position:absolute;inset:0;background:rgba(40,28,12,.4);animation:fsFade .18s}
+.fsPanel{position:absolute;display:flex;flex-direction:column;background:var(--bg);box-shadow:0 -10px 40px -10px rgba(40,28,12,.5)}
+.fsHead{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;border-bottom:1.5px solid var(--line)}
+.fsHead b{font-size:17px;flex:1}
+.fsHead button{font:inherit;font-size:13px;font-weight:700;border:0;background:none;color:var(--brass-d);cursor:pointer;padding:6px 8px;border-radius:8px}
+.fsHead .fsX{font-size:18px;color:var(--ink-soft)}
+.fsBody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:6px 16px 14px;display:flex;flex-direction:column;gap:2px}
+.fg{padding:12px 0;border-bottom:1px solid var(--line)}
+.fg:last-child{border-bottom:0}
+.fg h4{margin:0 0 8px;font-size:12.5px;font-weight:800;color:var(--muted);letter-spacing:.02em}
+.fg .subRow{flex-wrap:wrap;overflow:visible;margin:0;padding:0}
+.fg .subRow .fl{flex-basis:100%;padding:6px 0 0}
+.fg .views{display:flex;flex-wrap:wrap;border-radius:14px;margin:0;width:100%;overflow:visible}
+.fg .views .vbtn{flex:1 1 auto}
+.fg .filters{padding:0;margin:0;border:0}
+.fg .filters[hidden]{display:block}
+.fg .specBar{margin:0;padding:0;border:0;background:none;order:unset}
+.fg .featSortRow{flex-wrap:wrap}
+.fsFoot{padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1.5px solid var(--line);background:var(--bg)}
+.fsGo{width:100%;border:0;border-radius:14px;padding:13px;font:inherit;font-size:15px;font-weight:800;color:#fff;background:linear-gradient(180deg,#bf9760,var(--brass-d));cursor:pointer}
+body.fsOpen{overflow:hidden}
+@keyframes fsFade{from{opacity:0}}
+@keyframes fsUp{from{transform:translateY(40px);opacity:.6}}
+@keyframes fsIn{from{transform:translateX(30px);opacity:.6}}
+@media(max-width:699px){
+  .fsPanel{inset-inline:0;bottom:0;max-height:88vh;border-radius:20px 20px 0 0;animation:fsUp .22s}
+  .tools .curBtn .lbl{display:none}
+  .tools #sort{max-width:96px}
+}
+@media(min-width:700px){
+  .fsPanel{top:0;bottom:0;inset-inline-start:0;width:min(440px,92vw);border-start-end-radius:20px;border-end-end-radius:20px;box-shadow:10px 0 40px -10px rgba(40,28,12,.5);animation:fsIn .22s}
+}
 </style>
 </head>
 <body>
@@ -2476,7 +2526,7 @@ body.cur-drag{overscroll-behavior:none}
       <option value="mystars">★ הכוכבים שלי קודם</option>
     </select>
     <div class="featSortRow" id="featSortRow"></div>
-    <button class="tbtn curBtn" id="curBtn" onclick="curStart()" title="לסמן בכוכבים מה אהבתי ולדרג — מצב עריכה">★ בחירה ודירוג</button>
+    <button class="tbtn curBtn" id="curBtn" onclick="curStart()" title="לסמן בכוכבים מה אהבתי ולדרג — מצב עריכה">★<span class="lbl"> בחירה ודירוג</span></button>
     <button class="tbtn fbtn" id="filterBtn" onclick="toggleFilters()" title="סינון מתקדם">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M3 5h18l-7 8.2V19l-4 2v-7.8z"/></svg>סינון<span class="fbadge" id="fbadge"></span></button>
   </div>
@@ -2485,6 +2535,7 @@ body.cur-drag{overscroll-behavior:none}
     <div class="frow"><span class="flabel">סטטוס</span><div class="chips" id="stchips"></div></div>
     <div class="frow"><span class="flabel">קטגוריה</span><div class="chips" id="tagchips"></div></div>
   </div>
+  <div class="afRow" id="afRow"></div>
   <div class="summ" id="summ"></div>
 </div>
 
@@ -2623,6 +2674,14 @@ body.cur-drag{overscroll-behavior:none}
 </div>
 <div class="toast" id="toast">✓ הועתק</div>
 
+<div class="fsheet" id="fsheet" hidden>
+  <div class="fsScrim" onclick="closeSheet()"></div>
+  <div class="fsPanel" role="dialog" aria-modal="true" aria-label="סינון">
+    <div class="fsHead"><b>סינון</b><button type="button" onclick="afClearAll()">נקה הכל</button><button type="button" class="fsX" onclick="closeSheet()" aria-label="סגירה">✕</button></div>
+    <div class="fsBody" id="fsBody"></div>
+    <div class="fsFoot"><button type="button" class="fsGo" onclick="closeSheet()">הצג <span id="fsCount"></span> פריטים</button></div>
+  </div>
+</div>
 <div class="cmpBar" id="cmpBar" hidden></div>
 <dialog id="itemDlg" class="itemdlg"><div class="dh"><span id="itemDlgT"></span><span class="dact"><button type="button" class="idx act" onclick="itemDlgEdit()" title="עריכה" aria-label="עריכה">✎</button><button type="button" class="idx act" onclick="itemDlgDelete()" title="מחיקה" aria-label="מחיקה">🗑</button><button type="button" class="idx" onclick="closeItem()" aria-label="סגירה">✕</button></span></div><div class="db" id="itemDlgB"></div><div class="selBar" id="itemDlgBar" hidden></div></dialog>
 <dialog id="meDlg"><div class="dh">👋 מי את/ה?</div>
@@ -4926,6 +4985,44 @@ if(_oids){
   fetch(`${DB}/picks.json`).then(r=>r.json()).then(d=>{ shared=(d&&d._catalog)||{items:{},cats:{}}; rebuild(); renderOrder(_oids); }).catch(()=>{});
 }
 else{
+/* ===== modern filtering: active-filter chips + filter sheet (all existing filter rows live inside the sheet) ===== */
+(function(){ const body=document.getElementById('fsBody'); if(!body) return;
+  [['views','סטטוס הזמנה'],['filters','מי בחר · סטטוס · תגיות'],['subRow','סוג ומאפיינים'],['placeRow','מקום בבית'],['slotRow','ייעוד בתוכנית'],['specBar','מה חשוב בקטגוריה'],['featSortRow','מיון לפי פיצ\'ר']].forEach(([id,t])=>{
+    const el=document.getElementById(id); if(!el) return; const w=document.createElement('section'); w.className='fg'; w.dataset.g=id; const h=document.createElement('h4'); h.textContent=t; w.appendChild(h); w.appendChild(el); body.appendChild(w); });
+  const f=document.getElementById('filters'); if(f) f.hidden=false;
+})();
+function fsSync(){ document.querySelectorAll('#fsBody .fg').forEach(w=>{ const el=w.querySelector(':scope>:not(h4)'); w.hidden=!el||getComputedStyle(el).display==='none'||!el.innerHTML.trim(); }); }
+function openSheet(){ const s=document.getElementById('fsheet'); s.hidden=false; document.body.classList.add('fsOpen'); fsSync(); afRender(); }
+function closeSheet(){ document.getElementById('fsheet').hidden=true; document.body.classList.remove('fsOpen'); }
+toggleFilters=function(){ document.getElementById('fsheet').hidden?openSheet():closeSheet(); };
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!document.getElementById('fsheet').hidden&&!document.querySelector('dialog[open]')) closeSheet(); });
+const _afTxt=el=>{ const c=el.cloneNode(true); c.querySelectorAll('small,.vc,.c').forEach(x=>x.remove()); return c.textContent.trim(); };
+function afList(){
+  const L=[]; const qe=document.getElementById('q'), qv=((qe&&qe.value)||'').trim();
+  if(qv) L.push({q:1,l:'🔍 '+qv,rm:()=>{qe.value='';}});
+  if(viewMode!=='all'){ const b=document.querySelector('.vbtn[data-v="'+viewMode+'"]'); L.push({l:b?_afTxt(b):viewMode,rm:()=>{viewMode='all';document.querySelectorAll('.vbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='all'));}}); }
+  if(subf) L.push({l:subf==='__none'?'⚠ ללא שיוך':subf,rm:()=>{subf=null;renderSubRow();}});
+  if(featf){ const o=document.querySelector('#subRow select option:checked'); L.push({l:o&&o.value?o.textContent:'🏷 פיצ\'ר',rm:()=>{featf=null;renderSubRow();}}); }
+  placef.forEach(p=>L.push({l:'📍 '+(p==='__none'?'ללא מיקום':p),rm:()=>{placef.delete(p);renderPlaceRow();}}));
+  slotf.forEach(k=>{ let n=k; try{ const cat=[...selCats][0]; SLOTS[cat].groups.forEach(g=>g.slots.forEach(x=>{ if(x.id===k) n=x.name; })); }catch(e){} L.push({l:'🎯 '+n,rm:()=>{slotf.delete(k);renderPlaceRow();}}); });
+  if(personf!=='all') L.push({l:'👤 '+personf,rm:()=>{personf='all';buildChips();}});
+  const stl={yes:'✓ נבחר',maybe:'? אולי',no:'✕ לא',none:'לא הוחלט'}; stf.forEach(k=>L.push({l:stl[k]||k,rm:()=>{stf.delete(k);buildChips();}}));
+  tagf.forEach(t=>L.push({l:'🏷 '+t,rm:()=>{tagf.delete(t);buildChips();}}));
+  Object.keys(specf).forEach(k=>{ let c=null; try{ c=critOf([...selCats][0]).find(z=>z.k===k); }catch(e){} const f=specf[k]; L.push({l:'🎯 '+(c?c.label:k)+(f.min!=null?' ≥ '+f.min:': '+[...(f.set||[])].join(', ')),rm:()=>{delete specf[k];buildSpecBar();}}); });
+  return L;
+}
+function afRender(){
+  const el=document.getElementById('afRow'); if(!el) return;
+  const L=afList(), sb=document.querySelector('#summ b'), n=sb?sb.textContent:'';
+  el._L=L;
+  el.innerHTML='<span class="afN"><b>'+n+'</b> פריטים</span>'+L.map((x,i)=>'<button type="button" class="afc" data-i="'+i+'">'+esc(x.l)+' <span class="afx">✕</span></button>').join('')+(L.length>1?'<button type="button" class="afc afclr" data-i="all">נקה הכל</button>':'');
+  const fc=document.getElementById('fsCount'); if(fc) fc.textContent=n;
+  updateFilterBadge();
+}
+document.getElementById('afRow').addEventListener('click',e=>{ const b=e.target.closest('.afc'); if(!b) return; if(b.dataset.i==='all'){ afClearAll(); return; } const x=document.getElementById('afRow')._L[+b.dataset.i]; if(x){ x.rm(); RE(); } });
+function afClearAll(){ const qe=document.getElementById('q'); if(qe) qe.value=''; viewMode='all'; document.querySelectorAll('.vbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='all')); subf=null; featf=null; placef.clear(); slotf.clear(); personf='all'; stf.clear(); tagf.clear(); specf={}; buildChips(); RE(); }
+updateFilterBadge=function(){ const n=afList().filter(x=>!x.q).length; const b=document.getElementById('fbadge'); if(b){ b.textContent=n||''; b.style.display=n?'inline-flex':'none'; } const fb=document.getElementById('filterBtn'); if(fb) fb.classList.toggle('on',n>0); };
+{ const _RE=RE; RE=function(a){ _RE(a); try{ afRender(); fsSync(); }catch(e){ console.warn(e); } }; }
 rebuild(); applyHash(); tabsHTML(); buildChips(); RE(true); if(selCats.size) syncHash(); cmpBarPaint();
 { const _q=new URLSearchParams(location.search), _as=(_q.get('as')||'').trim(); if(!me&&_as){ me={pk:pkFromName(_as),name:_as}; localStorage.setItem('ida-me',JSON.stringify(me)); } }
 if(me){ me.pk=pkFromName(me.name); localStorage.setItem('ida-me',JSON.stringify(me)); fbPushName(); startSync(); } else openMe();
