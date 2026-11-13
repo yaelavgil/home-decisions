@@ -2316,6 +2316,28 @@ body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .s
 .grid>.card .name{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;order:1}
 .grid>.card .storeRow{order:2}.grid>.card .priceRow{order:3}.grid>.card .priceRow .price{font-size:17px}
 .grid>.card{cursor:pointer}
+/* chosen-for-order marking: circle on card (A), green frame + label (B), action bar in the dialog (C) */
+.selb{position:absolute;bottom:10px;inset-inline-end:10px;z-index:4;width:32px;height:32px;border-radius:50%;border:2px solid var(--line-2,#d9ccb5);background:rgba(255,255,255,.95);color:transparent;font:inherit;font-size:16px;font-weight:800;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;padding:0}
+.selb:hover{border-color:#4c8a53;color:rgba(76,138,83,.55)}
+.card.st-chosen .selb{background:#4c8a53;border-color:#4c8a53;color:#fff}
+.card.st-chosen:not(.detail){box-shadow:0 0 0 2.5px #4c8a53,0 4px 14px rgba(76,138,83,.18)}
+.card.is-ordered .selb,.card.detail .selb,.card.st-ordered .selb{display:none}
+.selLbl{display:none;order:4;font-size:12px;font-weight:800;color:#2f6a3d}
+.card.st-chosen .selLbl{display:block}
+.itemdlg .decRow,.itemdlg .markOrd{display:none!important}
+.slotBox{margin:12px 2px 6px;padding:10px 12px;border:1.5px dashed var(--line-2,#d9ccb5);border-radius:12px}
+.slotBox>b{display:block;font-size:13px;margin-bottom:6px}
+.slotBox .fl{font-size:11px;font-weight:800;color:var(--muted);margin-inline:6px 2px}
+.slotBox button{font:inherit;font-size:12.5px;font-weight:700;padding:4px 11px;margin:2px;border-radius:99px;border:1.5px solid var(--line-2,#d9ccb5);background:var(--paper);color:var(--ink);cursor:pointer}
+.slotBox button.on{background:var(--brass-d,#9a7338);border-color:var(--brass-d,#9a7338);color:#fff}
+.slotBox small{display:block;font-size:11.5px;color:var(--muted);margin-top:4px}
+.selBar{position:sticky;bottom:0;z-index:3;background:var(--surface);border-top:1px solid var(--line);padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.selBar[hidden]{display:none}
+.selBar .sm{flex:1 1 100%;font-size:12px;color:var(--muted);font-weight:600}
+.selBar button{font:inherit;font-size:14px;font-weight:800;padding:9px 16px;border-radius:11px;border:1.5px solid var(--line-2,#d9ccb5);background:var(--paper);color:var(--ink);cursor:pointer}
+.selBar button.go{background:#4c8a53;border-color:#4c8a53;color:#fff}
+.selBar button.ord{background:var(--ordered);border-color:var(--ordered);color:#fff}
+.selBar button.deny{opacity:.45}
 .storeRow{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:650;color:var(--ink-soft);min-height:18px}
 .storeRow .slogo{width:16px;height:16px;border-radius:4px;flex:none;object-fit:contain;background:#fff}
 .storeRow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -2426,7 +2448,7 @@ body.cur-drag{overscroll-behavior:none}
     <div class="views" id="views">
     <button class="vbtn on" data-v="all" onclick="setView('all')">הכל<span class="vc" data-c="all"></span></button>
     <button class="vbtn" data-v="notordered" onclick="setView('notordered')">⏳ טרם הוזמנו<span class="vc" data-c="notordered"></span></button>
-    <button class="vbtn" data-v="toorder" onclick="setView('toorder')">🛒 להזמין<span class="vc" data-c="toorder"></span></button>
+    <button class="vbtn" data-v="toorder" onclick="setView('toorder')">🛒 נבחרו להזמנה<span class="vc" data-c="toorder"></span></button>
     <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 הוזמנו<span class="vc" data-c="ordered"></span></button>
     <button class="vbtn" data-v="rejected" onclick="setView('rejected')">↩ הוסרו מההזמנה<span class="vc" data-c="rejected"></span></button>
   </div>
@@ -2588,7 +2610,7 @@ body.cur-drag{overscroll-behavior:none}
 </div>
 <div class="toast" id="toast">✓ הועתק</div>
 
-<dialog id="itemDlg" class="itemdlg"><div class="dh"><span id="itemDlgT"></span><span class="dact"><button type="button" class="idx act" onclick="itemDlgEdit()" title="עריכה" aria-label="עריכה">✎</button><button type="button" class="idx act" onclick="itemDlgDelete()" title="מחיקה" aria-label="מחיקה">🗑</button><button type="button" class="idx" onclick="closeItem()" aria-label="סגירה">✕</button></span></div><div class="db" id="itemDlgB"></div></dialog>
+<dialog id="itemDlg" class="itemdlg"><div class="dh"><span id="itemDlgT"></span><span class="dact"><button type="button" class="idx act" onclick="itemDlgEdit()" title="עריכה" aria-label="עריכה">✎</button><button type="button" class="idx act" onclick="itemDlgDelete()" title="מחיקה" aria-label="מחיקה">🗑</button><button type="button" class="idx" onclick="closeItem()" aria-label="סגירה">✕</button></span></div><div class="db" id="itemDlgB"></div><div class="selBar" id="itemDlgBar" hidden></div></dialog>
 <dialog id="meDlg"><div class="dh">👋 מי את/ה?</div>
   <div class="db">
     <p>בחרו שם — כל הסימונים שלכם יופיעו לכולם על אותו לוח, תחת השם הזה.</p>
@@ -2713,6 +2735,7 @@ function rebuild(){
   ITEMS.forEach(i=>{ if(i.cat==='תאורת חוץ'){ i.cat='תאורה'; i.sub=i.sub||'תאורת חוץ'; } });
   ITEMS.forEach(i=>{ if(i.parts&&Object.keys(i.parts).length){ i.parts=Object.values(i.parts); i.price=i.parts.reduce((a,p)=>a+(Number(p.p)||0)*(Number(p.q)||1),0); } });
   ITEMS.forEach(i=>{ if(i.stores&&i.stores.length){ const r=i.stores.find(x=>x.rec)||i.stores[0]; if(r&&r.p!=null) i.price=r.p; if(r&&r.l) i.link=r.l; } });
+  ITEMS.forEach(i=>{ if(typeof i.slotOv==='string') i.slots=i.slotOv?i.slotOv.split(','):[]; }); // her own placement (any number of locations/purposes) overrides the built-in one
   byId=Object.fromEntries(ITEMS.map(x=>[x.id,x]));
   computeScores();
 }
@@ -2806,6 +2829,26 @@ function setDecision(id,val){
 const decChoose=id=>setDecision(id,byId[id]&&byId[id].decision==='chosen'?null:'chosen');
 const decReject=id=>setDecision(id,byId[id]&&byId[id].decision==='rejected'?null:'rejected');
 function decPick(id,v){ const it=byId[id]; if(!it) return; setDecision(id,(it.decision||null)===v?null:v); }
+function renderSlotBox(){ const old=document.getElementById('slotBox'); if(old) old.remove();
+  const id=_itemOpen, it=id&&byId[id], cfg=it&&SLOTS[it.cat]; if(!cfg) return;
+  const have=new Set(it.slots||[]), box=document.createElement('div'); box.className='slotBox'; box.id='slotBox';
+  let h='<b>🎯 מיקום / ייעוד — אפשר לבחור כמה</b>';
+  cfg.groups.forEach(g=>{ h+=`<span class="fl">${esc(g.floor)}</span>`+g.slots.map(sl=>`<button type="button" class="${have.has(sl.id)?'on':''}" onclick="toggleItemSlot('${esc(id)}','${esc(sl.id)}')">${have.has(sl.id)?'✓ ':''}${esc(sl.name)}</button>`).join(''); });
+  h+='<small>השיוך נשמר לכולם ומתעדכן במסמכים.</small>'; box.innerHTML=h;
+  const bd=document.getElementById('itemDlgB'); if(bd) bd.appendChild(box); }
+function toggleItemSlot(id,sid){ const it=byId[id]; if(!it) return; const s=new Set(it.slots||[]); s.has(sid)?s.delete(sid):s.add(sid);
+  const ov=[...s].join(','); it.slots=[...s]; it.slotOv=ov; shared.items=shared.items||{}; shared.items[id]={...(shared.items[id]||{}),id,slotOv:ov};
+  fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,slotOv:ov})}).catch(()=>{});
+  renderSlotBox(); renderSlotRow(); if(slotf.size) RE(); }
+function selToggle(id){ decChoose(id); refreshSelBar(); }
+function refreshSelBar(){ const bar=document.getElementById('itemDlgBar'); if(!bar) return; const id=_itemOpen, it=id&&byId[id];
+  if(!it||it.type!=='product'){ bar.hidden=true; bar.innerHTML=''; return; }
+  const stt=itemStatus(it), meta=decMetaText(it,stt), dn=canDo(it.cat,'choose')?'':' deny';
+  let h=meta?`<span class="sm">${esc(meta)}</span>`:'';
+  if(stt==='ordered') h+=`<button type="button" class="ord" onclick="toggleOrdered('${id}')">✎ עריכת הזמנה / ביטול</button>`;
+  else if(stt==='chosen') h+=`<button type="button" class="ord" onclick="toggleOrdered('${id}')">📦 סימון כהוזמן</button><button type="button" class="${dn}" onclick="selToggle('${id}')">ביטול בחירה</button>`;
+  else h+=`<button type="button" class="go${dn}" onclick="selToggle('${id}')">✓ סימון כנבחר להזמנה</button><button type="button" onclick="toggleOrdered('${id}')">📦 כבר הוזמן</button>`;
+  bar.innerHTML=h; bar.hidden=false; }
 function decMetaText(it,stt){
   const ms=marksFor(it.id), by=k=>ms.filter(m=>m.status===k).map(m=>m.name);
   const who=[it.decidedBy,it.decidedAt?fmtDate(it.decidedAt):''].filter(Boolean).join(' · ');
@@ -2817,6 +2860,7 @@ function paintStatus(c,id){
   const it=byId[id]; if(!it||it.type==='color') return; const stt=itemStatus(it);
   const el=c.querySelector('.stpill'); if(el){ if(stt==='ordered'){ el.style.display=''; el.className='stpill ordered'; el.innerHTML=statusHTML(it,stt); } else { el.style.display='none'; el.innerHTML=''; } }
   ['ordered','chosen','discuss','rejected'].forEach(k=>c.classList.toggle('st-'+k,k===stt));
+  { const sb=c.querySelector('.selb'); if(sb){ sb.setAttribute('aria-pressed',stt==='chosen'?'true':'false'); sb.title=stt==='chosen'?'בטל בחירה להזמנה':'סמן כנבחר להזמנה'; } }
   const dr=c.querySelector('.decRow'); if(dr){ dr.style.display='flex';
     const seg=dr.querySelector('.decSeg'), od=dr.querySelector('.dOrder'), meta=dr.querySelector('.decMeta');
     if(seg){ seg.style.display=stt==='ordered'?'none':'flex';
@@ -2831,7 +2875,7 @@ function viewCounts(){
   c.notordered=pool.length-(c.ordered||0)-(c.rejected||0);
   return c;
 }
-function updateViewCounts(){ const c=viewCounts(); document.querySelectorAll('.vc').forEach(e=>{ const n=c[e.dataset.c]; e.textContent=n?(' '+n):''; }); }
+function updateViewCounts(){ const c=viewCounts(); document.querySelectorAll('.vc').forEach(e=>{ const n=c[e.dataset.c]; e.textContent=n?(' '+n):''; }); const rb=document.querySelector('.vbtn[data-v="rejected"]'); if(rb) rb.style.display=(c.rejected||viewMode==='rejected')?'':'none'; }
 function renderRejNote(){
   const el=document.getElementById('rejNote'); if(!el) return;
   if(viewMode!=='active'){ el.style.display='none'; el.innerHTML=''; return; }
@@ -3802,7 +3846,7 @@ function renderItemDlg(){ const id=_itemOpen, c=els.get(id), it=byId[id]; if(!c|
   const ta=cl.querySelector('textarea'); if(ta) ta.value=(st.s[id]&&st.s[id].note)||'';
   const pp=cl.querySelector('.people'); if(pp&&pp.innerHTML.trim()) pp.style.display='';
   document.getElementById('itemDlgT').textContent=it.name.length>60?it.name.slice(0,60)+'…':it.name;
-  b.innerHTML=''; b.appendChild(cl); d.scrollTop=y; }
+  b.innerHTML=''; b.appendChild(cl); renderSlotBox(); refreshSelBar(); d.scrollTop=y; }
 function refreshItemDlg(){ if(!_itemOpen) return; const d=document.getElementById('itemDlg'); if(!d.open){ _itemOpen=null; return; } const a=document.activeElement; if(a&&a.tagName==='TEXTAREA'&&d.contains(a)) return; renderItemDlg(); }
 document.addEventListener('close',e=>{ if(e.target&&e.target.id==='itemDlg') _itemOpen=null; },true);
 function voteHTML(v){ return v.map(m=>`<span class="vr${m.mine?' me':''}"><b>${esc(m.mine?'אני':m.name)}</b><span class="vs">${'★'.repeat(m.h)}<i>${'★'.repeat(5-m.h)}</i></span></span>`).join(''); }
@@ -4044,13 +4088,14 @@ function cardEl(it){
         ${qty}
         <div class="note"><textarea placeholder="הערה: גוון / גודל / וריאציה…" oninput="setN('${it.id}',this.value)"></textarea></div>
         <div class="cardActions">${it.type==='product'?`<button class="markOrd" onclick="toggleOrdered('${it.id}')">📦 סמן כהוזמן</button>`:''}<button class="hideb" onclick="toggleHidden('${it.id}')">${it.hidden?'↩️ שחזר ללוח':'🙈 הסתר'}</button><button class="hideb" onclick="deleteItem('${it.id}')">🗑 מחיקת הפריט (לצמיתות)</button></div>`;
-  c.innerHTML=`${it.pick?'<span class="pickRibbon">⭐ ההמלצה שלנו</span>':''}<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button><button class="editb delb" title="מחיקת הפריט מהלוח" onclick="event.stopPropagation();deleteItem('${it.id}')">🗑</button>
+  c.innerHTML=`${it.pick?'<span class="pickRibbon">⭐ ההמלצה שלנו</span>':''}<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button><button class="editb delb" title="מחיקת הפריט מהלוח" onclick="event.stopPropagation();deleteItem('${it.id}')">🗑</button>${it.type==='product'?`<button type="button" class="selb" title="סמן כנבחר להזמנה" aria-pressed="false" onclick="event.stopPropagation();selToggle('${it.id}')">✓</button>`:''}
     ${it.type==='product'?`<span class="orderb"><span class="ol">✓ הוזמן</span><span class="od"></span></span>`:''}
     ${media}
     <div class="body">
       ${it.type==='color'?'':'<div class="stpill discuss"></div>'}
       ${nameEl}
       ${storeRowHTML(it)}
+      ${it.type==='product'?'<div class="selLbl">🛒 נבחר להזמנה</div>':''}
       ${sub}
       ${subQuick(it)}
       <div class="partsBox" style="display:none"></div>
@@ -4078,7 +4123,7 @@ function cardEl(it){
 }
 document.addEventListener('click',e=>{
   const c=e.target.closest&&e.target.closest('.grid>.card'); if(!c||c.classList.contains('detail')) return;
-  if(e.target.closest('.editb,.newTag,.qpBar,.docBtn,select,textarea,input,.stars')) return;
+  if(e.target.closest('.editb,.selb,.newTag,.qpBar,.docBtn,select,textarea,input,.stars')) return;
   if(!c.dataset.id||!byId[c.dataset.id]) return;
   e.preventDefault(); e.stopPropagation(); openItem(c.dataset.id);
 },true);
@@ -4939,6 +4984,19 @@ def _gone_ids():
     except Exception as ex:
         print("WARN: could not read deleted items from Firebase:",ex); return set()
 _GONE=_gone_ids()
+def _slot_overrides():
+    # her own placements made on the live board (catalog field slotOv = "slotA,slotB") win over slots.json
+    try:
+        import urllib.request
+        raw=json.load(urllib.request.urlopen(DBURL+"/picks/_catalog/items.json",timeout=15)) or {}
+        return {k:v["slotOv"] for k,v in raw.items() if isinstance(v,dict) and isinstance(v.get("slotOv"),str)}
+    except Exception as ex:
+        print("WARN: could not read slot overrides:",ex); return {}
+_OV=_slot_overrides()
+for _cat,_cfg in SLOTS.items():
+    for _g in _cfg["groups"]:
+        for _sl in _g["slots"]:
+            _sl["items"]=[i for i in _sl["items"] if i not in _OV]+[i for i,s in _OV.items() if _sl["id"] in s.split(",") and i in _byid and _byid[i].get("cat")==_cat and i not in _sl["items"]]
 for _cat,_cfg in SLOTS.items():
     for _g in _cfg["groups"]:
         for _sl in _g["slots"]:
@@ -4962,6 +5020,24 @@ def _line(desc,mark,n=190):
             t=_re.sub(r"^[✔✘⚠❓💰💡⭐]+\s*(מתאים|מתאימה|לא מתאים|לא מתאימה)?:?\s*","",ln).strip()
             return t if len(t)<=n else t[:n].rsplit(" ",1)[0]+"…"
     return ""
+def _fit_html(cfg,sl,it):
+    e=_h.escape
+    fit=""; sp=(cfg.get("specs") or {}).get(it["id"])
+    if sl.get("hole"):
+        H=sl["hole"]; HM=sl.get("hole_max",H)
+        if sp and sp.get("surf"):
+            bs=sp.get("base")
+            if bs is None: fit=f'<p class="fit q">❓ צמוד תקרה — לוודא שהבסיס מכסה את הקדח הקיים Ø{H}</p>'
+            elif bs>=H: fit=f'<p class="fit good">✓ צמוד תקרה — הבסיס (Ø{bs}) מכסה את הקדח הקיים Ø{H}</p>'
+            else: fit=f'<p class="fit bad">✗ הבסיס (Ø{bs}) קטן מהקדח הקיים Ø{H} — יישאר חור גלוי</p>'
+        elif not sp: fit=f'<p class="fit q">❓ קדח לא ידוע — לבדוק מול קדח קיים Ø{H}</p>'
+        elif sp["cut"]>HM: fit=f'<p class="fit bad">✗ קדח החיתוך (Ø{sp["cut"]}) גדול מהמותר (Ø{HM})</p>'
+        elif sp["cut"]>H: fit=f'<p class="fit warn">⚠ דורש הרחבת הקדח מ־Ø{H} ל־Ø{sp["cut"]} (מותר עד Ø{HM})</p>'
+        elif sp["out"]<H: fit=f'<p class="fit bad">✗ הגוף קטן מהקדח (חיצוני Ø{sp["out"]}) — יישאר חור גלוי</p>'
+        elif sp["out"]-H<5: fit=f'<p class="fit warn">⚠ מכסה בקושי (חיצוני Ø{sp["out"]} מול קדח Ø{H})</p>'
+        else: fit=f'<p class="fit good">✓ נכנס בקדח הקיים Ø{H} ומכסה אותו (חיצוני Ø{sp["out"]}, קדח חיתוך Ø{sp["cut"]})</p>'
+    return fit
+
 def build_decision_doc(cat,cfg):
     slug=cfg["slug"]; title=cfg["title"]; groups=cfg["groups"]
     e=_h.escape
@@ -4973,20 +5049,7 @@ def build_decision_doc(cat,cfg):
         if ok.startswith("מיועד"): ok2=_line("\n".join(l for l in it["desc"].split("\n") if not l.startswith("✔ מיועד")),"✔")
         else: ok2=ok
         ok=ok2 or ok
-        fit=""; sp=(cfg.get("specs") or {}).get(it["id"])
-        if sl.get("hole"):
-            H=sl["hole"]; HM=sl.get("hole_max",H)
-            if sp and sp.get("surf"):
-                bs=sp.get("base")
-                if bs is None: fit=f'<p class="fit q">❓ צמוד תקרה — לוודא שהבסיס מכסה את הקדח הקיים Ø{H}</p>'
-                elif bs>=H: fit=f'<p class="fit good">✓ צמוד תקרה — הבסיס (Ø{bs}) מכסה את הקדח הקיים Ø{H}</p>'
-                else: fit=f'<p class="fit bad">✗ הבסיס (Ø{bs}) קטן מהקדח הקיים Ø{H} — יישאר חור גלוי</p>'
-            elif not sp: fit=f'<p class="fit q">❓ קדח לא ידוע — לבדוק מול קדח קיים Ø{H}</p>'
-            elif sp["cut"]>HM: fit=f'<p class="fit bad">✗ קדח החיתוך (Ø{sp["cut"]}) גדול מהמותר (Ø{HM})</p>'
-            elif sp["cut"]>H: fit=f'<p class="fit warn">⚠ דורש הרחבת הקדח מ־Ø{H} ל־Ø{sp["cut"]} (מותר עד Ø{HM})</p>'
-            elif sp["out"]<H: fit=f'<p class="fit bad">✗ הגוף קטן מהקדח (חיצוני Ø{sp["out"]}) — יישאר חור גלוי</p>'
-            elif sp["out"]-H<5: fit=f'<p class="fit warn">⚠ מכסה בקושי (חיצוני Ø{sp["out"]} מול קדח Ø{H})</p>'
-            else: fit=f'<p class="fit good">✓ נכנס בקדח הקיים Ø{H} ומכסה אותו (חיצוני Ø{sp["out"]}, קדח חיתוך Ø{sp["cut"]})</p>'
+        fit=_fit_html(cfg,sl,it)
         tot=""
         if sl.get("n") and it.get("price") and not it.get("parts"):
             tot=f'<span class="tot">ל־{sl["n"]}: {_nis(it["price"]*sl["n"])}</span>'
@@ -5083,6 +5146,110 @@ try{{fetch('{DBURL}/picks/_catalog/items.json').then(r=>r.json()).then(m=>{{if(!
     d=os.path.join(REPO,"d",slug); os.makedirs(d,exist_ok=True)
     open(os.path.join(d,"index.html"),"w",encoding="utf-8").write(page)
 for _cat,_cfg in SLOTS.items(): build_decision_doc(_cat,_cfg)
+
+# ---- designer brief: a live public page built from the options she marked, per location (designer.json) ----
+def _kind(it,cfg):
+    sp=(cfg.get("specs") or {}).get(it["id"])
+    nm=it.get("name") or ""
+    if sp and "cut" in sp: return "שקוע מתכוונן"
+    if sp and sp.get("surf"):
+        return "צמוד תקרה — גליל" if _re.search(r"גליל|צילינדר|צילנדר|cylinder",nm,_re.I) else "צמוד תקרה — ספוט על זרוע / ראש מוטה"
+    return "אחר"
+def build_designer_doc():
+    p=os.path.join(REPO,"designer.json")
+    if not os.path.exists(p): return
+    dz=json.load(open(p,encoding="utf-8")); e=_h.escape
+    cat=dz["cat"]; cfg=SLOTS[cat]
+    slots={s["id"]:s for g in cfg["groups"] for s in g["slots"]}
+    secs=dz["sections"]
+    data={}
+    for it in DATA:
+        if it.get("cat")!=cat or it.get("hidden") or it["id"] in _GONE: continue
+        data[it["id"]]={"n":it["name"],"p":it.get("price"),"img":it.get("img") or "","s":_store(it),"l":it.get("link") or "",
+            "ok":_line(it.get("desc"),"✔") or "","no":_line(it.get("desc"),"✘") or "","k":_kind(it,cfg),"sl":it.get("slots",[]),
+            "f":{s["slot"]:_fit_html(cfg,slots[s["slot"]],it) for s in secs}}
+    body=""
+    for s in secs:
+        sl=slots[s["slot"]]
+        ph=("<div class=\"ph\">"+"".join(f"<figure><a href=\"../../{e(x['src'])}\" target=\"_blank\" rel=\"noopener\"><img src=\"../../{e(x['src'])}\" alt=\"{e(x['cap'])}\" loading=\"lazy\"></a><figcaption>{e(x['cap'])}</figcaption></figure>" for x in sl.get("photos",[]))+"</div>") if sl.get("photos") else ""
+        body+=(f'<section class="slot" id="{e(s["slot"])}"><header><h2>{e(sl["name"])}</h2><span class="qty">{e(sl["qty"])}</span></header>'
+               f'<p class="goal">{e(s["goal"])}</p>{ph}'
+               f'<div class="two"><div><h3>דרישות</h3><ul>{"".join("<li>"+e(x)+"</li>" for x in s["need"])}</ul></div>'
+               f'<div><h3>שאלות למעצבת</h3><ul>{"".join("<li>"+e(x)+"</li>" for x in s["questions"])}</ul></div></div>'
+               f'<h3>האפשרויות</h3><div class="live" data-slot="{e(s["slot"])}"><p class="gap">טוען…</p></div></section>')
+    closed="".join(f'<li><b>{e(c["name"])}</b> <span class="qty">{e(c["qty"])}</span> — {e(c["text"])}</li>' for c in dz["closed"])
+    sec_meta=[{"slot":s["slot"],"suggest":s.get("suggest",[])} for s in secs]
+    today=__import__("datetime").date.today().strftime("%d.%m.%Y")
+    page=PAGE_DESIGNER
+    for k,v in {"__TITLE__":e(dz["title"]),"__FOR__":e(dz["for"]),"__INTRO__":e(dz["intro"]),"__CLOSED__":closed,"__CLOSEDNOTE__":e(dz["closed_note"]),
+                "__BODY__":body,"__DATA__":json.dumps(data,ensure_ascii=False),"__SEC__":json.dumps(sec_meta,ensure_ascii=False),
+                "__DB__":DBURL,"__DATE__":today,"__SLUG__":e(dz["slug"]),"__BASE__":BASE}.items():
+        page=page.replace(k,v)
+    d=os.path.join(REPO,"d",dz["slug"]); os.makedirs(d,exist_ok=True)
+    open(os.path.join(d,"index.html"),"w",encoding="utf-8").write(page)
+PAGE_DESIGNER=r'''<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>__TITLE__ · הבית שלנו</title><meta name="robots" content="noindex">
+<meta name="description" content="האפשרויות שסומנו לפי מיקום בבית, לשיחה עם המעצבת.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf7f2;--card:#fff;--ink:#332c25;--soft:#645a4f;--line:#e6ddd0;--brass:#9a7338;--brass-s:#f3e9d6;--ok:#2f6a3d;--no:#9a4a2e;--star:#b8860b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1a16;--card:#27231e;--ink:#eee6da;--soft:#b9ad9c;--line:#3b352d;--brass:#d6ad66;--brass-s:#3a3122;--ok:#7bc58c;--no:#e0987c;--star:#e3b94a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Heebo,system-ui,sans-serif;padding:0 16px 60px}
+.wrap{max-width:980px;margin:0 auto}h1{font-size:27px;margin:24px 0 2px}.for{color:var(--brass);font-weight:800;font-size:13px;letter-spacing:.04em}
+.intro{margin:10px 0 18px;max-width:68ch}
+.closed{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 16px;margin:0 0 8px}.closed h2{font-size:15px;margin:0 0 6px}.closed ul{margin:0;padding-inline-start:18px}.closed li{margin:3px 0}.cn{margin:6px 2px 0;color:var(--soft);font-size:13px}
+.slot{margin:34px 0;scroll-margin-top:12px}.slot header{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;border-bottom:2px solid var(--brass);padding-bottom:6px}
+.slot h2{margin:0;font-size:22px}.slot h3{font-size:14px;margin:16px 0 6px;color:var(--soft)}.qty{font-size:12.5px;font-weight:700;background:var(--brass-s);color:var(--brass);border-radius:99px;padding:2px 10px}
+.goal{margin:8px 0;font-weight:600}
+.ph{display:flex;gap:10px;overflow-x:auto;margin:6px 0 4px;padding-bottom:4px}.ph figure{margin:0;flex:none;width:min(260px,72vw)}.ph img{width:100%;height:170px;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:block}.ph figcaption{font-size:12px;color:var(--soft);margin-top:4px;line-height:1.35}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px}.two>div{min-width:0}@media(max-width:640px){.two{grid-template-columns:1fr}}
+.two ul{margin:0;padding-inline-start:18px}.two li{margin:3px 0}
+.kind{font-size:13px;font-weight:800;color:var(--brass);margin:16px 0 6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.opt{background:var(--card);border:1.5px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}.opt.yes{border-color:var(--ok)}
+.im{display:block;aspect-ratio:4/3;background:#f1ece4}.im img{width:100%;height:100%;object-fit:cover;display:block}.noimg{display:flex;height:100%;align-items:center;justify-content:center;font-size:32px}
+.ob{padding:10px 12px 12px;display:flex;flex-direction:column;gap:5px;flex:1}.ob h4{margin:0;font-size:14px;line-height:1.35}.pr{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.pr b{font-size:17px}.pr span{font-size:12px;color:var(--soft)}
+.ob p{margin:0;font-size:12.5px;line-height:1.45}.y{color:var(--ok)}.n{color:var(--no)}.fit{font-weight:700}.fit.good{color:var(--ok)}.fit.bad{color:var(--no)}.fit.warn{color:var(--star)}.fit.q{color:var(--soft)}
+.lab{font-size:11.5px;font-weight:800;color:var(--ok)}.lab.mb{color:var(--star)}
+.ob a.go{margin-top:auto;padding-top:6px;font-size:12.5px;font-weight:700;color:var(--brass);text-decoration:none}
+.gap{color:var(--soft);font-style:italic}.note{color:var(--soft);font-size:13px;margin:8px 0}
+footer{margin-top:30px;color:var(--soft);font-size:12.5px}
+</style></head><body><div class="wrap">
+<div class="for">__FOR__</div><h1>__TITLE__</h1>
+<p class="intro">__INTRO__</p>
+<div class="closed"><h2>כבר סגור</h2><ul>__CLOSED__</ul></div><p class="cn">__CLOSEDNOTE__</p>
+__BODY__
+<footer>העמוד מתעדכן בעצמו מהאפשרויות שסומנו בלוח ההחלטות, לפי השיוך שלהן למיקום (נבנה ב־__DATE__). מחירים בש״ח כפי שנמצאו בחנויות; מוצרים מיובאים בלי מע״מ ומשלוח. · <a href="__BASE__d/__SLUG__/" style="color:var(--brass)">קישור לעמוד</a></footer>
+</div>
+<script>
+const D=__DATA__,SEC=__SEC__,DB='__DB__';
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KORD=['שקוע מתכוונן','צמוד תקרה — ספוט על זרוע / ראש מוטה','צמוד תקרה — גליל','אחר'];
+const nis=p=>p==null?'':'₪'+(Number(p)%1?Number(p).toFixed(2):Number(p).toLocaleString('he-IL'));
+function card(id,slot,lab){const x=D[id];if(!x)return'';
+ return '<article class="opt'+(lab&&lab[0]==='y'?' yes':'')+'"><a class="im" href="'+esc(x.l||'#')+'" target="_blank" rel="noopener">'+(x.img?'<img src="../../'+esc(x.img)+'" alt="" loading="lazy">':'<div class="noimg">💡</div>')+'</a><div class="ob">'
+  +(lab?'<span class="lab'+(lab[0]==='m'?' mb':'')+'">'+esc(lab.slice(1))+'</span>':'')
+  +'<h4>'+esc(x.n)+'</h4><div class="pr"><b>'+esc(nis(x.p))+'</b><span>'+esc(x.s)+'</span></div>'+(x.f[slot]||'')
+  +(x.ok?'<p class="y">✔ '+esc(x.ok)+'</p>':'')+(x.no?'<p class="n">✘ '+esc(x.no)+'</p>':'')
+  +'<a class="go" href="'+esc(x.l||'#')+'" target="_blank" rel="noopener">🔗 לדף המוצר</a></div></article>';}
+function group(list,slot){const by={};list.forEach(([id,lab])=>{const k=D[id]?D[id].k:'אחר';(by[k]=by[k]||[]).push([id,lab]);});
+ return KORD.filter(k=>by[k]).map(k=>'<div class="kind">'+esc(k)+' · '+by[k].length+'</div><div class="grid">'+by[k].map(([i,l])=>card(i,slot,l)).join('')+'</div>').join('');}
+function paint(marks,cat){SEC.forEach(s=>{const el=document.querySelector('.live[data-slot="'+s.slot+'"]');if(!el)return;
+ const eff=id=>{const ov=cat&&cat[id]&&typeof cat[id].slotOv==='string'?cat[id].slotOv:null;return ov!==null?ov.split(',').filter(Boolean):(D[id]?D[id].sl:[]);};
+ const gone=id=>cat&&cat[id]&&(cat[id].deleted||cat[id].hidden);
+ const assigned=Object.keys(D).filter(id=>eff(id).includes(s.slot)&&!gone(id));
+ if(marks){const mk=assigned.filter(id=>{const m=marks[id];return m&&(m.s==='yes'||m.s==='maybe'||m.h>0);});
+  if(mk.length){const list=mk.map(id=>[id,(marks[id].s==='yes'||marks[id].h>0)?'y❤ סימנתי':'mאולי']);
+   el.innerHTML=group(list,s.slot)+'<p class="note">מוצגות רק האפשרויות שסימנת. עוד '+(assigned.length-mk.length)+' אפשרויות משויכות למיקום הזה ולא סומנו.</p>';return;}}
+ const sg=s.suggest.filter(id=>D[id]&&!gone(id));
+ el.innerHTML='<p class="note">עוד לא סומנו כאן אפשרויות בלוח, ולכן מוצגת הצעה ראשונית. כשיסומנו כוכב או "אהבתי", הן יחליפו אותה בעצמן.</p>'+group(sg.map(id=>[id,null]),s.slot);});}
+paint(null,null);
+fetch(DB+'/picks.json').then(r=>r.json()).then(d=>{d=d||{};let me=null;Object.keys(d).forEach(k=>{if(k[0]!=='_'&&d[k]&&d[k].name==='יעל')me=d[k];});
+ paint((me&&me.items)||{},(d._catalog&&d._catalog.items)||{});}).catch(()=>{});
+</script></body></html>'''
+
+build_designer_doc()
 
 out=(tpl.replace("__DATA__",json.dumps(DATA,ensure_ascii=False))
         .replace("__CATS__",json.dumps(CATS,ensure_ascii=False))
