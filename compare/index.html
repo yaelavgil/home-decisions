@@ -59,7 +59,7 @@ const COL=['#9a7338','#3f7d5c','#b4563a','#4a6fa5','#7a5c99','#2f8b8b','#b0802c'
 const ICO=[[/שינה/,'🛏'],[/ארונות/,'👗'],[/רחצה|מקלחת|אמבט|שירות/,'🚿'],[/ילד|ממ.?ד/,'🧸'],[/עבודה/,'💻'],[/משפחה|סלון/,'🛋'],[/גינה|שביל|חצר|חני/,'🌿'],[/מדרג/,'🪜'],[/מרפסת/,'☀️'],[/דלת|קיר/,'🚪'],[/מטבח/,'🍳'],[/כניסה/,'🏠']];
 const ico=n=>{for(const [r,e] of ICO)if(r.test(n))return e;return '📍';};
 const Q=new URLSearchParams(location.search);
-let opt={tab:true,rule:true,sort:'p'},ME={},CAT={},removed=new Set();
+let opt={tab:true,rule:true,sort:'p'},ME={},CAT={},removed=new Set(),EXP=null;
 function tog(k){if(k==='sort')opt.sort=opt.sort==='p'?'s':'p';else opt[k]=!opt[k];
  document.getElementById('bTab').classList.toggle('on',opt.tab);document.getElementById('bRule').classList.toggle('on',opt.rule);document.getElementById('bSort').textContent='↕ מיון: '+(opt.sort==='p'?'מחיר':'סימנתי קודם');render();}
 function cp(){const u=location.href;(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>alert('הקישור הועתק'),()=>prompt('העתיקי:',u));}
@@ -70,18 +70,22 @@ function merged(x){const o=CAT[x.id]||{};return Object.assign({},x,{p:o.price!=n
 function pick(){
  const byid={};D.forEach(x=>byid[x.id]=x);
  let ids=[];const gone=id=>CAT[id]&&(CAT[id].deleted||CAT[id].hidden);
+ if(EXP){const all=[...new Set(EXP.groups.flatMap(g=>g.items||[]))].filter(i=>byid[i]&&!gone(i)&&!removed.has(i));return all.map(i=>merged(byid[i]));}
  if(Q.get('i'))ids=Q.get('i').split(',').filter(i=>byid[i]);
  else if(Q.get('c')){const c=Q.get('c');ids=D.filter(x=>x.cat===c).map(x=>x.id);
   if(Q.get('m'))ids=ids.filter(i=>{const m=ME[i];return m&&(m.s==='yes'||m.s==='maybe'||m.h>0);});
   else ids=ids.filter(i=>!(CAT[i]&&CAT[i].decision==='rejected'));}
  return ids.filter(i=>!gone(i)&&!removed.has(i)).map(i=>merged(byid[i]));
 }
-function groupOf(items){const G=new Map();
+function groupOf(items){
+ if(EXP){const by={};items.forEach(x=>by[x.id]=x);return EXP.groups.map(g=>({k:g.n,n:g.n,f:'',q:'',o:0,items:(g.items||[]).map(i=>by[i]).filter(Boolean)})).filter(g=>g.items.length);}
+ const G=new Map();
  const add=(k,meta,x)=>{if(!G.has(k))G.set(k,Object.assign({k,items:[]},meta));G.get(k).items.push(x);};
  items.forEach(x=>{const sl=eff(x).filter(s=>SM[s]&&(!Q.get('c')||SM[s].c===x.cat));
   if(sl.length)sl.forEach(s=>add('s:'+s,{n:SM[s].n,f:SM[s].f,q:SM[s].q,o:SM[s].o},x));
   else{const pl=places(x);if(pl.length)pl.forEach(p=>add('p:'+p,{n:p,f:'',q:'',o:900},x));else add('c:'+x.cat,{n:'ללא מיקום מוגדר · '+((CT[x.cat]||{}).l||''),f:'עוד לא שויכו למיקום בבית',q:'',o:1000},x);}});
  return [...G.values()].sort((a,b)=>a.o-b.o||a.n.localeCompare(b.n,'he'));}
+const gic=n=>EXP&&EXP.mode!=='place'?({sub:'🏷',store:'🏬',score:'⭐',none:'📋'}[EXP.mode]||'📍'):ico(n);
 function chips(x){const t=x.n+' '+x.dm,o=[];let m;
  if(m=t.match(/IP\s?(\d{2})/i))o.push('<i class="ip">IP'+m[1]+'</i>');
  if(m=t.match(/(\d+(?:\.\d+)?)\s?W\b/))o.push('<i class="w">'+m[1]+'W</i>');
@@ -107,21 +111,22 @@ function table(its){return '<div class="tw"><table><thead><tr><th>#</th><th></th
  +its.map((x,i)=>'<tr><td class="num">'+(i+1)+'</td><td>'+(x.img?'<img src="'+esc(imgsrc(x.img))+'" alt="" loading="lazy">':'')+'</td><td><a href="#x-'+esc(x.id)+'">'+esc(x.n)+'</a></td><td>'+esc(x.st||'')+'</td><td class="pp">'+esc(nis(x.p)||'—')+'</td><td>'+esc(x.dm||'')+'</td><td><a href="'+esc(x.l||'#')+'" target="_blank" rel="noopener">🔗</a></td></tr>').join('')+'</tbody></table></div>';}
 function render(){
  const items=pick(),out=document.getElementById('out');
- const t=Q.get('t');if(t)document.getElementById('ht').textContent=t;
+ const t=EXP?EXP.t:Q.get('t');if(t)document.getElementById('ht').textContent=t;
  else if(Q.get('c')&&CT[Q.get('c')])document.getElementById('ht').textContent='השוואה — '+CT[Q.get('c')].l;
- document.getElementById('hk').textContent='מסמך השוואה לפי מיקום בבית';
+ document.getElementById('hk').textContent=EXP?(EXP.kick||'סיכום התלבטויות'):'מסמך השוואה לפי מיקום בבית';
  if(!items.length){out.innerHTML='<div class="empty">אין פריטים להצגה. בחרי מוצרים בלוח (כפתור ⚖ על הכרטיס) וצרי מסמך מחדש.</div>';document.getElementById('kpis').innerHTML='';document.getElementById('nav').innerHTML='';document.getElementById('hp').textContent='';return;}
  const G=groupOf(items),ps=items.map(x=>x.p).filter(p=>p>0),stores=new Set(items.map(x=>x.st).filter(Boolean));
  document.getElementById('hp').textContent=new Date().toLocaleDateString('he-IL')+' · לחיצה על תמונה או על "לדף המוצר" פותחת את החנות';
- document.getElementById('kpis').innerHTML=[[items.length,'מוצרים'],[G.length,'מיקומים'],[stores.size,'חנויות'],[ps.length?nis(Math.min(...ps))+'–'+nis(Math.max(...ps)):'—','טווח מחירים']].map(([b,s])=>'<div class="kpi"><b>'+esc(b)+'</b><span>'+s+'</span></div>').join('');
- document.getElementById('nav').innerHTML=G.map((g,i)=>'<a href="#g'+i+'"><i>'+ico(g.n)+'</i>'+esc(g.n)+' <small>'+g.items.length+'</small></a>').join('');
+ document.getElementById('kpis').innerHTML=[[items.length,'מוצרים'],[G.length,EXP?'סקשנים':'מיקומים'],[stores.size,'חנויות'],[ps.length?nis(Math.min(...ps))+'–'+nis(Math.max(...ps)):'—','טווח מחירים']].map(([b,s])=>'<div class="kpi"><b>'+esc(b)+'</b><span>'+s+'</span></div>').join('');
+ document.getElementById('nav').innerHTML=G.map((g,i)=>'<a href="#g'+i+'"><i>'+gic(g.n)+'</i>'+esc(g.n)+' <small>'+g.items.length+'</small></a>').join('');
  out.innerHTML=G.map((g,gi)=>{const its=g.items.slice().sort((a,b)=>{if(opt.sort==='s'){const sa=(ME[a.id]&&(ME[a.id].s==='yes'||ME[a.id].h>0))?0:1,sb=(ME[b.id]&&(ME[b.id].s==='yes'||ME[b.id].h>0))?0:1;if(sa!==sb)return sa-sb;}return (a.p==null)-(b.p==null)||a.p-b.p;});
-    return '<section class="loc" id="g'+gi+'" style="--c:'+COL[gi%COL.length]+'"><div class="lh"><span class="ic">'+ico(g.n)+'</span><div><div class="fl">'+esc(g.f||'')+'</div><h2>'+esc(g.n)+'</h2></div><div class="cnt"><b>'+its.length+'</b>אפשרויות'+(g.q?'<br>צריך: '+esc(g.q):'')+'</div></div><div class="lb">'
+    return '<section class="loc" id="g'+gi+'" style="--c:'+COL[gi%COL.length]+'"><div class="lh"><span class="ic">'+gic(g.n)+'</span><div><div class="fl">'+esc(g.f||'')+'</div><h2>'+esc(g.n)+'</h2></div><div class="cnt"><b>'+its.length+'</b>אפשרויות'+(g.q?'<br>צריך: '+esc(g.q):'')+'</div></div><div class="lb">'
   +(opt.rule?ruler(its):'')+'<div class="grid">'+its.map((x,i)=>card(x,i,ME[x.id])).join('')+'</div>'+(opt.tab?table(its):'')+'</div></section>';}).join('');
 }
 document.addEventListener('click',ev=>{const a=ev.target.closest&&ev.target.closest('a[href^="#"]');if(!a)return;const id=decodeURIComponent(a.getAttribute('href').slice(1));const t=id&&document.getElementById(id);if(!t)return;ev.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});try{history.replaceState(null,'',location.pathname+location.search+'#'+id);}catch(e){}});
 window.addEventListener('beforeprint',()=>document.querySelectorAll('img[loading=lazy]').forEach(i=>{i.loading='eager';}));
-render();
+const EID=Q.get('e');
+(EID?fetch(DB+'/picks/_exports/'+encodeURIComponent(EID)+'.json').then(r=>r.json()).then(x=>{EXP=x&&x.groups?x:null;}).catch(()=>{}):Promise.resolve()).then(()=>{render();
 fetch(DB+'/picks.json').then(r=>r.json()).then(d=>{d=d||{};CAT=(d._catalog&&d._catalog.items)||{};Object.keys(d).forEach(k=>{if(k[0]!=='_'&&d[k]&&d[k].name==='יעל')ME=d[k].items||{};});
- const ci=(d._catalog&&d._catalog.items)||{};render();}).catch(()=>{});
+ const ci=(d._catalog&&d._catalog.items)||{};render();}).catch(()=>{});});
 </script></body></html>

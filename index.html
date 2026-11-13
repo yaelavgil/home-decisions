@@ -1024,6 +1024,38 @@ body.fsOpen{overflow:hidden}
   .itemdlg .card.detail>.coverBtn{grid-area:cover}
   .itemdlg .card.detail>.body{grid-area:body;grid-row:1/span 4}
 }
+
+/* ===== sections, quick chips, export ===== */
+.afq{flex:none;font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--line-2);background:var(--paper);color:var(--ink-soft);border-radius:99px;padding:4px 11px;cursor:pointer;white-space:nowrap}
+.afq b{color:var(--brass-d)}
+.afq.on{background:var(--brass-d);border-color:var(--brass-d);color:#fff}.afq.on b{color:#fff}
+.afexp{flex:none;margin-inline-start:auto;font:inherit;font-size:12.5px;font-weight:800;border:1.5px solid var(--brass);background:var(--paper);color:var(--brass-d);border-radius:99px;padding:4px 12px;cursor:pointer;white-space:nowrap}
+.grpH{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin:22px 2px 2px;padding-bottom:7px;border-bottom:2px solid var(--brass)}
+.grpT{flex:1;min-width:0;text-align:start;font:inherit;font-size:18px;font-weight:800;border:0;background:none;color:var(--ink);cursor:pointer;padding:2px 0}
+.grpT small{font-size:13px;font-weight:700;color:var(--muted);margin-inline-start:6px}
+.grpT .gc{display:inline-block;transition:transform .15s;color:var(--brass-d)}
+.grpH.collapsed .gc{transform:rotate(90deg)}
+.grpX{flex:none;font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--line-2);background:var(--paper);color:var(--brass-d);border-radius:99px;padding:4px 12px;cursor:pointer}
+.card.grp-collapsed{display:none!important}
+.expdlg{width:min(560px,94vw);max-height:90vh;padding:0;border:0;border-radius:18px;background:var(--bg);color:var(--ink);box-shadow:0 20px 60px -10px rgba(40,28,12,.5);overflow:hidden}
+.expdlg[open]{display:flex;flex-direction:column}
+.expdlg::backdrop{background:rgba(40,28,12,.45)}
+.exh{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1.5px solid var(--line);font-size:16px}
+.exh b{flex:1}.exx{border:0;background:none;font-size:18px;cursor:pointer;color:var(--ink-soft)}
+.exb{flex:1;overflow:auto;padding:12px 16px;display:flex;flex-direction:column;gap:12px}
+.exn{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.6}
+.exl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:800;color:var(--muted)}
+.exl input{font:inherit;font-size:14px;font-weight:500;border:1.5px solid var(--line-2);border-radius:10px;padding:8px 10px;background:var(--paper);color:var(--ink)}
+.exck{display:flex;gap:8px;align-items:center;font-size:13.5px}
+.exsh{display:flex;align-items:center;justify-content:space-between;font-size:13px}
+.exsh button{font:inherit;font-size:12.5px;font-weight:700;border:0;background:none;color:var(--brass-d);cursor:pointer;padding:2px 8px}
+.exsecs{display:flex;flex-direction:column;border:1.5px solid var(--line-2);border-radius:12px;background:var(--paper);max-height:34vh;overflow:auto}
+.exs{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:14px;cursor:pointer}
+.exs:last-child{border-bottom:0}.exs span{flex:1;min-width:0}.exs small{color:var(--muted);font-weight:700}
+.exf{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px));border-top:1.5px solid var(--line)}
+.exgo{flex:1 1 220px;border:0;border-radius:12px;padding:12px;font:inherit;font-size:14.5px;font-weight:800;color:#fff;background:linear-gradient(180deg,#bf9760,var(--brass-d));cursor:pointer}
+.exgo small{font-weight:600;opacity:.9}
+.excopy{flex:1 1 200px;border:1.5px solid var(--brass);border-radius:12px;padding:12px;font:inherit;font-size:14px;font-weight:700;color:var(--brass-d);background:var(--paper);cursor:pointer}
 </style>
 </head>
 <body>
@@ -1038,6 +1070,7 @@ body.fsOpen{overflow:hidden}
         <a href="#" onclick="openHome();return false">🏠 הבית</a>
         <a href="planner/">🛒 מתכנן קנייה חכם</a>
         <button type="button" onclick="cmpOpenCat(false)" title="כל האפשרויות בקטגוריה הנבחרת, לפי מיקום בבית, עם תמונות ולינקים">⚖ מסמך השוואה — כל הקטגוריה</button>
+        <button type="button" onclick="openExport()" title="עמוד סיכום התלבטויות לשליחה למעצבת / לבעלי">📄 עמוד סיכום התלבטויות</button>
         <button type="button" onclick="cmpOpenCat(true)" title="רק מה שסימנת ❤ / אולי בקטגוריה הנבחרת">⚖ מסמך השוואה — מה שסימנתי</button>
         <button type="button" id="shareListBtn" onclick="shareList()" title="עמוד מינימלי לשיתוף של הרשימה המסוננת">📄 עמוד לשיתוף</button>
         <button class="vbtn" data-v="hidden" onclick="setView('hidden')">🙈 הוסתרו<span class="c" id="hiddenCount" style="display:none"></span></button>
@@ -2840,7 +2873,7 @@ document.addEventListener('click',e=>{
 },true);
 function paint(id,c){
   c=c||els.get(id); if(!c)return; const s=S(id); const it=byId[id]||{};
-  c.className="card"+(it.pick?" is-pick":"")+(s.status!=='none'?" s-"+s.status:"")+(it.ordered?" is-ordered":"")+(it.type==='color'?'':" st-"+itemStatus(it))+(it.hidden?" is-hidden":"")+(cmp.has(id)?" in-cmp":"")+(c.classList.contains('hidden')?" hidden":""); // keep the filter's 'hidden' flag: late repaints (Firebase sync, docs) must not re-show cards from other categories
+  c.className="card"+(it.pick?" is-pick":"")+(s.status!=='none'?" s-"+s.status:"")+(it.ordered?" is-ordered":"")+(it.type==='color'?'':" st-"+itemStatus(it))+(it.hidden?" is-hidden":"")+(cmp.has(id)?" in-cmp":"")+(c.classList.contains('hidden')?" hidden":"")+(c.classList.contains('grp-collapsed')?" grp-collapsed":""); // keep the filter's 'hidden' flag: late repaints (Firebase sync, docs) must not re-show cards from other categories
   c.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.classList.contains(s.status)));
   c.querySelectorAll('.cstars .cs button').forEach(b=>b.classList.toggle('on',Number(b.dataset.n)<=(s.h||0))); { const cl=c.querySelector('.cstars .cl'); if(cl){ cl.textContent=(typeof HLAB!=='undefined'?HLAB[s.h||0]:''); cl.classList.toggle('lit',(s.h||0)>0); } }
   const ta=c.querySelector('textarea'); if(ta&&ta.value!==s.note)ta.value=s.note;
@@ -3625,7 +3658,7 @@ const _afTxt=el=>{ const c=el.cloneNode(true); c.querySelectorAll('small,.vc,.c'
 function afList(){
   const L=[]; const qe=document.getElementById('q'), qv=((qe&&qe.value)||'').trim();
   if(qv) L.push({q:1,l:'🔍 '+qv,rm:()=>{qe.value='';}});
-  if(viewMode!=='all'){ const b=document.querySelector('.vbtn[data-v="'+viewMode+'"]'); L.push({l:b?_afTxt(b):viewMode,rm:()=>{viewMode='all';document.querySelectorAll('.vbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='all'));}}); }
+  if(viewMode!=='all'&&viewMode!=='toorder'&&viewMode!=='ordered'){ const b=document.querySelector('.vbtn[data-v="'+viewMode+'"]'); L.push({l:b?_afTxt(b):viewMode,rm:()=>{viewMode='all';document.querySelectorAll('.vbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='all'));}}); }
   if(subf) L.push({l:subf==='__none'?'⚠ ללא שיוך':subf,rm:()=>{subf=null;renderSubRow();}});
   if(featf){ const o=document.querySelector('#subRow select option:checked'); L.push({l:o&&o.value?o.textContent:'🏷 פיצ\'ר',rm:()=>{featf=null;renderSubRow();}}); }
   placef.forEach(p=>L.push({l:'📍 '+(p==='__none'?'ללא מיקום':p),rm:()=>{placef.delete(p);renderPlaceRow();}}));
@@ -3640,14 +3673,97 @@ function afRender(){
   const el=document.getElementById('afRow'); if(!el) return;
   const L=afList(), sb=document.querySelector('#summ b'), n=sb?sb.textContent:'';
   el._L=L;
-  el.innerHTML='<span class="afN"><b>'+n+'</b> פריטים</span>'+L.map((x,i)=>'<button type="button" class="afc" data-i="'+i+'">'+esc(x.l)+' <span class="afx">✕</span></button>').join('')+(L.length>1?'<button type="button" class="afc afclr" data-i="all">נקה הכל</button>':'');
+  const vc=(typeof viewCounts==='function')?viewCounts():{};
+  const quick=[['toorder','🛒 נותר להזמין'],['ordered','📦 הוזמנו']].map(([v,l])=>'<button type="button" class="afq'+(viewMode===v?' on':'')+'" data-v="'+v+'">'+l+(vc[v]?' <b>'+vc[v]+'</b>':'')+'</button>').join('');
+  const gch=groupBy?'<button type="button" class="afc afg" data-i="g">🗂 לפי '+GRP_LAB[groupBy]+' <span class="afx">✕</span></button>':'';
+  el.innerHTML='<span class="afN"><b>'+n+'</b> פריטים</span>'+quick+gch+L.map((x,i)=>'<button type="button" class="afc" data-i="'+i+'">'+esc(x.l)+' <span class="afx">✕</span></button>').join('')+(L.length>1?'<button type="button" class="afc afclr" data-i="all">נקה הכל</button>':'')+'<button type="button" class="afexp" title="עמוד סיכום התלבטויות לשליחה">📄 סיכום</button>';
   const fc=document.getElementById('fsCount'); if(fc) fc.textContent=n;
   updateFilterBadge();
 }
-document.getElementById('afRow').addEventListener('click',e=>{ const b=e.target.closest('.afc'); if(!b) return; if(b.dataset.i==='all'){ afClearAll(); return; } const x=document.getElementById('afRow')._L[+b.dataset.i]; if(x){ x.rm(); RE(); } });
+document.getElementById('afRow').addEventListener('click',e=>{ const q=e.target.closest('.afq'); if(q){ setView(q.dataset.v); return; } if(e.target.closest('.afexp')){ openExport(); return; } const b=e.target.closest('.afc'); if(!b) return; if(b.dataset.i==='g'){ setGroup(''); return; } if(b.dataset.i==='all'){ afClearAll(); return; } const x=document.getElementById('afRow')._L[+b.dataset.i]; if(x){ x.rm(); RE(); } });
 function afClearAll(){ const qe=document.getElementById('q'); if(qe) qe.value=''; viewMode='all'; document.querySelectorAll('.vbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='all')); subf=null; featf=null; placef.clear(); slotf.clear(); personf='all'; stf.clear(); tagf.clear(); specf={}; buildChips(); RE(); }
 updateFilterBadge=function(){ const n=afList().filter(x=>!x.q).length; const b=document.getElementById('fbadge'); if(b){ b.textContent=n||''; b.style.display=n?'inline-flex':'none'; } const fb=document.getElementById('filterBtn'); if(fb) fb.classList.toggle('on',n>0); };
-{ const _RE=RE; RE=function(a){ _RE(a); try{ afRender(); fsSync(); }catch(e){ console.warn(e); } }; }
+{ const _RE=RE; RE=function(a){ _RE(a); try{ applyGroups(); afRender(); fsSync(); }catch(e){ console.warn(e); } }; }
+/* ===== sections (group by), extra sorts, export of a deliberation summary page ===== */
+let groupBy=''; try{ groupBy=localStorage.getItem('groupBy')||''; }catch(e){}
+const GRP_LAB={sub:'תת־נושא',place:'מיקום',store:'חנות',score:'ציון',none:'ללא קיבוץ'};
+const _grpCollapsed=new Set();
+function scoreVal(it){ if(it.score!=null) return it.score; let ms=[]; try{ ms=marksFor(it.id).filter(m=>m.h>0); }catch(e){} if(!ms.length) return null; return Math.round(ms.reduce((t,m)=>t+m.h,0)/ms.length*20); }
+const SC_BANDS=[[90,'90 ומעלה'],[75,'75–89'],[50,'50–74'],[0,'מתחת ל־50']];
+function scoreBand(it){ const v=scoreVal(it); if(v==null) return {k:'ללא ציון',o:99}; for(let i=0;i<SC_BANDS.length;i++) if(v>=SC_BANDS[i][0]) return {k:'ציון '+SC_BANDS[i][1],o:i}; return {k:'ללא ציון',o:99}; }
+function grpKey(it,mode){
+  if(mode==='sub'){ const cc=CATS.find(x=>x.key===it.cat)||{}, subs=cc.subs||[], i=subs.indexOf(it.sub); return {k:it.sub||'ללא תת־נושא',o:it.sub?(i>=0?i:50):99}; }
+  if(mode==='place'){ const names=placesList().map(p=>p.n), p=itemPlaces(it)[0]; return {k:p||'ללא מיקום',o:p?(names.indexOf(p)<0?80:names.indexOf(p)):99}; }
+  if(mode==='store') return {k:guessStore(it)||'לא ידוע',o:0};
+  if(mode==='score') return scoreBand(it);
+  return {k:'',o:0};
+}
+{ const _v=visible; visible=function(){ let a=_v(); const so=(document.getElementById('sort')||{}).value;
+  const by=m=>(x,y)=>{ const P=grpKey(x,m),Q=grpKey(y,m); return P.o-Q.o||P.k.localeCompare(Q.k,'he'); };
+  const cmp={sub:by('sub'),place:by('place'),store:by('store'),zscore:(x,y)=>(scoreVal(y)==null?-1:scoreVal(y))-(scoreVal(x)==null?-1:scoreVal(x))}[so];
+  if(cmp) a=a.slice().sort(cmp);
+  if(groupBy){ const ks=new Map(); a.forEach((it,i)=>ks.set(it.id,[grpKey(it,groupBy),i])); a=a.slice().sort((p,q)=>{ const P=ks.get(p.id),Q=ks.get(q.id); return P[0].o-Q[0].o||P[0].k.localeCompare(Q[0].k,'he')||P[1]-Q[1]; }); }
+  return a; }; }
+(function(){ const sel=document.getElementById('sort'); if(!sel) return; [['sub','לפי תת־נושא'],['place','לפי מיקום'],['store','לפי חנות'],['zscore','לפי ציון']].forEach(([v,t])=>{ const o=document.createElement('option'); o.value=v; o.textContent=t; sel.appendChild(o); }); })();
+function setGroup(m){ groupBy=m||''; try{ localStorage.setItem('groupBy',groupBy); }catch(e){} _grpCollapsed.clear(); renderGrpChips(); RE(); }
+function renderGrpChips(){ const c=document.getElementById('grpChips'); if(!c) return;
+  c.innerHTML=[['','ללא'],['sub','תת־נושא'],['place','מיקום'],['store','חנות'],['score','ציון']].map(([m,l])=>'<button type="button" class="chip'+(groupBy===m?' on':'')+'" onclick="setGroup(\''+m+'\')">'+l+'</button>').join(''); }
+(function(){ const body=document.getElementById('fsBody'); if(!body) return; const w=document.createElement('section'); w.className='fg'; w.dataset.g='group';
+  w.innerHTML='<h4>קיבוץ לסקציות — כל תת־נושא / מיקום / חנות / ציון בסקשן משלו</h4><div class="chips" id="grpChips"></div>';
+  const first=body.querySelector('.fg'); if(first&&first.nextSibling) body.insertBefore(w,first.nextSibling); else body.appendChild(w); renderGrpChips(); })();
+function applyGroups(){
+  grid.querySelectorAll('.grpH').forEach(e=>e.remove()); grid.querySelectorAll('.grp-collapsed').forEach(e=>e.classList.remove('grp-collapsed'));
+  if(!groupBy) return; const vis=visible(); let last=null; const runs=[];
+  vis.forEach(it=>{ const g=grpKey(it,groupBy); if(!last||last.k!==g.k){ last={k:g.k,ids:[],first:it.id}; runs.push(last); } last.ids.push(it.id); });
+  runs.forEach(r=>{ const first=els.get(r.first); if(!first||first.parentNode!==grid) return; const col=_grpCollapsed.has(r.k);
+    const h=document.createElement('div'); h.className='grpH'+(col?' collapsed':''); h.dataset.k=r.k;
+    h.innerHTML='<button type="button" class="grpT"><span class="gc">▾</span> '+esc(r.k)+' <small>'+r.ids.length+'</small></button><button type="button" class="grpX" title="עמוד סיכום של הסקשן הזה">📄 סיכום</button>';
+    h.querySelector('.grpT').onclick=()=>{ _grpCollapsed.has(r.k)?_grpCollapsed.delete(r.k):_grpCollapsed.add(r.k); applyGroups(); };
+    h.querySelector('.grpX').onclick=()=>openExport(r.k);
+    grid.insertBefore(h,first); if(col) r.ids.forEach(id=>{ const c=els.get(id); if(c) c.classList.add('grp-collapsed'); }); });
+}
+/* ----- export: pick sections, create a shareable summary page ----- */
+let _exp={mode:'place',marked:false,groups:[],sel:new Set(),title:''};
+function expItems(){ let a=visible(); if(_exp.marked) a=a.filter(it=>{ const x=S(it.id)||{}; return x.status==='yes'||x.status==='maybe'||(x.h||0)>0; }); return a; }
+function expGroupsFor(mode,items){
+  if(mode==='none') return items.length?[{k:'כל הפריטים',o:0,items:items.slice()}]:[];
+  const m=new Map(), add=(g,it)=>{ if(!m.has(g.k)) m.set(g.k,{k:g.k,o:g.o,items:[]}); m.get(g.k).items.push(it); };
+  items.forEach(it=>{ if(mode==='place'){ const pl=itemPlaces(it), names=placesList().map(p=>p.n); if(pl.length) pl.forEach(p=>add({k:p,o:names.indexOf(p)<0?80:names.indexOf(p)},it)); else add({k:'ללא מיקום',o:99},it); } else add(grpKey(it,mode),it); });
+  return [...m.values()].sort((a,b)=>a.o-b.o||a.k.localeCompare(b.k,'he'));
+}
+function expDefaultTitle(){ const cs=[...selCats].map(k=>(CATS.find(c=>c.key===k)||{}).label).filter(Boolean); return 'סיכום התלבטויות'+(cs.length?' — '+(cs.length>2?cs.slice(0,2).join(', ')+' ועוד':cs.join(', ')):''); }
+function openExport(preKey){
+  let d=document.getElementById('expDlg');
+  if(!d){ d=document.createElement('dialog'); d.id='expDlg'; d.className='expdlg'; document.body.appendChild(d); d.addEventListener('click',e=>{ if(e.target===d) d.close(); }); }
+  _exp.mode=(groupBy||'place'); _exp.marked=false; _exp.title=expDefaultTitle(); _exp.pre=preKey||null; expRefresh(true); if(!d.open) d.showModal();
+}
+function expRefresh(reset){
+  const d=document.getElementById('expDlg'); const items=expItems(); _exp.groups=expGroupsFor(_exp.mode,items);
+  if(reset||_exp.pre){ _exp.sel=new Set(_exp.pre?[_exp.pre]:_exp.groups.map(g=>g.k)); if(_exp.pre&&!_exp.groups.some(g=>g.k===_exp.pre)) _exp.sel=new Set(_exp.groups.map(g=>g.k)); _exp.pre=null; }
+  else _exp.sel=new Set([..._exp.sel].filter(k=>_exp.groups.some(g=>g.k===k)));
+  const n=_exp.groups.filter(g=>_exp.sel.has(g.k)).reduce((t,g)=>t+g.items.length,0);
+  d.innerHTML='<div class="exh"><b>📄 עמוד סיכום התלבטויות</b><button type="button" class="exx" onclick="document.getElementById(\'expDlg\').close()" aria-label="סגירה">✕</button></div>'
+   +'<div class="exb"><p class="exn">אפשר לשלוח את העמוד למעצבת או לבעלי: תמונות, מחירים, חנויות והערות, מחולק לסקשנים לפי הבחירה שלך. הפריטים הם מה שמוצג עכשיו לפי הסינון.</p>'
+   +'<label class="exl">כותרת<input id="expTitle" value="'+esc(_exp.title)+'" oninput="_exp.title=this.value"></label>'
+   +'<div class="exl">חלוקה לסקשנים<div class="chips">'+['place','sub','store','score','none'].map(m=>'<button type="button" class="chip'+(_exp.mode===m?' on':'')+'" onclick="expMode(\''+m+'\')">'+(m==='place'?'מיקום בבית':GRP_LAB[m])+'</button>').join('')+'</div></div>'
+   +'<label class="exck"><input type="checkbox" '+(_exp.marked?'checked':'')+' onchange="_exp.marked=this.checked;expRefresh()"> רק מה שסימנתי (❤ / אולי / כוכבים)</label>'
+   +'<div class="exsh"><b>סקשנים לכלול</b><span><button type="button" onclick="expAll(true)">הכל</button><button type="button" onclick="expAll(false)">נקי</button></span></div>'
+   +'<div class="exsecs">'+(_exp.groups.length?_exp.groups.map((g,i)=>'<label class="exs"><input type="checkbox" data-i="'+i+'" '+(_exp.sel.has(g.k)?'checked':'')+' onchange="expTog('+i+',this.checked)"><span>'+esc(g.k)+'</span><small>'+g.items.length+'</small></label>').join(''):'<p class="exn">אין פריטים להצגה עם הסינון הנוכחי.</p>')+'</div></div>'
+   +'<div class="exf"><button type="button" class="exgo" onclick="expCreate(false)">צרי עמוד וצפי בו ↗ <small>('+n+' פריטים)</small></button><button type="button" class="excopy" onclick="expCreate(true)">🔗 צרי והעתיקי קישור לשליחה</button></div>';
+}
+function expMode(m){ _exp.mode=m; expRefresh(true); }
+function expTog(i,on){ const g=_exp.groups[i]; if(!g) return; on?_exp.sel.add(g.k):_exp.sel.delete(g.k); expRefresh(); }
+function expAll(on){ _exp.sel=new Set(on?_exp.groups.map(g=>g.k):[]); expRefresh(); }
+function expCreate(copy){ return (async()=>{
+  const gs=_exp.groups.filter(g=>_exp.sel.has(g.k)); if(!gs.length){ say('בחרי לפחות סקשן אחד',2200); return; }
+  const id=Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-3);
+  const payload={t:(_exp.title||'').trim()||expDefaultTitle(),kick:'סיכום התלבטויות · '+(_exp.mode==='none'?'רשימה אחת':'לפי '+(_exp.mode==='place'?'מיקום בבית':GRP_LAB[_exp.mode])),mode:_exp.mode,created:Date.now(),by:(me&&me.name)||'',groups:gs.map(g=>({n:g.k,items:g.items.map(i=>i.id)}))};
+  const url=BASE_DOC+'compare/?e='+id;
+  const w=copy?null:window.open('about:blank','_blank');
+  try{ const r=await fetch(`${DB}/picks/_exports/${id}.json`,{method:'PUT',body:JSON.stringify(payload)}); if(!r.ok) throw new Error('save'); }
+  catch(e){ if(w) w.close(); say('לא הצלחתי לשמור את העמוד — נסי שוב',3000); return; }
+  if(copy){ try{ await navigator.clipboard.writeText(url); say('🔗 הקישור הועתק — אפשר לשלוח',2600); }catch(e){ prompt('העתיקי את הקישור:',url); } }
+  else if(w) w.location.href=url; else location.href=url;})(); }
 rebuild(); applyHash(); tabsHTML(); buildChips(); RE(true); if(selCats.size) syncHash(); cmpBarPaint();
 { const _q=new URLSearchParams(location.search), _as=(_q.get('as')||'').trim(); if(!me&&_as){ me={pk:pkFromName(_as),name:_as}; localStorage.setItem('ida-me',JSON.stringify(me)); } }
 if(me){ me.pk=pkFromName(me.name); localStorage.setItem('ida-me',JSON.stringify(me)); fbPushName(); startSync(); } else openMe();
