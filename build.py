@@ -2587,6 +2587,7 @@ body.fsOpen{overflow:hidden}
     <div class="views" id="views">
     <button class="vbtn on" data-v="all" onclick="setView('all')">הכל<span class="vc" data-c="all"></span></button>
     <button class="vbtn" data-v="notordered" onclick="setView('notordered')">⏳ טרם הוזמנו<span class="vc" data-c="notordered"></span></button>
+    <button class="vbtn" data-v="wavering" onclick="setView('wavering')">🤔 בהתלבטות<span class="vc" data-c="wavering"></span></button>
     <button class="vbtn" data-v="toorder" onclick="setView('toorder')">🛒 נבחרו להזמנה<span class="vc" data-c="toorder"></span></button>
     <button class="vbtn" data-v="ordered" onclick="setView('ordered')">📦 הוזמנו<span class="vc" data-c="ordered"></span></button>
     <button class="vbtn" data-v="rejected" onclick="setView('rejected')">↩ הוסרו מההזמנה<span class="vc" data-c="rejected"></span></button>
@@ -5159,7 +5160,7 @@ const _afTxt=el=>{ const c=el.cloneNode(true); c.querySelectorAll('small,.vc,.c'
 function afList(){
   const L=[]; const qe=document.getElementById('q'), qv=((qe&&qe.value)||'').trim();
   if(qv) L.push({q:1,l:'🔍 '+qv,rm:()=>{qe.value='';}});
-  if(viewMode!=='all'&&viewMode!=='toorder'&&viewMode!=='ordered'){ const b=document.querySelector('.vbtn[data-v="'+viewMode+'"]'); L.push({l:b?_afTxt(b):viewMode,rm:()=>{viewMode='all';document.querySelectorAll('.vbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='all'));}}); }
+  if(viewMode!=='all'&&viewMode!=='toorder'&&viewMode!=='ordered'&&viewMode!=='wavering'){ const b=document.querySelector('.vbtn[data-v="'+viewMode+'"]'); L.push({l:b?_afTxt(b):viewMode,rm:()=>{viewMode='all';document.querySelectorAll('.vbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='all'));}}); }
   if(subf) L.push({l:subf==='__none'?'⚠ ללא שיוך':subf,rm:()=>{subf=null;renderSubRow();}});
   if(featf){ const o=document.querySelector('#subRow select option:checked'); L.push({l:o&&o.value?o.textContent:'🏷 פיצ\'ר',rm:()=>{featf=null;renderSubRow();}}); }
   placef.forEach(p=>L.push({l:'📍 '+(p==='__none'?'ללא מיקום':p),rm:()=>{placef.delete(p);renderPlaceRow();}}));
@@ -5175,7 +5176,7 @@ function afRender(){
   const L=afList(), sb=document.querySelector('#summ b'), n=sb?sb.textContent:'';
   el._L=L;
   const vc=(typeof viewCounts==='function')?viewCounts():{};
-  const quick=[['toorder','🛒 נותר להזמין'],['ordered','📦 הוזמנו']].map(([v,l])=>'<button type="button" class="afq'+(viewMode===v?' on':'')+'" data-v="'+v+'">'+l+(vc[v]?' <b>'+vc[v]+'</b>':'')+'</button>').join('');
+  const quick=[['wavering','🤔 בהתלבטות'],['toorder','🛒 נותר להזמין'],['ordered','📦 הוזמנו']].map(([v,l])=>'<button type="button" class="afq'+(viewMode===v?' on':'')+'" data-v="'+v+'">'+l+(vc[v]?' <b>'+vc[v]+'</b>':'')+'</button>').join('');
   const gch=groupBy?'<button type="button" class="afc afg" data-i="g">🗂 לפי '+GRP_LAB[groupBy]+' <span class="afx">✕</span></button>':'';
   el.innerHTML='<span class="afN"><b>'+n+'</b> פריטים</span>'+quick+gch+L.map((x,i)=>'<button type="button" class="afc" data-i="'+i+'">'+esc(x.l)+' <span class="afx">✕</span></button>').join('')+(L.length>1?'<button type="button" class="afc afclr" data-i="all">נקה הכל</button>':'')+'<button type="button" class="afexp" title="עמוד סיכום התלבטויות לשליחה">📄 סיכום</button>';
   const fc=document.getElementById('fsCount'); if(fc) fc.textContent=n;
@@ -5265,6 +5266,10 @@ function expCreate(copy){ return (async()=>{
   catch(e){ if(w) w.close(); say('לא הצלחתי לשמור את העמוד — נסי שוב',3000); return; }
   if(copy){ try{ await navigator.clipboard.writeText(url); say('🔗 הקישור הועתק — אפשר לשלוח',2600); }catch(e){ prompt('העתיקי את הקישור:',url); } }
   else if(w) w.location.href=url; else location.href=url;})(); }
+/* "בהתלבטות": marked by me (❤ / אולי / כוכבים), not ordered, not removed */
+function _isWavering(i){ if(i.hidden) return false; const t=itemStatus(i); if(t==='ordered'||t==='rejected') return false; const x=S(i.id)||{}; return x.status==='yes'||x.status==='maybe'||(x.h||0)>0; }
+{ const _pv=passView; passView=function(i){ return viewMode==='wavering'?_isWavering(i):_pv(i); };
+  const _vc=viewCounts; viewCounts=function(){ const c=_vc(); c.wavering=ITEMS.filter(i=>inCats(i)&&_isWavering(i)).length; return c; }; }
 rebuild(); applyHash(); tabsHTML(); buildChips(); RE(true); if(selCats.size) syncHash(); cmpBarPaint();
 { const _q=new URLSearchParams(location.search), _as=(_q.get('as')||'').trim(); if(!me&&_as){ me={pk:pkFromName(_as),name:_as}; localStorage.setItem('ida-me',JSON.stringify(me)); } }
 if(me){ me.pk=pkFromName(me.name); localStorage.setItem('ida-me',JSON.stringify(me)); fbPushName(); startSync(); } else openMe();
