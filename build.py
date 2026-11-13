@@ -1413,6 +1413,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"תנורי פרגולה","label":"תנורי פרגולה","icon":"🌡️","slug":"pergola-heater"},
       {"key":"שולחן סנוקר לחצר","label":"שולחן סנוקר לחצר (עם כיסוי)","icon":"🎱","slug":"snooker-table","group":"חוץ ופרגולה","multi":True,"prio":3},
       {"key":"תנור למרפסת העליונה","label":"תנור עומד למרפסת העליונה","icon":"🍄","slug":"balcony-heater","group":"חוץ ופרגולה","multi":True},
+      {"key":"פרגולה / כיסוי למרפסת העליונה","label":"פרגולה / כיסוי למרפסת העליונה","icon":"⛱️","slug":"balcony-cover","group":"חוץ ופרגולה","multi":True,"subs":["פרגולת אלומיניום בלהבים — אטומה בסגירה","גג נאסף חשמלי — מידה אישית (הצעת מחיר)","קיט מוכן — פוליקרבונט","סוכך זרועות — שמש בלבד"]},
       {"key":"מחמם מגבות","label":"מחמם מגבות","icon":"🧖","slug":"towel-warmer","subs":["מחמם מגבות", "תנור אמבטיה"]},
       {"key":"תנור לחדרי רחצה","label":"תנור לחדרי רחצה","icon":"🔥","slug":"bathroom-heater","subs":["מפזר חום", "תנור אינפרא", "חדר רחצה אורחים — עיצוב בוטיק"]},
       {"key":"סיפון לכיור","label":"סיפון לכיור (מקלחת אורחים)","icon":"🚰","slug":"sink-siphon"},
@@ -4942,6 +4943,13 @@ for _f in ("balcony-heater2a.json","balcony-heater2b.json"):
         for _o in json.load(open(os.path.join(REPO,_f),encoding="utf-8")):
             DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"snooker.json"),encoding="utf-8")):
+    DATA.append(_o)
+_bce=json.load(open(os.path.join(REPO,"enrich","balcony-cover.json"),encoding="utf-8"))  # merged here: this file loads after the generic enrich pass
+for _o in json.load(open(os.path.join(REPO,"balcony-cover.json"),encoding="utf-8")):
+    _x=_bce["items"].get(_o["id"],{})
+    _o["criteria"]=_bce["criteria"]
+    for _k in ("specs","stores","pick","pickWhy","points"):
+        if _k in _x: _o[_k]=_x[_k]
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"gardennook.json"),encoding="utf-8")):
     DATA.append(_o)
