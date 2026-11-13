@@ -985,6 +985,45 @@ body.fsOpen{overflow:hidden}
 .coverBtn:disabled,.coverBtn.is{border-color:var(--line-2);background:none;color:var(--muted);cursor:default}
 .oosb{position:absolute;inset-inline:0;bottom:0;z-index:5;background:rgba(150,52,44,.94);color:#fff;text-align:center;font-weight:800;font-size:13.5px;padding:7px 8px;pointer-events:none}
 .card.is-oos .thumb>img{filter:grayscale(.55) opacity(.78)}
+
+/* ===== item dialog: one-page layout + collapsed sections ===== */
+.itemdlg .isecs{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.isec{border:1.5px solid var(--line-2);border-radius:12px;background:var(--paper);overflow:hidden}
+.ish{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;font:inherit;padding:9px 12px;cursor:pointer;text-align:start;color:var(--ink)}
+.ish:hover{background:var(--brass-soft)}
+.ist{font-weight:800;font-size:13.5px;flex:none}
+.isp{flex:1;min-width:0;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.isc{flex:none;color:var(--muted);transition:transform .15s}
+.isec.open .isc{transform:rotate(180deg)}
+.isec.open .isp{display:none}
+.isec.open .ish{flex:none}
+.isb{display:none;padding:2px 12px 12px;max-height:min(50vh,460px);overflow:auto}
+.isec.open>.isb{display:block}
+.isec.editing>.isb{max-height:none;overflow:visible}
+.isv{white-space:pre-wrap;font-size:13.5px;line-height:1.7;cursor:text;padding:6px 8px;border-radius:8px}
+.isv:hover{background:var(--brass-soft)}
+.isv.empty{color:var(--muted);font-style:italic}
+.ised textarea{display:block;width:100%;box-sizing:border-box;font:inherit;font-size:13.5px;line-height:1.6;border:1.5px solid var(--brass);border-radius:10px;padding:8px;min-height:64px;resize:vertical;background:var(--paper);color:var(--ink)}
+.isbtns{display:flex;gap:6px;justify-content:flex-end;margin-top:6px}
+.isbtns button{width:36px;height:30px;border-radius:9px;border:1.5px solid var(--line-2);background:var(--paper);font-size:16px;cursor:pointer;color:var(--ink)}
+.isbtns .isok{color:#fff;background:#4c8a53;border-color:#4c8a53}
+.isask{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;padding:8px 10px;background:#fbeee0;border:1.5px solid #e2b94f;border-radius:10px;font-size:13px;color:#5b4310}
+.isask[hidden]{display:none}
+.isask button{font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid #e2b94f;background:#fff;border-radius:99px;padding:4px 12px;cursor:pointer;color:#5b4310}
+.isStore{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding:7px 4px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);font-size:13.5px}
+.isStore:last-child{border-bottom:0}
+.isStore .ip{margin-inline-start:auto;font-weight:800;color:var(--brass-d)}
+.isStore small{flex-basis:100%;color:var(--muted)}
+.itemdlg .isb .slotBox,.itemdlg .isb .more{margin:0;border:0;padding:0;background:none}
+.itemdlg .card.detail>.thumb{max-height:34vh;aspect-ratio:auto;height:34vh}
+@media(min-width:820px){
+  .itemdlg{max-width:min(1040px,96vw)}
+  .itemdlg .card.detail{display:grid;grid-template-columns:minmax(300px,40%) minmax(0,1fr);grid-template-areas:"img body" "strip body" "cover body" ". body";grid-template-rows:auto auto auto 1fr;column-gap:18px;align-items:start}
+  .itemdlg .card.detail>.thumb{grid-area:img;height:auto;aspect-ratio:1/1;max-height:58vh}
+  .itemdlg .card.detail>.igt{grid-area:strip}
+  .itemdlg .card.detail>.coverBtn{grid-area:cover}
+  .itemdlg .card.detail>.body{grid-area:body;grid-row:1/span 4}
+}
 </style>
 </head>
 <body>
@@ -1411,7 +1450,13 @@ function renderSlotBox(){ const old=document.getElementById('slotBox'); if(old) 
   let h='<b>🎯 מיקום / ייעוד — אפשר לבחור כמה</b>';
   cfg.groups.forEach(g=>{ h+=`<span class="fl">${esc(g.floor)}</span>`+g.slots.map(sl=>`<button type="button" class="${have.has(sl.id)?'on':''}" onclick="toggleItemSlot('${esc(id)}','${esc(sl.id)}')">${have.has(sl.id)?'✓ ':''}${esc(sl.name)}</button>`).join(''); });
   h+='<small>השיוך נשמר לכולם ומתעדכן במסמכים.</small>'; box.innerHTML=h;
-  const bd=document.getElementById('itemDlgB'); if(bd) bd.appendChild(box); }
+  const bd=document.getElementById('itemDlgB'); if(!bd) return;
+  const oldSec=bd.querySelector('.isec[data-k="slot"]'); if(oldSec) oldSec.remove();
+  const secs=bd.querySelector('.isecs');
+  if(!secs){ bd.appendChild(box); return; }
+  const names=[]; cfg.groups.forEach(g=>g.slots.forEach(sl=>{ if(have.has(sl.id)) names.push(sl.name); }));
+  const sec=isecShell(id,'slot','🎯','ייעוד בבית',names.join(' · ')||'לא נבחר'); sec.querySelector('.isb').appendChild(box);
+  const last=secs.lastElementChild; if(last&&last.dataset.k==='more') secs.insertBefore(sec,last); else secs.appendChild(sec); }
 function toggleItemSlot(id,sid){ const it=byId[id]; if(!it) return; const s=new Set(it.slots||[]); s.has(sid)?s.delete(sid):s.add(sid);
   const ov=[...s].join(','); it.slots=[...s]; it.slotOv=ov; shared.items=shared.items||{}; shared.items[id]={...(shared.items[id]||{}),id,slotOv:ov};
   fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,slotOv:ov})}).catch(()=>{});
@@ -2441,11 +2486,79 @@ function renderItemDlg(){ const id=_itemOpen, c=els.get(id), it=byId[id]; if(!c|
   const ta=cl.querySelector('textarea'); if(ta) ta.value=(st.s[id]&&st.s[id].note)||'';
   const pp=cl.querySelector('.people'); if(pp&&pp.innerHTML.trim()) pp.style.display='';
   document.getElementById('itemDlgT').textContent=it.name.length>60?it.name.slice(0,60)+'…':it.name;
+  try{ buildDetailSections(cl,it,id); }catch(e){ console.warn(e); }
   b.innerHTML=''; b.appendChild(cl); renderSlotBox(); refreshSelBar(); d.scrollTop=y; }
 function setCover(id){ const it=byId[id]; if(!it) return; const list=(it.imgs&&it.imgs.length)?[...it.imgs]:[it.img]; const ix=Math.min(_igIdx,list.length-1); if(ix<=0) return;
   const u=list[ix], nl=[u,...list.filter((_,k)=>k!==ix)]; it.imgs=nl; it.img=u; patchItem(id,{img:u,imgs:nl}); _igIdx=0;
   const c=els.get(id); if(c){ c.remove(); els.delete(id); } RE(); renderItemDlg(); say('⭐ התמונה הוגדרה כראשית',1800); }
-function refreshItemDlg(){ if(!_itemOpen) return; const d=document.getElementById('itemDlg'); if(!d.open){ _itemOpen=null; return; } const a=document.activeElement; if(a&&a.tagName==='TEXTAREA'&&d.contains(a)) return; renderItemDlg(); }
+/* ===== item dialog: collapsed sections, inline edit (✓ / ✕), undo, confirm-on-leave ===== */
+const _isecOpen=new Set(); let _isEdit=null;
+const _isCap=(t,n)=>{ t=String(t||'').replace(/\s+/g,' ').trim(); return t.length>n?t.slice(0,n)+'…':t; };
+function isecShell(id,key,icon,title,preview){
+  const k=id+'|'+key, sec=document.createElement('section'); sec.className='isec'+(_isecOpen.has(k)?' open':''); sec.dataset.k=key;
+  sec.innerHTML='<button type="button" class="ish"><span class="isi">'+icon+'</span><span class="ist">'+title+'</span><span class="isp">'+esc(_isCap(preview,90))+'</span><span class="isc">⌄</span></button><div class="isb"></div>';
+  sec.querySelector('.ish').onclick=()=>{ if(_isEdit&&_isEdit.sec===sec) return; const o=sec.classList.toggle('open'); o?_isecOpen.add(k):_isecOpen.delete(k); };
+  return sec;
+}
+function isecText(id,key,icon,title,o){
+  const it=byId[id], raw=(o.raw?o.raw(it):(it[key]||''))||'', view=o.view?o.view(it):raw, shown=String(view||'').trim();
+  const sec=isecShell(id,key,icon,title,shown||o.ph); const vw=document.createElement('div'); vw.className='isv'+(shown?'':' empty'); vw.textContent=shown||o.ph; vw.title='לחצי לעריכה';
+  vw.onclick=()=>isecEdit(sec,vw,id,key,String(raw),o); sec.querySelector('.isb').appendChild(vw); return sec;
+}
+function isecLeave(){ // returns true when it is OK to move on (no edit open, or nothing changed)
+  const E=_isEdit; if(!E) return true; if(E.ta.value.trim()===E.orig.trim()){ isecClose(); return true; }
+  E.ed.querySelector('.isask').hidden=false; return false;
+}
+function isecClose(){ const E=_isEdit; if(!E) return; _isEdit=null; E.sec.classList.remove('editing'); if(E.ed.isConnected) E.ed.replaceWith(E.vw); }
+function isecEdit(sec,vw,id,key,val,o){
+  if(_isEdit&&_isEdit.sec===sec) return; if(!isecLeave()) return;
+  sec.classList.add('open','editing'); _isecOpen.add(id+'|'+key);
+  const ed=document.createElement('div'); ed.className='ised';
+  ed.innerHTML='<textarea rows="'+(o.rows||4)+'"></textarea><div class="isbtns"><button type="button" class="isok" title="אישור">✓</button><button type="button" class="isno" title="ביטול">✕</button></div><div class="isask" hidden><span>לצאת בלי לשמור את השינוי?</span><button type="button" class="isyes">כן, צאי בלי לשמור</button><button type="button" class="isstay">המשיכי לערוך</button></div>';
+  const ta=ed.querySelector('textarea'); ta.value=val; vw.replaceWith(ed); ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length);
+  const fit=()=>{ ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight+4,window.innerHeight*0.36)+'px'; }; fit(); ta.addEventListener('input',fit);
+  _isEdit={sec,vw,id,key,orig:val,ed,ta};
+  ed.querySelector('.isok').onclick=()=>isecCommit();
+  ed.querySelector('.isno').onclick=()=>isecClose();
+  ed.querySelector('.isyes').onclick=()=>isecClose();
+  ed.querySelector('.isstay').onclick=()=>{ ed.querySelector('.isask').hidden=true; ta.focus(); };
+  ta.addEventListener('keydown',e=>{ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){ e.preventDefault(); isecCommit(); } });
+}
+function isecRefreshCard(id){ const c=els.get(id); if(c){ c.remove(); els.delete(id); } RE(); }
+function isecCommit(){
+  const E=_isEdit; if(!E) return; const v=E.ta.value.trim(); if(v===E.orig.trim()){ isecClose(); return; }
+  _isEdit=null; const it=byId[E.id], had=Object.prototype.hasOwnProperty.call(it,E.key), prev=it[E.key];
+  it[E.key]=v; patchItem(E.id,{[E.key]:v}); isecRefreshCard(E.id); _isecOpen.add(E.id+'|'+E.key); renderItemDlg();
+  const back=(prev===undefined||prev===null)?'':prev;
+  undoToast('✓ נשמר',()=>{ if(had) it[E.key]=back; else delete it[E.key]; patchItem(E.id,{[E.key]:back}); isecRefreshCard(E.id); if(_itemOpen===E.id) renderItemDlg(); });
+}
+document.addEventListener('click',e=>{ const E=_isEdit; if(!E||E.ed.contains(e.target)) return; if(E.ta.value.trim()===E.orig.trim()){ isecClose(); return; }
+  e.preventDefault(); e.stopPropagation(); E.ed.querySelector('.isask').hidden=false; },true);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&_isEdit){ e.preventDefault(); e.stopPropagation(); isecLeave(); } },true);
+document.addEventListener('cancel',e=>{ if(_isEdit&&e.target&&e.target.id==='itemDlg') e.preventDefault(); },true);
+function _toTop(id){ const d=document.getElementById('itemDlg'), el=document.getElementById(id); if(!el) return; if(d&&d.open){ if(el.parentNode!==d) d.appendChild(el); } else if(el.parentNode!==document.body) document.body.appendChild(el); }
+{ const _u=undoToast; undoToast=function(){ _u.apply(this,arguments); _toTop('undoBar'); }; const _s=say; say=function(){ _s.apply(this,arguments); _toTop('toast'); }; }
+document.addEventListener('close',e=>{ if(e.target&&e.target.id==='itemDlg'){ _isEdit=null; _toTop('undoBar'); _toTop('toast'); } },true);
+function buildDetailSections(cl,it,id){
+  const body=cl.querySelector('.body'); if(!body||it.type==='color') return;
+  const more=cl.querySelector('div.more');
+  ['.desc','.descToggle','.dimsRow','.useTag','.locLine','.qpBar','.subtag','.subQuick','.pickWhy','.pickWhyFull','.keySpecs','.shoprow','.storeList','[class^="storeLi"]','ol.pts','.ptsFullH','.specT','.specTog','.featBadges','.storeRow'].forEach(sel=>cl.querySelectorAll(sel).forEach(e=>e.remove()));
+  const secs=document.createElement('div'); secs.className='isecs';
+  secs.appendChild(isecText(id,'desc','📝','הערה',{ph:'אין עדיין הערה — לחצי להוספה',rows:6}));
+  secs.appendChild(isecText(id,'dims','📐','מידות',{raw:i=>dimsOf(i)||'',ph:'מידות לא צוינו — לחצי להוספה',rows:2}));
+  secs.appendChild(isecText(id,'loc','📍','מיקום',{raw:i=>i.loc||'',view:i=>locText(i),ph:'אין מיקום — לחצי להוספה',rows:3}));
+  const st=(it.stores||[]).slice().sort((a,b)=>(b.rec?1:0)-(a.rec?1:0)||((a.p==null?1e9:a.p)-(b.p==null?1e9:b.p)));
+  if(st.length){ const ps=st.map(x=>x.p).filter(x=>x!=null), sec=isecShell(id,'stores','💰','חנויות ומחירים ('+st.length+')',ps.length?('מ־'+nis(Math.min(...ps))):'');
+    sec.querySelector('.isb').innerHTML=st.map(x=>'<a class="isStore'+(x.rec?' rec':'')+'" href="'+esc(x.l||'#')+'" target="_blank" rel="noopener"><b>'+esc(x.n)+'</b>'+(x.rec?' <span class="sTag r">מומלצת</span>':'')+'<span class="ip">'+(x.p!=null?nis(x.p):'')+'</span>'+(x.note?'<small>'+esc(x.note)+'</small>':'')+'</a>').join(''); secs.appendChild(sec); }
+  const cr=critOf(it.cat), pts=it.points||[];
+  if((cr.length&&it.specs)||pts.length||(it.pick&&it.pickWhy)){ const sec=isecShell(id,'spec','📊','מפרט והשוואה',it.pick&&it.pickWhy?('⭐ '+it.pickWhy):'');
+    let h=''; if(it.pick&&it.pickWhy) h+='<div class="pickWhyFull">⭐ '+esc(it.pickWhy)+'</div>'; if(cr.length&&it.specs) h+=specRowsHTML(it,true).replace(/ id="spec-[^"]*"/,''); if(pts.length) h+='<ol class="pts">'+pts.map(p=>'<li>'+esc(p)+'</li>').join('')+'</ol>';
+    sec.querySelector('.isb').innerHTML=h; secs.appendChild(sec); }
+  if(more){ more.hidden=false; more.querySelectorAll('.pickWhyFull,.ptsFullH,ol.pts,.specT,.specTog,.featBadges,.desc').forEach(e=>e.remove());
+    const sec=isecShell(id,'more','⚙','ההערה שלי ואפשרויות',''); sec.dataset.k='more'; sec.querySelector('.isb').appendChild(more); secs.appendChild(sec); }
+  body.appendChild(secs);
+}
+function refreshItemDlg(){ if(!_itemOpen||_isEdit) return; const d=document.getElementById('itemDlg'); if(!d.open){ _itemOpen=null; return; } const a=document.activeElement; if(a&&a.tagName==='TEXTAREA'&&d.contains(a)) return; renderItemDlg(); }
 document.addEventListener('close',e=>{ if(e.target&&e.target.id==='itemDlg') _itemOpen=null; },true);
 function voteHTML(v){ return v.map(m=>`<span class="vr${m.mine?' me':''}"><b>${esc(m.mine?'אני':m.name)}</b><span class="vs">${'★'.repeat(m.h)}<i>${'★'.repeat(5-m.h)}</i></span></span>`).join(''); }
 function showVotes(id){ const c=els.get(id), vl=c&&c.querySelector('.voteList'); if(!vl) return; const open=!vl.classList.contains('open'); vl.classList.toggle('open',open); vl.innerHTML=open?voteHTML(marksFor(id).filter(m=>m.h>0)):''; }
