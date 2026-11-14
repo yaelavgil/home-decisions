@@ -2317,7 +2317,21 @@ body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .s
 .grid>.card :is(.partsBox,.scoreRow,.pickWhy,.keySpecs,ol.pts,.desc,.descToggle,.loc,.locLine,.people,.storeLine,.dimsRow,.useTag,.subQuick,.moreBtn,.docBtn,.shoprow,.more,.ordinfo,.featMiss,.pickWhyFull){display:none!important}
 .grid>.card .body>div:has(>.subtag){display:none}
 .grid>.card .featChips .featChip:nth-child(n+4){display:none}
-.grid>.card :is(.cstars,.voteList,.decRow,.openBtn,.stpill,.partsBox,.featChips,.featBadges,.code,.sub){display:none!important}
+.grid>.card :is(.voteList,.decRow,.openBtn,.stpill,.partsBox,.featChips,.featBadges,.code,.sub){display:none!important}
+.grid>.card .cstars{order:5;margin-top:2px}.grid>.card .qloc{order:4}
+.qloc{display:flex;align-items:center;gap:6px;min-width:0}
+.qpBar~.qloc{display:none}
+.qloc .qlb{display:flex;align-items:center;gap:6px;max-width:100%;min-width:0;border:1.5px dashed var(--line-2);background:var(--paper);border-radius:999px;padding:4px 10px;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink-soft);cursor:pointer}
+.qloc .qlb.has{border-style:solid;border-color:var(--brass);background:var(--brass-soft);color:var(--brass-d)}
+.qloc .qlb .qt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.qloc .qlb:hover{border-color:var(--brass)}
+.qlPop{position:fixed;z-index:9999;width:min(340px,calc(100vw - 24px));max-height:min(70vh,520px);overflow:auto;background:var(--paper);border:1.5px solid var(--line-2);border-radius:16px;box-shadow:0 18px 40px -12px rgba(60,40,10,.45);padding:12px 12px 10px}
+.qlPop h4{margin:2px 0 8px;font-size:13px;color:var(--ink-soft);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qlPop h4 .x{border:0;background:none;font-size:18px;cursor:pointer;color:var(--muted);line-height:1}
+.qlPop .qlc{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 10px}
+.qlPop .fl{display:block;width:100%;font-size:11.5px;color:var(--muted);font-weight:700;margin:4px 0 0}
+.qlPop button.qp{padding:5px 11px}
+
 .grid>.card .name{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;order:1}
 .grid>.card .storeRow{order:2}.grid>.card .priceRow{order:3}.grid>.card .priceRow .price{font-size:17px}
 .grid>.card{cursor:pointer}
@@ -4093,7 +4107,7 @@ document.addEventListener('close',e=>{ if(e.target&&e.target.id==='itemDlg'){ _i
 function buildDetailSections(cl,it,id){
   const body=cl.querySelector('.body'); if(!body||it.type==='color') return;
   const more=cl.querySelector('div.more');
-  ['.desc','.descToggle','.dimsRow','.useTag','.locLine','.qpBar','.subtag','.subQuick','.pickWhy','.pickWhyFull','.keySpecs','.shoprow','.storeList','[class^="storeLi"]','ol.pts','.ptsFullH','.specT','.specTog','.featBadges','.storeRow'].forEach(sel=>cl.querySelectorAll(sel).forEach(e=>e.remove()));
+  ['.qloc','.desc','.descToggle','.dimsRow','.useTag','.locLine','.qpBar','.subtag','.subQuick','.pickWhy','.pickWhyFull','.keySpecs','.shoprow','.storeList','[class^="storeLi"]','ol.pts','.ptsFullH','.specT','.specTog','.featBadges','.storeRow'].forEach(sel=>cl.querySelectorAll(sel).forEach(e=>e.remove()));
   const secs=document.createElement('div'); secs.className='isecs';
   secs.appendChild(isecText(id,'desc','📝','הערה',{ph:'אין עדיין הערה — לחצי להוספה',rows:6}));
   secs.appendChild(isecText(id,'dims','📐','מידות',{raw:i=>dimsOf(i)||'',ph:'מידות לא צוינו — לחצי להוספה',rows:2}));
@@ -4367,6 +4381,7 @@ function cardEl(it){
       ${hasPts?`<ol class="pts">${ptsTop.map(p=>`<li>${esc(shortTxt(String(p).split(/\s[—–]\s/)[0].length>=14?String(p).split(/\s[—–]\s/)[0]:p,56))}</li>`).join('')}</ol>`:''}
       ${hasPts?'':descHTML}
       ${it.type==='color'?'':'<div class="loc locLine" title="לחיצה להרחבה" onclick="this.classList.toggle(\'open\')"></div>'}
+      ${it.type==='product'?'<div class="qloc"></div>':''}
       ${it.sub?`<div><span class="subtag">${esc(it.sub)}</span></div>`:''}
       <div class="ordinfo" style="display:none"></div>
       <div class="people" style="display:none"></div>
@@ -4388,7 +4403,7 @@ function cardEl(it){
 }
 document.addEventListener('click',e=>{
   const c=e.target.closest&&e.target.closest('.grid>.card'); if(!c||c.classList.contains('detail')) return;
-  if(e.target.closest('.editb,.selb,.cmpb,.cbtns,.newTag,.qpBar,.docBtn,select,textarea,input,.stars')) return;
+  if(e.target.closest('.editb,.selb,.cmpb,.cbtns,.newTag,.qpBar,.docBtn,select,textarea,input,.stars,.cstars,.qloc')) return;
   if(!c.dataset.id||!byId[c.dataset.id]) return;
   e.preventDefault(); e.stopPropagation(); openItem(c.dataset.id);
 },true);
@@ -5311,6 +5326,27 @@ function _isWavering(i){ if(i.hidden||i.type==='color') return false; if(itemSta
 function cbReject(id){ const it=byId[id]; if(!it) return; const was=it.decision||null; decReject(id);
   const now=byId[id]&&byId[id].decision||null; if(now===was) return;
   undoToast(now==='rejected'?'הוסר מהבחירה (אפשר להחזיר בכל עת)':'הוחזר ללוח',()=>setDecision(id,was)); }
+
+/* ===== card: quick place / purpose chip (opens a one-tap popover) ===== */
+function qlNames(it){ const out=itemPlaces(it).slice(); const cfg=SLOTS[it.cat]; if(cfg&&(it.slots||[]).length){ const have=new Set(it.slots); cfg.groups.forEach(g=>g.slots.forEach(sl=>{ if(have.has(sl.id)&&!out.includes(sl.name)) out.push(sl.name); })); } return out; }
+function paintQloc(c,it){ const q=c&&c.querySelector('.qloc'); if(!q||!it) return; const nm=qlNames(it); const cc=CATS.find(x=>x.key===it.cat)||{};
+  q.innerHTML='<button type="button" class="qlb'+(nm.length?' has':'')+'" onclick="event.stopPropagation();openQlPop(this,\''+it.id+'\')" title="שינוי מהיר של מיקום / ייעוד">'+(nm.length?'📍 <span class="qt">'+esc(nm.join(' · '))+'</span> ✎':'<span class="qt">'+(cc.needsLoc?'⚠ ':'')+'＋ מיקום / ייעוד</span>')+'</button>'; }
+{ const _pl=paintLoc; paintLoc=function(c,it){ _pl.apply(this,arguments); try{ paintQloc(c,it); }catch(e){} }; }
+let _qlId=null;
+function closeQlPop(){ const p=document.getElementById('qlPop'); if(p) p.remove(); _qlId=null; }
+function qlHTML(it){ const cur=new Set(itemPlaces(it)), cfg=SLOTS[it.cat], have=new Set(it.slots||[]);
+  let h='<h4><span>📍 מיקום בבית — אפשר כמה</span><button type="button" class="x" onclick="closeQlPop()" aria-label="סגירה">×</button></h4><div class="qlc">'
+   +placesList().map(pl=>`<button type="button" class="qp${cur.has(pl.n)?' on':''}" data-id="${esc(it.id)}" data-n="${esc(pl.n)}" onclick="qpToggle(this);qlRefresh()">${cur.has(pl.n)?'✓ ':''}${esc(pl.n)}</button>`).join('')+'</div>';
+  if(cfg){ h+='<h4><span>🎯 ייעוד</span></h4><div class="qlc">'+cfg.groups.map(g=>`<span class="fl">${esc(g.floor)}</span>`+g.slots.map(sl=>`<button type="button" class="qp${have.has(sl.id)?' on':''}" onclick="toggleItemSlot('${esc(it.id)}','${esc(sl.id)}');qlRefresh()">${have.has(sl.id)?'✓ ':''}${esc(sl.name)}</button>`).join('')).join('')+'</div>'; }
+  return h; }
+function qlRefresh(){ const it=_qlId&&byId[_qlId], p=document.getElementById('qlPop'); if(!it||!p) return; const st=p.scrollTop; p.innerHTML=qlHTML(it); p.scrollTop=st; paintQloc(els.get(it.id),it); }
+function openQlPop(btn,id){ const it=byId[id]; if(!it) return; const was=_qlId; closeQlPop(); if(was===id) return; _qlId=id;
+  const p=document.createElement('div'); p.id='qlPop'; p.className='qlPop'; p.innerHTML=qlHTML(it); document.body.appendChild(p);
+  const r=btn.getBoundingClientRect(), pw=p.offsetWidth, ph=p.offsetHeight; let top=r.bottom+6, left=r.left; if(left+pw>innerWidth-8) left=innerWidth-pw-8; if(left<8) left=8; if(top+ph>innerHeight-8) top=Math.max(8,r.top-ph-6);
+  p.style.top=top+'px'; p.style.left=left+'px'; }
+document.addEventListener('mousedown',e=>{ if(_qlId&&!e.target.closest('#qlPop,.qloc')) closeQlPop(); },true);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&_qlId) closeQlPop(); });
+window.addEventListener('scroll',e=>{ if(_qlId&&!(e.target&&e.target.nodeType===1&&e.target.closest('#qlPop'))) closeQlPop(); },{passive:true,capture:true});
 rebuild(); applyHash(); tabsHTML(); buildChips(); RE(true); if(selCats.size) syncHash(); cmpBarPaint();
 { const _q=new URLSearchParams(location.search), _as=(_q.get('as')||'').trim(); if(!me&&_as){ me={pk:pkFromName(_as),name:_as}; localStorage.setItem('ida-me',JSON.stringify(me)); } }
 if(me){ me.pk=pkFromName(me.name); localStorage.setItem('ida-me',JSON.stringify(me)); fbPushName(); startSync(); } else openMe();
