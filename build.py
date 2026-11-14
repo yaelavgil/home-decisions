@@ -2557,6 +2557,10 @@ body.fsOpen{overflow:hidden}
 .exgo{flex:1 1 220px;border:0;border-radius:12px;padding:12px;font:inherit;font-size:14.5px;font-weight:800;color:#fff;background:linear-gradient(180deg,#bf9760,var(--brass-d));cursor:pointer}
 .exgo small{font-weight:600;opacity:.9}
 .excopy{flex:1 1 200px;border:1.5px solid var(--brass);border-radius:12px;padding:12px;font:inherit;font-size:14px;font-weight:700;color:var(--brass-d);background:var(--paper);cursor:pointer}
+
+.cmpb,.priceRow .cmpb{position:static;bottom:auto;inset-inline-start:auto;width:auto;height:auto;border-radius:99px;padding:3px 10px;margin-inline-start:auto;font-size:12px;font-weight:700;line-height:1.4;color:var(--ink-soft);opacity:1;display:inline-flex;gap:4px;white-space:nowrap}
+.card.in-cmp .cmpb{background:#4a6fa5;border-color:#4a6fa5;color:#fff}
+body:has(.cmpBar:not([hidden])) .qfabs{inset-block-end:calc(92px + env(safe-area-inset-bottom,0px))}
 </style>
 </head>
 <body>
@@ -4365,11 +4369,12 @@ function cardEl(it){
         ${moreInner}
       </div>
     </div>`;
+  { const cb=c.querySelector('.cmpb'); if(cb){ cb.title='הוספה למסמך השוואה — כמה מוצרים זה לצד זה, עם תמונות ולינקים'; const pr=c.querySelector('.priceRow'); if(pr) pr.appendChild(cb); else{ const bd=c.querySelector('.body'); if(bd) bd.appendChild(cb); } } }
   els.set(it.id,c); grid.appendChild(c); paint(it.id,c); return c;
 }
 document.addEventListener('click',e=>{
   const c=e.target.closest&&e.target.closest('.grid>.card'); if(!c||c.classList.contains('detail')) return;
-  if(e.target.closest('.editb,.selb,.newTag,.qpBar,.docBtn,select,textarea,input,.stars')) return;
+  if(e.target.closest('.editb,.selb,.cmpb,.newTag,.qpBar,.docBtn,select,textarea,input,.stars')) return;
   if(!c.dataset.id||!byId[c.dataset.id]) return;
   e.preventDefault(); e.stopPropagation(); openItem(c.dataset.id);
 },true);
@@ -4388,6 +4393,7 @@ function paint(id,c){
     if(it.oos&&th&&!ob){ ob=document.createElement('div'); ob.className='oosb'; ob.textContent='אזל מהמלאי'; th.appendChild(ob); } else if(!it.oos&&ob){ ob.remove(); ob=null; }
     if(ob&&it.oosChecked) ob.title='נבדק אוטומטית מול החנות: '+new Date(it.oosChecked).toLocaleString('he-IL');
     c.classList.toggle('is-oos',!!it.oos); }
+  { const cb=c.querySelector('.cmpb'); if(cb) cb.textContent=cmp.has(id)?'✓ בהשוואה':'⚖ השוואה'; }
   const od=c.querySelector('.orderb .od'); if(od)od.textContent=it.orderedAt?new Date(it.orderedAt).toLocaleDateString('he-IL'):'';
   const mo=c.querySelector('.markOrd'); if(mo)mo.style.display=it.ordered?'none':'';
   const hb=c.querySelector('.hideb');
