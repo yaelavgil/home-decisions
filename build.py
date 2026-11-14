@@ -2327,6 +2327,13 @@ body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .s
 .qloc .qlb:hover{border-color:var(--brass)}
 .qlPop{position:fixed;z-index:9999;width:min(340px,calc(100vw - 24px));max-height:min(70vh,520px);overflow:auto;background:var(--paper);border:1.5px solid var(--line-2);border-radius:16px;box-shadow:0 18px 40px -12px rgba(60,40,10,.45);padding:12px 12px 10px}
 .qlPop h4{margin:2px 0 8px;font-size:13px;color:var(--ink-soft);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.whs{display:flex;flex-direction:column;gap:5px;padding:8px 0;border-top:1px solid var(--line-2)}.whs:first-child{border-top:0;padding-top:2px}
+.wht{font-size:12.5px;font-weight:800;color:var(--ink)}
+.whl{font-size:11px;font-weight:700;color:var(--muted);margin-top:2px}
+.whr{display:flex;flex-wrap:wrap;gap:5px}
+.whn{display:block;color:var(--muted);font-size:11px;margin-top:6px}
+.qp.sl{border-style:dashed}.qp.sl.on{border-style:solid}
+.qlPop h4 b{display:inline-block;min-width:18px;padding:0 6px;border-radius:99px;background:var(--brass);color:#fff;font-size:11px;text-align:center}
 .qlPop h4 .x{border:0;background:none;font-size:18px;cursor:pointer;color:var(--muted);line-height:1}
 .qlPop .qlc{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 10px}
 .qlPop .fl{display:block;width:100%;font-size:11.5px;color:var(--muted);font-weight:700;margin:4px 0 0}
@@ -3721,8 +3728,8 @@ function renderSubRow(){
   let h='';
   if(subs.length){
     h+=`<button type="button" class="${!subf?'on':''}" onclick="subf=null;renderSubRow();RE()">הכל<small>${its.length}</small></button>`
-      +subs.map(k=>`<button type="button" class="${subf===k?'on':''}" onclick="subf='${esc(k)}';renderSubRow();RE()">${esc(k)}<small>${cnt(k)}</small></button>`).join('')
-      +(none?`<button type="button" class="warn ${subf==='__none'?'on':''}" onclick="subf='__none';renderSubRow();RE()">⚠ ללא שיוך<small>${none}</small></button><button type="button" class="mgr auto" onclick="autoAssignSubs('${esc(cat.key)}')">⚡ שיוך אוטומטי</button>`:'');
+      +subs.map(k=>`<button type="button" class="${subf===k?'on':''}" onclick="subf=(subf==='${esc(k)}'?null:'${esc(k)}');renderSubRow();RE()">${esc(k)}<small>${cnt(k)}</small></button>`).join('')
+      +(none?`<button type="button" class="warn ${subf==='__none'?'on':''}" onclick="subf=(subf==='__none'?null:'__none');renderSubRow();RE()">⚠ ללא שיוך<small>${none}</small></button><button type="button" class="mgr auto" onclick="autoAssignSubs('${esc(cat.key)}')">⚡ שיוך אוטומטי</button>`:'');
   }
   h+=featBarHTML(cat,its);
   el.innerHTML=h; el.style.display='flex';
@@ -3941,7 +3948,7 @@ function buildChips(){
   if(personf!=='all' && !namesList().includes(personf)) personf='all';
   const pc=document.getElementById('pplchips');
   if(pc){ pc.innerHTML="";
-    const mk=(val,lab)=>{const c=document.createElement('button');c.className="chip person"+(personf===val?" on":"");c.textContent=lab;c.onclick=()=>{personf=val;buildChips();RE();};pc.appendChild(c);};
+    const mk=(val,lab)=>{const c=document.createElement('button');c.className="chip person"+(personf===val?" on":"");c.textContent=lab;c.onclick=()=>{personf=(val!=='all'&&personf===val)?'all':val;buildChips();RE();};pc.appendChild(c);};
     mk('all','כולם'); namesList().forEach(n=>mk(n,n));
   }
   const sc=document.getElementById('stchips');
@@ -4111,7 +4118,7 @@ function buildDetailSections(cl,it,id){
   const secs=document.createElement('div'); secs.className='isecs';
   secs.appendChild(isecText(id,'desc','📝','הערה',{ph:'אין עדיין הערה — לחצי להוספה',rows:6}));
   secs.appendChild(isecText(id,'dims','📐','מידות',{raw:i=>dimsOf(i)||'',ph:'מידות לא צוינו — לחצי להוספה',rows:2}));
-  secs.appendChild(isecText(id,'loc','📍','מיקום',{raw:i=>i.loc||'',view:i=>locText(i),ph:'אין מיקום — לחצי להוספה',rows:3}));
+  secs.appendChild(isecText(id,'loc','📝','פירוט מיקום',{raw:i=>i.loc||'',view:i=>locText(i),ph:'אין פירוט — לחצי להוספה (למשל: 2 יח׳, מעל הכיור)',rows:3}));
   const st=(it.stores||[]).slice().sort((a,b)=>(b.rec?1:0)-(a.rec?1:0)||((a.p==null?1e9:a.p)-(b.p==null?1e9:b.p)));
   if(st.length){ const ps=st.map(x=>x.p).filter(x=>x!=null), sec=isecShell(id,'stores','💰','חנויות ומחירים ('+st.length+')',ps.length?('מ־'+nis(Math.min(...ps))):'');
     sec.querySelector('.isb').innerHTML=st.map(x=>'<a class="isStore'+(x.rec?' rec':'')+'" href="'+esc(x.l||'#')+'" target="_blank" rel="noopener"><b>'+esc(x.n)+'</b>'+(x.rec?' <span class="sTag r">מומלצת</span>':'')+'<span class="ip">'+(x.p!=null?nis(x.p):'')+'</span>'+(x.note?'<small>'+esc(x.note)+'</small>':'')+'</a>').join(''); secs.appendChild(sec); }
@@ -5334,12 +5341,37 @@ function paintQloc(c,it){ const q=c&&c.querySelector('.qloc'); if(!q||!it) retur
 { const _pl=paintLoc; paintLoc=function(c,it){ _pl.apply(this,arguments); try{ paintQloc(c,it); }catch(e){} }; }
 let _qlId=null;
 function closeQlPop(){ const p=document.getElementById('qlPop'); if(p) p.remove(); _qlId=null; }
-function qlHTML(it){ const cur=new Set(itemPlaces(it)), cfg=SLOTS[it.cat], have=new Set(it.slots||[]);
-  let h='<h4><span>📍 מיקום בבית — אפשר כמה</span><button type="button" class="x" onclick="closeQlPop()" aria-label="סגירה">×</button></h4><div class="qlc">'
-   +placesList().map(pl=>`<button type="button" class="qp${cur.has(pl.n)?' on':''}" data-id="${esc(it.id)}" data-n="${esc(pl.n)}" onclick="qpToggle(this);qlRefresh()">${cur.has(pl.n)?'✓ ':''}${esc(pl.n)}</button>`).join('')+'</div>';
-  if(cfg){ h+='<h4><span>🎯 ייעוד</span></h4><div class="qlc">'+cfg.groups.map(g=>`<span class="fl">${esc(g.floor)}</span>`+g.slots.map(sl=>`<button type="button" class="qp${have.has(sl.id)?' on':''}" onclick="toggleItemSlot('${esc(it.id)}','${esc(sl.id)}');qlRefresh()">${have.has(sl.id)?'✓ ':''}${esc(sl.name)}</button>`).join('')).join('')+'</div>'; }
-  return h; }
-function qlRefresh(){ const it=_qlId&&byId[_qlId], p=document.getElementById('qlPop'); if(!it||!p) return; const st=p.scrollTop; p.innerHTML=qlHTML(it); p.scrollTop=st; paintQloc(els.get(it.id),it); }
+const WH_FL={ground:'🏠 קומת קרקע',upper:'🪜 קומה שנייה',out:'🌳 חוץ וגינה',gen:'📍 כללי'};
+const WH_PF={'סלון':'ground','מטבח':'ground','פינת אוכל':'ground','כניסה':'ground','מדרגות':'ground','מסדרון':'ground','חדר אורחים':'ground','ממ״ד':'ground','מקלחת אורחים':'ground','חדר ילדים — לילי':'ground','חדר ילדים — דני':'ground','חדר רחצה ילדים':'ground','מרפסת תחתונה':'ground',
+ 'פינת משפחה':'upper','חדר שינה הורים':'upper','חדר ארונות הורים':'upper','חדר רחצה הורים':'upper','חדר עבודה':'upper','מרפסת עליונה':'upper',
+ 'פרגולה':'out','גינה / חצר':'out','חזית וחניה':'out'};
+const WH_SF={'kitchen-door':'out','west-path-wall':'out','garden-path':'out','garden-low':'out'};
+function whSections(it){
+  const by={ground:{k:'ground',rooms:[],slots:[]},upper:{k:'upper',rooms:[],slots:[]},out:{k:'out',rooms:[],slots:[]},gen:{k:'gen',rooms:[],slots:[]}};
+  placesList().forEach(pl=>by[WH_PF[pl.n]||'gen'].rooms.push(pl.n));
+  const cfg=SLOTS[it.cat]; if(cfg) cfg.groups.forEach(g=>g.slots.forEach(sl=>by[WH_SF[sl.id]||(/שנייה|עליונה/.test(g.floor)?'upper':'ground')].slots.push(sl)));
+  return Object.values(by).filter(x=>x.rooms.length||x.slots.length);
+}
+function whHTML(it){
+  const cur=new Set(itemPlaces(it)), have=new Set(it.slots||[]), id=esc(it.id);
+  return whSections(it).map(sc=>'<div class="whs"><div class="wht">'+WH_FL[sc.k]+'</div>'
+    +'<div class="whr">'+sc.rooms.map(n=>`<button type="button" class="qp${cur.has(n)?' on':''}" data-id="${id}" data-n="${esc(n)}" onclick="qpToggle(this);whRefresh()">${cur.has(n)?'✓ ':''}${esc(n)}</button>`).join('')+'</div>'
+    +(sc.slots.length?'<div class="whl">נקודה מדויקת</div><div class="whr">'+sc.slots.map(sl=>`<button type="button" class="qp sl${have.has(sl.id)?' on':''}" onclick="toggleItemSlot('${id}','${esc(sl.id)}');whRefresh()">${have.has(sl.id)?'✓ ':''}${esc(sl.name)}</button>`).join('')+'</div>':'')
+    +'</div>').join('')+'<small class="whn">אפשר לבחור כמה. השיוך נשמר לכולם ומתעדכן במסמכים.</small>';
+}
+function qlHTML(it){ const n=qlNames(it).length;
+  return '<h4><span>📍 איפה זה הולך?'+(n?' <b>'+n+'</b>':'')+'</span><button type="button" class="x" onclick="closeQlPop()" aria-label="סגירה">×</button></h4>'+whHTML(it); }
+function whRefresh(){ const it=_qlId&&byId[_qlId]; if(it){ const p=document.getElementById('qlPop'); if(p){ const st=p.scrollTop; p.innerHTML=qlHTML(it); p.scrollTop=st; } paintQloc(els.get(it.id),it); }
+  if(typeof _itemOpen!=='undefined'&&_itemOpen){ renderSlotBox(); paintQloc(els.get(_itemOpen),byId[_itemOpen]); } }
+renderSlotBox=function(){ const old=document.getElementById('slotBox'); if(old) old.remove();
+  const id=_itemOpen, it=id&&byId[id]; if(!it||it.type!=='product') return;
+  const box=document.createElement('div'); box.className='whBox'; box.id='slotBox'; box.innerHTML=whHTML(it);
+  const bd=document.getElementById('itemDlgB'); if(!bd) return;
+  const oldSec=bd.querySelector('.isec[data-k="slot"]'); if(oldSec) oldSec.remove();
+  const secs=bd.querySelector('.isecs'); if(!secs){ bd.appendChild(box); return; }
+  const sec=isecShell(id,'slot','📍','איפה זה הולך',qlNames(it).join(' · ')||'לא נבחר'); sec.querySelector('.isb').appendChild(box);
+  const last=secs.lastElementChild; if(last&&last.dataset.k==='more') secs.insertBefore(sec,last); else secs.appendChild(sec); };
+function qlRefresh(){ whRefresh(); }
 function openQlPop(btn,id){ const it=byId[id]; if(!it) return; const was=_qlId; closeQlPop(); if(was===id) return; _qlId=id;
   const p=document.createElement('div'); p.id='qlPop'; p.className='qlPop'; p.innerHTML=qlHTML(it); document.body.appendChild(p);
   const r=btn.getBoundingClientRect(), pw=p.offsetWidth, ph=p.offsetHeight; let top=r.bottom+6, left=r.left; if(left+pw>innerWidth-8) left=innerWidth-pw-8; if(left<8) left=8; if(top+ph>innerHeight-8) top=Math.max(8,r.top-ph-6);
