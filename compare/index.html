@@ -60,8 +60,8 @@ const ICO=[[/שינה/,'🛏'],[/ארונות/,'👗'],[/רחצה|מקלחת|א�
 const ico=n=>{for(const [r,e] of ICO)if(r.test(n))return e;return '📍';};
 const Q=new URLSearchParams(location.search);
 let opt={tab:true,rule:true,sort:'p'},ME={},CAT={},removed=new Set(),EXP=null;
-function tog(k){if(k==='sort')opt.sort=opt.sort==='p'?'s':'p';else opt[k]=!opt[k];
- document.getElementById('bTab').classList.toggle('on',opt.tab);document.getElementById('bRule').classList.toggle('on',opt.rule);document.getElementById('bSort').textContent='↕ מיון: '+(opt.sort==='p'?'מחיר':'סימנתי קודם');render();}
+function tog(k){if(k==='sort')opt.sort=({o:'p',p:'s',s:'o'})[opt.sort]||'p';else opt[k]=!opt[k];
+ document.getElementById('bTab').classList.toggle('on',opt.tab);document.getElementById('bRule').classList.toggle('on',opt.rule);document.getElementById('bSort').textContent='↕ מיון: '+({p:'מחיר',s:'סימנתי קודם',o:'כמו שנבחר'}[opt.sort]);render();}
 function cp(){const u=location.href;(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>alert('הקישור הועתק'),()=>prompt('העתיקי:',u));}
 function rm(id){removed.add(id);render();}
 function eff(x){const o=CAT[x.id];let sl=x.sl||[];if(o&&typeof o.slotOv==='string')sl=o.slotOv.split(',').filter(Boolean);return sl;}
@@ -110,6 +110,7 @@ function ruler(its){const ps=its.map(x=>x.p).filter(p=>p>0);if(its.length<2||!ps
 function table(its){return '<div class="tw"><table><thead><tr><th>#</th><th></th><th>מוצר</th><th>חנות</th><th>מחיר</th><th>מידות / נתונים</th><th></th></tr></thead><tbody>'
  +its.map((x,i)=>'<tr><td class="num">'+(i+1)+'</td><td>'+(x.img?'<img src="'+esc(imgsrc(x.img))+'" alt="" loading="lazy">':'')+'</td><td><a href="#x-'+esc(x.id)+'">'+esc(x.n)+'</a></td><td>'+esc(x.st||'')+'</td><td class="pp">'+esc(nis(x.p)||'—')+'</td><td>'+esc(x.dm||'')+'</td><td><a href="'+esc(x.l||'#')+'" target="_blank" rel="noopener">🔗</a></td></tr>').join('')+'</tbody></table></div>';}
 function render(){
+ if(EXP&&!opt.i){opt.i=1;opt.sort='o';document.getElementById('bSort').textContent='↕ מיון: כמו שנבחר';}
  const items=pick(),out=document.getElementById('out');
  const t=EXP?EXP.t:Q.get('t');if(t)document.getElementById('ht').textContent=t;
  else if(Q.get('c')&&CT[Q.get('c')])document.getElementById('ht').textContent='השוואה — '+CT[Q.get('c')].l;
@@ -119,7 +120,7 @@ function render(){
  document.getElementById('hp').textContent=new Date().toLocaleDateString('he-IL')+' · לחיצה על תמונה או על "לדף המוצר" פותחת את החנות';
  document.getElementById('kpis').innerHTML=[[items.length,'מוצרים'],[G.length,EXP?'סקשנים':'מיקומים'],[stores.size,'חנויות'],[ps.length?nis(Math.min(...ps))+'–'+nis(Math.max(...ps)):'—','טווח מחירים']].map(([b,s])=>'<div class="kpi"><b>'+esc(b)+'</b><span>'+s+'</span></div>').join('');
  document.getElementById('nav').innerHTML=G.map((g,i)=>'<a href="#g'+i+'"><i>'+gic(g.n)+'</i>'+esc(g.n)+' <small>'+g.items.length+'</small></a>').join('');
- out.innerHTML=G.map((g,gi)=>{const its=g.items.slice().sort((a,b)=>{if(opt.sort==='s'){const sa=(ME[a.id]&&(ME[a.id].s==='yes'||ME[a.id].h>0))?0:1,sb=(ME[b.id]&&(ME[b.id].s==='yes'||ME[b.id].h>0))?0:1;if(sa!==sb)return sa-sb;}return (a.p==null)-(b.p==null)||a.p-b.p;});
+ out.innerHTML=G.map((g,gi)=>{const its=g.items.slice().sort((a,b)=>{if(opt.sort==='o')return 0;if(opt.sort==='s'){const sa=(ME[a.id]&&(ME[a.id].s==='yes'||ME[a.id].h>0))?0:1,sb=(ME[b.id]&&(ME[b.id].s==='yes'||ME[b.id].h>0))?0:1;if(sa!==sb)return sa-sb;}return (a.p==null)-(b.p==null)||a.p-b.p;});
     return '<section class="loc" id="g'+gi+'" style="--c:'+COL[gi%COL.length]+'"><div class="lh"><span class="ic">'+gic(g.n)+'</span><div><div class="fl">'+esc(g.f||'')+'</div><h2>'+esc(g.n)+'</h2></div><div class="cnt"><b>'+its.length+'</b>אפשרויות'+(g.q?'<br>צריך: '+esc(g.q):'')+'</div></div><div class="lb">'
   +(opt.rule?ruler(its):'')+'<div class="grid">'+its.map((x,i)=>card(x,i,ME[x.id])).join('')+'</div>'+(opt.tab?table(its):'')+'</div></section>';}).join('');
 }

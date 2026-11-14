@@ -1061,6 +1061,17 @@ body.fsOpen{overflow:hidden}
 .cmpb,.priceRow .cmpb{position:static;bottom:auto;inset-inline-start:auto;width:auto;height:auto;border-radius:99px;padding:3px 10px;margin-inline-start:auto;font-size:12px;font-weight:700;line-height:1.4;color:var(--ink-soft);opacity:1;display:inline-flex;gap:4px;white-space:nowrap}
 .card.in-cmp .cmpb{background:#4a6fa5;border-color:#4a6fa5;color:#fff}
 body:has(.cmpBar:not([hidden])) .qfabs{inset-block-end:calc(92px + env(safe-area-inset-bottom,0px))}
+
+/* ===== three round buttons on each card (left): mark to buy / remove (restorable) / delete ===== */
+.cbtns{position:absolute;top:10px;inset-inline-end:10px;z-index:5;display:flex;flex-direction:column;gap:7px}
+.cb{width:36px;height:36px;border-radius:50%;border:2px solid var(--line-2,#d9ccb5);background:rgba(255,255,255,.96);font:inherit;font-size:17px;font-weight:800;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);padding:0;box-shadow:0 2px 8px rgba(0,0,0,.14);transition:.15s}
+.cb:hover{transform:scale(1.08)}
+.cb.sel:hover{border-color:#4c8a53;color:#4c8a53}.cb.sel.on{background:#4c8a53;border-color:#4c8a53;color:#fff}
+.cb.rej:hover{border-color:#b35a4a;color:#b35a4a}.cb.rej.on{background:#b35a4a;border-color:#b35a4a;color:#fff}
+.cb.del{font-size:15px}.cb.del:hover{border-color:#9a2f2f;background:#fbeaea}
+.card.is-ordered .cbtns,.card.detail .cbtns{display:none}
+.cmpb,.cmpBar{display:none!important}
+body:has(.cmpBar:not([hidden])) .qfabs{inset-block-end:calc(14px + env(safe-area-inset-bottom,0px))}
 </style>
 </head>
 <body>
@@ -1074,9 +1085,7 @@ body:has(.cmpBar:not([hidden])) .qfabs{inset-block-end:calc(92px + env(safe-area
       <details class="more hmore"><summary title="עוד">⋯</summary><div class="moreBox">
         <a href="#" onclick="openHome();return false">🏠 הבית</a>
         <a href="planner/">🛒 מתכנן קנייה חכם</a>
-        <button type="button" onclick="cmpOpenCat(false)" title="כל האפשרויות בקטגוריה הנבחרת, לפי מיקום בבית, עם תמונות ולינקים">⚖ מסמך השוואה — כל הקטגוריה</button>
-        <button type="button" onclick="openExport()" title="עמוד סיכום התלבטויות לשליחה למעצבת / לבעלי">📄 עמוד סיכום התלבטויות</button>
-        <button type="button" onclick="cmpOpenCat(true)" title="רק מה שסימנת ❤ / אולי בקטגוריה הנבחרת">⚖ מסמך השוואה — מה שסימנתי</button>
+        <button type="button" onclick="openExport()" title="כל מה שמוצג עכשיו בעמוד אחד, בחלוקה וממוין כרצונך">📄 עמוד השוואה / סיכום</button>
         <button type="button" id="shareListBtn" onclick="shareList()" title="עמוד מינימלי לשיתוף של הרשימה המסוננת">📄 עמוד לשיתוף</button>
         <button class="vbtn" data-v="hidden" onclick="setView('hidden')">🙈 הוסתרו<span class="c" id="hiddenCount" style="display:none"></span></button>
         <button type="button" onclick="resetAll()">↺ איפוס סינונים</button>
@@ -1508,7 +1517,6 @@ function refreshSelBar(){ const bar=document.getElementById('itemDlgBar'); if(!b
   if(stt==='ordered') h+=`<button type="button" class="ord" onclick="toggleOrdered('${id}')">✎ עריכת הזמנה / ביטול</button>`;
   else if(stt==='chosen') h+=`<button type="button" class="ord" onclick="toggleOrdered('${id}')">📦 סימון כהוזמן</button><button type="button" class="${dn}" onclick="selToggle('${id}')">ביטול בחירה</button>`;
   else h+=`<button type="button" class="go${dn}" onclick="selToggle('${id}')">✓ סימון כנבחר להזמנה</button><button type="button" onclick="toggleOrdered('${id}')">📦 כבר הוזמן</button>`;
-  h+=`<button type="button" onclick="cmpToggle('${id}');refreshSelBar()">${cmp.has(id)?'⚖ הסר ממסמך ההשוואה':'⚖ הוסף למסמך השוואה'}</button>`;
   bar.innerHTML=h; bar.hidden=false; }
 function decMetaText(it,stt){
   const ms=marksFor(it.id), by=k=>ms.filter(m=>m.status===k).map(m=>m.name);
@@ -2511,7 +2519,7 @@ function closeItem(){ _itemOpen=null; closeLB(); closeZoom(); const d=document.g
 function renderItemDlg(){ const id=_itemOpen, c=els.get(id), it=byId[id]; if(!c||!it) return; const d=document.getElementById('itemDlg'), b=document.getElementById('itemDlgB');
   const y=d.scrollTop, cl=c.cloneNode(true); cl.classList.add('detail'); cl.classList.remove('hidden');
   cl.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
-  cl.querySelectorAll('.openBtn,.moreBtn,.descToggle,.editb').forEach(e=>e.remove());
+  cl.querySelectorAll('.openBtn,.moreBtn,.descToggle,.editb,.cbtns').forEach(e=>e.remove());
   const m=cl.querySelector('div.more'); if(m) m.hidden=false; cl.querySelectorAll('.desc.hid').forEach(e=>e.classList.remove('hid'));
   cl.querySelectorAll('.thumb').forEach(t=>t.setAttribute('onclick',"zoomImg(byId['"+id+"'].imgs&&byId['"+id+"'].imgs.length?byId['"+id+"'].imgs:[byId['"+id+"'].img],_igIdx)"));
   { const imgs=(it.imgs&&it.imgs.length>1)?it.imgs:null, th=cl.querySelector('.thumb');
@@ -2869,12 +2877,14 @@ function cardEl(it){
         ${moreInner}
       </div>
     </div>`;
-  { const cb=c.querySelector('.cmpb'); if(cb){ cb.title='הוספה למסמך השוואה — כמה מוצרים זה לצד זה, עם תמונות ולינקים'; const pr=c.querySelector('.priceRow'); if(pr) pr.appendChild(cb); else{ const bd=c.querySelector('.body'); if(bd) bd.appendChild(cb); } } }
+  c.querySelectorAll('.cmpb').forEach(e=>e.remove());
+  if(it.type==='product'){ c.querySelectorAll('.selb,.editb').forEach(e=>e.remove()); const cbs=document.createElement('div'); cbs.className='cbtns';
+    cbs.innerHTML=`<button type="button" class="cb sel" onclick="event.stopPropagation();selToggle('${it.id}')">✓</button><button type="button" class="cb rej" onclick="event.stopPropagation();cbReject('${it.id}')">✕</button><button type="button" class="cb del" title="מחיקה לצמיתות (אפשר לבטל מיד אחרי)" aria-label="מחיקה לצמיתות" onclick="event.stopPropagation();deleteItem('${it.id}')">🗑</button>`; c.appendChild(cbs); }
   els.set(it.id,c); grid.appendChild(c); paint(it.id,c); return c;
 }
 document.addEventListener('click',e=>{
   const c=e.target.closest&&e.target.closest('.grid>.card'); if(!c||c.classList.contains('detail')) return;
-  if(e.target.closest('.editb,.selb,.cmpb,.newTag,.qpBar,.docBtn,select,textarea,input,.stars')) return;
+  if(e.target.closest('.editb,.selb,.cmpb,.cbtns,.newTag,.qpBar,.docBtn,select,textarea,input,.stars')) return;
   if(!c.dataset.id||!byId[c.dataset.id]) return;
   e.preventDefault(); e.stopPropagation(); openItem(c.dataset.id);
 },true);
@@ -2893,7 +2903,9 @@ function paint(id,c){
     if(it.oos&&th&&!ob){ ob=document.createElement('div'); ob.className='oosb'; ob.textContent='אזל מהמלאי'; th.appendChild(ob); } else if(!it.oos&&ob){ ob.remove(); ob=null; }
     if(ob&&it.oosChecked) ob.title='נבדק אוטומטית מול החנות: '+new Date(it.oosChecked).toLocaleString('he-IL');
     c.classList.toggle('is-oos',!!it.oos); }
-  { const cb=c.querySelector('.cmpb'); if(cb) cb.textContent=cmp.has(id)?'✓ בהשוואה':'⚖ השוואה'; }
+  { const stt2=it.type==='product'?itemStatus(it):'', sl=c.querySelector('.cb.sel'), rj=c.querySelector('.cb.rej');
+    if(sl){ sl.classList.toggle('on',stt2==='chosen'); sl.title=stt2==='chosen'?'בטלי סימון לקנייה':'סמני לקנייה'; sl.setAttribute('aria-pressed',stt2==='chosen'?'true':'false'); }
+    if(rj){ rj.classList.toggle('on',stt2==='rejected'); rj.textContent=stt2==='rejected'?'↩':'✕'; rj.title=stt2==='rejected'?'החזירי ללוח':'הסירי מהבחירה (אפשר להחזיר בכל עת)'; } }
   const od=c.querySelector('.orderb .od'); if(od)od.textContent=it.orderedAt?new Date(it.orderedAt).toLocaleDateString('he-IL'):'';
   const mo=c.querySelector('.markOrd'); if(mo)mo.style.display=it.ordered?'none':'';
   const hb=c.querySelector('.hideb');
@@ -3684,7 +3696,7 @@ function afRender(){
   const vc=(typeof viewCounts==='function')?viewCounts():{};
   const quick=[['wavering','🤔 בהתלבטות'],['toorder','🛒 נותר להזמין'],['ordered','📦 הוזמנו']].map(([v,l])=>'<button type="button" class="afq'+(viewMode===v?' on':'')+'" data-v="'+v+'">'+l+(vc[v]?' <b>'+vc[v]+'</b>':'')+'</button>').join('');
   const gch=groupBy?'<button type="button" class="afc afg" data-i="g">🗂 לפי '+GRP_LAB[groupBy]+' <span class="afx">✕</span></button>':'';
-  el.innerHTML='<span class="afN"><b>'+n+'</b> פריטים</span>'+quick+gch+L.map((x,i)=>'<button type="button" class="afc" data-i="'+i+'">'+esc(x.l)+' <span class="afx">✕</span></button>').join('')+(L.length>1?'<button type="button" class="afc afclr" data-i="all">נקה הכל</button>':'')+'<button type="button" class="afexp" title="עמוד סיכום התלבטויות לשליחה">📄 סיכום</button>';
+  el.innerHTML='<span class="afN"><b>'+n+'</b> פריטים</span>'+quick+gch+L.map((x,i)=>'<button type="button" class="afc" data-i="'+i+'">'+esc(x.l)+' <span class="afx">✕</span></button>').join('')+(L.length>1?'<button type="button" class="afc afclr" data-i="all">נקה הכל</button>':'')+'<button type="button" class="afexp" title="כל מה שמוצג עכשיו בעמוד אחד, בחלוקה וממוין כרצונך — לצפייה, הדפסה או שליחה">📄 עמוד השוואה</button>';
   const fc=document.getElementById('fsCount'); if(fc) fc.textContent=n;
   updateFilterBadge();
 }
@@ -3731,8 +3743,22 @@ function applyGroups(){
     grid.insertBefore(h,first); if(col) r.ids.forEach(id=>{ const c=els.get(id); if(c) c.classList.add('grp-collapsed'); }); });
 }
 /* ----- export: pick sections, create a shareable summary page ----- */
-let _exp={mode:'place',marked:false,groups:[],sel:new Set(),title:''};
-function expItems(){ let a=visible(); if(_exp.marked) a=a.filter(it=>{ const x=S(it.id)||{}; return x.status==='yes'||x.status==='maybe'||(x.h||0)>0; }); return a; }
+let _exp={mode:'place',marked:false,scope:'shown',sort:'board',groups:[],sel:new Set(),title:''};
+function expItems(){
+  let a;
+  if(_exp.scope==='shown') a=visible();
+  else { const vm=viewMode; viewMode='all'; a=visible(); viewMode=vm;
+    if(_exp.scope==='toorder') a=a.filter(it=>itemStatus(it)==='chosen');
+    else if(_exp.scope==='wavering') a=a.filter(_isWavering);
+    else if(_exp.scope==='both') a=a.filter(it=>itemStatus(it)==='chosen'||_isWavering(it)); }
+  if(_exp.marked) a=a.filter(it=>{ const x=S(it.id)||{}; return x.status==='yes'||x.status==='maybe'||(x.h||0)>0; });
+  const so=_exp.sort;
+  if(so==='price') a=a.slice().sort((x,y)=>(x.price==null)-(y.price==null)||x.price-y.price);
+  else if(so==='store') a=a.slice().sort((x,y)=>String(guessStore(x)).localeCompare(String(guessStore(y)),'he'));
+  else if(so==='score') a=a.slice().sort((x,y)=>(scoreVal(y)==null?-1:scoreVal(y))-(scoreVal(x)==null?-1:scoreVal(x)));
+  else if(so==='name') a=a.slice().sort((x,y)=>String(x.name).localeCompare(String(y.name),'he'));
+  return a;
+}
 function expGroupsFor(mode,items){
   if(mode==='none') return items.length?[{k:'כל הפריטים',o:0,items:items.slice()}]:[];
   const m=new Map(), add=(g,it)=>{ if(!m.has(g.k)) m.set(g.k,{k:g.k,o:g.o,items:[]}); m.get(g.k).items.push(it); };
@@ -3743,17 +3769,19 @@ function expDefaultTitle(){ const cs=[...selCats].map(k=>(CATS.find(c=>c.key===k
 function openExport(preKey){
   let d=document.getElementById('expDlg');
   if(!d){ d=document.createElement('dialog'); d.id='expDlg'; d.className='expdlg'; document.body.appendChild(d); d.addEventListener('click',e=>{ if(e.target===d) d.close(); }); }
-  _exp.mode=(groupBy||'place'); _exp.marked=false; _exp.title=expDefaultTitle(); _exp.pre=preKey||null; expRefresh(true); if(!d.open) d.showModal();
+  _exp.mode=(groupBy||'place'); _exp.marked=false; _exp.scope='shown'; _exp.sort='board'; _exp.title=expDefaultTitle(); _exp.pre=preKey||null; expRefresh(true); if(!d.open) d.showModal();
 }
 function expRefresh(reset){
   const d=document.getElementById('expDlg'); const items=expItems(); _exp.groups=expGroupsFor(_exp.mode,items);
   if(reset||_exp.pre){ _exp.sel=new Set(_exp.pre?[_exp.pre]:_exp.groups.map(g=>g.k)); if(_exp.pre&&!_exp.groups.some(g=>g.k===_exp.pre)) _exp.sel=new Set(_exp.groups.map(g=>g.k)); _exp.pre=null; }
   else _exp.sel=new Set([..._exp.sel].filter(k=>_exp.groups.some(g=>g.k===k)));
   const n=_exp.groups.filter(g=>_exp.sel.has(g.k)).reduce((t,g)=>t+g.items.length,0);
-  d.innerHTML='<div class="exh"><b>📄 עמוד סיכום התלבטויות</b><button type="button" class="exx" onclick="document.getElementById(\'expDlg\').close()" aria-label="סגירה">✕</button></div>'
-   +'<div class="exb"><p class="exn">אפשר לשלוח את העמוד למעצבת או לבעלי: תמונות, מחירים, חנויות והערות, מחולק לסקשנים לפי הבחירה שלך. הפריטים הם מה שמוצג עכשיו לפי הסינון.</p>'
+  d.innerHTML='<div class="exh"><b>📄 עמוד השוואה / סיכום</b><button type="button" class="exx" onclick="document.getElementById(\'expDlg\').close()" aria-label="סגירה">✕</button></div>'
+   +'<div class="exb"><p class="exn">כל מה שבחרת יוצא בעמוד אחד: תמונות, מחירים, חנויות והערות, בסקשנים ובמיון שבחרת. אפשר לצפות, להדפיס ל־PDF או לשלוח את הקישור למעצבת ולבעלי.</p>'
    +'<label class="exl">כותרת<input id="expTitle" value="'+esc(_exp.title)+'" oninput="_exp.title=this.value"></label>'
    +'<div class="exl">חלוקה לסקשנים<div class="chips">'+['place','sub','store','score','none'].map(m=>'<button type="button" class="chip'+(_exp.mode===m?' on':'')+'" onclick="expMode(\''+m+'\')">'+(m==='place'?'מיקום בבית':GRP_LAB[m])+'</button>').join('')+'</div></div>'
+   +'<div class="exl">מה לכלול<div class="chips">'+[['shown','מה שמוצג עכשיו'],['toorder','🛒 נותר להזמין'],['wavering','🤔 בהתלבטות'],['both','שניהם']].map(([v,l])=>'<button type="button" class="chip'+(_exp.scope===v?' on':'')+'" onclick="_exp.scope=\''+v+'\';expRefresh(true)">'+l+'</button>').join('')+'</div></div>'
+   +'<div class="exl">מיון בתוך כל סקשן<div class="chips">'+[['board','כמו בלוח'],['price','מחיר'],['store','חנות'],['score','ציון'],['name','שם']].map(([v,l])=>'<button type="button" class="chip'+(_exp.sort===v?' on':'')+'" onclick="_exp.sort=\''+v+'\';expRefresh()">'+l+'</button>').join('')+'</div></div>'
    +'<label class="exck"><input type="checkbox" '+(_exp.marked?'checked':'')+' onchange="_exp.marked=this.checked;expRefresh()"> רק מה שסימנתי (❤ / אולי / כוכבים)</label>'
    +'<div class="exsh"><b>סקשנים לכלול</b><span><button type="button" onclick="expAll(true)">הכל</button><button type="button" onclick="expAll(false)">נקי</button></span></div>'
    +'<div class="exsecs">'+(_exp.groups.length?_exp.groups.map((g,i)=>'<label class="exs"><input type="checkbox" data-i="'+i+'" '+(_exp.sel.has(g.k)?'checked':'')+' onchange="expTog('+i+',this.checked)"><span>'+esc(g.k)+'</span><small>'+g.items.length+'</small></label>').join(''):'<p class="exn">אין פריטים להצגה עם הסינון הנוכחי.</p>')+'</div></div>'
@@ -3776,6 +3804,9 @@ function expCreate(copy){ return (async()=>{
 function _isWavering(i){ if(i.hidden||i.type==='color') return false; if(itemStatus(i)!=='discuss') return false; const x=S(i.id)||{}; return x.status!=='no'; }
 { const _pv=passView; passView=function(i){ return viewMode==='wavering'?_isWavering(i):_pv(i); };
   const _vc=viewCounts; viewCounts=function(){ const c=_vc(); c.wavering=ITEMS.filter(i=>inCats(i)&&_isWavering(i)).length; return c; }; }
+function cbReject(id){ const it=byId[id]; if(!it) return; const was=it.decision||null; decReject(id);
+  const now=byId[id]&&byId[id].decision||null; if(now===was) return;
+  undoToast(now==='rejected'?'הוסר מהבחירה (אפשר להחזיר בכל עת)':'הוחזר ללוח',()=>setDecision(id,was)); }
 rebuild(); applyHash(); tabsHTML(); buildChips(); RE(true); if(selCats.size) syncHash(); cmpBarPaint();
 { const _q=new URLSearchParams(location.search), _as=(_q.get('as')||'').trim(); if(!me&&_as){ me={pk:pkFromName(_as),name:_as}; localStorage.setItem('ida-me',JSON.stringify(me)); } }
 if(me){ me.pk=pkFromName(me.name); localStorage.setItem('ida-me',JSON.stringify(me)); fbPushName(); startSync(); } else openMe();
