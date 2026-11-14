@@ -482,6 +482,9 @@ for _o in json.load(open(os.path.join(REPO,"bricks.json"),encoding="utf-8")):
     DATA.append({"id":_o["id"],"cat":"חיפוי קיר לבנים","type":"product","name":_o["name"],"price":_o["price"],"link":_o["link"],
                  "img":"img/"+_o["img"],"imgs":["img/"+x for x in _o["imgs"]],"tags":_o["tags"],"desc":_o["desc"],"dims":_o["dims"],"loc":"קיר לבנים · חיפוי"})
 
+for _o in json.load(open(os.path.join(REPO,"fireplace.json"),encoding="utf-8")):
+    DATA.append(_o)
+
 # --- kitchen recycling bins (separate from the main bin), researched 30.10.2026 ---
 for _o in json.load(open(os.path.join(REPO,"recycling.json"),encoding="utf-8")):
     DATA.append({"id":_o["id"],"cat":"מחזור במטבח","sub":_o["sub"],"type":"product","name":_o["name"],"price":_o["price"],"link":_o["link"],
@@ -1422,6 +1425,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"ארגוניות למגירות","label":"ארגוניות למגירות — חדר רחצה הורים","icon":"🗄️","slug":"drawer-organizers","subs":["מגירות נמוכות — ארגוניות רדודות (גובה פנימי 8.5)","מגירות גבוהות — סלסלות (עד 29.5)"]},
       {"key":"מחזור במטבח","label":"מחזור במטבח (נפרד מהפח הראשי)","icon":"♻️","slug":"kitchen-recycling","subs":["מתחת לכיור","מחוץ לדלת (דקורטיבי)"]},
       {"key":"חיפוי קיר לבנים","label":"חיפוי קיר לבנים (קרן סטון)","icon":"🧱","slug":"brick-cladding","group":"סלון ומשפחה"},
+      {"key":"קמין","label":"קמין","icon":"🔥","slug":"fireplace","group":"סלון ומשפחה"},
       {"key":"סל כביסה","label":"סל כביסה למסתור","icon":"🧺","slug":"laundry-hamper"},
       {"key":"מזנון לטלוויזיה","label":"מזנון לטלוויזיה","icon":"📺","slug":"tv-console","group":"סלון ומשפחה","subs":["עומד על רגליים", "תלוי על הקיר"]},
       {"key":"אינטרקום וידאו","label":"אינטרקום וידאו לכניסות","icon":"📹","slug":"video-intercom","group":"בית חכם"},
