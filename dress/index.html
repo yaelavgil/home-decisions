@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>תוכנית הלבשה — אשל 57</title>
+<meta name="description" content="מלבישים את הבית לאט לאט: רהיטים בקנה מידה על תוכנית ההעמדה">
+<link rel="icon" href="../favicon.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#f7f5f1;--panel:#fff;--ink:#2a2724;--soft:#7a7269;--line:#e3ddd3;--brass:#a9793f;--brass-soft:#f1e4cb;--accent:#2f6f5e;--warn:#b8863a;--bad:#b15b4c;--plan-filter:none}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1917;--panel:#26231f;--ink:#efeae2;--soft:#a39b90;--line:#38342e;--brass:#d9a85e;--brass-soft:#3a2f1f;--accent:#6fb8a3;--warn:#ddb067;--bad:#d68c7c;--plan-filter:invert(1) hue-rotate(180deg)}}
+:root[data-theme="dark"]{--bg:#1b1917;--panel:#26231f;--ink:#efeae2;--soft:#a39b90;--line:#38342e;--brass:#d9a85e;--brass-soft:#3a2f1f;--accent:#6fb8a3;--warn:#ddb067;--bad:#d68c7c;--plan-filter:invert(1) hue-rotate(180deg)}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 'Heebo',system-ui,sans-serif;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+header h1{font-size:18px;font-weight:700;margin:0;flex:1 1 auto;min-width:0}
+header a,button{font:inherit}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:6px 13px;cursor:pointer;text-decoration:none;font-size:14px;white-space:nowrap}
+.btn:hover{border-color:var(--brass)}
+.btn.pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 330px}
+@media(max-width:820px){main{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}}
+#stage{position:relative;overflow:hidden;min-height:0;background:var(--bg);touch-action:none}
+svg{width:100%;height:100%;display:block;touch-action:none;user-select:none}
+#plan{filter:var(--plan-filter)}
+.it rect{stroke-width:1.5;cursor:grab}
+.it.sel rect{stroke:var(--accent)!important;stroke-width:3}
+.it text{pointer-events:none;font-size:12px;font-weight:500;paint-order:stroke;stroke:#fff9;stroke-width:3px}
+.tools{position:absolute;inset-inline-start:10px;top:10px;display:flex;flex-direction:column;gap:6px}
+.tools .btn{width:36px;height:36px;padding:0;display:grid;place-items:center;font-size:18px}
+.hint{position:absolute;inset-inline-end:10px;bottom:8px;font-size:12px;color:var(--soft);background:var(--panel);border:1px solid var(--line);padding:3px 9px;border-radius:999px;opacity:.92}
+aside{border-inline-start:1px solid var(--line);background:var(--panel);overflow:auto;padding:14px 16px;display:flex;flex-direction:column;gap:14px;min-height:0}
+@media(max-width:820px){aside{border-inline-start:0;border-top:1px solid var(--line);max-height:46vh}}
+aside h2{font-size:13px;margin:0 0 6px;color:var(--soft);font-weight:500;letter-spacing:.03em}
+.list{display:flex;flex-direction:column;gap:4px}
+.row{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;cursor:pointer;min-width:0}
+.row.sel{border-color:var(--accent);background:var(--brass-soft)}
+.row i{width:14px;height:14px;border-radius:4px;flex:none;border:1px solid #0003}
+.row b{font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.row span{color:var(--soft);font-size:12px;white-space:nowrap}
+form{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+form label{display:flex;flex-direction:column;font-size:12px;color:var(--soft);gap:2px;min-width:0}
+form label.wide{grid-column:1/-1}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-width:0;width:100%}
+input[type=color]{padding:2px;height:34px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips .btn{font-size:13px;padding:4px 10px}
+.note{font-size:12.5px;color:var(--soft);background:var(--brass-soft);border-radius:10px;padding:8px 10px}
+.note b{color:var(--ink)}
+.warn{color:var(--warn)}
+.sel-actions{display:flex;gap:6px;flex-wrap:wrap}
+.sync{font-size:11px;color:var(--soft);text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <h1>🛋️ תוכנית הלבשה · קומת קרקע</h1>
+  <label style="font-size:13px;color:var(--soft);display:flex;align-items:center;gap:6px">התוכנית <input id="op" type="range" min="15" max="100" value="55" style="width:90px"></label>
+  <a class="btn" href="../">⬅ ללוח ההחלטות</a>
+</header>
+<main>
+  <div id="stage">
+    <svg id="svg" viewBox="0 0 1230 2060" preserveAspectRatio="xMidYMid meet">
+      <image id="plan" href="plan.png" x="0" y="0" width="1230" height="2060" opacity=".55"/>
+      <g id="layer"></g>
+    </svg>
+    <div class="tools">
+      <button class="btn" id="zi" title="הגדלה">＋</button>
+      <button class="btn" id="zo" title="הקטנה">－</button>
+      <button class="btn" id="zf" title="חזרה לאזור הסלון">⌂</button>
+    </div>
+    <div class="hint">גרירה = הזזה · גלגלת/צביטה = זום · רקע = גלילה</div>
+  </div>
+  <aside>
+    <section>
+      <h2>רהיטים בתוכנית</h2>
+      <div class="list" id="list"></div>
+    </section>
+    <section id="editor" hidden>
+      <h2>הפריט הנבחר</h2>
+      <form id="ef">
+        <label class="wide">שם<input id="en"></label>
+        <label>רוחב (ס״מ)<input id="ew" type="number" min="1" step="0.5"></label>
+        <label>עומק (ס״מ)<input id="ed" type="number" min="1" step="0.5"></label>
+        <label>סיבוב (°)<input id="er" type="number" step="1"></label>
+        <label>צבע<input id="ec" type="color"></label>
+        <label class="wide">הערה<input id="eno"></label>
+      </form>
+      <div class="sel-actions" style="margin-top:8px">
+        <button class="btn" id="r90">↻ 90°</button>
+        <button class="btn" id="dup">שכפול</button>
+        <button class="btn" id="del" style="color:var(--bad)">מחיקה</button>
+      </div>
+    </section>
+    <section>
+      <h2>הוספת רהיט</h2>
+      <form id="af">
+        <label class="wide">שם<input id="an" placeholder="למשל: ספה, כורסה, שולחן" required></label>
+        <label>רוחב (ס״מ)<input id="aw" type="number" min="1" step="0.5" required></label>
+        <label>עומק (ס״מ)<input id="ad" type="number" min="1" step="0.5" required></label>
+        <button class="btn pri" style="grid-column:1/-1">➕ הוספה למרכז המסך</button>
+      </form>
+      <p class="note" style="margin:8px 0 6px">או מידות לדוגמה להתחלה (<b>לא אמיתיות</b> — עורכים אחרי שיש מוצר):</p>
+      <div class="chips" id="ex"></div>
+    </section>
+    <section>
+      <div class="note">
+        <b>בסיס התוכנית:</b> העמדה 12 של נופר (1:50, 28.1.2026), בקנה מידה לפי המידות המודפסות (105+330 ו־730). הרהיטים בצבע שלי הם שכבה עליה, והרהיטים האפורים הם ההצעה של המעצבת.<br>
+        <span class="warn">⚠️</span> מיקום הקמין ביחס למחיצה נמדד בקנה מידה, לא מודפס. לפני הזמנה — למדוד בשטח.
+      </div>
+    </section>
+    <div class="sync" id="sync"></div>
+  </aside>
+</main>
+<script>
+const K=1.244;                       // px per cm, calibrated on printed 105+330 and 730
+const FB='https://home-picks-47450-default-rtdb.europe-west1.firebasedatabase.app/dress/ground.json';
+const LS='dressGround.v1';
+const COLORS=['#c9a24f','#5e8a63','#4f7395','#b3654a','#8b6b93','#4f8c86','#9c5b7a','#a98536'];
+const FIREPLACE={id:'fireplace',name:'קמין פלט MCZ Decò',w:75,d:55.5,x:528.5/K,y:487.5/K,r:0,c:'#b3654a',
+  note:'מידות מהאתר: 75×55.5×80.5, משקל 200 ק״ג, ארובה Ø10 עליונה/אחורית, 8kW. מיקום לפי המשבצת של המעצבת (נמדד בקנה מידה). עדיין לא נרכש.'};
+const SOFA={id:'panda-sofa',name:'ספת Panda Lounge XL (בז׳)',w:190,d:90,x:278/K,y:91/K,r:0,c:'#c8b48a',
+  note:'הוזמנה 2.11.2026. 190×90×62 סגורה, נפתחת למיטה 190×180 — כשפתוחה צריך עומק 180. מיקום זמני במקום הספה של המעצבת.'};
+let items=[],sel=null,vb={x:0,y:0,w:1230,h:2060},saveT=null;
+
+const $=id=>document.getElementById(id), svg=$('svg'), layer=$('layer');
+const NS='http://www.w3.org/2000/svg';
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function uid(){return 'f'+Math.random().toString(36).slice(2,8)}
+
+function load(){
+  let local=null;try{local=JSON.parse(localStorage.getItem(LS)||'null')}catch(e){}
+  items=(local&&local.items)||[FIREPLACE];
+  render();
+  fetch(FB).then(r=>r.json()).then(d=>{
+    if(d&&d.items&&(!local||(d.updatedAt||0)>(local.updatedAt||0))){items=d.items;render();persistLocal(d.updatedAt)}
+    else if(!d){save()}
+    $('sync').textContent='שמור גם בענן — רועי רואה את אותה תוכנית';
+  }).catch(()=>{$('sync').textContent='נשמר רק במכשיר הזה (אין חיבור לענן)'});
+}
+function persistLocal(t){try{localStorage.setItem(LS,JSON.stringify({items,updatedAt:t||Date.now()}))}catch(e){}}
+function save(){
+  const t=Date.now();persistLocal(t);
+  clearTimeout(saveT);saveT=setTimeout(()=>{
+    fetch(FB,{method:'PUT',body:JSON.stringify({items,updatedAt:t})}).then(()=>{$('sync').textContent='נשמר ✓ בענן'}).catch(()=>{$('sync').textContent='נשמר רק במכשיר הזה'});
+  },700);
+}
+
+function render(){
+  layer.innerHTML='';
+  items.forEach(it=>{
+    const g=document.createElementNS(NS,'g');g.setAttribute('class','it'+(it.id===sel?' sel':''));g.dataset.id=it.id;
+    const w=it.w*K,d=it.d*K,cx=it.x*K,cy=it.y*K;
+    g.setAttribute('transform',`translate(${cx} ${cy}) rotate(${it.r||0})`);
+    const r=document.createElementNS(NS,'rect');
+    r.setAttribute('x',-w/2);r.setAttribute('y',-d/2);r.setAttribute('width',w);r.setAttribute('height',d);r.setAttribute('rx',3);
+    r.setAttribute('fill',it.c);r.setAttribute('fill-opacity','.72');r.setAttribute('stroke',it.c);
+    g.appendChild(r);
+    const t=document.createElementNS(NS,'text');t.setAttribute('text-anchor','middle');
+    const small=w<110&&d<110;
+    t.setAttribute('y',small?4:-2);t.setAttribute('transform',`rotate(${-(it.r||0)%360})`);
+    t.innerHTML=small?`<tspan x="0">${esc(it.name.split(' ')[0])}</tspan>`:`<tspan x="0">${esc(it.name)}</tspan><tspan x="0" dy="14" style="font-weight:400">\u200E${fmt(it.w)}×${fmt(it.d)}\u200E</tspan>`;
+    g.appendChild(t);layer.appendChild(g);
+  });
+  const L=$('list');L.innerHTML='';
+  items.forEach(it=>{
+    const r=document.createElement('div');r.className='row'+(it.id===sel?' sel':'');
+    r.innerHTML=`<i style="background:${it.c}"></i><b>${esc(it.name)}</b><span dir="ltr">${fmt(it.w)}×${fmt(it.d)}</span>`;
+    r.onclick=()=>{sel=it.id;render();focusItem(it)};L.appendChild(r);
+  });
+  const it=items.find(x=>x.id===sel);$('editor').hidden=!it;
+  if(it){$('en').value=it.name;$('ew').value=it.w;$('ed').value=it.d;$('er').value=Math.round(it.r||0);$('ec').value=it.c;$('eno').value=it.note||''}
+}
+const fmt=n=>Number.isInteger(+n)?n:(+n).toFixed(1);
+
+/* viewport */
+function setVB(){svg.setAttribute('viewBox',`${vb.x} ${vb.y} ${vb.w} ${vb.h}`)}
+function living(){ // fit the open living/dining area
+  const r=svg.getBoundingClientRect(),asp=r.width/Math.max(r.height,1);
+  let w=1040,h=w/asp; if(h<900){h=900;w=h*asp}
+  vb={x:30,y:20,w,h};setVB();
+}
+function zoom(f,cx,cy){
+  const r=svg.getBoundingClientRect();
+  const px=cx==null?.5:(cx-r.left)/r.width,py=cy==null?.5:(cy-r.top)/r.height;
+  const nw=Math.min(2600,Math.max(250,vb.w*f)),nh=vb.h*(nw/vb.w);
+  vb={x:vb.x+(vb.w-nw)*px,y:vb.y+(vb.h-nh)*py,w:nw,h:nh};setVB();
+}
+function focusItem(it){const cx=it.x*K,cy=it.y*K;vb.x=cx-vb.w/2;vb.y=cy-vb.h/2;setVB()}
+function toSvg(e){const r=svg.getBoundingClientRect();return{x:vb.x+(e.clientX-r.left)/r.width*vb.w,y:vb.y+(e.clientY-r.top)/r.height*vb.h}}
+
+/* interaction */
+let drag=null,pan=null,pts=new Map(),pinch=null;
+svg.addEventListener('pointerdown',e=>{
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pts.size===2){const [a,b]=[...pts.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)};drag=null;pan=null;return}
+  const g=e.target.closest('.it');
+  if(g){
+    const it=items.find(x=>x.id===g.dataset.id),p=toSvg(e);
+    sel=it.id;drag={it,dx:p.x-it.x*K,dy:p.y-it.y*K};
+    svg.setPointerCapture(e.pointerId);render();
+  }else{pan={x:e.clientX,y:e.clientY,vx:vb.x,vy:vb.y};svg.setPointerCapture(e.pointerId);if(sel){sel=null;render()}}
+});
+svg.addEventListener('pointermove',e=>{
+  if(pts.has(e.pointerId))pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch&&pts.size===2){const [a,b]=[...pts.values()],d=Math.hypot(a.x-b.x,a.y-b.y);zoom(pinch.d/d,(a.x+b.x)/2,(a.y+b.y)/2);pinch.d=d;return}
+  if(drag){const p=toSvg(e);drag.it.x=(p.x-drag.dx)/K;drag.it.y=(p.y-drag.dy)/K;
+    const g=layer.querySelector(`[data-id="${drag.it.id}"]`);g.setAttribute('transform',`translate(${drag.it.x*K} ${drag.it.y*K}) rotate(${drag.it.r||0})`)}
+  else if(pan){const r=svg.getBoundingClientRect();vb.x=pan.vx-(e.clientX-pan.x)/r.width*vb.w;vb.y=pan.vy-(e.clientY-pan.y)/r.height*vb.h;setVB()}
+});
+function up(e){pts.delete(e.pointerId);if(pts.size<2)pinch=null;if(drag){drag=null;save();render()}pan=null}
+svg.addEventListener('pointerup',up);svg.addEventListener('pointercancel',up);
+svg.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY>0?1.12:1/1.12,e.clientX,e.clientY)},{passive:false});
+$('zi').onclick=()=>zoom(1/1.25);$('zo').onclick=()=>zoom(1.25);$('zf').onclick=living;
+$('op').oninput=e=>$('plan').setAttribute('opacity',e.target.value/100);
+
+/* editing */
+function cur(){return items.find(x=>x.id===sel)}
+['en','ew','ed','er','ec','eno'].forEach(id=>$(id).addEventListener('input',()=>{
+  const it=cur();if(!it)return;
+  it.name=$('en').value;it.w=+$('ew').value||it.w;it.d=+$('ed').value||it.d;it.r=+$('er').value||0;it.c=$('ec').value;it.note=$('eno').value;
+  const act=document.activeElement.id;render();$(act).focus();save();
+}));
+$('r90').onclick=()=>{const it=cur();if(it){it.r=((it.r||0)+90)%360;render();save()}};
+$('dup').onclick=()=>{const it=cur();if(!it)return;const n={...it,id:uid(),x:it.x+25,y:it.y+25};items.push(n);sel=n.id;render();save()};
+$('del').onclick=()=>{const it=cur();if(!it)return;if(it.id==='fireplace'&&!confirm('למחוק את הקמין מהתוכנית?'))return;items=items.filter(x=>x!==it);sel=null;render();save()};
+$('af').onsubmit=e=>{
+  e.preventDefault();
+  const c={x:vb.x+vb.w/2,y:vb.y+vb.h/2};
+  const n={id:uid(),name:$('an').value.trim(),w:+$('aw').value,d:+$('ad').value,x:c.x/K,y:c.y/K,r:0,c:COLORS[items.length%COLORS.length],note:''};
+  items.push(n);sel=n.id;$('af').reset();render();save();
+};
+[['ספה 3 מושבים (דוגמה)',220,95],['כורסה (דוגמה)',80,85],['שולחן סלון (דוגמה)',120,60],['מזנון (דוגמה)',160,45],['שולחן אוכל (דוגמה)',180,90]].forEach(([n,w,d])=>{
+  const b=document.createElement('button');b.className='btn';b.type='button';b.textContent=`${n.replace(' (דוגמה)','')} ${w}×${d}`;
+  b.onclick=()=>{$('an').value=n;$('aw').value=w;$('ad').value=d};$('ex').appendChild(b);
+});
+window.addEventListener('keydown',e=>{
+  const it=cur();if(!it||/INPUT|SELECT/.test(document.activeElement.tagName))return;
+  const s=e.shiftKey?10:1;let ch=true;
+  if(e.key==='ArrowLeft')it.x-=s;else if(e.key==='ArrowRight')it.x+=s;else if(e.key==='ArrowUp')it.y-=s;else if(e.key==='ArrowDown')it.y+=s;
+  else if(e.key==='r'||e.key==='R')it.r=((it.r||0)+90)%360;else if(e.key==='Delete'||e.key==='Backspace')$('del').click();else ch=false;
+  if(ch){e.preventDefault();render();save()}
+});
+window.addEventListener('resize',()=>{});
+load();living();
+</script>
+</body>
+</html>

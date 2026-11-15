@@ -5417,6 +5417,10 @@ for _o in json.load(open(os.path.join(REPO,"vanity.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"tvconsole2.json"),encoding="utf-8")):
     DATA.append(_o)
+# 15.11.2026: she decided on a 180 or 200 cm living-room sideboard (200 preferred; fits beside the fireplace) -> hide every sideboard not offered in 180/200
+_TV_NOT_180_200={"TC3","TC7","TC8","TC9","TC10","TC13"}
+for _d in DATA:
+    if _d["id"] in _TV_NOT_180_200: _d["hidden"]=True
 for _o in json.load(open(os.path.join(REPO,"bathroom-heater2.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"balcony-heater.json"),encoding="utf-8")):
