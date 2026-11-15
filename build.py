@@ -2325,6 +2325,32 @@ body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .s
 .qloc .qlb.has{border-style:solid;border-color:var(--brass);background:var(--brass-soft);color:var(--brass-d)}
 .qloc .qlb .qt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .qloc .qlb:hover{border-color:var(--brass)}
+
+/* ===== quick filters: configurable facet rows above the grid ===== */
+.qfBar{background:var(--paper);border:1.5px solid var(--line-2);border-radius:16px;padding:8px 12px 6px;margin:10px 0 4px}
+.qfRow{display:flex;gap:6px 10px;align-items:flex-start;padding:5px 0;border-top:1px dashed var(--line-2)}
+.qfRow:first-child{border-top:0}
+.qfL{flex:none;width:118px;font-size:12px;font-weight:800;color:var(--ink-soft);padding-top:6px;line-height:1.25}
+.qfChips{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.qfc{font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--line-2);background:var(--paper);color:var(--ink-soft);border-radius:99px;padding:4px 11px;cursor:pointer}
+.qfc small{margin-inline-start:5px;opacity:.75;font-weight:700}
+.qfc.on{background:var(--brass-d);border-color:var(--brass-d);color:#fff}
+.qfc.zero:not(.on){opacity:.4}
+.qfc.all{border-style:dashed}
+.qfTools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 0 2px;border-top:1px dashed var(--line-2);font-size:12px;color:var(--muted)}
+.qfTools button{font:inherit;font-size:12px;font-weight:800;border:1.5px solid var(--line-2);background:var(--paper);color:var(--brass-d);border-radius:99px;padding:3px 11px;cursor:pointer}
+.qfTools .qfSum{flex:1;min-width:140px}
+.qfCfg{position:fixed;inset:0;z-index:10000;background:rgba(40,30,15,.35);display:flex;align-items:center;justify-content:center;padding:16px}
+.qfCfgBox{background:var(--paper);border-radius:18px;max-width:440px;width:100%;max-height:86vh;overflow:auto;padding:16px 16px 12px;box-shadow:0 24px 60px -16px rgba(40,30,15,.55)}
+.qfCfgBox h3{margin:0 0 4px;font-size:16px}.qfCfgBox p{margin:0 0 10px;font-size:12.5px;color:var(--ink-soft)}
+.qfCfgRow{display:flex;align-items:center;gap:8px;padding:7px 4px;border-top:1px solid var(--line-2);font-size:13.5px}
+.qfCfgRow label{flex:1;display:flex;gap:8px;align-items:center;cursor:pointer;min-width:0}.qfCfgRow small{color:var(--muted)}
+.qfCfgRow.dis{opacity:.45}
+.qfCfgRow button{font:inherit;border:1.5px solid var(--line-2);background:var(--paper);border-radius:8px;width:28px;height:26px;cursor:pointer;color:var(--ink-soft)}
+.qfCfgAct{display:flex;gap:8px;justify-content:space-between;margin-top:12px}
+.qfCfgAct button{font:inherit;font-weight:800;font-size:13px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:6px 16px;cursor:pointer}
+.qfCfgAct .pri{background:var(--brass-d);border-color:var(--brass-d);color:#fff}
+@media(max-width:640px){.qfRow{flex-direction:column;gap:2px}.qfL{width:auto;padding-top:2px}}
 .qlPop{position:fixed;z-index:9999;width:min(340px,calc(100vw - 24px));max-height:min(70vh,520px);overflow:auto;background:var(--paper);border:1.5px solid var(--line-2);border-radius:16px;box-shadow:0 18px 40px -12px rgba(60,40,10,.45);padding:12px 12px 10px}
 .qlPop h4{margin:2px 0 8px;font-size:13px;color:var(--ink-soft);display:flex;justify-content:space-between;align-items:center;gap:8px}
 .whs{display:flex;flex-direction:column;gap:5px;padding:8px 0;border-top:1px solid var(--line-2)}.whs:first-child{border-top:0;padding-top:2px}
@@ -2659,6 +2685,7 @@ body:has(.cmpBar:not([hidden])) .qfabs{inset-block-end:calc(14px + env(safe-area
 <div class="subRow" id="subRow" style="display:none"></div>
 <div class="subRow" id="placeRow" style="display:none"></div>
 <div class="subRow slotRow" id="slotRow" style="display:none"></div>
+<div class="qfBar" id="qfBar" style="display:none"></div>
 <div class="history" id="history" style="display:none"></div>
 <div class="specBar" id="specBar"></div>
 <div class="curBar" id="curBar" hidden></div>
@@ -5379,6 +5406,139 @@ function openQlPop(btn,id){ const it=byId[id]; if(!it) return; const was=_qlId; 
 document.addEventListener('mousedown',e=>{ if(_qlId&&!e.target.closest('#qlPop,.qloc')) closeQlPop(); },true);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&_qlId) closeQlPop(); });
 window.addEventListener('scroll',e=>{ if(_qlId&&!(e.target&&e.target.nodeType===1&&e.target.closest('#qlPop'))) closeQlPop(); },{passive:true,capture:true});
+
+/* ===== quick filters (configurable per category) ===== */
+const QF_ST={}; let _qfCat=null, _qfD=null, _qfSkip=null;
+const QF_DEF={'שולחן אוכל לפרגולה':['len0','len1','sub','price'],'מזנון לטלוויזיה':['width','sub','price','store']};
+const QF_GEN=['place','slot','sub','price'];
+function qfLens(it){
+  if(it._ql!==undefined) return it._ql;
+  const src=(it.dims||'')+' | '+(it.name||''); let r=null, m;
+  const reG=/((?:\d{2,3}(?:\.\d)?\s*(?:→|–|—|-|\/)\s*)*\d{2,3}(?:\.\d)?)\s*(?:ס״מ)?\s*[×xX]/;
+  if((m=/Ø\s*(\d{2,3})[^×|]{0,20}?(?:→|פתוח)\s*(\d{2,3})/.exec(src))){ r={closed:+m[1],open:+m[2],lo:+m[1],hi:+m[2],range:false,opts:[+m[1],+m[2]],custom:false}; }
+  else if((m=/Ø\s*(\d{2,3})/.exec(src))&&!/[×xX]\s*\d/.test((it.dims||''))){ r={closed:+m[1],open:+m[1],lo:+m[1],hi:+m[1],range:false,opts:[+m[1]],custom:false}; }
+  else if((m=reG.exec(src))){
+    const g=m[1], nums=g.split(/→|–|—|-|\//).map(x=>parseFloat(x)).filter(x=>!isNaN(x));
+    if(nums.length){ r={closed:nums[0],open:nums[nums.length-1],lo:Math.min(...nums),hi:Math.max(...nums),range:/–|—|-/.test(g)&&!/→/.test(g),opts:nums,custom:false};
+      if(/→/.test(g)){ r.range=false; } }
+  } else if((m=/אורך עד (\d{3})/.exec(src))){ r={closed:null,open:+m[1],lo:100,hi:+m[1],range:true,opts:[],custom:true}; }
+  if(r&&/גם לפי מידה|בהזמנה אישית|בכל מידה|מידות מותאמות|בהתאמה אישית/.test(src)) r.custom=true;
+  it._ql=r; return r;
+}
+function qfWidthHas(it,w){ const L=qfLens(it); if(!L) return false; if(L.custom&&w>=L.lo&&w<=300) return true; if(L.range) return w>=L.lo&&w<=L.hi; return L.opts.includes(w); }
+function qfBuild(cat,its){
+  const by={}, all=[]; const add=f=>{ by[f.id]=f; all.push(f); };
+  const st=id=>()=>(QF_ST[id]||(QF_ST[id]=new Set()));
+  const own=(id,icon,label,vals,test)=>({id,icon,label,vals,test,get:st(id),tog(k){ const S=this.get(); S.has(k)?S.delete(k):S.add(k); },clr(){ QF_ST[id]=new Set(); },snap(){ return [...this.get()]; },rst(x){ QF_ST[id]=new Set(x); }});
+  // איפה זה הולך
+  const pn=placesList().map(p=>p.n), used=[...new Set(its.flatMap(i=>itemPlaces(i)))].sort((a,b)=>{ const x=pn.indexOf(a),y=pn.indexOf(b); return (x<0?99:x)-(y<0?99:y); });
+  const pv=used.map(k=>({k,l:k})); if(its.some(i=>!itemPlaces(i).length)) pv.push({k:'__none',l:'ללא מיקום'});
+  add({id:'place',icon:'📍',label:'איפה זה הולך',vals:pv,test:(it,k)=>k==='__none'?!itemPlaces(it).length:itemPlaces(it).includes(k),
+    get:()=>placef,tog(k){ placef.has(k)?placef.delete(k):placef.add(k); try{renderPlaceRow();}catch(e){} },clr(){ placef.clear(); try{renderPlaceRow();}catch(e){} },snap:()=>[...placef],rst(x){ placef.clear(); x.forEach(v=>placef.add(v)); }});
+  // נקודה מדויקת (slots)
+  const sl=[]; try{ (SLOTS[cat.key]||{groups:[]}).groups.forEach(g=>g.slots.forEach(x=>{ if(its.some(i=>(i.slots||[]).includes(x.id))) sl.push({k:x.id,l:x.name}); })); }catch(e){}
+  add({id:'slot',icon:'🎯',label:'נקודה מדויקת',vals:sl,test:(it,k)=>(it.slots||[]).includes(k),
+    get:()=>slotf,tog(k){ slotf.has(k)?slotf.delete(k):slotf.add(k); try{renderPlaceRow();}catch(e){} },clr(){ slotf.clear(); try{renderPlaceRow();}catch(e){} },snap:()=>[...slotf],rst(x){ slotf.clear(); x.forEach(v=>slotf.add(v)); }});
+  // סוג (sub)
+  const subs=[...new Set([...(cat.subs||[]),...its.map(i=>i.sub).filter(Boolean)])];
+  add({id:'sub',icon:'🗂',label:'סוג',vals:subs.map(k=>({k,l:k})),test:(it,k)=>it.sub===k,
+    get:()=>new Set(subf?[subf]:[]),tog(k){ subf=(subf===k?null:k); try{renderSubRow();}catch(e){} },clr(){ subf=null; try{renderSubRow();}catch(e){} },snap:()=>subf,rst(x){ subf=x; }});
+  // גודל
+  if(cat.key==='שולחן אוכל לפרגולה'){
+    const c0=[['z','עד 169',0,169],['a','170–185 (≈180)',170,185],['b','186–215 (≈200)',186,215],['c','216 ומעלה',216,999]];
+    add(own('len0','📏','אורך סגור (ס״מ)',c0.map(x=>({k:x[0],l:x[1]})),(it,k)=>{ const L=qfLens(it); if(!L||L.closed==null) return false; const b=c0.find(x=>x[0]===k); return L.closed>=b[2]&&L.closed<=b[3]; }));
+    const c1=[['a','250 ומעלה',250,999],['b','300 ומעלה',300,999],['c','עד 249',0,249]];
+    add(own('len1','↔️','אורך פתוח (ס״מ)',c1.map(x=>({k:x[0],l:x[1]})),(it,k)=>{ const L=qfLens(it); if(!L) return false; const b=c1.find(x=>x[0]===k); return L.open>=b[2]&&L.open<=b[3]; }));
+  }
+  if(cat.key==='מזנון לטלוויזיה'){
+    add(own('width','📏','רוחב המזנון (ס״מ)',[160,180,200,220,240].map(w=>({k:String(w),l:String(w)})),(it,k)=>qfWidthHas(it,+k)));
+  }
+  // מחיר
+  const pr=its.map(i=>i.price).filter(x=>x>0).sort((a,b)=>a-b);
+  if(pr.length>=4){ const step=pr[pr.length-1]<2000?50:(pr[pr.length-1]<6000?100:500), rd=x=>Math.round(x/step)*step;
+    let c1=rd(pr[Math.floor(pr.length/3)]), c2=rd(pr[Math.floor(pr.length*2/3)]); const bands=[];
+    if(c1>=c2){ bands.push(['a','עד ₪'+c2.toLocaleString('he'),0,c2],['b','מעל ₪'+c2.toLocaleString('he'),c2+0.01,1e9]); }
+    else bands.push(['a','עד ₪'+c1.toLocaleString('he'),0,c1],['b','₪'+c1.toLocaleString('he')+'–'+c2.toLocaleString('he'),c1+0.01,c2],['c','מעל ₪'+c2.toLocaleString('he'),c2+0.01,1e9]);
+    add(own('price','💰','מחיר',bands.map(x=>({k:x[0],l:x[1]})),(it,k)=>{ const b=bands.find(x=>x[0]===k); return it.price>0&&it.price>=b[2]&&it.price<=b[3]; }));
+  }
+  // חנות
+  const qs=i=>{ const n=guessStore(i); return n?String(n).replace(/\s*[(·|].*$/,'').trim():''; }; const sc={}; its.forEach(i=>{ const n=qs(i); if(n) sc[n]=(sc[n]||0)+1; });
+  add(own('store','🏬','חנות',Object.keys(sc).sort((a,b)=>sc[b]-sc[a]).slice(0,12).map(k=>({k,l:k})),(it,k)=>qs(it)===k));
+  // סטטוס
+  const stl={discuss:'🤔 בהתלבטות',chosen:'🛒 נבחר — להזמין',ordered:'📦 הוזמן'};
+  add(own('status','🚦','סטטוס',Object.keys(stl).filter(k=>its.some(i=>itemStatus(i)===k)).map(k=>({k,l:stl[k]})),(it,k)=>itemStatus(it)===k));
+  // מי אהב
+  const nm=[]; try{ namesList().forEach(n=>{ if(its.some(i=>marksFor(i.id).some(m=>m.name===n&&m.status==='yes'))) nm.push({k:n,l:'❤ '+n}); }); }catch(e){}
+  add(own('who','❤','מי אהב',nm,(it,k)=>{ try{ return marksFor(it.id).some(m=>m.name===k&&m.status==='yes'); }catch(e){ return false; } }));
+  // מאפיינים (תגיות)
+  const tc={}; its.forEach(i=>(i.tags||[]).forEach(t=>tc[t]=(tc[t]||0)+1));
+  add(own('tags','🏷','מאפיינים',Object.keys(tc).filter(t=>tc[t]>=2).sort((a,b)=>tc[b]-tc[a]).slice(0,14).map(k=>({k,l:k})),(it,k)=>(it.tags||[]).includes(k)));
+  // פיצ'רים
+  const fs=catFeats(cat.key), fv=[];
+  fs.forEach(f=>{ const lab=f.l.replace(/\s*\(.*$/,''); if(f.v&&Object.keys(f.v).length) (Array.isArray(f.v)?f.v:Object.values(f.v)).forEach(x=>fv.push({k:f.id+'='+x,l:lab+': '+x})); else fv.push({k:f.id,l:lab}); });
+  add(own('feat','✨',"פיצ'רים",fv,(it,k)=>{ const [fid,val]=k.split('='); const f=fs.find(x=>x.id===fid); if(!f) return false; const v=featVal(it,f); if(val!==undefined) return v===val; return v!==undefined&&v!==false&&!(typeof v==='string'&&/^אין/.test(v)); }));
+  return {cat:cat.key,by,all};
+}
+function qfOwnIds(){ return Object.keys(QF_ST).filter(id=>QF_ST[id]&&QF_ST[id].size); }
+function qfPass(it){
+  const D=_qfD; if(!D||selCats.size!==1||!selCats.has(D.cat)) return true;
+  return qfOwnIds().every(id=>{ if(id===_qfSkip) return true; const f=D.by[id]; if(!f) return true; return [...QF_ST[id]].some(k=>f.test(it,k)); });
+}
+{ const _v=visible; visible=function(){ return _v().filter(qfPass); }; }
+function qfBaseFor(f){ const snap=f.snap(); const own=!!QF_ST[f.id]||(!['place','slot','sub'].includes(f.id)); f.clr(); _qfSkip=f.id; let a; try{ a=visible(); }finally{ _qfSkip=null; f.rst(snap); } return a; }
+function qfConfig(cat,D){ const def=QF_DEF[cat.key]||QF_GEN; const c=Array.isArray(cat.qf)&&cat.qf.length?cat.qf:def; return c.filter(id=>D.by[id]); }
+function qfRender(){
+  const bar=document.getElementById('qfBar'); if(!bar) return;
+  const cat=selCats.size===1?CATS.find(c=>selCats.has(c.key)):null;
+  if(!cat){ bar.style.display='none'; bar.innerHTML=''; _qfD=null; return; }
+  if(_qfCat!==cat.key){ _qfCat=cat.key; Object.keys(QF_ST).forEach(k=>delete QF_ST[k]); }
+  const its=ITEMS.filter(i=>i.cat===cat.key&&!i.hidden&&i.type!=='color');
+  if(its.length<4){ bar.style.display='none'; bar.innerHTML=''; _qfD=null; return; }
+  const D=qfBuild(cat,its); _qfD=D; const ids=qfConfig(cat,D); let rows='', anyOn=false;
+  ids.forEach(id=>{ const f=D.by[id]; const S=f.get(); if(f.vals.length<2&&!S.size) return;
+    const base=qfBaseFor(f), cnt=k=>base.filter(it=>f.test(it,k)).length;
+    if(S.size) anyOn=true;
+    rows+='<div class="qfRow"><span class="qfL">'+f.icon+' '+esc(f.label)+'</span><div class="qfChips">'
+      +'<button type="button" class="qfc all'+(S.size?'':' on')+'" data-f="'+id+'" data-k="">הכל</button>'
+      +f.vals.map(v=>{ const n=cnt(v.k), on=S.has(v.k); return '<button type="button" class="qfc'+(on?' on':'')+(n===0&&!on?' zero':'')+'" data-f="'+id+'" data-k="'+esc(v.k)+'">'+esc(v.l)+'<small>'+n+'</small></button>'; }).join('')+'</div></div>'; });
+  const total=its.length, shown=visible().length;
+  bar.innerHTML=rows+'<div class="qfTools"><span class="qfSum">מציג <b>'+shown+'</b> מתוך '+total+' · בתוך שורה: אחד מהם · בין שורות: כולם יחד</span>'
+    +(anyOn?'<button type="button" data-act="clr">נקה סינונים מהירים</button>':'')+'<button type="button" data-act="cfg">⚙ התאם סינונים</button></div>';
+  bar.style.display='block';
+}
+document.getElementById('qfBar').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b||!_qfD) return;
+  if(b.dataset.act==='cfg'){ qfOpenCfg(); return; }
+  if(b.dataset.act==='clr'){ Object.keys(QF_ST).forEach(k=>QF_ST[k]=new Set()); ['place','slot','sub'].forEach(id=>{ const f=_qfD.by[id]; if(f) f.clr(); }); RE(); return; }
+  const f=_qfD.by[b.dataset.f]; if(!f) return;
+  if(b.dataset.k==='') f.clr(); else f.tog(b.dataset.k);
+  RE();
+});
+{ const _al=afList; afList=function(){ const L=_al();
+    if(_qfD&&selCats.size===1&&selCats.has(_qfD.cat)) qfOwnIds().forEach(id=>{ const f=_qfD.by[id]; if(!f) return; [...QF_ST[id]].forEach(k=>{ const v=f.vals.find(x=>x.k===k); L.push({l:f.icon+' '+f.label+': '+(v?v.l:k),rm:()=>{ QF_ST[id].delete(k); }}); }); });
+    return L; }; }
+{ const _cl=afClearAll; afClearAll=function(){ Object.keys(QF_ST).forEach(k=>QF_ST[k]=new Set()); _cl(); }; }
+{ const _R2=RE; RE=function(a){ _R2(a); try{ qfRender(); }catch(e){ console.warn(e); } }; }
+function qfOpenCfg(){
+  const cat=CATS.find(c=>selCats.has(c.key)); if(!cat||!_qfD) return; closeQfCfg();
+  const D=_qfD, def=QF_DEF[cat.key]||QF_GEN; let cur=qfConfig(cat,D);
+  const o=document.createElement('div'); o.id='qfCfg'; o.className='qfCfg';
+  const draw=()=>{ const order=[...cur,...D.all.map(f=>f.id).filter(id=>!cur.includes(id))];
+    o.innerHTML='<div class="qfCfgBox"><h3>⚙ סינונים מהירים — '+esc(cat.label)+'</h3><p>סמני מה יופיע כשורת סינון מעל המוצרים, וסדרי עם החיצים. השינוי נשמר לקטגוריה הזו ומשותף לכולם.</p>'
+      +order.map(id=>{ const f=D.by[id], on=cur.includes(id), dis=f.vals.length<2&&!on; return '<div class="qfCfgRow'+(dis?' dis':'')+'"><label><input type="checkbox" data-id="'+id+'"'+(on?' checked':'')+(dis?' disabled':'')+'><span>'+f.icon+' '+esc(f.label)+' <small>'+(f.vals.length?f.vals.length+' ערכים':'אין עדיין ערכים')+'</small></span></label>'+(on?'<button type="button" data-mv="-1" data-id="'+id+'">▲</button><button type="button" data-mv="1" data-id="'+id+'">▼</button>':'')+'</div>'; }).join('')
+      +'<div class="qfCfgAct"><button type="button" data-a="reset">איפוס לברירת מחדל</button><button type="button" class="pri" data-a="done">סיום</button></div></div>'; };
+  const save=()=>{ const same=JSON.stringify(cur)===JSON.stringify(def.filter(id=>D.by[id])); const val=same?null:cur.slice(); cat.qf=val;
+    shared.cats=shared.cats||{}; shared.cats[cat.key]={...(shared.cats[cat.key]||{}),key:cat.key,qf:val};
+    fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(cat.key)}.json`,{method:'PATCH',body:JSON.stringify({key:cat.key,qf:val})}).catch(()=>{}); RE(); };
+  o.addEventListener('click',e=>{ if(e.target===o){ closeQfCfg(); return; } const b=e.target.closest('button'); if(!b) return;
+    if(b.dataset.a==='done'){ closeQfCfg(); return; }
+    if(b.dataset.a==='reset'){ cur=def.filter(id=>D.by[id]); save(); draw(); return; }
+    if(b.dataset.mv){ const i=cur.indexOf(b.dataset.id), j=i+Number(b.dataset.mv); if(i>=0&&j>=0&&j<cur.length){ [cur[i],cur[j]]=[cur[j],cur[i]]; save(); draw(); } } });
+  o.addEventListener('change',e=>{ const c=e.target; if(!c.dataset||!c.dataset.id) return; if(c.checked){ if(!cur.includes(c.dataset.id)) cur.push(c.dataset.id); } else { cur=cur.filter(x=>x!==c.dataset.id); const f=D.by[c.dataset.id]; if(f) f.clr(); } save(); draw(); });
+  document.body.appendChild(o); draw();
+}
+function closeQfCfg(){ const o=document.getElementById('qfCfg'); if(o) o.remove(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeQfCfg(); });
 rebuild(); applyHash(); tabsHTML(); buildChips(); RE(true); if(selCats.size) syncHash(); cmpBarPaint();
 { const _q=new URLSearchParams(location.search), _as=(_q.get('as')||'').trim(); if(!me&&_as){ me={pk:pkFromName(_as),name:_as}; localStorage.setItem('ida-me',JSON.stringify(me)); } }
 if(me){ me.pk=pkFromName(me.name); localStorage.setItem('ida-me',JSON.stringify(me)); fbPushName(); startSync(); } else openMe();
@@ -5413,6 +5573,10 @@ for _d in DATA:  # kids-wardrobes sub-categories: hinged vs sliding
     elif _d["id"] in ("KW5","KW6"): _d["sub"]="ארונות פתיחה"
 for _o in json.load(open(os.path.join(REPO,"pergola-dining.json"),encoding="utf-8")):
     DATA.append(_o)
+for _f in ("pergola-dining2a.json","pergola-dining2b.json","pergola-dining2c.json"):  # 15.11.2026: 180→250+ search (wood / aluminum / round)
+    if os.path.exists(os.path.join(REPO,_f)):
+        for _o in json.load(open(os.path.join(REPO,_f),encoding="utf-8")):
+            DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"vanity.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"tvconsole2.json"),encoding="utf-8")):
