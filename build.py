@@ -1406,6 +1406,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"מדיח","label":"מדיח","icon":"🫧","slug":"dishwasher"},
       {"key":"מקרר","label":"מקרר","icon":"🧊","slug":"fridge"},
       {"key":"מיטת לילי","label":"מיטת לילי","icon":"🧸","slug":"lily-bed"},
+      {"key":"מזרנים ללילי (90×190)","label":"מזרנים ללילי (90×190)","icon":"💤","slug":"lily-mattress","group":"חדרי שינה וילדים","multi":True,"subs":["פנדה (Pandazzz)","אורגניק בד (Organic Bed)","עמינח (Aminach)"]},
       {"key":"מיטת אורחים","label":"מיטת אורחים","icon":"🛏️","slug":"guest-bed"},
       {"key":"פח","label":"פח","icon":"🗑️","slug":"bin","subs":["חיישן · 50 ל׳+ · על רגליים (מועדף)","חיישן · 50 ל׳+ · בלי רגליים / לא צוין","חיישן · מתחת ל־50 ל׳"]},
       {"key":"מקרר פרגולה","label":"מקרר פרגולה","icon":"🍦","slug":"pergola-fridge"},
@@ -5577,6 +5578,14 @@ for _f in ("pergola-dining2a.json","pergola-dining2b.json","pergola-dining2c.jso
         for _o in json.load(open(os.path.join(REPO,_f),encoding="utf-8")):
             DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"vanity.json"),encoding="utf-8")):
+    DATA.append(_o)
+# 15.11.2026: mattresses for Lily (5 y/o, bed 90x190) from Pandazzz / Organic Bed / Aminach; enrich merged here (this file loads after the generic enrich pass)
+_lme=json.load(open(os.path.join(REPO,"enrich","lily-mattress.json"),encoding="utf-8"))
+for _o in json.load(open(os.path.join(REPO,"lily-mattress.json"),encoding="utf-8")):
+    _x=_lme["items"].get(_o["id"],{})
+    _o["criteria"]=_lme["criteria"]
+    for _k in ("specs","stores","pick","pickWhy","points"):
+        if _k in _x: _o[_k]=_x[_k]
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"tvconsole2.json"),encoding="utf-8")):
     DATA.append(_o)
