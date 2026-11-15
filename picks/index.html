@@ -822,31 +822,35 @@ body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .s
 .qloc .qlb .qt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .qloc .qlb:hover{border-color:var(--brass)}
 
-/* ===== quick filters: configurable facet rows above the grid ===== */
-.qfBar{background:var(--paper);border:1.5px solid var(--line-2);border-radius:16px;padding:8px 12px 6px;margin:10px 0 4px}
-.qfRow{display:flex;gap:6px 10px;align-items:flex-start;padding:5px 0;border-top:1px dashed var(--line-2)}
-.qfRow:first-child{border-top:0}
-.qfL{flex:none;width:118px;font-size:12px;font-weight:800;color:var(--ink-soft);padding-top:6px;line-height:1.25}
-.qfChips{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+/* ===== quick filters: facet tabs + one panel per open tab ===== */
+.qfBar{background:var(--paper);border:1.5px solid var(--line-2);border-radius:16px;padding:8px 10px;margin:10px 0 4px}
+.qfTabs{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
+.qfTab{display:inline-flex;align-items:stretch;border:1.5px solid var(--line-2);border-radius:99px;background:var(--paper);overflow:hidden}
+.qfTab.open{border-color:var(--brass-d);background:var(--brass-soft)}
+.qfTab.has .qfT{color:var(--brass-d)}
+.qfT{font:inherit;font-size:13px;font-weight:800;background:none;border:0;padding:5px 6px 5px 11px;cursor:pointer;color:var(--ink-soft);display:inline-flex;gap:5px;align-items:center}
+.qfT b{background:var(--brass-d);color:#fff;border-radius:99px;font-size:11px;min-width:17px;text-align:center;padding:0 5px}
+.qfT i{font-style:normal;font-size:10px;opacity:.7}
+.qfX{font:inherit;font-size:11px;background:none;border:0;border-inline-start:1px solid var(--line-2);padding:0 8px;cursor:pointer;color:var(--muted)}
+.qfX:hover{color:var(--no);background:var(--no-bg)}
+.qfAddW{position:relative;display:inline-block}
+.qfAdd{font:inherit;font-size:13px;font-weight:800;border:1.5px dashed var(--brass-d);background:var(--paper);color:var(--brass-d);border-radius:99px;padding:5px 12px;cursor:pointer}
+.qfMenu{position:absolute;top:calc(100% + 6px);inset-inline-start:0;z-index:50;min-width:230px;background:var(--paper);border:1.5px solid var(--line-2);border-radius:14px;box-shadow:0 14px 34px -10px rgba(60,40,10,.4);padding:6px;display:flex;flex-direction:column;gap:2px}
+.qfMenu button{font:inherit;font-size:13px;font-weight:700;text-align:start;background:none;border:0;border-radius:9px;padding:7px 10px;cursor:pointer;color:var(--ink)}
+.qfMenu button:hover:not(:disabled){background:var(--brass-soft)}
+.qfMenu button:disabled{opacity:.4;cursor:default}
+.qfMenu small{color:var(--muted);font-weight:600;margin-inline-start:4px}
+.qfMenu .rst{border-top:1px solid var(--line-2);border-radius:0 0 9px 9px;color:var(--muted);margin-top:3px}
+.qfNo{font-size:12.5px;color:var(--muted);padding:6px 10px}
+.qfSum{margin-inline-start:auto;font-size:12px;color:var(--muted)}
+.qfClr{font:inherit;font-size:12px;font-weight:800;border:1.5px solid var(--line-2);background:var(--paper);color:var(--brass-d);border-radius:99px;padding:3px 11px;cursor:pointer}
+.qfRow{padding:8px 2px 2px;border-top:1px dashed var(--line-2);margin-top:8px}
+.qfChips{display:flex;flex-wrap:wrap;gap:6px;min-width:0;max-height:112px;overflow:auto}
 .qfc{font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--line-2);background:var(--paper);color:var(--ink-soft);border-radius:99px;padding:4px 11px;cursor:pointer}
 .qfc small{margin-inline-start:5px;opacity:.75;font-weight:700}
 .qfc.on{background:var(--brass-d);border-color:var(--brass-d);color:#fff}
 .qfc.zero:not(.on){opacity:.4}
 .qfc.all{border-style:dashed}
-.qfTools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 0 2px;border-top:1px dashed var(--line-2);font-size:12px;color:var(--muted)}
-.qfTools button{font:inherit;font-size:12px;font-weight:800;border:1.5px solid var(--line-2);background:var(--paper);color:var(--brass-d);border-radius:99px;padding:3px 11px;cursor:pointer}
-.qfTools .qfSum{flex:1;min-width:140px}
-.qfCfg{position:fixed;inset:0;z-index:10000;background:rgba(40,30,15,.35);display:flex;align-items:center;justify-content:center;padding:16px}
-.qfCfgBox{background:var(--paper);border-radius:18px;max-width:440px;width:100%;max-height:86vh;overflow:auto;padding:16px 16px 12px;box-shadow:0 24px 60px -16px rgba(40,30,15,.55)}
-.qfCfgBox h3{margin:0 0 4px;font-size:16px}.qfCfgBox p{margin:0 0 10px;font-size:12.5px;color:var(--ink-soft)}
-.qfCfgRow{display:flex;align-items:center;gap:8px;padding:7px 4px;border-top:1px solid var(--line-2);font-size:13.5px}
-.qfCfgRow label{flex:1;display:flex;gap:8px;align-items:center;cursor:pointer;min-width:0}.qfCfgRow small{color:var(--muted)}
-.qfCfgRow.dis{opacity:.45}
-.qfCfgRow button{font:inherit;border:1.5px solid var(--line-2);background:var(--paper);border-radius:8px;width:28px;height:26px;cursor:pointer;color:var(--ink-soft)}
-.qfCfgAct{display:flex;gap:8px;justify-content:space-between;margin-top:12px}
-.qfCfgAct button{font:inherit;font-weight:800;font-size:13px;border:1.5px solid var(--line-2);background:var(--paper);border-radius:99px;padding:6px 16px;cursor:pointer}
-.qfCfgAct .pri{background:var(--brass-d);border-color:var(--brass-d);color:#fff}
-@media(max-width:640px){.qfRow{flex-direction:column;gap:2px}.qfL{width:auto;padding-top:2px}}
 .qlPop{position:fixed;z-index:9999;width:min(340px,calc(100vw - 24px));max-height:min(70vh,520px);overflow:auto;background:var(--paper);border:1.5px solid var(--line-2);border-radius:16px;box-shadow:0 18px 40px -12px rgba(60,40,10,.45);padding:12px 12px 10px}
 .qlPop h4{margin:2px 0 8px;font-size:13px;color:var(--ink-soft);display:flex;justify-content:space-between;align-items:center;gap:8px}
 .whs{display:flex;flex-direction:column;gap:5px;padding:8px 0;border-top:1px solid var(--line-2)}.whs:first-child{border-top:0;padding-top:2px}
@@ -3905,8 +3909,8 @@ window.addEventListener('scroll',e=>{ if(_qlId&&!(e.target&&e.target.nodeType===
 
 /* ===== quick filters (configurable per category) ===== */
 const QF_ST={}; let _qfCat=null, _qfD=null, _qfSkip=null;
-const QF_DEF={'שולחן אוכל לפרגולה':['len0','len1','sub','price'],'מזנון לטלוויזיה':['width','sub','price','store']};
-const QF_GEN=['place','slot','sub','price'];
+const QF_DEF={'שולחן אוכל לפרגולה':['len0','len1','price'],'מזנון לטלוויזיה':['width','sub','price'],'תאורה':['place','slot','sub']};
+const QF_GEN=['place','sub','price'];
 function qfLens(it){
   if(it._ql!==undefined) return it._ql;
   const src=(it.dims||'')+' | '+(it.name||''); let r=null, m;
@@ -3983,58 +3987,53 @@ function qfPass(it){
 { const _v=visible; visible=function(){ return _v().filter(qfPass); }; }
 function qfBaseFor(f){ const snap=f.snap(); const own=!!QF_ST[f.id]||(!['place','slot','sub'].includes(f.id)); f.clr(); _qfSkip=f.id; let a; try{ a=visible(); }finally{ _qfSkip=null; f.rst(snap); } return a; }
 function qfConfig(cat,D){ const def=QF_DEF[cat.key]||QF_GEN; const c=Array.isArray(cat.qf)&&cat.qf.length?cat.qf:def; return c.filter(id=>D.by[id]); }
+let QF_OPEN={}; try{ QF_OPEN=JSON.parse(localStorage.getItem('qfOpen')||'{}'); }catch(e){}
+let _qfMenu=false;
+function qfOpenSet(cat,ids){ let a=QF_OPEN[cat.key]; if(!Array.isArray(a)){ a=ids.slice(0,1); } return new Set(a); }
+function qfSaveOpen(cat,S){ QF_OPEN[cat.key]=[...S]; try{ localStorage.setItem('qfOpen',JSON.stringify(QF_OPEN)); }catch(e){} }
+function qfSaveCfg(cat,D,ids){ const def=(QF_DEF[cat.key]||QF_GEN).filter(id=>D.by[id]); const val=JSON.stringify(ids)===JSON.stringify(def)?null:(ids.length?ids.slice():['-']); cat.qf=val;
+  shared.cats=shared.cats||{}; shared.cats[cat.key]={...(shared.cats[cat.key]||{}),key:cat.key,qf:val};
+  fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(cat.key)}.json`,{method:'PATCH',body:JSON.stringify({key:cat.key,qf:val})}).catch(()=>{}); }
 function qfRender(){
   const bar=document.getElementById('qfBar'); if(!bar) return;
   const cat=selCats.size===1?CATS.find(c=>selCats.has(c.key)):null;
   if(!cat){ bar.style.display='none'; bar.innerHTML=''; _qfD=null; return; }
-  if(_qfCat!==cat.key){ _qfCat=cat.key; Object.keys(QF_ST).forEach(k=>delete QF_ST[k]); }
+  if(_qfCat!==cat.key){ _qfCat=cat.key; _qfMenu=false; Object.keys(QF_ST).forEach(k=>delete QF_ST[k]); }
   const its=ITEMS.filter(i=>i.cat===cat.key&&!i.hidden&&i.type!=='color');
   if(its.length<4){ bar.style.display='none'; bar.innerHTML=''; _qfD=null; return; }
-  const D=qfBuild(cat,its); _qfD=D; const ids=qfConfig(cat,D); let rows='', anyOn=false;
-  ids.forEach(id=>{ const f=D.by[id]; const S=f.get(); if(f.vals.length<2&&!S.size) return;
-    const base=qfBaseFor(f), cnt=k=>base.filter(it=>f.test(it,k)).length;
-    if(S.size) anyOn=true;
-    rows+='<div class="qfRow"><span class="qfL">'+f.icon+' '+esc(f.label)+'</span><div class="qfChips">'
-      +'<button type="button" class="qfc all'+(S.size?'':' on')+'" data-f="'+id+'" data-k="">הכל</button>'
-      +f.vals.map(v=>{ const n=cnt(v.k), on=S.has(v.k); return '<button type="button" class="qfc'+(on?' on':'')+(n===0&&!on?' zero':'')+'" data-f="'+id+'" data-k="'+esc(v.k)+'">'+esc(v.l)+'<small>'+n+'</small></button>'; }).join('')+'</div></div>'; });
+  const D=qfBuild(cat,its); _qfD=D; const ids=qfConfig(cat,D).filter(id=>{ const f=D.by[id]; return f.vals.length>=2||f.get().size; });
+  const open=qfOpenSet(cat,ids); let tabs='', panels='', anyOn=false;
+  ids.forEach(id=>{ const f=D.by[id], S=f.get(), isOpen=open.has(id); if(S.size) anyOn=true;
+    tabs+='<span class="qfTab'+(isOpen?' open':'')+(S.size?' has':'')+'"><button type="button" class="qfT" data-act="tog" data-f="'+id+'">'+f.icon+' '+esc(f.label)+(S.size?' <b>'+S.size+'</b>':'')+' <i>'+(isOpen?'▴':'▾')+'</i></button><button type="button" class="qfX" data-act="rm" data-f="'+id+'" title="הסר מהסינון המהיר" aria-label="הסר מהסינון המהיר">✕</button></span>';
+    if(isOpen){ const base=qfBaseFor(f), cnt=k=>base.filter(it=>f.test(it,k)).length;
+      panels+='<div class="qfRow"><div class="qfChips"><button type="button" class="qfc all'+(S.size?'':' on')+'" data-f="'+id+'" data-k="">הכל</button>'
+        +f.vals.map(v=>{ const n=cnt(v.k), on=S.has(v.k); return '<button type="button" class="qfc'+(on?' on':'')+(n===0&&!on?' zero':'')+'" data-f="'+id+'" data-k="'+esc(v.k)+'">'+esc(v.l)+'<small>'+n+'</small></button>'; }).join('')+'</div></div>'; } });
+  const avail=D.all.filter(f=>!ids.includes(f.id)&&(f.vals.length>=2||qfConfig(cat,D).includes(f.id)===false&&f.vals.length>=2));
+  const menu=_qfMenu?'<div class="qfMenu">'+(D.all.filter(f=>!qfConfig(cat,D).includes(f.id)).map(f=>'<button type="button" data-act="add" data-f="'+f.id+'"'+(f.vals.length<2?' disabled':'')+'>'+f.icon+' '+esc(f.label)+' <small>'+(f.vals.length>=2?f.vals.length+' ערכים':'אין עדיין ערכים')+'</small></button>').join('')||'<span class="qfNo">כל הסינונים כבר בשורה</span>')+'<button type="button" class="rst" data-act="reset">↺ איפוס לברירת מחדל</button></div>':'';
   const total=its.length, shown=visible().length;
-  bar.innerHTML=rows+'<div class="qfTools"><span class="qfSum">מציג <b>'+shown+'</b> מתוך '+total+' · בתוך שורה: אחד מהם · בין שורות: כולם יחד</span>'
-    +(anyOn?'<button type="button" data-act="clr">נקה סינונים מהירים</button>':'')+'<button type="button" data-act="cfg">⚙ התאם סינונים</button></div>';
+  bar.innerHTML='<div class="qfTabs">'+tabs+'<span class="qfAddW"><button type="button" class="qfAdd" data-act="menu">＋ סינון</button>'+menu+'</span>'
+    +'<span class="qfSum">מציג <b>'+shown+'</b> מתוך '+total+'</span>'+(anyOn?'<button type="button" class="qfClr" data-act="clr">נקה</button>':'')+'</div>'+panels;
   bar.style.display='block';
 }
 document.getElementById('qfBar').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b||!_qfD) return;
-  if(b.dataset.act==='cfg'){ qfOpenCfg(); return; }
-  if(b.dataset.act==='clr'){ Object.keys(QF_ST).forEach(k=>QF_ST[k]=new Set()); ['place','slot','sub'].forEach(id=>{ const f=_qfD.by[id]; if(f) f.clr(); }); RE(); return; }
-  const f=_qfD.by[b.dataset.f]; if(!f) return;
-  if(b.dataset.k==='') f.clr(); else f.tog(b.dataset.k);
-  RE();
+  const b=e.target.closest('button'); if(!b||!_qfD) return; const D=_qfD, cat=CATS.find(c=>c.key===D.cat); if(!cat) return; const a=b.dataset.act;
+  if(a==='menu'){ _qfMenu=!_qfMenu; qfRender(); return; }
+  const ids=qfConfig(cat,D);
+  if(a==='tog'){ const S=qfOpenSet(cat,ids); S.has(b.dataset.f)?S.delete(b.dataset.f):S.add(b.dataset.f); qfSaveOpen(cat,S); qfRender(); return; }
+  if(a==='rm'){ const f=D.by[b.dataset.f]; if(f) f.clr(); qfSaveCfg(cat,D,ids.filter(x=>x!==b.dataset.f)); RE(); return; }
+  if(a==='add'){ const S=qfOpenSet(cat,ids); S.add(b.dataset.f); qfSaveOpen(cat,S); _qfMenu=false; qfSaveCfg(cat,D,[...ids,b.dataset.f]); RE(); return; }
+  if(a==='reset'){ _qfMenu=false; qfSaveCfg(cat,D,(QF_DEF[cat.key]||QF_GEN).filter(id=>D.by[id])); RE(); return; }
+  if(a==='clr'){ Object.keys(QF_ST).forEach(k=>QF_ST[k]=new Set()); ['place','slot','sub'].forEach(id=>{ const f=D.by[id]; if(f) f.clr(); }); RE(); return; }
+  if(b.dataset.f){ const f=D.by[b.dataset.f]; if(!f) return; if(b.dataset.k==='') f.clr(); else f.tog(b.dataset.k); RE(); }
 });
+document.addEventListener('mousedown',e=>{ if(_qfMenu&&!e.target.closest('.qfAddW')){ _qfMenu=false; try{ qfRender(); }catch(x){} } },true);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&_qfMenu){ _qfMenu=false; qfRender(); } });
 { const _al=afList; afList=function(){ const L=_al();
     if(_qfD&&selCats.size===1&&selCats.has(_qfD.cat)) qfOwnIds().forEach(id=>{ const f=_qfD.by[id]; if(!f) return; [...QF_ST[id]].forEach(k=>{ const v=f.vals.find(x=>x.k===k); L.push({l:f.icon+' '+f.label+': '+(v?v.l:k),rm:()=>{ QF_ST[id].delete(k); }}); }); });
     return L; }; }
 { const _cl=afClearAll; afClearAll=function(){ Object.keys(QF_ST).forEach(k=>QF_ST[k]=new Set()); _cl(); }; }
 { const _R2=RE; RE=function(a){ _R2(a); try{ qfRender(); }catch(e){ console.warn(e); } }; }
-function qfOpenCfg(){
-  const cat=CATS.find(c=>selCats.has(c.key)); if(!cat||!_qfD) return; closeQfCfg();
-  const D=_qfD, def=QF_DEF[cat.key]||QF_GEN; let cur=qfConfig(cat,D);
-  const o=document.createElement('div'); o.id='qfCfg'; o.className='qfCfg';
-  const draw=()=>{ const order=[...cur,...D.all.map(f=>f.id).filter(id=>!cur.includes(id))];
-    o.innerHTML='<div class="qfCfgBox"><h3>⚙ סינונים מהירים — '+esc(cat.label)+'</h3><p>סמני מה יופיע כשורת סינון מעל המוצרים, וסדרי עם החיצים. השינוי נשמר לקטגוריה הזו ומשותף לכולם.</p>'
-      +order.map(id=>{ const f=D.by[id], on=cur.includes(id), dis=f.vals.length<2&&!on; return '<div class="qfCfgRow'+(dis?' dis':'')+'"><label><input type="checkbox" data-id="'+id+'"'+(on?' checked':'')+(dis?' disabled':'')+'><span>'+f.icon+' '+esc(f.label)+' <small>'+(f.vals.length?f.vals.length+' ערכים':'אין עדיין ערכים')+'</small></span></label>'+(on?'<button type="button" data-mv="-1" data-id="'+id+'">▲</button><button type="button" data-mv="1" data-id="'+id+'">▼</button>':'')+'</div>'; }).join('')
-      +'<div class="qfCfgAct"><button type="button" data-a="reset">איפוס לברירת מחדל</button><button type="button" class="pri" data-a="done">סיום</button></div></div>'; };
-  const save=()=>{ const same=JSON.stringify(cur)===JSON.stringify(def.filter(id=>D.by[id])); const val=same?null:cur.slice(); cat.qf=val;
-    shared.cats=shared.cats||{}; shared.cats[cat.key]={...(shared.cats[cat.key]||{}),key:cat.key,qf:val};
-    fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(cat.key)}.json`,{method:'PATCH',body:JSON.stringify({key:cat.key,qf:val})}).catch(()=>{}); RE(); };
-  o.addEventListener('click',e=>{ if(e.target===o){ closeQfCfg(); return; } const b=e.target.closest('button'); if(!b) return;
-    if(b.dataset.a==='done'){ closeQfCfg(); return; }
-    if(b.dataset.a==='reset'){ cur=def.filter(id=>D.by[id]); save(); draw(); return; }
-    if(b.dataset.mv){ const i=cur.indexOf(b.dataset.id), j=i+Number(b.dataset.mv); if(i>=0&&j>=0&&j<cur.length){ [cur[i],cur[j]]=[cur[j],cur[i]]; save(); draw(); } } });
-  o.addEventListener('change',e=>{ const c=e.target; if(!c.dataset||!c.dataset.id) return; if(c.checked){ if(!cur.includes(c.dataset.id)) cur.push(c.dataset.id); } else { cur=cur.filter(x=>x!==c.dataset.id); const f=D.by[c.dataset.id]; if(f) f.clr(); } save(); draw(); });
-  document.body.appendChild(o); draw();
-}
-function closeQfCfg(){ const o=document.getElementById('qfCfg'); if(o) o.remove(); }
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeQfCfg(); });
+
 rebuild(); applyHash(); tabsHTML(); buildChips(); RE(true); if(selCats.size) syncHash(); cmpBarPaint();
 { const _q=new URLSearchParams(location.search), _as=(_q.get('as')||'').trim(); if(!me&&_as){ me={pk:pkFromName(_as),name:_as}; localStorage.setItem('ida-me',JSON.stringify(me)); } }
 if(me){ me.pk=pkFromName(me.name); localStorage.setItem('ida-me',JSON.stringify(me)); fbPushName(); startSync(); } else openMe();
