@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>תאורת גינה · הבית שלנו</title><meta name="robots" content="noindex">
+<meta name="description" content="תכנון תאורת גינה לפי אזורים, וההנחיות לחשמלאי: מה לבקש ממנו עכשיו ומה אפשר לבחור אחר כך.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf7f2;--card:#fff;--ink:#332c25;--soft:#645a4f;--line:#e6ddd0;--brass:#9a7338;--brass-s:#f3e9d6;--ok:#2f6a3d;--no:#9a4a2e;--warn:#9a6a10;--night:#1f2a2e;--lamp:#f2c35b;--leaf:#6f9a73}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1a16;--card:#27231e;--ink:#eee6da;--soft:#b9ad9c;--line:#3b352d;--brass:#d6ad66;--brass-s:#3a3122;--ok:#7bc58c;--no:#e0987c;--warn:#e3b94a;--night:#11181b;--lamp:#f2c35b;--leaf:#8fbb93}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Heebo,system-ui,sans-serif;padding:0 16px 70px}
+.wrap{max-width:980px;margin:0 auto}h1{font-size:28px;margin:24px 0 2px}.for{color:var(--brass);font-weight:800;font-size:13px;letter-spacing:.04em}
+.intro{margin:10px 0 18px;max-width:70ch}
+h2{font-size:22px;margin:0}h3{font-size:15px;margin:18px 0 6px}
+section{margin:36px 0;scroll-margin-top:12px}section>header{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;border-bottom:2px solid var(--brass);padding-bottom:6px;margin-bottom:10px}
+.tag{font-size:12.5px;font-weight:700;background:var(--brass-s);color:var(--brass);border-radius:99px;padding:2px 10px}
+.box{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 16px;margin:10px 0}
+.box.key{border-color:var(--brass);background:var(--brass-s)}
+.box h3:first-child{margin-top:2px}
+ul,ol{margin:6px 0;padding-inline-start:20px}li{margin:4px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.two>*{min-width:0}@media(max-width:700px){.two{grid-template-columns:1fr}}
+.ok{color:var(--ok)}.no{color:var(--no)}.warn{color:var(--warn)}
+.plan{background:var(--night);border-radius:16px;padding:10px;margin:12px 0}.plan svg{width:100%;height:auto;display:block;max-height:640px}
+.plan .cap{color:#cfc6b6;font-size:12px;margin:6px 4px 2px}
+.lg{display:flex;flex-wrap:wrap;gap:6px 16px;color:#cfd9dc;font-size:12.5px;margin:8px 4px 0}.lg i{display:inline-block;vertical-align:-2px;margin-inline-end:5px}.lg .d{width:12px;height:12px;border-radius:50%;background:#f2c35b}.lg .ring{background:none;border:2px dashed #f2c35b;width:11px;height:11px}.lg .t{border-inline:6px solid transparent;border-bottom:11px solid #f2c35b}.lg .sq{width:11px;height:11px;background:#ffe7a8}.lg .st{background:#e7b4a0}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:start;vertical-align:top}th{color:var(--soft);font-weight:700;font-size:12.5px}
+.tw{overflow-x:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:8px}
+.opt{background:var(--card);border:1.5px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}.opt.pick{border-color:var(--ok)}
+.im{display:block;aspect-ratio:4/3;background:#f1ece4}.im img{width:100%;height:100%;object-fit:cover;display:block}
+.ob{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}.ob h4{margin:0;font-size:14px;line-height:1.35}.ob a{color:inherit}
+.pr{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.pr b{font-size:17px}.pr span{font-size:12px;color:var(--soft)}
+.ob p{margin:0;font-size:12.5px;line-height:1.45}
+.badge{align-self:flex-start;font-size:11.5px;font-weight:800;background:var(--ok);color:#fff;border-radius:99px;padding:1px 9px}
+pre.copy{white-space:pre-wrap;background:var(--card);border:1.5px dashed var(--brass);border-radius:12px;padding:12px 14px;font:14px/1.7 Heebo,system-ui,sans-serif;margin:8px 0}
+button.cp{font:inherit;font-weight:700;background:var(--brass);color:#fff;border:0;border-radius:10px;padding:7px 14px;cursor:pointer}
+small.s{color:var(--soft);font-size:12.5px}
+</style></head><body><div class="wrap">
+
+<div class="for">תכנון תאורת גינה · נוסח כמו מעצב נוף</div>
+<h1>להאיר את הגינה בלילה — בעדינות</h1>
+<p class="intro">העיקרון: <b>מעט אור, נמוך ומוסתר</b>. רואים את הצמחים ולא את הפנס, ואת המדרגות ולא סנוור. כל הגופים באותו גוון חם (2700K), באור קטן (עשרות לומנים לצמח, כמה מאות לעץ), והכל על חיבור מבוקר שנכבה בשעה מוגדרת. בצד המזרחי יש הרבה אור מהפרוז׳קטורים, ולכן שם מוסיפים כמעט כלום.</p>
+
+<div class="box key">
+<h3>התשובה הקצרה לשאלה לגבי החשמלאי</h3>
+<p><b>לא צריך לקנות את הגופים לפני שמדברים איתו.</b> צריך להחליט עכשיו על <b>שני דברים בלבד</b>, שהם "השיטה" ולא הדגם:</p>
+<ol>
+<li><b>סוג החשמל לגינה:</b> מומלץ מתח נמוך (24V) עם שנאי אחד בכל צד, ולא 220V בכל גוף. זה נוח לגינה רטובה, בטוח יותר לילדים ולחתולים, ואפשר להזיז או להוסיף גוף אחר כך בלי חשמלאי. זו גם התשובה לשאלה הפתוחה "220V או 12V בגינה המערבית" ברשימת השאלות.</li>
+<li><b>מה נטמן בבניה:</b> רק גופים שנכנסים בתוך אבן או קיר (סימוני מדרגה) חייבים להיבחר מראש, כי החור נחתך לפי הדגם. כל השאר (עמודים ודוקרנים בצמחייה) מחוברים אחר כך לכבל.</li>
+</ol>
+<p>ולכן מה שמבקשים מהחשמלאי הוא <b>תשתית</b>: נקודות הזנה, צינורות ריקים, סימון מדויק של כל קצה. הנוסח המוכן נמצא למטה, בסעיף "מה לבקש מהחשמלאי".</p>
+</div>
+
+<h2 style="margin-top:28px">תכנית עקרונית</h2>
+<div class="plan">
+<svg viewBox="0 0 800 640" role="img" aria-label="תכנית עקרונית של תאורת הגינה, לא בקנה מידה">
+<rect x="0" y="0" width="800" height="640" fill="#1f2a2e"/>
+<!-- lot outline -->
+<rect x="30" y="30" width="740" height="580" rx="6" fill="#26343a" stroke="#4a5b62" stroke-width="2"/>
+<!-- pergola / north yard -->
+<rect x="130" y="40" width="430" height="95" rx="6" fill="#2d3e44" stroke="#4a5b62" stroke-dasharray="6 5"/>
+<text x="345" y="92" fill="#8fa3aa" font-size="15" text-anchor="middle">חצר צפונית · פרגולה (לא בתכנון הזה)</text>
+<!-- house -->
+<rect x="230" y="150" width="300" height="400" fill="#3b4a50" stroke="#8fa3aa" stroke-width="3"/>
+<text x="380" y="345" fill="#cfd9dc" font-size="22" text-anchor="middle">הבית</text>
+<!-- east parking concrete -->
+<rect x="540" y="200" width="225" height="400" fill="#33454b" stroke="#4a5b62"/>
+<text x="652" y="300" fill="#8fa3aa" font-size="16" text-anchor="middle">חניה · בלוקים</text>
+<text x="652" y="322" fill="#e7b4a0" font-size="13" text-anchor="middle">הרבה אור מפרוז׳קטורים</text>
+<rect x="725" y="205" width="40" height="390" fill="#3a5a46" opacity=".55"/>
+<text x="745" y="196" fill="#bfe0c7" font-size="12" text-anchor="middle">צמחייה</text>
+<!-- west strip -->
+<rect x="40" y="330" width="110" height="270" fill="#2e3a3f" stroke="#4a5b62"/>
+<rect x="40" y="330" width="30" height="270" fill="#3a5a46" opacity=".6"/>
+<text x="55" y="322" fill="#bfe0c7" font-size="12" text-anchor="middle">צמחייה</text>
+<rect x="70" y="330" width="55" height="270" fill="#3b4a50" opacity=".9"/>
+<text x="98" y="600" fill="#cfd9dc" font-size="11" text-anchor="middle">שביל</text>
+<rect x="125" y="330" width="105" height="270" fill="#2d4a3a" opacity=".55"/>
+<text x="178" y="470" fill="#bfe0c7" font-size="13" text-anchor="middle">דשא</text>
+<!-- steps west (3) -->
+<g stroke="#e6ddd0" stroke-width="3"><line x1="70" y1="410" x2="125" y2="410"/><line x1="70" y1="470" x2="125" y2="470"/><line x1="70" y1="535" x2="125" y2="535"/></g>
+<!-- west posts (4 planned, 3 recommended) -->
+<g>
+<circle cx="132" cy="380" r="9" fill="#f2c35b"/><circle cx="132" cy="440" r="9" fill="none" stroke="#f2c35b" stroke-dasharray="3 3" stroke-width="2"/><circle cx="132" cy="500" r="9" fill="#f2c35b"/><circle cx="132" cy="565" r="9" fill="#f2c35b"/>
+</g>
+<!-- west step markers -->
+<g fill="#ffe7a8"><rect x="64" y="404" width="9" height="9"/><rect x="122" y="404" width="9" height="9"/><rect x="64" y="464" width="9" height="9"/><rect x="122" y="464" width="9" height="9"/><rect x="64" y="529" width="9" height="9"/><rect x="122" y="529" width="9" height="9"/></g>
+<!-- west plant uplights -->
+<g fill="none" stroke="#f2c35b" stroke-width="2"><path d="M48 360 l8 -10 l8 10 z" fill="#f2c35b"/><path d="M48 420 l8 -10 l8 10 z" fill="#f2c35b"/><path d="M48 490 l8 -10 l8 10 z" fill="#f2c35b"/><path d="M48 560 l8 -10 l8 10 z" fill="#f2c35b"/></g>
+<!-- east -->
+<circle cx="560" cy="430" r="9" fill="#6f9a73"/><text x="560" y="414" fill="#bfe0c7" font-size="12" text-anchor="middle">עץ</text>
+<g fill="#f2c35b"><path d="M735 350 l8 -10 l8 10 z"/><path d="M735 470 l8 -10 l8 10 z"/><path d="M735 540 l8 -10 l8 10 z"/><path d="M547 438 l8 -10 l8 10 z"/></g>
+<rect x="560" y="570" width="14" height="14" fill="#ffe7a8"/>
+<text x="640" y="596" fill="#ffe7a8" font-size="12" text-anchor="middle">מדרגה: סימון אחד, אחרי בדיקה</text>
+<!-- stations -->
+<rect x="190" y="548" width="26" height="22" fill="#e7b4a0" stroke="#fff"/><text x="203" y="588" fill="#e7b4a0" font-size="12" text-anchor="middle">שנאי מערב</text>
+<rect x="520" y="520" width="26" height="22" fill="#e7b4a0" stroke="#fff"/><text x="533" y="512" fill="#e7b4a0" font-size="12" text-anchor="middle">שנאי מזרח</text>
+<!-- compass -->
+<text x="400" y="26" fill="#cfc6b6" font-size="13" text-anchor="middle">צפון ↑</text><text x="400" y="632" fill="#cfc6b6" font-size="13" text-anchor="middle">רחוב ושער ↓</text>
+</svg>
+<div class="lg"><span><i class="d"></i> עמוד שביל</span><span><i class="d ring"></i> נקודה רזרבית</span><span><i class="t"></i> דוקרן כלפי מעלה</span><span><i class="sq"></i> סימון מדרגה</span><span><i class="sq st"></i> שנאי</span></div><div class="cap">שרטוט סכמטי לפי תוכנית הפיתוח של נופר. אין כאן קנה מידה, והמיקומים המדויקים נקבעים בשטח.</div>
+</div>
+
+<section id="west"><header><h2>הצד המערבי — שביל, מדרגות וצמחייה</h2><span class="tag">3 עמודים · 6 סימוני מדרגה · כ־4 דוקרנים</span></header>
+<div class="box"><h3>האם מספיקים 3 עמודים במקום 4?</h3>
+<p><b>כן, 3 מספיקים.</b> בתוכנית של נופר 4 נקודות על קטע של כ־4.7 מ׳ בין הראשונה לאחרונה, כלומר רווח של כ־1.6 מ׳. <small class="s">(הערכה לפי התוכנית, שאינה בקנה מידה, ולכן כדאי למדוד בשטח.)</small> עם 3 עמודים הרווח כ־2.4 מ׳, וזה בתוך הטווח של 1.5 עד 2.5 מ׳ שטלייט עצמה ממליצה לעמודי שביל. כדאי לפרוס 3 עמודים, אחד ליד כל מדרגה, ולהשאיר את הצינור של הנקודה הרביעית סגור ומסומן למקרה שתרצי אחר כך.</p></div>
+<div class="two">
+<div class="box"><h3>עמודי השביל (3)</h3><ul>
+<li><b>גובה:</b> 40 עד 60 ס״מ. עמוד של 90 ס״מ גבוה מדי ומסנוור.</li>
+<li><b>כיוון האור:</b> כלפי מטה בלבד, מוצל, בלי כדור זכוכית שנראה מרחוק.</li>
+<li><b>עוצמה:</b> 100 עד 300 לומן לכל עמוד, 2700K.</li>
+<li><b>צבע:</b> שחור או אפור כהה מט, כמו שאר הגופים בחוץ.</li></ul></div>
+<div class="box"><h3>סימון המדרגות משני הצדדים (6)</h3><ul>
+<li>גוף קטן בכל קצה של כל מדרגה (בסך הכל 6), מוצמד לקיר או לאבן של המדרגה.</li>
+<li>האור עדין, כ־1W ומעט לומנים, כדי לסמן את הקצה ולא להאיר את כל השביל.</li>
+<li><b>החלטה שצריך לקבל לפני שגומרים את הריצוף:</b> אם החור נחתך בתוך אבן או קיר, צריך לדעת את הדגם מראש.</li></ul></div>
+</div>
+<div class="box"><h3>הצמחייה והעצים (כ־4 דוקרנים)</h3><ul>
+<li>דוקרן נמוך שמאיר <b>כלפי מעלה</b>, מוסתר מאחורי הצמח או בבסיס הגזע, בזווית של כ־30° עד 45°.</li>
+<li>אור חם עדין של 3 עד 6W לכל נקודה. אין צורך בצבע ירוק או צהוב: אור חם אחיד נראה הכי טבעי על עלים וגזעים.</li>
+<li>עדיף כמה נקודות קטנות וחלשות מאחת חזקה. כך נוצר עומק, ואין מוקד בוהק.</li></ul></div>
+</section>
+
+<section id="east"><header><h2>הצד המזרחי — חניה ועץ</h2><span class="tag">כמעט שום דבר חדש</span></header>
+<div class="box"><ul>
+<li><b>המדרגה:</b> <span class="warn">להמתין.</span> אחרי התקנת הפרוז׳קטור עם חיישן התנועה, בודקים שבוע בלילה אם המדרגה ברורה כשיוצאים. אם כן, אין צורך בכלום. אם לא, מוסיפים סימון אחד קטן בקצה המדרגה. כדי שיהיה קל להוסיף, מבקשים עכשיו מהחשמלאי צינור ריק עד המדרגה.</li>
+<li><b>עץ אחד:</b> דוקרן אחד (או שניים בזוויות שונות אם העץ רחב) ממוקם בבסיס העץ ומכוון כלפי מעלה לתוך הצמרת. זה האלמנט היחיד שנותן "יופי" באזור הזה.</li>
+<li><b>2 עד 3 דוקרנים על הצמחייה</b> לאורך רצועת הגדר, בהפרשים לא סימטריים. בתוכנית של נופר כבר כתוב שם "הכנה לתאורה מרצפה".</li>
+<li><b>שליטה:</b> הדוקרנים בצד הזה נדלקים רק בלילה וכבים מוקדם יחסית, כדי לא להוסיף לאור של הפרוז׳קטורים.</li></ul></div>
+</section>
+
+<section id="items"><header><h2>הגופים שאני ממליצה עליהם</h2><span class="tag">מערכת אחת · 24V DC · 2700–3000K</span></header>
+<p>כל הדגמים נבדקו בדפי המוצר ב־16.11.2026. הכל מסדרת Mood של טלייט (Technolite), כי היא כוללת עמודים, דוקרנים וסימוני מדרגה עם אותם מחברים אטומים וספק כוח אחד. טלייט היא יבואנית ותיקה עם אולם תצוגה. זו המלצה לשיטה, ולא צריך להזמין עכשיו.</p>
+<h3>עמודי שביל — 3 במערב</h3><div class="grid"><div class="opt pick"><a class="im" href="https://www.tlite.co.il/product/mood-tack/" target="_blank" rel="noopener"><img src="../../img/gp-7.jpg" alt="" loading="lazy"></a><div class="ob"><span class=badge>המלצה</span><h4><a href="https://www.tlite.co.il/product/mood-tack/" target="_blank" rel="noopener">Mood Tack · עמוד נעץ 51 ס״מ עם מגן</a></h4><div class="pr"><b>₪380</b><span>ליחידה</span></div><p>האור יוצא מתחת למגן כלפי מטה, IP65, 270 לומן. ההתאמה הכי טובה ל"אור נמוך ומוסתר". נעץ באדמה ולא בולארד כבד.</p></div></div><div class="opt"><a class="im" href="https://www.tlite.co.il/product/mod-post/" target="_blank" rel="noopener"><img src="../../img/gl-6.jpg" alt="" loading="lazy"></a><div class="ob"><h4><a href="https://www.tlite.co.il/product/mod-post/" target="_blank" rel="noopener">Mood Post · בולארד 60 ס״מ</a></h4><div class="pr"><b>₪380</b><span>ליחידה</span></div><p>בולארד של ממש על בסיס, עם חלון צדדי. אבל IP54 בלבד וגובה בקצה העליון של הטווח.</p></div></div></div><h3>עצים וצמחייה — דוקרנים כלפי מעלה</h3><div class="grid"><div class="opt pick"><a class="im" href="https://www.tlite.co.il/product/mood-spot/" target="_blank" rel="noopener"><img src="../../img/gl-5.jpg" alt="" loading="lazy"></a><div class="ob"><span class=badge>המלצה</span><h4><a href="https://www.tlite.co.il/product/mood-spot/" target="_blank" rel="noopener">Mood Spot · דוקרן 6W · 2700K · 38°</a></h4><div class="pr"><b>₪285</b><span>ליחידה</span></div><p>לצמחייה ולעץ קטן. קיים גם 12W ב־₪470 לעץ גבוה. גובה כולל 500 מ״מ. לא אומת בדף אם הראש נטוי, כדאי לראות באולם.</p></div></div><div class="opt"><a class="im" href="https://www.homecenter.co.il/products/1771857128975" target="_blank" rel="noopener"><img src="../../img/gl-1.jpg" alt="" loading="lazy"></a><div class="ob"><h4><a href="https://www.homecenter.co.il/products/1771857128975" target="_blank" rel="noopener">דוקרן 12–24V · Home Center</a></h4><div class="pr"><b>₪72</b><span>ליחידה</span></div><p>הזול. 8W, אור חם, IP65, כבל 1.5 מ׳, עובד גם על ספק 24V. ₪89.90 בסניף. אין כאן נתונים על זווית וזוהר, ויש לחתוך מחבר ולחבר בקופסה.</p></div></div></div><h3>סימון מדרגות — 6 במערב</h3><div class="grid"><div class="opt pick"><a class="im" href="https://www.tlite.co.il/product/vinnie/" target="_blank" rel="noopener"><img src="../../img/gs-5.jpg" alt="" loading="lazy"></a><div class="ob"><span class=badge>המלצה</span><h4><a href="https://www.tlite.co.il/product/vinnie/" target="_blank" rel="noopener">Vinnie · סימון מדרגה עגול שקוע</a></h4><div class="pr"><b>₪200</b><span>ליחידה</span></div><p>1W, 3000K, IP67, חזית Ø55 וחור Ø49 מ״מ בעומק 48 מ״מ. אורו מסמן את הקצה ולא מאיר את כל המדרגה. צריך בחירה לפני חיתוך האבן.</p></div></div></div><h3>ספק כוח — אחד בכל צד</h3><div class="grid"><div class="opt pick"><a class="im" href="https://www.tlite.co.il/product/driver-mode-100/" target="_blank" rel="noopener"><img src="../../img/gg-1.jpg" alt="" loading="lazy"></a><div class="ob"><span class=badge>התאמה מלאה</span><h4><a href="https://www.tlite.co.il/product/driver-mode-100/" target="_blank" rel="noopener">Mood Driver 100 · 24V DC · 100W · IP65</a></h4><div class="pr"><b>₪590</b><span>ליחידה</span></div><p>מחבר אטום שמתחבר ישר לגופי Mood. אין בו שעון, ולכן מוסיפים שעון או חיישן אור בלוח. יקר.</p></div></div><div class="opt"><a class="im" href="https://edior.co.il/אביזרים-לתאורת-גינה/דרייבר-lpv-100-24-mw/" target="_blank" rel="noopener"><img src="../../img/gg-2.jpg" alt="" loading="lazy"></a><div class="ob"><h4><a href="https://edior.co.il/אביזרים-לתאורת-גינה/דרייבר-lpv-100-24-mw/" target="_blank" rel="noopener">Mean Well LPV-100-24 · IP67 · 100W</a></h4><div class="pr"><b>₪190</b><span>ליחידה</span></div><p>פי שלושה זול. אבן ספק חשופה, והחשמלאי צריך לחבר אותה בקופסה אטומה ובמחברים. חנות קטנה (אדי אור). חיבור למחברי Mood לא נבדק.</p></div></div></div>
+<h3>כמה זה עולה בערך</h3>
+<div class="tw"><table><tr><th>אזור</th><th>גרסת טלייט מלאה</th><th>גרסה חסכונית</th></tr>
+<tr><td>מערב · 3 עמודים</td><td>₪1,140 (Mood Tack)</td><td>₪1,140</td></tr>
+<tr><td>מערב · 6 סימוני מדרגה</td><td>₪1,200 (Vinnie)</td><td>₪1,200, או לוותר על חלקם</td></tr>
+<tr><td>מערב · 4 דוקרנים</td><td>₪1,140 (Mood Spot 6W)</td><td>כ־₪290 (Home Center)</td></tr>
+<tr><td>מזרח · עץ ועוד 3 דוקרנים</td><td>₪1,325 (12W לעץ, 6W לשאר)</td><td>כ־₪290</td></tr>
+<tr><td>2 ספקי כוח</td><td>₪1,180</td><td>₪380 + קופסאות וחיבורים</td></tr>
+<tr><th>סה״כ בערך</th><th>₪6,000</th><th>₪3,300</th></tr></table></div>
+<small class="s">לא כולל משלוח, כבלים ועבודת חשמלאי. חלק מהסימונים אפשר להחליף בפחות, למשל אחד בקצה של כל מדרגה במקום שניים.</small>
+<div class="box"><h3>הערות מהבדיקה</h3><ul>
+<li>גופי Mood, Vinnie ו־Post הם 24V בלבד. דוקרני Deal Teora שבלוח הם 12V בלבד, ולכן אסור לחבר אותם לספק 24V. כדאי לא לערבב.</li>
+<li>ספק 24V בלי שעון או חיישן אור: שעון אסטרונומי או חיישן דמדומים מורכבים בלוח, בצד 230V.</li>
+<li>כתבה בעיתונות מציעה "עד 12V". 24V DC נחשב מתח נמוך בטוח, אבל זה החשמלאי שמחליט.</li></ul></div></section>
+
+
+<section id="electric"><header><h2>מה לבקש מהחשמלאי</h2><span class="tag">תשתית בלבד · לא צריך לבחור דגמים</span></header>
+<div class="box"><h3>למה אפשר להתחיל בלי לקנות גופים</h3>
+<p>החשמלאי לא צריך לדעת איזה גוף יהיה בכל מקום. הוא צריך להביא <b>חשמל ומעבר לכבלים</b> לכל אזור. הגופים עצמם הם דוקרנים וחיבורים שאפשר להוסיף ולהזיז אחר כך. החריג היחיד הוא סימון מדרגה שנחתך בתוך אבן.</p></div>
+<div class="box"><h3>רשימת הבקשות</h3><ol>
+<li><b>מעגל נפרד לתאורת הגינה</b> מלוח החשמל, עם ממסר זליגה 30 mA, ושליטה דרך מפסק בבית <b>ושעון או חיישן אור</b> (דמדומים). שהתאורה תיכבה לבד בשעה שנקבע.</li>
+<li><b>שתי "תחנות הזנה"</b>: אחת במערב ואחת במזרח. כל תחנה היא נקודת חשמל 220V אטומה (IP66) במקום יבש ומוצל, נגיש לטיפול, שבו יושב שנאי 24V.</li>
+<li><b>צינורות ריקים בקוטר 32 מ״מ</b> עם חוט משיכה, מכל תחנה אל כל אזור: שביל, מדרגות, צמחייה וגם עץ המזרח. את הצינורות שכבר הונחו מתחת לשביל (3 מעברים) משאירים פתוחים ומסומנים בשני הקצוות.</li>
+<li><b>בכל אחת מארבע נקודות העמודים</b> קצה צינור שמגיע לתוך הבסיס, ובנוסף <b>כבל 220V (3×1.5)</b> שסגור בקופסה אטומה, כביטוח למקרה שנחליט על עמודים ב־220V.</li>
+<li><b>צינור ריק אחד נוסף</b> מהתחנה המזרחית אל מדרגת החניה.</li>
+<li><b>סימון וצילום:</b> לצלם כל קצה צינור לפני כיסוי באדמה, וליידע ממה (קיר או פינה) המרחק.</li>
+<li><b>כבל מהשנאי:</b> 2×2.5 מ״מ² בתוך הצינור. בחישוב גס, 36W בקצה קו של 2.5 מ״מ² ב־24V יורדים כ־5% מתח באורך של כ־57 מ׳, ובאורך של 34 מ׳ ירידה של 3%. לקווים ארוכים מ־20 מ׳ כדאי שהחשמלאי יחשב.</li></ol>
+<small class="s">שנאי עם חיישן אור, ה־220V וה־RCD נקבעים בסוף לפי החשמלאי. זה תכנון ראשוני ולא תחליף לחשמלאי מוסמך, והוא מחליט בסוף על הפרטים.</small></div>
+<div class="box"><h3>נוסח מוכן להעתקה (לשליחה על ידך)</h3>
+<pre class="copy" id="txt">שלום, בקשה לתשתית תאורת גינה (נקודות חשמל, לא גופים):
+1. מעגל נפרד לתאורת גינה עם ממסר זליגה 30 mA, מפסק בבית וחיישן אור או שעון.
+2. שתי נקודות הזנה 220V אטומות (IP66): אחת בצד מערב ואחת בצד מזרח, במקום יבש ונגיש, להצבת ספק כוח 24V DC (לא AC), בנפרד בכל צד.
+3. צינורות ריקים 32 מ״מ עם חוט משיכה מכל נקודה אל: השביל המערבי (3 מעברים מתחת לשביל), רצועת הצמחייה, עץ וצמחייה במזרח ומדרגת החניה.
+4. בכל אחת מ־4 נקודות העמודים במערב: קצה צינור בבסיס וכבל 220V (3×1.5) מוחבא בקופסה אטומה.
+5. צילום וסימון של כל קצה לפני כיסוי.
+אשמח לדעת מה עלות התוספת ומה מרחקי הקווים.</pre>
+<button class="cp" onclick="var t=document.getElementById('txt').innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){this.textContent='✓ הועתק'}.bind(this)).catch(function(){var r=document.createRange();r.selectNodeContents(document.getElementById('txt'));var s=getSelection();s.removeAllRanges();s.addRange(r);})">העתקה</button></div>
+</section>
+
+<section id="questions"><header><h2>מה עוד פתוח</h2></header>
+<div class="box"><ul>
+<li>האם הריצוף של השביל והמדרגות במערב כבר סגור? אם כן, סימון המדרגות צריך להיות <b>גוף שמוצמד</b> (לא שקוע), או שהגוף ייבחר מיד.</li>
+<li>איפה כדאי למקם את שני השנאים (בארון, מתחת לגגון, בקיר)? ההחלטה כאן בין הבית לחשמלאי.</li>
+<li>האם העץ במזרח כבר ניטע, ואיזה? גובה וסוג קובעים את זווית האור.</li></ul></div>
+</section>
+
+</div></body></html>
