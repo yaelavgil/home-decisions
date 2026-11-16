@@ -2903,7 +2903,9 @@ function storeRowHTML(it){
   if(it.type==='color') return '';
   const r=(typeof recStore==='function')?recStore(it):null, href=(r&&r.l)||it.link||'', h=hostOf(href), nm=guessStore(it);
   if(!nm||nm==='לא ידוע') return '';
-  return `<div class="storeRow">${h?`<img class="slogo" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(h)}&sz=64" alt="" loading="lazy" onerror="this.remove()">`:''}<span>${esc(nm)}</span></div>`;
+  const inner=`${h?`<img class="slogo" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(h)}&sz=64" alt="" loading="lazy" onerror="this.remove()">`:''}<span>${esc(nm)}</span>`;
+  if(href&&/^https?:/.test(href)) return `<a class="storeRow" href="${esc(href)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="פתיחת המוצר באתר החנות">${inner}<span class="slA">↗</span></a>`;
+  return `<div class="storeRow">${inner}</div>`;
 }
 function cardEl(it){
   if(els.has(it.id))return els.get(it.id);
