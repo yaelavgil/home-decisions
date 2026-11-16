@@ -1407,6 +1407,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"מקרר","label":"מקרר","icon":"🧊","slug":"fridge"},
       {"key":"מיטת לילי","label":"מיטת לילי","icon":"🧸","slug":"lily-bed"},
       {"key":"מזרנים ללילי (90×190)","label":"מזרנים ללילי (90×190)","icon":"💤","slug":"lily-mattress","group":"חדרי שינה וילדים","multi":True,"subs":["פנדה (Pandazzz)","אורגניק בד (Organic Bed)","עמינח (Aminach)"]},
+      {"key":"פינת אוכל","label":"פינת אוכל — שולחן עגול נפתח + כיסאות","icon":"🍽️","slug":"dining","group":"סלון ומשפחה","multi":True,"subs":["שולחן","כיסאות","סטים"]},
       {"key":"מיטת אורחים","label":"מיטת אורחים","icon":"🛏️","slug":"guest-bed"},
       {"key":"פח","label":"פח","icon":"🗑️","slug":"bin","subs":["חיישן · 50 ל׳+ · על רגליים (מועדף)","חיישן · 50 ל׳+ · בלי רגליים / לא צוין","חיישן · מתחת ל־50 ל׳"]},
       {"key":"מקרר פרגולה","label":"מקרר פרגולה","icon":"🍦","slug":"pergola-fridge"},
@@ -5624,6 +5625,13 @@ _lme=json.load(open(os.path.join(REPO,"enrich","lily-mattress.json"),encoding="u
 for _o in json.load(open(os.path.join(REPO,"lily-mattress.json"),encoding="utf-8")):
     _x=_lme["items"].get(_o["id"],{})
     _o["criteria"]=_lme["criteria"]
+    for _k in ("specs","stores","pick","pickWhy","points"):
+        if _k in _x: _o[_k]=_x[_k]
+    DATA.append(_o)
+# 17.11.2026: dining corner (round extendable wooden table + chairs); tables enriched from enrich/dining.json (criteria already in CRIT), chairs/set carry their own stores
+_dne=json.load(open(os.path.join(REPO,"enrich","dining.json"),encoding="utf-8"))
+for _o in json.load(open(os.path.join(REPO,"dining.json"),encoding="utf-8")):
+    _x=_dne["items"].get(_o["id"],{})
     for _k in ("specs","stores","pick","pickWhy","points"):
         if _k in _x: _o[_k]=_x[_k]
     DATA.append(_o)
