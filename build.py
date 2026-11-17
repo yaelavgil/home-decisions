@@ -1412,9 +1412,8 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"פח","label":"פח","icon":"🗑️","slug":"bin","subs":["חיישן · 50 ל׳+ · על רגליים (מועדף)","חיישן · 50 ל׳+ · בלי רגליים / לא צוין","חיישן · מתחת ל־50 ל׳"]},
       {"key":"מקרר פרגולה","label":"מקרר פרגולה","icon":"🍦","slug":"pergola-fridge"},
       {"key":"תליה זמנית","label":"תליה זמנית","icon":"🧥","slug":"hanging"},
-      {"key":"שולחן לדני","label":"שולחן לדני","icon":"🖥️","slug":"danny-desk"},
-      {"key":"שולחן לימודים לדני","label":"שולחן לימודים לדני","icon":"📚","slug":"danny-study-desk"},
-      {"key":"שולחנות מחשב ולימודים","label":"שולחנות מחשב ולימודים","icon":"✏️","slug":"study-desks","group":"חדרי שינה וילדים","multi":True,"subs":["שולחן מחשב","שולחן לימודים / ילדים"]},
+      {"key":"שולחן לדני","label":"שולחן לדני — כתיבה ואיפור (שולחן + מראה)","icon":"💄","slug":"danny-desk","group":"חדרי שינה וילדים","multi":True,"subs":["שולחן + מראה מוארת מובנית","שולחן + מראה LED נפרדת","שידה / קונסולה עם אחסון","מראה משולשת מתקפלת מוארת","כיסא / שרפרף לפינת איפור","ידיות / כפתורים להחלפה"]},
+      {"key":"שולחן לימודים לדני","label":"שולחן לימודים (לעתיד)","icon":"📚","slug":"danny-study-desk","group":"חדרי שינה וילדים"},
       {"key":"וילון לממד","label":"וילון גלילה לממד (חדר דני)","icon":"🪟","slug":"mamad-blind","group":"חדרי שינה וילדים","multi":True,"subs":["זול ומהיר","מידה אישית — מראה טבעי","פרימיום — קסטה / דאבל / תעלות צד"]},
       {"key":"תנורי פרגולה","label":"תנורי פרגולה","icon":"🌡️","slug":"pergola-heater"},
       {"key":"שולחן סנוקר לחצר","label":"שולחן סנוקר לחצר (עם כיסוי)","icon":"🎱","slug":"snooker-table","group":"חוץ ופרגולה","multi":True,"prio":3},
@@ -1441,7 +1440,6 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"ספסל טיק","label":"ספסל טיק","icon":"🪵","slug":"teak-bench","group":"אמבטיה","multi":True,"subs":["80 ס״מ — חדר רחצה ילדים","קטן ומעוצב — חדר רחצה הורים (באלי)"]},
       {"key":"בסיס על גלגלים","label":"בסיס על גלגלים","icon":"🛞","slug":"appliance-bases","group":"מטבח","multi":True,"subs":["מקרר גדול","מקרר קטן","מכונת כביסה","מייבש"]},
       {"key":"ריהוט מרפסת עליונה","label":"ריהוט למרפסת העליונה","icon":"☕","slug":"upper-balcony","group":"חוץ ופרגולה","multi":True,"subs":["פינת ישיבה (כורסאות + שולחן)","שזלונג / מרבץ / פוף רביצה (להתכרבל)","שולחן עבודה / ברים לליד הלפטופ","ספה / ספסל חוץ","שולחן צד / שרפרף / מאפרה"]},
-      {"key":"שולחן איפור","label":"שולחן איפור עם מראה מוארת","icon":"💄","slug":"vanity","group":"חדרי שינה וילדים","multi":True,"subs":["שולחן + מראה מוארת מובנית","שולחן + מראה LED נפרדת","שידה / קונסולה עם אחסון","מראה משולשת מתקפלת מוארת","כיסא / שרפרף לפינת איפור","ידיות / כפתורים להחלפה"]},
       {"key":"שולחן אוכל לפרגולה","label":"שולחן אוכל לפרגולה","icon":"🍽️","slug":"pergola-dining","group":"חוץ ופרגולה","multi":True,"subs":["נפתח — עץ","נפתח — אלומיניום","קבוע / מתקפל"]},
       {"key":"מגבים לרצפה","label":"מגבים לרצפה","icon":"🧽","slug":"mops","group":"אחר"},
       {"key":"פתרונות אחסון","label":"פתרונות אחסון","icon":"🧺","slug":"storage","group":"אחר"},
@@ -1477,8 +1475,8 @@ _FEATS={"tv-console":[
  {"id":"f6","l":"פתח / חור לכבלים","c":0},
  {"id":"f7","l":"טריקה שקטה","c":1,"n":1}]}
 _SC=[{"id":"sc","l":"טריקה שקטה","c":1,"n":1}]
-for _k in ("study-desks","danny-desk","danny-study-desk"): _FEATS[_k]=_SC
-_FEATS["vanity"]=[{"id":"sc","l":"טריקה שקטה","c":1,"n":1,"subs":["שולחן + מראה מוארת מובנית","שולחן + מראה LED נפרדת","שידה / קונסולה עם אחסון"]}]
+for _k in ("danny-study-desk",): _FEATS[_k]=_SC
+_FEATS["danny-desk"]=[{"id":"sc","l":"טריקה שקטה","c":1,"n":1,"subs":["שולחן + מראה מוארת מובנית","שולחן + מראה LED נפרדת","שידה / קונסולה עם אחסון"]}]
 _FEATS["towels"]=[{"id":"f1","l":"כותנה אורגנית","c":1},{"id":"f2","l":"מרקם וופל","c":1},{"id":"f3","l":"עבה 700+ גרם (מראה ספא)","c":1}]
 _FEATS["bath-mats"]=[{"id":"f1","l":"גב מונע החלקה","c":1},{"id":"f2","l":"כותנה","c":1},{"id":"f3","l":"כביסה במכונה","c":0}]
 _ITEMFEATS={"MG1":{"f1":True,"f2":False,"f3":False},"MG2":{"f1":False,"f2":False,"f3":False},"MG3":{"f1":False,"f2":False,"f3":False},"MG4":{"f1":False,"f2":False,"f3":False},"MG5":{"f1":False,"f2":False,"f3":True},"MG6":{"f1":False,"f2":True,"f3":False},"MG7":{"f1":False,"f2":False,"f3":True},"MG8":{"f1":False,"f2":False,"f3":True},"MH4":{"f1":False,"f2":False,"f3":True},"MG9":{"f1":False,"f2":False,"f3":True},"MH5":{"f1":False,"f2":False,"f3":True},"MH1":{"f1":True,"f2":False},"MH2":{"f1":False,"f2":True},"MH3":{"f1":False,"f2":False,"f3":True},"RG1":{"f1":False,"f2":True,"f3":True},"RG2":{"f1":False,"f2":True,"f3":True},"RG3":{"f1":True,"f2":False,"f3":True},"RG4":{"f2":False,"f3":True},"TC1":{"f6":True},"TC2":{"f4":True,"f5":True},"TC3":{"f4":True,"f6":True},"TC4":{"f4":True},"TC5":{"f4":True,"f5":True},"TC6":{"f2":True,"f3":True},"TC7":{"f2":True,"f3":True,"f4":False},"TC8":{"f2":True,"f3":True,"f4":True},"TC9":{"f2":True,"f3":True,"f4":True},"TC10":{"f2":True},"TC11":{"f2":True,"f3":True},"TC12":{"f2":True,"f3":True},"TC13":{"f2":True,"f5":True}}
@@ -1978,6 +1976,7 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .ordnote{position:absolute;bottom:9px;inset-inline-start:9px;z-index:4;background:var(--ordered);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:10px;box-shadow:0 2px 6px rgba(60,40,15,.18)}
 .editb:hover{color:var(--brass-d);transform:scale(1.08)}
 .delb{inset-inline-end:43px}.delb:hover{color:#b3372c!important;border-color:#b3372c}
+.pairChip{font-size:11.5px;color:#6d5a3a;margin:3px 0 1px}.pairChip button{font:inherit;color:#7a5a1f;background:none;border:0;border-bottom:1px dotted #b8975a;padding:0;cursor:pointer}
 .featChips{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 2px}.featChip{font-size:11.5px;background:#e9f0e4;color:#35502c;border-radius:999px;padding:2px 9px}.featChip.val{background:#e6eef5;color:#2c4660}.featChip.no{background:#f1ecec;color:#8a6a67;text-decoration:line-through;text-decoration-thickness:1px}.featChip.unk{background:transparent;color:#8a8478;border:1px dashed #c9c2b4;font-family:inherit;cursor:pointer}.featMiss{font-size:11px;background:#fbeceb;color:#b3372c;border:0;border-radius:999px;padding:2px 9px;cursor:pointer;font-family:inherit}
 .lbfeats:empty{display:none}.lbfeats{margin:10px 0 4px;display:flex;flex-direction:column;gap:5px}.lbfeats h4{margin:0 0 2px;font-size:13px;color:var(--muted)}.lbf{display:flex;align-items:center;gap:8px;font-size:13.5px}.lbf .fl{flex:1}.fbtn{border:1.5px solid var(--line-2);background:var(--paper);border-radius:8px;min-width:34px;padding:2px 8px;font:inherit;cursor:pointer}.fbtn.y{background:#e3f1dc;border-color:#9bc58a}.fbtn.n{background:#f7e3e0;border-color:#d89a92}.fbtn.q{color:var(--muted)}.lbf select{font:inherit;font-size:12.5px;border:1.5px solid var(--line-2);border-radius:8px;padding:2px 6px;background:var(--paper)}
 .featwide{max-width:min(980px,calc(100% - 20px))}.fmx{border-collapse:collapse;font-size:12.5px;width:100%}.fmx th,.fmx td{border-bottom:1px solid var(--line-2);padding:5px 6px;text-align:center;vertical-align:middle}.fmx th{position:sticky;top:0;background:var(--paper);font-weight:600;font-size:12px}.fmx td.nm{text-align:right;min-width:170px;max-width:260px}.fmx td.nm img{width:34px;height:34px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-inline-end:6px}.fmx tr.miss td.nm{background:#fff6f4}.fmx .colAct{display:block;font-size:10.5px;font-weight:400;color:var(--muted);background:none;border:0;cursor:pointer;text-decoration:underline;margin:2px auto 0}
@@ -3000,6 +2999,7 @@ function applyHash(){
   raw.split('+').forEach(part=>{
     let h; try{h=decodeURIComponent(part);}catch(e){h=part;}
     if(h==='outdoor-lighting'){ found.add('תאורה'); subf='תאורת חוץ'; return; }
+    const _LEG={'vanity':'danny-desk','שולחן איפור':'danny-desk','study-desks':'danny-study-desk','שולחנות מחשב ולימודים':'danny-study-desk'}; if(_LEG[h]) h=_LEG[h];
     const c=CATS.find(x=>slugOf(x)===h||x.key===h);
     if(c&&c.key!=='all') found.add(c.key);
   });
@@ -4430,7 +4430,7 @@ function cardEl(it){
   const _tt=String(it.name||'').replace(/"/g,'&quot;').replace(/<[^>]*>/g,'');
   const nameEl=it.link?`<a class="name" href="${it.link}" target="_blank" rel="noopener" title="${_tt}">${it.name}</a>`:`<span class="name" title="${_tt}">${it.name}</span>`;
   const sub=it.type==='color'?`<div class="code">${it.code||''}</div>`
-    :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div></div>${storeLine(it)}`:`<div class="price muted">המחיר בחשבון שלך בחנות</div>`)+dimsRow(it)+featChips(it)+useLabel(it);
+    :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div></div>${storeLine(it)}`:`<div class="price muted">המחיר בחשבון שלך בחנות</div>`)+dimsRow(it)+pairChip(it)+featChips(it)+useLabel(it);
   const featRow=(it.featTags||[]).length?`<div class="featBadges">${(it.featTags||[]).map(t=>`<span class="featBadge">${t}</span>`).join('')}</div>`:'';
   const stars=it.type==='product'?`<div class="stars" data-id="${it.id}">${[1,2,3,4,5].map(n=>`<button type="button" class="star" data-n="${n}" onclick="event.stopPropagation();setRating('${it.id}',${n})">★</button>`).join('')}<span class="ratedBy"></span></div>`:'';
   const qty=it.type==='product'
@@ -4672,6 +4672,7 @@ function catFeats(key){ const c=CATS.find(x=>x.key===key); const f=c&&c.feats; r
 function featVal(it,f){ const v=(it.feats||{})[f.id]; return (v===undefined||v===null||v==='?'||v==='')?undefined:v; }
 function featApplies(it,f){ return !(f.subs&&f.subs.length&&it.sub&&!f.subs.includes(it.sub)); }
 function featMissing(it){ return it.type==='color'?[]:catFeats(it.cat).filter(f=>featApplies(it,f)&&featVal(it,f)===undefined); }
+function pairChip(it){ const p=it.pair; if(!p||!p.t) return ''; const m=p.id&&byId[p.id]; return `<div class="pairChip">🪞 הולך יחד עם: ${m?`<button type="button" onclick="event.stopPropagation();openItem('${p.id}')">${esc(p.t)}</button>`:`<span>${esc(p.t)}</span>`}</div>`; }
 function featChips(it){
   if(it.type==='color') return '';
   const fs=catFeats(it.cat); if(!fs.length) return '';
@@ -6159,6 +6160,22 @@ if _os.path.exists("softclose.json"):
         _v={"yes":True,"no":False,"na":"NA"}.get(_st)
         if _v is not None and _d.get("cat") in ("מזנון לטלוויזיה","שולחן איפור","שולחנות מחשב ולימודים","שולחן לדני","שולחן לימודים לדני"):
             _d["feats"]={**(_d.get("feats") or {}),("f7" if _d["cat"]=="מזנון לטלוויזיה" else "sc"):_v}
+
+# 18.11.2026: ONE desk category for Danny's room ("שולחן לדני": vanity tables + mirrors + oak desks that pair with a separate mirror) and ONE study-desk category (future use)
+_PAIR_DEFAULT="VN24"
+_PAIR_SPECIAL={"VN1":("VN13","EKFÄNN"),"VN2":("VN13","EKFÄNN"),"VN5":("VN13","EKFÄNN"),"VN4":(None,"IKEA KÄRRSJÖN"),"VN6":(None,"IKEA KÄRRSJÖN"),
+               "VN11":("VN24",None),"VN37":("VN24",None)}
+for _d in DATA:
+    if _d.get("cat")=="שולחן איפור": _d["cat"]="שולחן לדני"
+    elif _d.get("cat")=="שולחנות מחשב ולימודים": _d["cat"]="שולחן לימודים לדני"
+    elif _d.get("cat")=="שולחן לדני" and _d["id"].startswith("DK") and not _d.get("sub"): _d["sub"]="שולחן + מראה LED נפרדת"
+_MIRROR_NAME={"VN24":"מראת Urban Beauty 80×60 (₪299)","VN13":"מראת EKFÄNN (₪145)"}
+for _d in DATA:
+    if _d.get("cat")=="שולחן לדני" and not _d.get("hidden") and (_d.get("sub") in ("שולחן + מראה LED נפרדת","שידה / קונסולה עם אחסון")) and _d.get("type")=="product":
+        _pid,_pt=_PAIR_SPECIAL.get(_d["id"],(_PAIR_DEFAULT,None))
+        if _d["id"] in ("VN10",): continue
+        _d["pair"]={"id":_pid,"t":_pt or _MIRROR_NAME.get(_pid,"")}
+
 out=(tpl.replace("__DATA__",json.dumps(DATA,ensure_ascii=False))
         .replace("__CATS__",json.dumps(CATS,ensure_ascii=False))
         .replace("__CRIT__",json.dumps(CRIT,ensure_ascii=False))
