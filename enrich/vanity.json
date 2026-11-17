@@ -549,6 +549,66 @@
     "פלסטיק — פחות חדה",
     "הכי זולה"
    ]
+  },
+  "VN34": {
+   "specs": {
+    "power": "לא רלוונטי",
+    "style": "ידית להחלפה"
+   },
+   "stores": [
+    {
+     "n": "Home Center",
+     "p": 24,
+     "l": "https://www.homecenter.co.il/products/8081614801",
+     "rec": true,
+     "note": "₪6 ליחידה"
+    }
+   ],
+   "points": [
+    "מרחק חורים לא צוין",
+    "זול",
+    "להחלפה"
+   ]
+  },
+  "VN35": {
+   "specs": {
+    "power": "לא רלוונטי",
+    "style": "ידית להחלפה"
+   },
+   "stores": [
+    {
+     "n": "Home Center",
+     "p": 44,
+     "l": "https://www.homecenter.co.il/products/8081614800",
+     "rec": true,
+     "note": "₪11 ליחידה"
+    }
+   ],
+   "points": [
+    "מרחק חורים לא צוין",
+    "זול",
+    "להחלפה"
+   ]
+  },
+  "VN36": {
+   "specs": {
+    "power": "לא רלוונטי",
+    "style": "ידית להחלפה"
+   },
+   "stores": [
+    {
+     "n": "Home Center",
+     "p": 24,
+     "l": "https://www.homecenter.co.il/products/8081614797",
+     "rec": true,
+     "note": "₪6 זהב · ₪8 שחור"
+    }
+   ],
+   "points": [
+    "מרחק חורים לא צוין",
+    "זול",
+    "להחלפה"
+   ]
   }
  }
 }
