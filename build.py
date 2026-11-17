@@ -622,10 +622,10 @@ DESKS=[
   "✔ יש: עץ מלא (אלון או אגוז), קווים נקיים ומעוגלים, עבודת יד, חמישה גוונים (אלון שקוף / חום / טבעי, אגוז שקוף / כהה), אפשרות למידות מותאמות\n✘ אין: בלי מגירות או מדפים · הזמנה לפי דרישה, 45–50 ימי עסקים · גובה לא מצוין בעמוד · משלוח והרכבה בתוספת · אחריות לא מצוינת\n📐 120×60 ס״מ · 💰 ₪4,250"),
 ]
 HEATERS=[
- ("HT11","Colder RIO 2000W · מקרן חימום אובלי, שחור או לבן",990,
+ ("HT11","⚡הספק נמוך — טכנולוגיה · Colder RIO 2000W · מקרן חימום אובלי, שחור או לבן",990,
   "https://ghaun.online/product/%d7%9e%d7%a7%d7%a8%d7%9f-%d7%97%d7%99%d7%9e%d7%95%d7%9d-%d7%91%d7%a2%d7%99%d7%a6%d7%95%d7%91-%d7%99%d7%95%d7%a7%d7%a8%d7%aa%d7%99-2000w-%d7%91%d7%a6%d7%91%d7%a2-%d7%a9%d7%97%d7%95%d7%a8-%d7%90%d7%95/","img/ht-rio.jpg",
   ["לבן או שחור","IP65","צורה אובלית","ג.חיון"],
-  "✔ יש: עיצוב אובלי מעוגל, שחור או לבן לבחירה (אותו מחיר), IP65, 2,000W, מנורת Glare Low עם רפלקטור כפול (בלי סנוור), בידוד כפול 5 שכבות שמונע התחממות הגוף, מפסק ON/OFF, מתחבר לשעון שבת / שקע חכם, מתקן תלייה לקיר כלול, חנות גדולה ומוכרת (ג.חיון, כ־1,700 ביקורות בגוגל)\n✘ אין: אין שלט — הפעלה במפסק או בשקע חכם (עד 8 אמפר) · אחריות 12 חודשים · המידות בדף כנראה של האריזה (75×19×46) — לבקש מידות התקנה בפועל\n💰 ₪990 ליחידה (₪1,980 לשתיים; סטנד אופציונלי מ־₪99)"),
+  "⚡ הספק נמוך — טכנולוגיה: 2000W, מנורת Glare Low + רפלקטור כפול; קולדר מצהירה על 16 מ״ר בחלל פתוח (הוויה/Bromic מצהירות על 8–10 מ״ר ל־2000W — הטענות סותרות, לכן הוא גבולי)\n✔ יש: עיצוב אובלי מעוגל, שחור או לבן לבחירה (אותו מחיר), IP65, 2,000W, מנורת Glare Low עם רפלקטור כפול (בלי סנוור), בידוד כפול 5 שכבות שמונע התחממות הגוף, מפסק ON/OFF, מתחבר לשעון שבת / שקע חכם, מתקן תלייה לקיר כלול, חנות גדולה ומוכרת (ג.חיון, כ־1,700 ביקורות בגוגל)\n✘ אין: אין שלט — הפעלה במפסק או בשקע חכם (עד 8 אמפר) · אחריות 12 חודשים · המידות בדף כנראה של האריזה (75×19×46) — לבקש מידות התקנה בפועל\n💰 ₪990 ליחידה (₪1,980 לשתיים; סטנד אופציונלי מ־₪99)"),
  ("HT10","CAESAR Solarium CW2 · מקרן חום עם פאנל זכוכית לבנה + שלט",1288,
   "https://www.zap.co.il/model.aspx?modelid=1214116","img/ht-caesar.jpg",
   ["לבן","IP65","שלט + צג","אחריות 3 שנים"],
@@ -5679,13 +5679,27 @@ for _o in json.load(open(os.path.join(REPO,"heaters3.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"heaters4.json"),encoding="utf-8")):
     DATA.append(_o)
+for _o in json.load(open(os.path.join(REPO,"heaters5.json"),encoding="utf-8")):
+    DATA.append(_o)
 for _f in ("mops2.json","storage.json","bedspreads.json","bedspreads2.json","bedspreads3.json"):
     for _o in json.load(open(os.path.join(REPO,_f),encoding="utf-8")):
         DATA.append(_o)
-# 3.11.2026: she wants 3000W (white if possible) heaters for the open pergola -> hide the older 2000W picks (kept, reversible)
+# 17.11.2026: NEW requirement — 3000W per unit (silver/white preferred, black OK); lower wattage only with real technology evidence
+#   (kept + labelled "הספק נמוך — טכנולוגיה": HT11 Colder RIO, HT15 Boston Premium, HT21 SmartAir LAVA, HT36, HT37). Everything else under 3000W is hidden
+#   (reversible: delete the id from _PH_HIDE). Remote / levels / IP are no longer mandatory, so HT14/16/18 (3000W, no remote) are visible again.
+_PH_HIDE={"HT%d"%i for i in range(1,13)} - {"HT11"}
 for _d in DATA:
-    if _d.get("cat")=="תנורי פרגולה" and _d["id"] in ({"HT%d"%i for i in range(1,13)} | {"HT14","HT16","HT18"}):  # 3.11: remote + several levels are mandatory; HT14/16/18 have no remote
+    if _d.get("cat")=="תנורי פרגולה" and _d["id"] in _PH_HIDE:
         _d["hidden"]=True
+# merge enrich for the late-loaded pergola heater files (HT13+) — the generic enrich pass runs before heaters2-5 are appended
+_phe=json.load(open(os.path.join(REPO,"enrich","pergola-heater.json"),encoding="utf-8"))
+for _d in DATA:
+    if _d.get("cat")=="תנורי פרגולה":
+        _x=_phe["items"].get(_d["id"])
+        if _x:
+            _d["criteria"]=_phe["criteria"]
+            for _k in ("specs","stores","pick","pickWhy","points"):
+                if _k in _x: _d[_k]=_x[_k]
 
 # guard: item ids must be unique — a shared id merges votes/orders of two different items (bug found 2.11.2026: bins BL1-4 vs lily beds)
 _dup=sorted({d["id"] for d in DATA if sum(1 for e in DATA if e["id"]==d["id"])>1})
