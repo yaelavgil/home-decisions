@@ -5687,7 +5687,7 @@ for _f in ("mops2.json","storage.json","bedspreads.json","bedspreads2.json","bed
 # 17.11.2026: NEW requirement — 3000W per unit (silver/white preferred, black OK); lower wattage only with real technology evidence
 #   (kept + labelled "הספק נמוך — טכנולוגיה": HT11 Colder RIO, HT15 Boston Premium, HT21 SmartAir LAVA, HT36, HT37). Everything else under 3000W is hidden
 #   (reversible: delete the id from _PH_HIDE). Remote / levels / IP are no longer mandatory, so HT14/16/18 (3000W, no remote) are visible again.
-_PH_HIDE={"HT%d"%i for i in range(1,13)} - {"HT11"}
+_PH_HIDE=({"HT%d"%i for i in range(1,13)} - {"HT11"}) | {"HT28","HT30"}  # 17.11 evening: she wants a well-known firm that will not break (bad ACE mushroom-heater experience) -> hide the no-name HT28 / HT30 (reversible)
 for _d in DATA:
     if _d.get("cat")=="תנורי פרגולה" and _d["id"] in _PH_HIDE:
         _d["hidden"]=True
