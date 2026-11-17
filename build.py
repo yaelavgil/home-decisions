@@ -5645,7 +5645,7 @@ for _o in json.load(open(os.path.join(REPO,"dining.json"),encoding="utf-8")):
 for _o in json.load(open(os.path.join(REPO,"study-desks.json"),encoding="utf-8")):
     DATA.append(_o)
 for _d in DATA:  # 17.11.2026: Alice desk moved from vanity (VN23) to study desks (CD2) at Yael's request
-    if _d["id"]=="VN23": _d["hidden"]=True
+    if _d["id"]=="VN23" or _d["id"] in ("VN42","VN46","VN47","VN48","VN49","VN50","VN51"): _d["hidden"]=True
 for _o in json.load(open(os.path.join(REPO,"tvconsole2.json"),encoding="utf-8")):
     DATA.append(_o)
 # 15.11.2026: she decided on a 180 or 200 cm living-room sideboard (200 preferred; fits beside the fireplace) -> hide every sideboard not offered in 180/200
