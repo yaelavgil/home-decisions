@@ -1474,7 +1474,11 @@ _FEATS={"tv-console":[
  {"id":"f3","l":"מתאים לתקליטים LP","c":1},
  {"id":"f4","l":"מגירות","c":0},
  {"id":"f5","l":"דלתות סגורות","c":0},
- {"id":"f6","l":"פתח / חור לכבלים","c":0}]}
+ {"id":"f6","l":"פתח / חור לכבלים","c":0},
+ {"id":"f7","l":"טריקה שקטה","c":1,"n":1}]}
+_SC=[{"id":"sc","l":"טריקה שקטה","c":1,"n":1}]
+for _k in ("study-desks","danny-desk","danny-study-desk"): _FEATS[_k]=_SC
+_FEATS["vanity"]=[{"id":"sc","l":"טריקה שקטה","c":1,"n":1,"subs":["שולחן + מראה מוארת מובנית","שולחן + מראה LED נפרדת","שידה / קונסולה עם אחסון"]}]
 _FEATS["towels"]=[{"id":"f1","l":"כותנה אורגנית","c":1},{"id":"f2","l":"מרקם וופל","c":1},{"id":"f3","l":"עבה 700+ גרם (מראה ספא)","c":1}]
 _FEATS["bath-mats"]=[{"id":"f1","l":"גב מונע החלקה","c":1},{"id":"f2","l":"כותנה","c":1},{"id":"f3","l":"כביסה במכונה","c":0}]
 _ITEMFEATS={"MG1":{"f1":True,"f2":False,"f3":False},"MG2":{"f1":False,"f2":False,"f3":False},"MG3":{"f1":False,"f2":False,"f3":False},"MG4":{"f1":False,"f2":False,"f3":False},"MG5":{"f1":False,"f2":False,"f3":True},"MG6":{"f1":False,"f2":True,"f3":False},"MG7":{"f1":False,"f2":False,"f3":True},"MG8":{"f1":False,"f2":False,"f3":True},"MH4":{"f1":False,"f2":False,"f3":True},"MG9":{"f1":False,"f2":False,"f3":True},"MH5":{"f1":False,"f2":False,"f3":True},"MH1":{"f1":True,"f2":False},"MH2":{"f1":False,"f2":True},"MH3":{"f1":False,"f2":False,"f3":True},"RG1":{"f1":False,"f2":True,"f3":True},"RG2":{"f1":False,"f2":True,"f3":True},"RG3":{"f1":True,"f2":False,"f3":True},"RG4":{"f2":False,"f3":True},"TC1":{"f6":True},"TC2":{"f4":True,"f5":True},"TC3":{"f4":True,"f6":True},"TC4":{"f4":True},"TC5":{"f4":True,"f5":True},"TC6":{"f2":True,"f3":True},"TC7":{"f2":True,"f3":True,"f4":False},"TC8":{"f2":True,"f3":True,"f4":True},"TC9":{"f2":True,"f3":True,"f4":True},"TC10":{"f2":True},"TC11":{"f2":True,"f3":True},"TC12":{"f2":True,"f3":True},"TC13":{"f2":True,"f5":True}}
@@ -1974,7 +1978,7 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .ordnote{position:absolute;bottom:9px;inset-inline-start:9px;z-index:4;background:var(--ordered);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:10px;box-shadow:0 2px 6px rgba(60,40,15,.18)}
 .editb:hover{color:var(--brass-d);transform:scale(1.08)}
 .delb{inset-inline-end:43px}.delb:hover{color:#b3372c!important;border-color:#b3372c}
-.featChips{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 2px}.featChip{font-size:11.5px;background:#e9f0e4;color:#35502c;border-radius:999px;padding:2px 9px}.featChip.val{background:#e6eef5;color:#2c4660}.featMiss{font-size:11px;background:#fbeceb;color:#b3372c;border:0;border-radius:999px;padding:2px 9px;cursor:pointer;font-family:inherit}
+.featChips{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 2px}.featChip{font-size:11.5px;background:#e9f0e4;color:#35502c;border-radius:999px;padding:2px 9px}.featChip.val{background:#e6eef5;color:#2c4660}.featChip.no{background:#f1ecec;color:#8a6a67;text-decoration:line-through;text-decoration-thickness:1px}.featChip.unk{background:transparent;color:#8a8478;border:1px dashed #c9c2b4;font-family:inherit;cursor:pointer}.featMiss{font-size:11px;background:#fbeceb;color:#b3372c;border:0;border-radius:999px;padding:2px 9px;cursor:pointer;font-family:inherit}
 .lbfeats:empty{display:none}.lbfeats{margin:10px 0 4px;display:flex;flex-direction:column;gap:5px}.lbfeats h4{margin:0 0 2px;font-size:13px;color:var(--muted)}.lbf{display:flex;align-items:center;gap:8px;font-size:13.5px}.lbf .fl{flex:1}.fbtn{border:1.5px solid var(--line-2);background:var(--paper);border-radius:8px;min-width:34px;padding:2px 8px;font:inherit;cursor:pointer}.fbtn.y{background:#e3f1dc;border-color:#9bc58a}.fbtn.n{background:#f7e3e0;border-color:#d89a92}.fbtn.q{color:var(--muted)}.lbf select{font:inherit;font-size:12.5px;border:1.5px solid var(--line-2);border-radius:8px;padding:2px 6px;background:var(--paper)}
 .featwide{max-width:min(980px,calc(100% - 20px))}.fmx{border-collapse:collapse;font-size:12.5px;width:100%}.fmx th,.fmx td{border-bottom:1px solid var(--line-2);padding:5px 6px;text-align:center;vertical-align:middle}.fmx th{position:sticky;top:0;background:var(--paper);font-weight:600;font-size:12px}.fmx td.nm{text-align:right;min-width:170px;max-width:260px}.fmx td.nm img{width:34px;height:34px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-inline-end:6px}.fmx tr.miss td.nm{background:#fff6f4}.fmx .colAct{display:block;font-size:10.5px;font-weight:400;color:var(--muted);background:none;border:0;cursor:pointer;text-decoration:underline;margin:2px auto 0}
 .featBar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.featBar select{font:inherit;font-size:13px;border:1.5px solid var(--line-2);border-radius:999px;padding:4px 10px;background:var(--paper)}
@@ -4666,12 +4670,13 @@ function dimsOf(it){
 /* ----- feature labels ----- */
 function catFeats(key){ const c=CATS.find(x=>x.key===key); const f=c&&c.feats; return f?(Array.isArray(f)?f:Object.values(f)).filter(x=>x&&x.id&&x.l):[]; }
 function featVal(it,f){ const v=(it.feats||{})[f.id]; return (v===undefined||v===null||v==='?'||v==='')?undefined:v; }
-function featMissing(it){ return it.type==='color'?[]:catFeats(it.cat).filter(f=>featVal(it,f)===undefined); }
+function featApplies(it,f){ return !(f.subs&&f.subs.length&&it.sub&&!f.subs.includes(it.sub)); }
+function featMissing(it){ return it.type==='color'?[]:catFeats(it.cat).filter(f=>featApplies(it,f)&&featVal(it,f)===undefined); }
 function featChips(it){
   if(it.type==='color') return '';
   const fs=catFeats(it.cat); if(!fs.length) return '';
-  let h=''; fs.filter(f=>f.c).forEach(f=>{ const v=featVal(it,f); if(v===true) h+=`<span class="featChip">${esc(f.l.replace(/\s*\(.*$/,''))}</span>`; else if(typeof v==='string'&&v!=='לא'&&!/^אין/.test(v)) h+=`<span class="featChip val">${esc(f.l.replace(/\s*\(.*$/,''))}: ${esc(v)}</span>`; });
-  const m=featMissing(it).length;
+  let h=''; fs.filter(f=>f.c&&featApplies(it,f)).forEach(f=>{ const v=featVal(it,f); if(v==='NA') return; if(v===undefined&&f.n){ h+=`<button type="button" class="featChip unk" title="לא נבדק / לא כתוב בדף — לחצי לסימון" onclick="event.stopPropagation();openFeatDlg('${esc(it.cat)}','${it.id}')">${esc(f.l.replace(/\s*\(.*$/,''))}: ?</button>`; return; } if(v===true) h+=`<span class="featChip">${esc(f.l.replace(/\s*\(.*$/,''))}</span>`; else if(v===false&&f.n) h+=`<span class="featChip no">${esc(f.l.replace(/\s*\(.*$/,''))}</span>`; else if(typeof v==='string'&&v!=='לא'&&!/^אין/.test(v)) h+=`<span class="featChip val">${esc(f.l.replace(/\s*\(.*$/,''))}: ${esc(v)}</span>`; });
+  const m=featMissing(it).filter(f=>!(f.c&&f.n)).length;
   if(m) h+=`<button type="button" class="featMiss" title="לחצי לשיוך הפיצ'רים" onclick="event.stopPropagation();openFeatDlg('${esc(it.cat)}','${it.id}')">🏷 ${m} לא משויכים</button>`;
   return h?`<div class="featChips">${h}</div>`:'';
 }
@@ -4681,19 +4686,19 @@ function setFeat(id,fid,val,keepDlg){
   if(lbId===id) renderLbFeats();
   if(keepDlg) refreshFeatDlg(); else { renderSubRow(); RE(); }
 }
-function cycleFeat(id,fid){ const it=byId[id]; const f=catFeats(it.cat).find(x=>x.id===fid); const v=featVal(it,f); setFeat(id,fid,v===undefined?true:(v===true?false:'?'),true); }
+function cycleFeat(id,fid){ const it=byId[id]; const f=catFeats(it.cat).find(x=>x.id===fid); const v=featVal(it,f); setFeat(id,fid,(v===undefined||v==='NA')?true:(v===true?false:'?'),true); }
 function featCtl(it,f,inDlg){
   const v=featVal(it,f); const cb=inDlg?'true':'false';
   if(f.v&&f.v.length){
     const o=Array.isArray(f.v)?f.v:Object.values(f.v);
     return `<select onclick="event.stopPropagation()" onchange="setFeat('${it.id}','${f.id}',this.value,${cb})"><option value="?">❓ לא משויך</option>${o.map(x=>`<option ${v===x?'selected':''}>${esc(x)}</option>`).join('')}</select>`;
   }
-  const cls=v===true?'y':(v===false?'n':'q'), t=v===true?'✔':(v===false?'✘':'❓');
-  return `<button type="button" class="fbtn ${cls}" onclick="event.stopPropagation();cycleFeat('${it.id}','${f.id}')" title="לחצי להחלפה: ✔ יש · ✘ אין · ❓ לא משויך">${t}</button>`;
+  const cls=v===true?'y':(v===false?'n':'q'), t=v===true?'✔':(v===false?'✘':(v==='NA'?'—':'❓'));
+  return `<button type="button" class="fbtn ${cls}" onclick="event.stopPropagation();cycleFeat('${it.id}','${f.id}')" title="לחצי להחלפה: ✔ יש · ✘ אין · ❓ לא משויך · — לא רלוונטי (אין מגירות/דלתות)">${t}</button>`;
 }
 function renderLbFeats(){
   const box=document.getElementById('lbfeats'); if(!box) return; const it=byId[lbId];
-  const fs=it?catFeats(it.cat):[]; if(!it||it.type==='color'||!fs.length){ box.innerHTML=''; return; }
+  const fs=it?catFeats(it.cat).filter(f=>featApplies(it,f)):[]; if(!it||it.type==='color'||!fs.length){ box.innerHTML=''; return; }
   box.innerHTML='<h4>🏷 פיצ\'רים</h4>'+fs.map(f=>`<div class="lbf"><span class="fl">${esc(f.l)}</span>${featCtl(it,f,false)}</div>`).join('');
 }
 function passFeat(i){
@@ -4701,14 +4706,14 @@ function passFeat(i){
   const fs=catFeats(i.cat);
   if(featf==='__miss') return featMissing(i).length>0;
   const [fid,val]=featf.split('='); const f=fs.find(x=>x.id===fid); if(!f) return false; const v=featVal(i,f);
-  if(val!==undefined) return v===val; return v!==undefined&&v!==false&&!(typeof v==='string'&&/^אין/.test(v));
+  if(val==='false') return v===false; if(val!==undefined) return v===val; return v!==undefined&&v!==false&&v!=='NA'&&!(typeof v==='string'&&/^אין/.test(v));
 }
 function featBarHTML(cat,its){
   const fs=catFeats(cat.key); let h='';
   if(fs.length){
     const miss=its.filter(i=>featMissing(i).length).length;
     h+=`<select onchange="featf=this.value||null;renderSubRow();RE()" title="סינון לפי פיצ'ר"><option value="">🏷 כל הפיצ'רים</option>`
-      +fs.map(f=>(f.v&&f.v.length)?(Array.isArray(f.v)?f.v:Object.values(f.v)).map(x=>`<option value="${f.id}=${esc(x)}" ${featf===f.id+'='+x?'selected':''}>${esc(f.l.replace(/\s*\(.*$/,''))}: ${esc(x)}</option>`).join(''):`<option value="${f.id}" ${featf===f.id?'selected':''}>${esc(f.l)}</option>`).join('')
+      +fs.map(f=>(f.v&&f.v.length)?(Array.isArray(f.v)?f.v:Object.values(f.v)).map(x=>`<option value="${f.id}=${esc(x)}" ${featf===f.id+'='+x?'selected':''}>${esc(f.l.replace(/\s*\(.*$/,''))}: ${esc(x)}</option>`).join(''):`<option value="${f.id}" ${featf===f.id?'selected':''}>${esc(f.l)}</option>`+(f.n?`<option value="${f.id}=false" ${featf===f.id+'=false'?'selected':''}>ללא: ${esc(f.l.replace(/\s*\(.*$/,''))}</option>`:'')).join('')
       +`<option value="__miss" ${featf==='__miss'?'selected':''}>⚠ עם פיצ'רים לא משויכים (${miss})</option></select>`;
   }
   return h;
@@ -4743,11 +4748,11 @@ function openFeatMgr(key){
 function addFeatRow(f){
   f=f&&f.id?f:{id:'f'+Date.now().toString(36)+Math.floor(Math.random()*99),l:'',v:[],c:1};
   const d=document.createElement('div'); d.className='fe-row'; d.dataset.id=f.id;
-  d.innerHTML=`<input type="text" class="fl" placeholder="שם הפיצ'ר" value="${esc(f.l)}"><input type="text" class="fv" placeholder="אפשרויות (אופציונלי, בפסיק)" value="${esc((Array.isArray(f.v)?f.v:Object.values(f.v||{})).join(', '))}"><label><input type="checkbox" class="fc" ${f.c?'checked':''}> בכרטיס</label><button type="button" title="מחיקה" onclick="this.parentNode.remove()">🗑</button>`;
+  d.innerHTML=`<input type="text" class="fl" placeholder="שם הפיצ'ר" value="${esc(f.l)}"><input type="text" class="fv" placeholder="אפשרויות (אופציונלי, בפסיק)" value="${esc((Array.isArray(f.v)?f.v:Object.values(f.v||{})).join(', '))}"><label><input type="checkbox" class="fc" ${f.c?'checked':''}> בכרטיס</label><label title="מציג בכרטיס גם כשאין (עם קו חוצה)"><input type="checkbox" class="fn" ${f.n?'checked':''}> גם כשאין</label><button type="button" title="מחיקה" onclick="this.parentNode.remove()">🗑</button>`;
   document.getElementById('feList').appendChild(d);
 }
 function saveFeatMgr(){
-  const feats=[...document.querySelectorAll('#feList .fe-row')].map(r=>({id:r.dataset.id,l:r.querySelector('.fl').value.trim(),v:r.querySelector('.fv').value.split(',').map(x=>x.trim()).filter(Boolean),c:r.querySelector('.fc').checked?1:0})).filter(f=>f.l);
+  const feats=[...document.querySelectorAll('#feList .fe-row')].map(r=>({id:r.dataset.id,l:r.querySelector('.fl').value.trim(),v:r.querySelector('.fv').value.split(',').map(x=>x.trim()).filter(Boolean),c:r.querySelector('.fc').checked?1:0,n:r.querySelector('.fn')&&r.querySelector('.fn').checked?1:0,subs:((catFeats(_featKey).find(x=>x.id===r.dataset.id)||{}).subs)||undefined})).filter(f=>f.l);
   setCatMeta(_featKey,{feats:feats.length?feats:[]});
   document.getElementById('featMgr').close();
   ITEMS.filter(i=>i.cat===_featKey).forEach(i=>{ const e=els.get(i.id); if(e){ e.remove(); els.delete(i.id); } });
@@ -5522,8 +5527,8 @@ function qfBuild(cat,its){
   add(own('tags','🏷','מאפיינים',Object.keys(tc).filter(t=>tc[t]>=2).sort((a,b)=>tc[b]-tc[a]).slice(0,14).map(k=>({k,l:k})),(it,k)=>(it.tags||[]).includes(k)));
   // פיצ'רים
   const fs=catFeats(cat.key), fv=[];
-  fs.forEach(f=>{ const lab=f.l.replace(/\s*\(.*$/,''); if(f.v&&Object.keys(f.v).length) (Array.isArray(f.v)?f.v:Object.values(f.v)).forEach(x=>fv.push({k:f.id+'='+x,l:lab+': '+x})); else fv.push({k:f.id,l:lab}); });
-  add(own('feat','✨',"פיצ'רים",fv,(it,k)=>{ const [fid,val]=k.split('='); const f=fs.find(x=>x.id===fid); if(!f) return false; const v=featVal(it,f); if(val!==undefined) return v===val; return v!==undefined&&v!==false&&!(typeof v==='string'&&/^אין/.test(v)); }));
+  fs.forEach(f=>{ const lab=f.l.replace(/\s*\(.*$/,''); if(f.v&&Object.keys(f.v).length) (Array.isArray(f.v)?f.v:Object.values(f.v)).forEach(x=>fv.push({k:f.id+'='+x,l:lab+': '+x})); else { fv.push({k:f.id,l:lab}); if(f.n) fv.push({k:f.id+'=false',l:'ללא '+lab}); } });
+  add(own('feat','✨',"פיצ'רים",fv,(it,k)=>{ const [fid,val]=k.split('='); const f=fs.find(x=>x.id===fid); if(!f) return false; const v=featVal(it,f); if(val==='false') return v===false; if(val!==undefined) return v===val; return v!==undefined&&v!==false&&v!=='NA'&&!(typeof v==='string'&&/^אין/.test(v)); }));
   return {cat:cat.key,by,all};
 }
 function qfOwnIds(){ return Object.keys(QF_ST).filter(id=>QF_ST[id]&&QF_ST[id].size); }
@@ -6146,6 +6151,14 @@ build_compare_page()
 
 build_designer_doc()
 
+# 17.11.2026: soft-close (טריקה שקטה) per item, verified from product pages -> softclose.json {id: yes|no|na}; unknown = left unassigned (shows as 'לא משויך')
+if _os.path.exists("softclose.json"):
+    _SCV=_json.load(open("softclose.json",encoding="utf-8"))
+    for _d in DATA:
+        _st=_SCV.get(_d["id"])
+        _v={"yes":True,"no":False,"na":"NA"}.get(_st)
+        if _v is not None and _d.get("cat") in ("מזנון לטלוויזיה","שולחן איפור","שולחנות מחשב ולימודים","שולחן לדני","שולחן לימודים לדני"):
+            _d["feats"]={**(_d.get("feats") or {}),("f7" if _d["cat"]=="מזנון לטלוויזיה" else "sc"):_v}
 out=(tpl.replace("__DATA__",json.dumps(DATA,ensure_ascii=False))
         .replace("__CATS__",json.dumps(CATS,ensure_ascii=False))
         .replace("__CRIT__",json.dumps(CRIT,ensure_ascii=False))
