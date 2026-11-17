@@ -1414,6 +1414,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"תליה זמנית","label":"תליה זמנית","icon":"🧥","slug":"hanging"},
       {"key":"שולחן לדני","label":"שולחן לדני","icon":"🖥️","slug":"danny-desk"},
       {"key":"שולחן לימודים לדני","label":"שולחן לימודים לדני","icon":"📚","slug":"danny-study-desk"},
+      {"key":"שולחנות מחשב ולימודים","label":"שולחנות מחשב ולימודים","icon":"✏️","slug":"study-desks","group":"חדרי שינה וילדים","multi":True,"subs":["שולחן מחשב","שולחן לימודים / ילדים"]},
       {"key":"וילון לממד","label":"וילון גלילה לממד (חדר דני)","icon":"🪟","slug":"mamad-blind","group":"חדרי שינה וילדים","multi":True,"subs":["זול ומהיר","מידה אישית — מראה טבעי","פרימיום — קסטה / דאבל / תעלות צד"]},
       {"key":"תנורי פרגולה","label":"תנורי פרגולה","icon":"🌡️","slug":"pergola-heater"},
       {"key":"שולחן סנוקר לחצר","label":"שולחן סנוקר לחצר (עם כיסוי)","icon":"🎱","slug":"snooker-table","group":"חוץ ופרגולה","multi":True,"prio":3},
@@ -5634,6 +5635,9 @@ for _o in json.load(open(os.path.join(REPO,"dining.json"),encoding="utf-8")):
     _x=_dne["items"].get(_o["id"],{})
     for _k in ("specs","stores","pick","pickWhy","points"):
         if _k in _x: _o[_k]=_x[_k]
+    DATA.append(_o)
+# 17.11.2026: general study / computer desks category (Calimero שולחן סקרטר C added at Yael's request)
+for _o in json.load(open(os.path.join(REPO,"study-desks.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"tvconsole2.json"),encoding="utf-8")):
     DATA.append(_o)
