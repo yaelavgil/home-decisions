@@ -1416,6 +1416,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"שולחן לימודים לדני","label":"שולחן לימודים (לעתיד)","icon":"📚","slug":"danny-study-desk","group":"חדרי שינה וילדים"},
       {"key":"כסא לדני","label":"כסא־כורסא לדני — איפור, לימודים וישיבה בממ״ד","icon":"🪑","slug":"danny-chair","group":"חדרי שינה וילדים","multi":True,"subs":["כסא־כורסא מסתובב — מתחת לשולחן","כורסה קטנה עם ידיות עץ"]},
       {"key":"רמקול לתופים","label":"רמקול למגבר תופים — לערכת Donner DED-70 של הבן","icon":"🥁","slug":"drum-speaker","group":"חדרי שינה וילדים","multi":True,"subs":["זול וקומפקטי (עד ~₪900)","חזק ואיכותי יותר (₪1,000+)"]},
+      {"key":"תוספות לאיקאה","label":"תוספות לאיקאה שכבר יש לנו","icon":"🪜","slug":"ikea-addons","group":"אחר","multi":True,"subs":["BESTA — יחידות 60 / 120 (3 בינוניות + 2 קטנות + 1 קטנה מאוד)", "BESTA מדפסת — הגבהה + נייר מתחת + כבלים", "BILLY גבוה — פינת איפור זמנית", "BILLY קטן — נעליים", "KALLAX 4×1 — אחסון אחורי בחדר הארונות"]},
       {"key":"וילון לממד","label":"וילון גלילה לממד (חדר דני)","icon":"🪟","slug":"mamad-blind","group":"חדרי שינה וילדים","multi":True,"subs":["זול ומהיר","מידה אישית — מראה טבעי","פרימיום — קסטה / דאבל / תעלות צד"]},
       {"key":"תנורי פרגולה","label":"תנורי פרגולה","icon":"🌡️","slug":"pergola-heater"},
       {"key":"שולחן סנוקר לחצר","label":"שולחן סנוקר לחצר (עם כיסוי)","icon":"🎱","slug":"snooker-table","group":"חוץ ופרגולה","multi":True,"prio":3},
@@ -5649,6 +5650,14 @@ for _o in json.load(open(os.path.join(REPO,"danny-chairs.json"),encoding="utf-8"
     DATA.append(_o)
 # 19.11.2026: Hanukkah gifts per child (tab per child via subs)
 for _o in json.load(open(os.path.join(REPO,"hanukkah.json"),encoding="utf-8")):
+    DATA.append(_o)
+# 19.11.2026: add-ons for IKEA furniture she already owns (BESTA / BILLY / KALLAX); enrich merged here
+_iae=json.load(open(os.path.join(REPO,"enrich","ikea-addons.json"),encoding="utf-8"))
+for _o in json.load(open(os.path.join(REPO,"ikea-addons.json"),encoding="utf-8")):
+    _x=_iae["items"].get(_o["id"],{})
+    _o["criteria"]=_iae["criteria"]
+    for _k in ("specs","stores","pick","pickWhy","points"):
+        if _k in _x: _o[_k]=_x[_k]
     DATA.append(_o)
 # 19.11.2026: speaker / drum monitor for the son's Donner DED-70 e-drum kit; enrich merged here
 _dse=json.load(open(os.path.join(REPO,"enrich","drum-speaker.json"),encoding="utf-8"))
