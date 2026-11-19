@@ -1414,6 +1414,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"תליה זמנית","label":"תליה זמנית","icon":"🧥","slug":"hanging"},
       {"key":"שולחן לדני","label":"שולחן לדני — כתיבה ואיפור (שולחן + מראה)","icon":"💄","slug":"danny-desk","group":"חדרי שינה וילדים","multi":True,"subs":["שולחן + מראה מוארת מובנית","שולחן + מראה LED נפרדת","שידה / קונסולה עם אחסון","מראה משולשת מתקפלת מוארת","כיסא / שרפרף לפינת איפור","ידיות / כפתורים להחלפה"]},
       {"key":"שולחן לימודים לדני","label":"שולחן לימודים (לעתיד)","icon":"📚","slug":"danny-study-desk","group":"חדרי שינה וילדים"},
+      {"key":"כסא לדני","label":"כסא־כורסא לדני — איפור, לימודים וישיבה בממ״ד","icon":"🪑","slug":"danny-chair","group":"חדרי שינה וילדים","multi":True,"subs":["כסא־כורסא מסתובב — מתחת לשולחן","כורסה קטנה עם ידיות עץ"]},
       {"key":"וילון לממד","label":"וילון גלילה לממד (חדר דני)","icon":"🪟","slug":"mamad-blind","group":"חדרי שינה וילדים","multi":True,"subs":["זול ומהיר","מידה אישית — מראה טבעי","פרימיום — קסטה / דאבל / תעלות צד"]},
       {"key":"תנורי פרגולה","label":"תנורי פרגולה","icon":"🌡️","slug":"pergola-heater"},
       {"key":"שולחן סנוקר לחצר","label":"שולחן סנוקר לחצר (עם כיסוי)","icon":"🎱","slug":"snooker-table","group":"חוץ ופרגולה","multi":True,"prio":3},
@@ -1477,6 +1478,7 @@ _FEATS={"tv-console":[
 _SC=[{"id":"sc","l":"טריקה שקטה","c":1,"n":1}]
 for _k in ("danny-study-desk",): _FEATS[_k]=_SC
 _FEATS["danny-desk"]=[{"id":"sc","l":"טריקה שקטה","c":1,"n":1,"subs":["שולחן + מראה מוארת מובנית","שולחן + מראה LED נפרדת","שידה / קונסולה עם אחסון"]}]
+_FEATS["danny-chair"]=[{"id":"sw","l":"מסתובב","c":1,"n":1},{"id":"wd","l":"רגליים/שלד עץ","c":1},{"id":"ar","l":"ידיות","c":1}]
 _FEATS["towels"]=[{"id":"f1","l":"כותנה אורגנית","c":1},{"id":"f2","l":"מרקם וופל","c":1},{"id":"f3","l":"עבה 700+ גרם (מראה ספא)","c":1}]
 _FEATS["bath-mats"]=[{"id":"f1","l":"גב מונע החלקה","c":1},{"id":"f2","l":"כותנה","c":1},{"id":"f3","l":"כביסה במכונה","c":0}]
 _ITEMFEATS={"MG1":{"f1":True,"f2":False,"f3":False},"MG2":{"f1":False,"f2":False,"f3":False},"MG3":{"f1":False,"f2":False,"f3":False},"MG4":{"f1":False,"f2":False,"f3":False},"MG5":{"f1":False,"f2":False,"f3":True},"MG6":{"f1":False,"f2":True,"f3":False},"MG7":{"f1":False,"f2":False,"f3":True},"MG8":{"f1":False,"f2":False,"f3":True},"MH4":{"f1":False,"f2":False,"f3":True},"MG9":{"f1":False,"f2":False,"f3":True},"MH5":{"f1":False,"f2":False,"f3":True},"MH1":{"f1":True,"f2":False},"MH2":{"f1":False,"f2":True},"MH3":{"f1":False,"f2":False,"f3":True},"RG1":{"f1":False,"f2":True,"f3":True},"RG2":{"f1":False,"f2":True,"f3":True},"RG3":{"f1":True,"f2":False,"f3":True},"RG4":{"f2":False,"f3":True},"TC1":{"f6":True},"TC2":{"f4":True,"f5":True},"TC3":{"f4":True,"f6":True},"TC4":{"f4":True},"TC5":{"f4":True,"f5":True},"TC6":{"f2":True,"f3":True},"TC7":{"f2":True,"f3":True,"f4":False},"TC8":{"f2":True,"f3":True,"f4":True},"TC9":{"f2":True,"f3":True,"f4":True},"TC10":{"f2":True},"TC11":{"f2":True,"f3":True},"TC12":{"f2":True,"f3":True},"TC13":{"f2":True,"f5":True}}
@@ -1496,7 +1498,7 @@ for _d in DATA:
 
 GROUPS={"תאורה":"תאורה","מכונות קפה":"מטבח","מיקרוגל":"מטבח","תנור":"מטבח","כיריים":"מטבח","מדיח":"מטבח","מקרר":"מטבח","פח":"מטבח",
  "מיטת לילי":"חדרי שינה וילדים","מיטת אורחים":"חדרי שינה וילדים","ארונות לחדרי הילדים":"חדרי שינה וילדים","ארון לחדר אורחים":"חדרי שינה וילדים",
- "שולחן לדני":"חדרי שינה וילדים","שולחן לימודים לדני":"חדרי שינה וילדים","תליה זמנית":"חדרי שינה וילדים",
+ "שולחן לדני":"חדרי שינה וילדים","כסא לדני":"חדרי שינה וילדים","שולחן לימודים לדני":"חדרי שינה וילדים","תליה זמנית":"חדרי שינה וילדים",
  "ספות לפינת משפחה":"סלון ומשפחה","זרועות לטלוויזיה":"סלון ומשפחה","מראה לכניסה":"כניסה ונגרות","ידיות":"כניסה ונגרות",
  "מחמם מגבות":"אמבטיה","תנור לחדרי רחצה":"אמבטיה","סיפון לכיור":"אמבטיה","מגבות":"אמבטיה","מחזור במטבח":"מטבח","ארגוניות למגירות":"אמבטיה","שטיחוני רחצה":"אמבטיה","סל כביסה":"אמבטיה","אינטרקום וידאו":"בית חכם","משחקי חצר":"חוץ ופרגולה","מזנון לטלוויזיה":"סלון ומשפחה","מנעול חכם":"בית חכם","תנורי פרגולה":"חוץ ופרגולה","מקרר פרגולה":"חוץ ופרגולה","צבעים":"גימור וצבעים"}
 SUBS={"תאורה":["תאורת חוץ","תאורת קיר","תאורת תקרה","תאורת קיר לילדים (הדלקה עצמית)","תאורה למטבח","מאווררי תקרה עם תאורה"]}
@@ -5632,6 +5634,14 @@ _lme=json.load(open(os.path.join(REPO,"enrich","lily-mattress.json"),encoding="u
 for _o in json.load(open(os.path.join(REPO,"lily-mattress.json"),encoding="utf-8")):
     _x=_lme["items"].get(_o["id"],{})
     _o["criteria"]=_lme["criteria"]
+    for _k in ("specs","stores","pick","pickWhy","points"):
+        if _k in _x: _o[_k]=_x[_k]
+    DATA.append(_o)
+# 19.11.2026: chair/armchair for Danny (mamad: makeup table + homework + emergency sitting); enrich merged here
+_dce=json.load(open(os.path.join(REPO,"enrich","danny-chair.json"),encoding="utf-8"))
+for _o in json.load(open(os.path.join(REPO,"danny-chairs.json"),encoding="utf-8")):
+    _x=_dce["items"].get(_o["id"],{})
+    _o["criteria"]=_dce["criteria"]
     for _k in ("specs","stores","pick","pickWhy","points"):
         if _k in _x: _o[_k]=_x[_k]
     DATA.append(_o)
