@@ -2961,7 +2961,7 @@ function rebuild(){
   const cm={}; BCATS.forEach(c=>cm[c.key]={...c});
   st.custom.cats.forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
   Object.values(shared.cats||{}).forEach(c=>{if(c&&c.key)cm[c.key]={...(cm[c.key]||{}),...c};});
-  ITEMS=Object.values(im).filter(i=>!i.deleted); CATS=Object.values(cm);
+  ITEMS=Object.values(im).filter(i=>!i.deleted); CATS=Object.values(cm).filter(c=>c&&typeof c.label==='string'&&c.label); /* ghost entries in shared meta (e.g. a renamed category's leftover prio/order) have no label and used to crash every search */
   { const _ar=new Set(CATS.filter(c=>c.archived).map(c=>c.key)); ARCHIVED_CATS=CATS.filter(c=>_ar.has(c.key)); ARCHIVED_ITEMS=ITEMS.filter(i=>_ar.has(i.cat)); CATS=CATS.filter(c=>!_ar.has(c.key)); ITEMS=ITEMS.filter(i=>!_ar.has(i.cat)); }
   /* a sub-category list the user edited in the app (stored in shared.cats) is the source of truth: names she deleted
      must not come back from the built-in list or from item data that still carries the old name */
@@ -3609,6 +3609,8 @@ function pickCat(key,sub){
   const c=CATS.find(x=>x.key===key); if(c&&catState(c)==='done'&&viewMode==='active') setView('all');
   syncHash(); buildChips(); tabsHTML(); RE(true); toggleCatMenu(false); window.scrollTo({top:0,behavior:'smooth'});
 }
+/* חיפוש סלחני: בלי ניקוד/גרשיים, ובלי ו/י (כתיב מלא/חסר: טלויזיה = טלוויזיה, כירים = כיריים) */
+function hnorm(x){ const t=String(x==null?'':x).toLowerCase().replace(/[\u0591-\u05C7"'׳״\u05F3\u05F4]/g,'').replace(/\s+/g,' ').trim(); const u=t.replace(/[וי]/g,''); return u||t; }
 function renderCatMenu(){
   if(_dragKey){ window._cmPending=true; return; }
   const m=document.getElementById('catMenu'), q=menuQ.trim();
@@ -3619,9 +3621,11 @@ function renderCatMenu(){
   const caret=hadFocus?document.activeElement.selectionStart:null;
   const allCats=CATS.filter(c=>c.key!=='all'); const stc={open:0,pick:0,done:0}; let remChoose=0, remOrder=0; const brk={};
   allCats.forEach(c=>{ stc[catState(c)]++; const its=ITEMS.filter(i=>i.cat===c.key&&!i.hidden); const b={d:0,c:0,o:0}; its.forEach(i=>{ const t=itemStatus(i); if(t==='discuss')b.d++; else if(t==='chosen')b.c++; else if(t==='ordered')b.o++; }); brk[c.key]=b; remChoose+=catState(c)==='open'?1:0; remOrder+=b.c; });
-  const cats=allCats.filter(c=>!menuState||catState(c)===menuState).filter(c=>!q||c.label.includes(q)||(c.group||'').includes(q)||(c.subs||[]).some(x=>x.includes(q)));
+  const nq=hnorm(q);
+  const itemHit=c=>ITEMS.some(i=>i.cat===c.key&&!i.hidden&&hnorm(i.name).includes(nq));
+  const cats=allCats.filter(c=>!menuState||catState(c)===menuState).filter(c=>!q||hnorm(c.label).includes(nq)||hnorm(c.group).includes(nq)||(c.subs||[]).some(x=>hnorm(x).includes(nq))||itemHit(c));
   const item=c=>{ const n=ITEMS.filter(i=>i.cat===c.key&&!i.hidden).length, stt=catState(c), sg=catSuggs?catSuggs(c.key).length:0, b=brk[c.key]||{d:0,c:0,o:0};
-    const subs=menuMode==='prio'?[]:(c.subs||[]).filter(x=>!q||c.label.includes(q)||x.includes(q));
+    const subs=menuMode==='prio'?[]:(c.subs||[]).filter(x=>!q||hnorm(c.label).includes(nq)||hnorm(x).includes(nq));
     const pp=Number(c.prio)||0, dr=menuMode!=='prio'&&!menuQ.trim();
     return `<div${dr?` draggable="true" ondragstart="prioDragStart(event,'${esc(c.key)}')" ondragend="prioDragEnd()" title="גררי לאזור הדחיפות למעלה"`:''}><button type="button" class="cmi" onclick="pickCat('${esc(c.key)}')"><span class="dot ${stt}"></span><span>${c.icon}</span><span class="pcyc" role="button" title="לחיצה משנה דחיפות: ⚪ ← 🔴 ← 🟠 ← 🟢" onclick="event.stopPropagation();cycleCatPrio('${esc(c.key)}')">${['⚪','🔴','🟠','🟢'][pp]}</span>${esc(c.label)}${sg?' 💡':''}<small class="cmb">${b.c?`<span class="cc c" title="נבחר — להזמין">🛒${b.c}</span>`:''}${b.o&&menuMode!=='prio'?`<span class="cc o" title="הוזמן">📦${b.o}</span>`:''}</small></button>`
       +(stt==='done'?`<button type="button" class="reopen" onclick="reopenCat('${esc(c.key)}')" title="להחזיר לממתין להחלטה — לקנות עוד או לרענן עם מוצרים חדשים">↩ להחזיר להחלטה</button>`:'')
@@ -3655,7 +3659,7 @@ function renderCatMenu(){
   }
   if(menuMode!=='prio') body=`<div class="prioBar"><span>↕ גררי קטגוריה לכאן, או לחצי על העיגול שלידה לשינוי דחיפות:</span>${[[1,'🔴 דחוף'],[2,'🟠 בקרוב'],[3,'🟢 אפשר לחכות'],[0,'⚪ ללא']].map(([lv,l])=>`<div class="pz" ondragover="prioDragOver(event);this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="this.classList.remove('over');prioDrop(event,null,${lv})">${l}</div>`).join('')}<button type="button" onclick="menuMode='prio';renderCatMenu()">🎯 סדר מלא</button></div>`+body;
   if(!cats.length) body='<p class="docnote">לא נמצאה קטגוריה בשם הזה.</p>';
-  if(menuState==='archive') body='<div class="cmg" style="column-span:all"><h5>🗄 ארכיון הקטגוריות — לא מופיעות ברשימה ובסינונים</h5>'+(ARCHIVED_CATS.length?ARCHIVED_CATS.filter(c=>!q||c.label.includes(q)).map(c=>`<div class="doneRow"><span class="cmi" style="cursor:default"><span>${c.icon}</span>${esc(c.label)}<small class="cmb">${ARCHIVED_ITEMS.filter(i=>i.cat===c.key).length} פריטים</small></span><button type="button" class="reopen" onclick="restoreCat('${esc(c.key)}')">↩ שחזור</button></div>`).join(''):'<p class="docnote">הארכיון ריק.</p>')+'</div>';
+  if(menuState==='archive') body='<div class="cmg" style="column-span:all"><h5>🗄 ארכיון הקטגוריות — לא מופיעות ברשימה ובסינונים</h5>'+(ARCHIVED_CATS.length?ARCHIVED_CATS.filter(c=>!q||hnorm(c.label).includes(nq)).map(c=>`<div class="doneRow"><span class="cmi" style="cursor:default"><span>${c.icon}</span>${esc(c.label)}<small class="cmb">${ARCHIVED_ITEMS.filter(i=>i.cat===c.key).length} פריטים</small></span><button type="button" class="reopen" onclick="restoreCat('${esc(c.key)}')">↩ שחזור</button></div>`).join(''):'<p class="docnote">הארכיון ריק.</p>')+'</div>';
   m.innerHTML=`<div class="cmTop"><input id="cmQ" placeholder="🔍 חיפוש קטגוריה או נושא…" value="${esc(menuQ)}" oninput="menuQ=this.value;renderCatMenu();"><span class="seg2"><button type="button" class="${menuMode==='prio'?'on':''}" onclick="menuMode='prio';renderCatMenu()">🎯 לפי דחיפות</button><button type="button" class="${menuMode==='topic'?'on':''}" onclick="menuMode='topic';renderCatMenu()">🗂 לפי נושא</button><button type="button" class="${menuMode==='alpha'?'on':''}" onclick="menuMode='alpha';renderCatMenu()">א–ת</button></span><button type="button" class="cmi" style="width:auto" onclick="pickCat('all')">✦ הכל</button><button type="button" class="cmi" style="width:auto" onclick="openReorg()" title="איחוד, פיצול ותתי־קטגוריות">🧩 ארגון</button></div>
     <div class="cmSum"><span class="lab">מה נותר:</span>
       <button type="button" class="${menuState==='open'?'on':''}" onclick="menuState=menuState==='open'?null:'open';renderCatMenu()">🔴 ממתינות להחלטה <b>${stc.open}</b></button>
