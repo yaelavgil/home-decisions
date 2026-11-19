@@ -1444,6 +1444,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"ריהוט מרפסת עליונה","label":"ריהוט למרפסת העליונה","icon":"☕","slug":"upper-balcony","group":"חוץ ופרגולה","multi":True,"subs":["פינת ישיבה (כורסאות + שולחן)","שזלונג / מרבץ / פוף רביצה (להתכרבל)","שולחן עבודה / ברים לליד הלפטופ","ספה / ספסל חוץ","שולחן צד / שרפרף / מאפרה"]},
       {"key":"שולחן אוכל לפרגולה","label":"שולחן אוכל לפרגולה","icon":"🍽️","slug":"pergola-dining","group":"חוץ ופרגולה","multi":True,"subs":["נפתח — עץ","נפתח — אלומיניום","קבוע / מתקפל"]},
       {"key":"מגבים לרצפה","label":"מגבים לרצפה","icon":"🧽","slug":"mops","group":"אחר"},
+      {"key":"מתנות לחנוכה","label":"מתנות לחנוכה — לכל ילד","icon":"🕎","slug":"hanukkah","group":"אחר","multi":True,"subs":["גור","לילי","דני","לכולם"]},
       {"key":"פתרונות אחסון","label":"פתרונות אחסון","icon":"🧺","slug":"storage","group":"אחר"},
       {"key":"כיסויי מיטה / כירבוליות","label":"כיסויי מיטה / כירבוליות","icon":"🛏️","slug":"bedspreads","group":"חדרי שינה וילדים"},
       {"key":"משחקי חצר","label":"משחקי חצר","icon":"⚽","slug":"yard-games","group":"חוץ ופרגולה","multi":True,"subs":["טרמפולינה ריבועית / מלבנית — חצר קדמית","מתקן נינג׳ה (2×2 מ׳ עד 3×2.5 מ׳)","מתקני כושר וספורט בודדים בסגנון נינג׳ה (לגילאים שונים)","שער כדורגל עמיד / פריק / מתקפל — לחצר הקדמית"]},
@@ -4433,7 +4434,7 @@ function cardEl(it){
   const _tt=String(it.name||'').replace(/"/g,'&quot;').replace(/<[^>]*>/g,'');
   const nameEl=it.link?`<a class="name" href="${it.link}" target="_blank" rel="noopener" title="${_tt}">${it.name}</a>`:`<span class="name" title="${_tt}">${it.name}</span>`;
   const sub=it.type==='color'?`<div class="code">${it.code||''}</div>`
-    :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div></div>${storeLine(it)}`:`<div class="price muted">המחיר בחשבון שלך בחנות</div>`)+dimsRow(it)+pairChip(it)+featChips(it)+useLabel(it);
+    :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div></div>${storeLine(it)}`:(it.cat==='מתנות לחנוכה'?'':`<div class="price muted">המחיר בחשבון שלך בחנות</div>`))+dimsRow(it)+pairChip(it)+featChips(it)+useLabel(it);
   const featRow=(it.featTags||[]).length?`<div class="featBadges">${(it.featTags||[]).map(t=>`<span class="featBadge">${t}</span>`).join('')}</div>`:'';
   const stars=it.type==='product'?`<div class="stars" data-id="${it.id}">${[1,2,3,4,5].map(n=>`<button type="button" class="star" data-n="${n}" onclick="event.stopPropagation();setRating('${it.id}',${n})">★</button>`).join('')}<span class="ratedBy"></span></div>`:'';
   const qty=it.type==='product'
@@ -5645,6 +5646,9 @@ for _o in json.load(open(os.path.join(REPO,"danny-chairs.json"),encoding="utf-8"
     _o["criteria"]=_dce["criteria"]
     for _k in ("specs","stores","pick","pickWhy","points"):
         if _k in _x: _o[_k]=_x[_k]
+    DATA.append(_o)
+# 19.11.2026: Hanukkah gifts per child (tab per child via subs)
+for _o in json.load(open(os.path.join(REPO,"hanukkah.json"),encoding="utf-8")):
     DATA.append(_o)
 # 19.11.2026: speaker / drum monitor for the son's Donner DED-70 e-drum kit; enrich merged here
 _dse=json.load(open(os.path.join(REPO,"enrich","drum-speaker.json"),encoding="utf-8"))
