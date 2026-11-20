@@ -1447,7 +1447,8 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"ריהוט מרפסת עליונה","label":"ריהוט למרפסת העליונה","icon":"☕","slug":"upper-balcony","group":"חוץ ופרגולה","multi":True,"subs":["פינת ישיבה (כורסאות + שולחן)","שזלונג / מרבץ / פוף רביצה (להתכרבל)","שולחן עבודה / ברים לליד הלפטופ","ספה / ספסל חוץ","שולחן צד / שרפרף / מאפרה"]},
       {"key":"שולחן אוכל לפרגולה","label":"שולחן אוכל לפרגולה","icon":"🍽️","slug":"pergola-dining","group":"חוץ ופרגולה","multi":True,"subs":["נפתח — עץ","נפתח — אלומיניום","קבוע / מתקפל"]},
       {"key":"מגבים לרצפה","label":"מגבים לרצפה","icon":"🧽","slug":"mops","group":"אחר"},
-      {"key":"מתנות לחנוכה","label":"מתנות לחנוכה — לכל ילד","icon":"🕎","slug":"hanukkah","group":"אחר","multi":True,"subs":["גור","לילי","דני","לכולם"]},
+      {"key":"שמש-ארץ-ירח","label":"דגם שמש־ארץ־ירח (אורריום / טלוריום)","icon":"🌍","slug":"orrery","group":"אחר","multi":True,"subs":["לבית — איכותי","מתנה לחנוכה — צעצועי"]},
+      {"key":"מתנות לחנוכה","label":"מתנות לחנוכה — לכל ילד","icon":"🕎","slug":"hanukkah","group":"אחר","multi":True,"subs":["גור","לילי","דני","לכולם","אחיין"]},
       {"key":"פתרונות אחסון","label":"פתרונות אחסון","icon":"🧺","slug":"storage","group":"אחר"},
       {"key":"כיסויי מיטה / כירבוליות","label":"כיסויי מיטה / כירבוליות","icon":"🛏️","slug":"bedspreads","group":"חדרי שינה וילדים"},
       {"key":"משחקי חצר","label":"משחקי חצר","icon":"⚽","slug":"yard-games","group":"חוץ ופרגולה","multi":True,"subs":["טרמפולינה ריבועית / מלבנית — חצר קדמית","מתקן נינג׳ה (2×2 מ׳ עד 3×2.5 מ׳)","מתקני כושר וספורט בודדים בסגנון נינג׳ה (לגילאים שונים)","שער כדורגל עמיד / פריק / מתקפל — לחצר הקדמית"]},
@@ -5678,6 +5679,14 @@ _btv=json.load(open(os.path.join(REPO,"enrich","balcony-tv.json"),encoding="utf-
 for _o in json.load(open(os.path.join(REPO,"balcony-tv.json"),encoding="utf-8")):
     _x=_btv["items"].get(_o["id"],{})
     _o["criteria"]=_btv["criteria"]
+    for _k in ("specs","stores","pick","pickWhy","points"):
+        if _k in _x: _o[_k]=_x[_k]
+    DATA.append(_o)
+# 20.11.2026: sun-earth-moon model (orrery/tellurium): decorative for home + toy Hanukkah gift for nephew; enrich merged here
+_orr=json.load(open(os.path.join(REPO,"enrich","orrery.json"),encoding="utf-8"))
+for _o in json.load(open(os.path.join(REPO,"orrery.json"),encoding="utf-8")):
+    _x=_orr["items"].get(_o["id"],{})
+    _o["criteria"]=_orr["criteria"]
     for _k in ("specs","stores","pick","pickWhy","points"):
         if _k in _x: _o[_k]=_x[_k]
     DATA.append(_o)
