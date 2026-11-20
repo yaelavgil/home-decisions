@@ -1439,6 +1439,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"ספות לפינת משפחה","label":"ספות לפינת משפחה","icon":"🛋️","slug":"family-sofas"},
       {"key":"מראה לכניסה","label":"מראה לכניסה","icon":"🪞","slug":"entrance-mirror"},
       {"key":"ארון לחדר אורחים","label":"ארונות וקומבינציה לחדר אורחים","icon":"🚪","slug":"guest-wardrobe","multi":True,"subs":["קומבינציה מלאה 290","שולחן כתיבה / טואלט","ארונות צד"]},
+      {"key":"ארון הזזה עם מראה לדני","label":"ארון הזזה עם מראה לדני — חדר ארונות","icon":"🪞","slug":"danny-wardrobe","group":"חדרי שינה וילדים","multi":True,"subs":["זולים (עד ~₪3,400 כולל הובלה והרכבה)","יקרים יותר (₪3,400+ כולל הובלה והרכבה)"]},
       {"key":"ארונות לחדרי הילדים","label":"ארונות לחדרי הילדים","icon":"🚪","slug":"kids-wardrobes","subs":["ארונות פתיחה","ארונות הזזה"]},
       {"key":"זרועות לטלוויזיה","label":"זרועות לטלוויזיה","icon":"📺","slug":"tv-arms"},
       {"key":"ספסל טיק","label":"ספסל טיק","icon":"🪵","slug":"teak-bench","group":"אמבטיה","multi":True,"subs":["80 ס״מ — חדר רחצה ילדים","קטן ומעוצב — חדר רחצה הורים (באלי)"]},
@@ -5677,6 +5678,15 @@ _btv=json.load(open(os.path.join(REPO,"enrich","balcony-tv.json"),encoding="utf-
 for _o in json.load(open(os.path.join(REPO,"balcony-tv.json"),encoding="utf-8")):
     _x=_btv["items"].get(_o["id"],{})
     _o["criteria"]=_btv["criteria"]
+    for _k in ("specs","stores","pick","pickWhy","points"):
+        if _k in _x: _o[_k]=_x[_k]
+    DATA.append(_o)
+# 20.11.2026: sliding wardrobe with mirror for Danny's closet room (alternative to the IKEA PAX+HASVIK design); enrich merged here
+_dw=json.load(open(os.path.join(REPO,"enrich","danny-wardrobe.json"),encoding="utf-8"))
+for _o in json.load(open(os.path.join(REPO,"danny-wardrobe.json"),encoding="utf-8")):
+    _x=_dw["items"].get(_o["id"],{})
+    _o["cat"]="ארון הזזה עם מראה לדני"; _o["type"]="product"; _o["img"]=_o["imgs"][0]
+    _o["criteria"]=_dw["criteria"]
     for _k in ("specs","stores","pick","pickWhy","points"):
         if _k in _x: _o[_k]=_x[_k]
     DATA.append(_o)
