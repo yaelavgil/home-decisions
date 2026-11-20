@@ -32,3 +32,7 @@ Firebase base: `https://home-picks-47450-default-rtdb.europe-west1.firebasedatab
 6. Never buy anything or message anyone. Report back to the main session in 2–3 lines.
 
 The board shows 🔎 "חיפוש מחדש נשלח/מתבצע" while status is pending/running, and 💡 "N הצעות חדשות" once suggestions with `status:"new"` exist.
+
+## 5. Refresh requests (`reason:"refresh"`)
+The category strip's 🔄 buttons write requests with `reason:"refresh"` and `mode:"check"` (verify links/prices/images/stock) or `mode:"deep"` (verify + search for better alternatives).
+They are NOT research requests (the 🔎 strip ignores them). Handling: see `refresh/README.md`; `python3 refresh/refresh_requests.py` lists pending ones.

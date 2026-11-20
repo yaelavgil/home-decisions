@@ -1687,6 +1687,13 @@ header{padding:clamp(8px,1.6vw,12px) 4px 0}
 .csperm .nm{font-weight:600}
 .csform h4{margin:12px 0 4px}
 
+.chkRow{order:4;display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:11.5px;margin-top:2px}
+.chkRow .ckt{color:var(--muted);font-weight:600}.chkRow.mid .ckt{color:#a8680c}.chkRow.old .ckt{color:#b3321e}
+.ckc{border-radius:99px;padding:1px 8px;font-weight:700;background:#f1ece4;color:#5b5348}.ckc.bad{background:#fde8e4;color:#a8301c}.ckc.sale{background:#e4f4e6;color:#1f6b33}.ckc.up{background:#fdeee0;color:#9a5410}.ckc.dn{background:#e4f4e6;color:#1f6b33}
+.sTag.ck{background:#fde8e4;color:#a8301c}.sTag.ck.sale{background:#e4f4e6;color:#1f6b33}
+.rfB{border:1.5px solid var(--line-2);border-radius:10px;padding:6px 11px;font-size:13px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--paper)}
+.rfB .rfT{flex:1 1 220px}.rfB.mid{background:#fff6e6;border-color:#f0d9a8}.rfB.old{background:#fdeeea;border-color:#f0c2b8}
+.rfB button{border:1.5px solid var(--line-2);background:#fff;border-radius:99px;padding:3px 11px;font:inherit;font-size:12.5px;font-weight:650;cursor:pointer}
 .rsB{background:#eef3ff;border:1.5px solid #c7d3f5;border-radius:10px;padding:7px 11px;font-size:13px;font-weight:650;color:#33499e;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .rsB.ready{background:#fff4d6;border-color:#e2b94f;color:#6f520d}
 .rsB button{font:inherit;font-size:12.5px;border:1.5px solid currentColor;background:transparent;border-radius:99px;padding:2px 11px;cursor:pointer;color:inherit;font-weight:700}
@@ -2972,6 +2979,7 @@ function rebuild(){
   CATS.forEach(c=>{ if(c.subs&&typeof c.subs==='object') c.subs=Object.values(c.subs).filter(x=>x!=='__none'); });
   ITEMS.forEach(i=>{ if(i.sub&&_managed.has(i.cat)){ const cc=CATS.find(x=>x.key===i.cat); if(cc&&!(cc.subs||[]).includes(i.sub)) i.sub=''; } });
   ITEMS.forEach(i=>{ const b=(typeof BITEMS!=='undefined'?BITEMS.find(x=>x.id===i.id):null); if(b&&b.feats&&i.feats!==b.feats) i.feats={...b.feats,...(i.feats||{})}; });
+  ITEMS.forEach(i=>{ const b=BITEMS.find(x=>x.id===i.id); if(b&&b.chk){ i.chk=b.chk; const sp=b.chk.sp||{}; (i.stores||[]).forEach(x=>{ if(x&&sp[x.l]!=null&&x.p!==sp[x.l]){ if(x.p0==null) x.p0=x.p; x.p=sp[x.l]; } }); } });
   ITEMS.forEach(i=>{ if(i.cat==='תאורת חוץ'){ i.cat='תאורה'; i.sub=i.sub||'תאורת חוץ'; } });
   ITEMS.forEach(i=>{ if(i.parts&&Object.keys(i.parts).length){ i.parts=Object.values(i.parts); i.price=i.parts.reduce((a,p)=>a+(Number(p.p)||0)*(Number(p.q)||1),0); } });
   ITEMS.forEach(i=>{ if(i.stores&&i.stores.length){ const r=i.stores.find(x=>x.rec)||i.stores[0]; if(r&&r.p!=null) i.price=r.p; if(r&&r.l) i.link=r.l; } });
@@ -3224,6 +3232,44 @@ function storeLine(it){
   const nm=guessStore(it), more=(it.stores&&it.stores.length>1)?` <span class="slMore">· עוד ${it.stores.length-1} חנויות</span>`:'';
   return `<a class="storeLine" href="${esc(href)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="החנות או הספק שמהם קונים — הקישור מוביל לדף המוצר"><span class="slK">🏪 קונים מ־</span><b>${esc(nm)}</b>${more}<span class="slA">↗</span></a>`;
 }
+/* ===== refresh status (refresh/check.py): age chip, per-store marks, category strip + request button ===== */
+function chkAgeDays(t){ const x=Date.parse(t); return isNaN(x)?null:Math.floor((Date.now()-x)/864e5); }
+function chkAgeTxt(d){ return d<=0?'היום':d===1?'אתמול':'לפני '+d+' ימים'; }
+const CHK_FL={dead:['🔴','קישור לא תקין'],moved:['🔴','הדף הוסר מהחנות'],oos:['⚠️','אזל מהמלאי'],blocked:['❔','לא אומת אוטומטית'],unsure:['❔','מחיר לא אומת'],noprice:['❔','מחיר לא נקרא'],img_bad:['🖼','תמונה לא תקינה'],img_diff:['🖼','לבדוק תמונה'],error:['❔','שגיאת רשת'],price_big:['💲','פער מחיר גדול — לבדוק']};
+function chkRow(it){
+  const c=it.chk; if(!c) return '';
+  const d=chkAgeDays(c.t); if(d==null) return '';
+  const cls=d>30?'old':d>14?'mid':'ok', chips=[], seen=new Set();
+  (c.fl||[]).forEach(([f,m])=>{ if(seen.has(f)) return; seen.add(f);
+    if(CHK_FL[f]) chips.push(`<span class="ckc bad" title="${esc(m)}">${CHK_FL[f][0]} ${CHK_FL[f][1]}</span>`);
+    else if(f==='sale') chips.push(`<span class="ckc sale" title="${esc(m)}">🏷 מבצע${c.was&&c.live?' −'+Math.round((1-c.live/c.was)*100)+'%':''}</span>`);
+    else if(f==='price_up'||f==='price_down'){ const r=(it.stores||[]).find(s=>s.p0!=null); const was=r?r.p0:it.price0; if(was!=null) chips.push(`<span class="ckc ${f==='price_up'?'up':'dn'}" title="${esc(m)}">${f==='price_up'?'▲':'▼'} עודכן מ־${nis(was)}</span>`); else chips.push(`<span class="ckc" title="${esc(m)}">💲 המחיר שונה (${f==='price_up'?'עלה':'ירד'}) — לבדוק</span>`); } });
+  return `<div class="chkRow ${cls}" title="נבדק מול האתר ${esc(c.t.slice(0,10))}"><span class="ckt">${cls==='ok'?'✓':'⏳'} נבדק ${chkAgeTxt(d)}</span>${chips.join('')}</div>`;
+}
+function chkMark(it,x){
+  const c=it.chk&&it.chk.u&&it.chk.u[x.l]; if(!c) return '';
+  const m={dead:['🔴','הקישור לא תקין'],moved:['🔴','הדף הוסר'],oos:['⚠️','אזל'],sale:['🏷','מבצע'],blocked:['❔','לא אומת'],noprice:['❔','מחיר לא נקרא']}[c];
+  return m?`<span class="sTag ck ${c}" title="${m[1]}">${m[0]} ${m[1]}</span>`:'';
+}
+function refreshStripHTML(cat){
+  const its=ITEMS.filter(i=>i.cat===cat.key&&!i.hidden&&i.type==='product'&&!i.ordered&&(i.link||(i.stores&&i.stores.length)));
+  if(!its.length) return '';
+  const act=catReqs(cat.key).find(r=>r.reason==='refresh'&&(r.status==='pending'||r.status==='running'));
+  const ts=its.map(i=>(i.chk&&i.chk.t)?Date.parse(i.chk.t):0), never=ts.filter(t=>!t).length, checked=its.length-never;
+  const days=checked?Math.floor((Date.now()-Math.min(...ts.filter(Boolean)))/864e5):null;
+  const bad=its.filter(i=>i.chk&&(i.chk.fl||[]).some(f=>f[0] in CHK_FL)).length;
+  const cls=(never||days>30)?'old':days>14?'mid':'ok';
+  const txt=!checked?'טרם נבדקו':'נבדקו '+checked+' מתוך '+its.length+(never?'':' · הישן ביותר '+chkAgeTxt(days));
+  if(act) return `<div class="rsB">🔄 בקשת ${act.mode==='deep'?'רענון + חיפוש חלופות':'רענון'} ${act.status==='running'?'מתבצעת כרגע':'נשלחה וממתינה ל־Claude'} · לפני ${ago(act.at)} <button type="button" onclick="cancelResearch('${act.id}')">ביטול</button></div>`;
+  return `<div class="rfB ${cls}"><span class="rfT">🔄 <b>מחירים וחנויות</b>: ${txt}${bad?` · ⚠ ${bad} דורשים תשומת לב`:''}</span><button type="button" onclick="askRefresh('${esc(cat.key)}','check')" title="בדיקת קישורים, תמונות ומחירים מול האתרים">רענון</button><button type="button" onclick="askRefresh('${esc(cat.key)}','deep')" title="רענון + חיפוש חלופות טובות יותר בחנויות אחרות">רענון + חלופות</button></div>`;
+}
+function askRefresh(key,mode){
+  const c=CATS.find(x=>x.key===key)||{}; const id='r'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  const req={cat:key,label:c.label,reason:'refresh',mode,status:'pending',by:(me&&me.name)||'מישהו',at:Date.now(),
+    items:ITEMS.filter(i=>i.cat===key&&!i.hidden).map(i=>({id:i.id,name:i.name,price:i.price,status:itemStatus(i)})),site:location.origin+location.pathname};
+  reqs[id]=req; fetch(`${DB}/requests/${id}.json`,{method:'PUT',body:JSON.stringify(req)}).catch(()=>{});
+  say(mode==='deep'?'🔄 נשלחה בקשת רענון + חיפוש חלופות':'🔄 נשלחה בקשת רענון — המחירים והקישורים ייבדקו',4000); renderCatStrip(); tabsHTML();
+}
 function guessStore(it){
   if(it.orderStore) return it.orderStore;
   if(it.store) return it.store;
@@ -3432,7 +3478,7 @@ function renderCatStrip(){
     +`</div></details>`;
   const sl=[vc.ordered?`<button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button>`:'',vc.toorder?`<button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button>`:'',vc.rejected?`<button class="r" onclick="setView('rejected')">↩ הוסרו ${vc.rejected}</button>`:''].join('');
   let h=`<div class="csrow"><span class="st">${stLab}</span>${stt==='done'?`<button type="button" class="reopen" onclick="reopenCat('${esc(cat.key)}')" title="לקנות עוד מהקטגוריה או לרענן אותה במוצרים חדשים / דגשים אחרים">↩ להחזיר להחלטה</button>`:''}<span>${goal}</span>${sl?`<span class="statline">${sl}</span>`:''}${menu}</div>`;
-  h+=researchStripHTML(cat);
+  h+=refreshStripHTML(cat)+researchStripHTML(cat);
   if(chosenN>1&&!cat.multi) h+=`<div class="warnB">⚠ שימי לב: נבחרו ${chosenN} פריטים בקטגוריה. אם זה מכוון (למשל כמה פריטים לאותו חלל), אפשר לאשר בהגדרות הקטגוריה — "מותר לבחור כמה".</div>`;
   el.innerHTML=h; el.style.display='flex'; renderPlaceRow();
 }
@@ -3472,7 +3518,7 @@ function sendResearch(key,reason){
 function cancelResearch(id){ delete reqs[id]; fetch(`${DB}/requests/${id}.json`,{method:'DELETE'}).catch(()=>{}); renderCatStrip(); }
 function ago(ts){ const m=Math.round((Date.now()-ts)/60000); return m<1?'הרגע':(m<60?m+' דק׳':(m<1440?Math.round(m/60)+' שעות':Math.round(m/1440)+' ימים')); }
 function researchStripHTML(cat){
-  let h=''; const rq=catReqs(cat.key), active=rq.find(r=>r.status==='pending'||r.status==='running'), sg=catSuggs(cat.key);
+  let h=''; const rq=catReqs(cat.key).filter(r=>r.reason!=='refresh'), active=rq.find(r=>r.status==='pending'||r.status==='running'), sg=catSuggs(cat.key);
   if(active) h+=`<div class="rsB">🔎 חיפוש מחדש ${active.status==='running'?'מתבצע כרגע':'נשלח וממתין ל־Claude'} · לפני ${ago(active.at)} <button type="button" onclick="cancelResearch('${active.id}')">ביטול</button></div>`;
   if(sg.length) h+=`<div class="rsB ready">💡 נמצאו ${sg.length} הצעות חדשות לפי הגדרות החיפוש <button type="button" onclick="openSuggestions('${esc(cat.key)}')">צפייה והחלטה</button></div>`;
   else { const done=rq.find(r=>r.status==='done'&&Date.now()-(r.at||0)<864e5); if(done&&!active) h+=`<div class="rsB">✓ החיפוש האחרון הסתיים${done.summary?': '+esc(done.summary):' — לא נמצא משהו מתאים יותר'}</div>`; }
@@ -4381,7 +4427,7 @@ function storesHTML(it){
   const st=(it.stores||[]).slice(); if(!st.length) return '';
   st.sort((a,b)=>(b.rec?1:0)-(a.rec?1:0)||((a.p==null?1e9:a.p)-(b.p==null?1e9:b.p)));
   const ps=st.map(x=>x.p).filter(x=>x!=null), cheapest=ps.length?Math.min(...ps):null;
-  const rows=st.map(x=>`<a class="storeRow${x.rec?' rec':''}" href="${esc(x.l||'#')}" target="_blank" rel="noopener"><span class="sn">${esc(x.n)}</span>${x.rec?'<span class="sTag r">מומלצת</span>':''}${(x.p!=null&&x.p===cheapest&&st.length>1)?'<span class="sTag c">הכי זול</span>':''}<span class="sp">${x.p!=null?nis(x.p):'—'}</span><span>↗</span>${x.note?`<small>${esc(x.note)}</small>`:''}</a>`).join('');
+  const rows=st.map(x=>`<a class="storeRow${x.rec?' rec':''}" href="${esc(x.l||'#')}" target="_blank" rel="noopener"><span class="sn">${esc(x.n)}</span>${x.rec?'<span class="sTag r">מומלצת</span>':''}${chkMark(it,x)}${(x.p!=null&&x.p===cheapest&&st.length>1)?'<span class="sTag c">הכי זול</span>':''}<span class="sp">${x.p!=null?nis(x.p):'—'}</span><span>↗</span>${x.note?`<small>${esc(x.note)}</small>`:''}</a>`).join('');
   return `<div class="shoprow"><button type="button" class="shopbtn" onclick="toggleStores('${it.id}')">🏪 מחירים ב־${st.length} חנויות ⌄</button>${it.zap?`<a class="shopbtn" href="${it.zap}" target="_blank" rel="noopener">⇄ השוואה בזאפ</a>`:''}</div><div class="storeList" id="st-${it.id}">${rows}</div>`;
 }
 function toggleStores(id){ const el=document.getElementById('st-'+id); if(el) el.classList.toggle('open'); }
@@ -4442,7 +4488,7 @@ function cardEl(it){
   const _tt=String(it.name||'').replace(/"/g,'&quot;').replace(/<[^>]*>/g,'');
   const nameEl=it.link?`<a class="name" href="${it.link}" target="_blank" rel="noopener" title="${_tt}">${it.name}</a>`:`<span class="name" title="${_tt}">${it.name}</span>`;
   const sub=it.type==='color'?`<div class="code">${it.code||''}</div>`
-    :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div></div>${storeLine(it)}`:(it.cat==='מתנות לחנוכה'?'':`<div class="price muted">המחיר בחשבון שלך בחנות</div>`))+dimsRow(it)+pairChip(it)+featChips(it)+useLabel(it);
+    :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div></div>${storeLine(it)}${chkRow(it)}`:(it.cat==='מתנות לחנוכה'?'':`<div class="price muted">המחיר בחשבון שלך בחנות</div>`))+dimsRow(it)+pairChip(it)+featChips(it)+useLabel(it);
   const featRow=(it.featTags||[]).length?`<div class="featBadges">${(it.featTags||[]).map(t=>`<span class="featBadge">${t}</span>`).join('')}</div>`:'';
   const stars=it.type==='product'?`<div class="stars" data-id="${it.id}">${[1,2,3,4,5].map(n=>`<button type="button" class="star" data-n="${n}" onclick="event.stopPropagation();setRating('${it.id}',${n})">★</button>`).join('')}<span class="ratedBy"></span></div>`:'';
   const qty=it.type==='product'
@@ -6239,6 +6285,36 @@ for _d in DATA:
         _pid,_pt=_PAIR_SPECIAL.get(_d["id"],(_PAIR_DEFAULT,None))
         if _d["id"] in ("VN10",): continue
         _d["pair"]={"id":_pid,"t":_pt or _MIRROR_NAME.get(_pid,"")}
+
+# --- price/link/image refresh overlay (refresh/check.py -> refresh/status.json); non-destructive: the source price is kept in p0/price0 ---
+def _apply_checks(_data):
+    _p=os.path.join(REPO,"refresh","status.json")
+    if not os.path.exists(_p): return 0
+    _S=json.load(open(_p,encoding="utf-8")).get("items",{}); _n=0
+    for _d in _data:
+        _e=_S.get(_d["id"])
+        if not _e: continue
+        _stores=_d.get("stores") or []; _sp={}; _u={}
+        for _r in _e.get("refs",[]):
+            _c=_r["status"]
+            if _c=="ok" and _r.get("avail")=="out": _c="oos"
+            elif _c=="ok" and _r.get("was"): _c="sale"
+            _u[_r["url"]]=_c
+            _lp=_r.get("priceNis"); _dl=_r.get("delta")
+            if _r["status"]=="ok" and _lp is not None and (_r.get("cur") or "ILS").upper() in ("ILS","NIS") and _r.get("conf")!="low" and _dl is not None and abs(_dl)<=0.35:
+                if _r["k"].startswith("store:"):
+                    _i=int(_r["k"].split(":")[1])
+                    if _i<len(_stores) and _stores[_i].get("p")!=round(_lp):
+                        _stores[_i]["p0"]=round(_stores[_i].get("p") or 0) if _stores[_i].get("p") is not None else None; _stores[_i]["p"]=round(_lp); _sp[_stores[_i].get("l")]=round(_lp)
+                elif _r["k"]=="link" and not _stores and not _d.get("parts") and _d.get("price")!=round(_lp):
+                    _d["price0"]=round(_d.get("price") or 0) if _d.get("price") is not None else None; _d["price"]=round(_lp)
+        _chk={"t":_e["t"],"u":_u,"sp":_sp,"fl":[[f["f"],f["msg"]] for f in _e.get("flags",[])]}
+        if _e.get("was"): _chk["was"]=round(_e["was"])
+        if _e.get("live") is not None: _chk["live"]=round(_e["live"])
+        if _e.get("prev"): _chk["prev"]=round(_e["prev"]["price"])
+        _d["chk"]=_chk; _n+=1
+    return _n
+print("refresh overlay:",_apply_checks(DATA),"items")
 
 out=(tpl.replace("__DATA__",json.dumps(DATA,ensure_ascii=False))
         .replace("__CATS__",json.dumps(CATS,ensure_ascii=False))
