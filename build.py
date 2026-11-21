@@ -2378,6 +2378,26 @@ body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .s
 .qfClr{font:inherit;font-size:12px;font-weight:800;border:1.5px solid var(--line-2);background:var(--paper);color:var(--brass-d);border-radius:99px;padding:3px 11px;cursor:pointer}
 .qfRow{padding:8px 2px 2px;border-top:1px dashed var(--line-2);margin-top:8px}
 .qfChips{display:flex;flex-wrap:wrap;gap:6px;min-width:0;max-height:112px;overflow:auto}
+/* 21.11.2026: "כל מאפיין שקיים לפריט" — a dropdown of EVERY value, multi-select, with pin/unpin to the quick row */
+.qfMoreW{position:relative;display:inline-block}
+.qfMore{font:inherit;font-size:12.5px;font-weight:800;border:1.5px dashed var(--line-2);background:var(--paper);color:var(--muted);border-radius:99px;padding:4px 11px;cursor:pointer;white-space:nowrap}
+.qfMore:hover{border-color:var(--brass-d);color:var(--brass-d)}
+.qfPop{position:absolute;top:calc(100% + 6px);inset-inline-start:0;z-index:60;width:290px;max-width:88vw;background:var(--paper);border:1.5px solid var(--line-2);border-radius:14px;box-shadow:0 14px 34px -10px rgba(60,40,10,.4);padding:8px;display:flex;flex-direction:column;gap:6px}
+.qfPop h5{margin:0;font-size:12px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px}
+.qfPop h5 span{margin-inline-start:auto;font-weight:600}
+.qfSrch{font:inherit;font-size:13px;width:100%;border:1.5px solid var(--line-2);border-radius:9px;padding:6px 9px;background:var(--bg);color:var(--ink)}
+.qfList{display:flex;flex-direction:column;gap:2px;max-height:264px;overflow:auto;margin:0 -2px;padding:0 2px}
+.qfLi{display:flex;align-items:center;gap:4px}
+.qfLi .v{flex:1;min-width:0;font:inherit;font-size:13px;font-weight:700;text-align:start;background:none;border:1.5px solid transparent;border-radius:9px;padding:6px 9px;cursor:pointer;color:var(--ink);display:flex;align-items:center;gap:6px}
+.qfLi .v:hover{background:var(--brass-soft)}
+.qfLi .v.on{border-color:var(--brass-d);background:var(--brass-soft);color:var(--brass-d)}
+.qfLi .v small{margin-inline-start:auto;color:var(--muted);font-weight:600}
+.qfLi .v.zero{opacity:.45}
+.qfLi .p{font:inherit;font-size:13px;line-height:1;background:none;border:1.5px solid var(--line-2);border-radius:8px;padding:5px 6px;cursor:pointer;opacity:.35;filter:grayscale(1)}
+.qfLi .p:hover{opacity:.8;filter:none}
+.qfLi .p.on{opacity:1;filter:none;border-color:var(--brass-d);background:var(--brass-soft)}
+.qfPop .rst{font:inherit;font-size:12px;font-weight:700;background:none;border:0;border-top:1px solid var(--line-2);padding:7px 4px 2px;cursor:pointer;color:var(--muted);text-align:start}
+.qfPop .rst:hover{color:var(--brass-d)}
 .qfc{font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--line-2);background:var(--paper);color:var(--ink-soft);border-radius:99px;padding:4px 11px;cursor:pointer}
 .qfc small{margin-inline-start:5px;opacity:.75;font-weight:700}
 .qfc.on{background:var(--brass-d);border-color:var(--brass-d);color:#fff}
@@ -5583,7 +5603,9 @@ function qfBuild(cat,its){
   add(own('who','❤','מי אהב',nm,(it,k)=>{ try{ return marksFor(it.id).some(m=>m.name===k&&m.status==='yes'); }catch(e){ return false; } }));
   // מאפיינים (תגיות)
   const tc={}; its.forEach(i=>(i.tags||[]).forEach(t=>tc[t]=(tc[t]||0)+1));
-  add(own('tags','🏷','מאפיינים',Object.keys(tc).filter(t=>tc[t]>=2).sort((a,b)=>tc[b]-tc[a]).slice(0,14).map(k=>({k,l:k})),(it,k)=>(it.tags||[]).includes(k)));
+  // 21.11.2026: every tag that exists on an item is selectable (was: only tags on >=2 items, top 14).
+  //   The quick row still shows a short head; the rest live in the ⋯ dropdown, where any value can be pinned into the row.
+  add(own('tags','🏷','מאפיינים',Object.keys(tc).sort((a,b)=>tc[b]-tc[a]||a.localeCompare(b,'he')).map(k=>({k,l:k})),(it,k)=>(it.tags||[]).includes(k)));
   // פיצ'רים
   const fs=catFeats(cat.key), fv=[];
   fs.forEach(f=>{ const lab=f.l.replace(/\s*\(.*$/,''); if(f.v&&Object.keys(f.v).length) (Array.isArray(f.v)?f.v:Object.values(f.v)).forEach(x=>fv.push({k:f.id+'='+x,l:lab+': '+x})); else { fv.push({k:f.id,l:lab}); if(f.n) fv.push({k:f.id+'=false',l:'ללא '+lab}); } });
@@ -5600,6 +5622,23 @@ function qfBaseFor(f){ const snap=f.snap(); const own=!!QF_ST[f.id]||(!['place',
 function qfConfig(cat,D){ const def=QF_DEF[cat.key]||QF_GEN; const c=Array.isArray(cat.qf)&&cat.qf.length?cat.qf:def; return c.filter(id=>D.by[id]); }
 let QF_OPEN={}; try{ QF_OPEN=JSON.parse(localStorage.getItem('qfOpen')||'{}'); }catch(e){}
 let _qfMenu=false;
+/* 21.11.2026 — pinned values per category+filter: which attributes get a quick-click chip in the row.
+   Empty/absent = fall back to the auto head (most common values). Personal view preference, so localStorage. */
+const QF_HEAD=12;
+let QF_PIN={}; try{ QF_PIN=JSON.parse(localStorage.getItem('qfPin')||'{}'); }catch(e){}
+let _qfMore=null, _qfQ='';
+function qfPins(cat,id){ const a=(QF_PIN[cat.key]||{})[id]; return Array.isArray(a)?a:null; }
+function qfSetPins(cat,id,arr){ QF_PIN[cat.key]=QF_PIN[cat.key]||{};
+  if(arr&&arr.length) QF_PIN[cat.key][id]=arr; else delete QF_PIN[cat.key][id];
+  if(!Object.keys(QF_PIN[cat.key]).length) delete QF_PIN[cat.key];
+  try{ localStorage.setItem('qfPin',JSON.stringify(QF_PIN)); }catch(e){} }
+function qfTogglePin(cat,id,k,allKeys){ const cur=qfPins(cat,id)||allKeys.slice(0,QF_HEAD);
+  const i=cur.indexOf(k); const nx=cur.slice(); if(i<0) nx.push(k); else nx.splice(i,1); qfSetPins(cat,id,nx); }
+// which values get a chip in the row: the pinned set if she set one, else the auto head; anything selected is always shown
+function qfShownVals(cat,f,S){ const pins=qfPins(cat,f.id), keys=f.vals.map(v=>v.k);
+  if(pins){ const P=new Set(pins.concat([...S])); return f.vals.filter(v=>P.has(v.k)); }
+  if(f.vals.length<=QF_HEAD) return f.vals;
+  const head=new Set(keys.slice(0,QF_HEAD).concat([...S])); return f.vals.filter(v=>head.has(v.k)); }
 function qfOpenSet(cat,ids){ let a=QF_OPEN[cat.key]; if(!Array.isArray(a)){ a=ids.slice(0,1); } return new Set(a); }
 function qfSaveOpen(cat,S){ QF_OPEN[cat.key]=[...S]; try{ localStorage.setItem('qfOpen',JSON.stringify(QF_OPEN)); }catch(e){} }
 function qfSaveCfg(cat,D,ids){ const def=(QF_DEF[cat.key]||QF_GEN).filter(id=>D.by[id]); const val=JSON.stringify(ids)===JSON.stringify(def)?null:(ids.length?ids.slice():['-']); cat.qf=val;
@@ -5609,7 +5648,7 @@ function qfRender(){
   const bar=document.getElementById('qfBar'); if(!bar) return;
   const cat=selCats.size===1?CATS.find(c=>selCats.has(c.key)):null;
   if(!cat){ bar.style.display='none'; bar.innerHTML=''; _qfD=null; return; }
-  if(_qfCat!==cat.key){ _qfCat=cat.key; _qfMenu=false; Object.keys(QF_ST).forEach(k=>delete QF_ST[k]); }
+  if(_qfCat!==cat.key){ _qfCat=cat.key; _qfMenu=false; _qfMore=null; _qfQ=''; Object.keys(QF_ST).forEach(k=>delete QF_ST[k]); }
   const its=ITEMS.filter(i=>i.cat===cat.key&&!i.hidden&&i.type!=='color');
   if(its.length<4){ bar.style.display='none'; bar.innerHTML=''; _qfD=null; return; }
   const D=qfBuild(cat,its); _qfD=D; const ids=qfConfig(cat,D).filter(id=>{ const f=D.by[id]; return f.vals.length>=2||f.get().size; });
@@ -5617,18 +5656,38 @@ function qfRender(){
   ids.forEach(id=>{ const f=D.by[id], S=f.get(), isOpen=open.has(id); if(S.size) anyOn=true;
     tabs+='<span class="qfTab'+(isOpen?' open':'')+(S.size?' has':'')+'"><button type="button" class="qfT" data-act="tog" data-f="'+id+'">'+f.icon+' '+esc(f.label)+(S.size?' <b>'+S.size+'</b>':'')+' <i>'+(isOpen?'▴':'▾')+'</i></button><button type="button" class="qfX" data-act="rm" data-f="'+id+'" title="הסר מהסינון המהיר" aria-label="הסר מהסינון המהיר">✕</button></span>';
     if(isOpen){ const base=qfBaseFor(f), cnt=k=>base.filter(it=>f.test(it,k)).length;
+      const shownV=qfShownVals(cat,f,S), hidden=f.vals.length-shownV.length, pins=qfPins(cat,f.id);
+      let pop='';
+      if(_qfMore===id){ const q=_qfQ.trim(), list=q?f.vals.filter(v=>v.l.toLowerCase().includes(q.toLowerCase())):f.vals;
+        const pinSet=new Set(pins||f.vals.slice(0,QF_HEAD).map(v=>v.k));
+        pop='<div class="qfPop" data-f="'+id+'"><h5>'+f.icon+' כל ה'+esc(f.label)+' <span>'+f.vals.length+'</span></h5>'
+          +'<input type="search" class="qfSrch" data-act="srch" placeholder="חיפוש מאפיין…" value="'+esc(_qfQ)+'" autocomplete="off">'
+          +'<div class="qfList">'+(list.length?list.map(v=>{ const n=cnt(v.k), on=S.has(v.k), pinned=pinSet.has(v.k);
+              return '<div class="qfLi"><button type="button" class="v'+(on?' on':'')+(n===0&&!on?' zero':'')+'" data-act="pick" data-f="'+id+'" data-k="'+esc(v.k)+'">'+(on?'✓ ':'')+esc(v.l)+'<small>'+n+'</small></button>'
+                +'<button type="button" class="p'+(pinned?' on':'')+'" data-act="pin" data-f="'+id+'" data-k="'+esc(v.k)+'" title="'+(pinned?'הסר מהשורה המהירה':'הוסף לשורה המהירה')+'" aria-label="'+(pinned?'הסר מהשורה המהירה':'הוסף לשורה המהירה')+'">📌</button></div>'; }).join('')
+            :'<span class="qfNo">אין מאפיין שמתאים לחיפוש</span>')+'</div>'
+          +(pins?'<button type="button" class="rst" data-act="unpin" data-f="'+id+'">↺ חזרה לשורה המהירה המקורית</button>':'')+'</div>'; }
       panels+='<div class="qfRow"><div class="qfChips"><button type="button" class="qfc all'+(S.size?'':' on')+'" data-f="'+id+'" data-k="">הכל</button>'
-        +f.vals.map(v=>{ const n=cnt(v.k), on=S.has(v.k); return '<button type="button" class="qfc'+(on?' on':'')+(n===0&&!on?' zero':'')+'" data-f="'+id+'" data-k="'+esc(v.k)+'">'+esc(v.l)+'<small>'+n+'</small></button>'; }).join('')+'</div></div>'; } });
+        +shownV.map(v=>{ const n=cnt(v.k), on=S.has(v.k); return '<button type="button" class="qfc'+(on?' on':'')+(n===0&&!on?' zero':'')+'" data-f="'+id+'" data-k="'+esc(v.k)+'">'+esc(v.l)+'<small>'+n+'</small></button>'; }).join('')
+        +((f.vals.length>QF_HEAD||pins)?'<span class="qfMoreW"><button type="button" class="qfMore" data-act="more" data-f="'+id+'">⋯ '+(hidden>0?'עוד '+hidden:'בחירת מאפיינים')+'</button>'+pop+'</span>':'')
+        +'</div></div>'; } });
   const avail=D.all.filter(f=>!ids.includes(f.id)&&(f.vals.length>=2||qfConfig(cat,D).includes(f.id)===false&&f.vals.length>=2));
   const menu=_qfMenu?'<div class="qfMenu">'+(D.all.filter(f=>!qfConfig(cat,D).includes(f.id)).map(f=>'<button type="button" data-act="add" data-f="'+f.id+'"'+(f.vals.length<2?' disabled':'')+'>'+f.icon+' '+esc(f.label)+' <small>'+(f.vals.length>=2?f.vals.length+' ערכים':'אין עדיין ערכים')+'</small></button>').join('')||'<span class="qfNo">כל הסינונים כבר בשורה</span>')+'<button type="button" class="rst" data-act="reset">↺ איפוס לברירת מחדל</button></div>':'';
   const total=its.length, shown=visible().length;
   bar.innerHTML='<div class="qfTabs">'+tabs+'<span class="qfAddW"><button type="button" class="qfAdd" data-act="menu">＋ סינון</button>'+menu+'</span>'
     +'<span class="qfSum">מציג <b>'+shown+'</b> מתוך '+total+'</span>'+(anyOn?'<button type="button" class="qfClr" data-act="clr">נקה</button>':'')+'</div>'+panels;
   bar.style.display='block';
+  // picking a value re-renders the whole bar; put the caret back so she can keep typing in the ⋯ search
+  if(_qfMore&&_qfQ){ const s=bar.querySelector('.qfPop .qfSrch'); if(s){ s.focus(); s.setSelectionRange(s.value.length,s.value.length); } }
 }
 document.getElementById('qfBar').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b||!_qfD) return; const D=_qfD, cat=CATS.find(c=>c.key===D.cat); if(!cat) return; const a=b.dataset.act;
-  if(a==='menu'){ _qfMenu=!_qfMenu; qfRender(); return; }
+  if(a==='menu'){ _qfMenu=!_qfMenu; _qfMore=null; qfRender(); return; }
+  if(a==='more'){ _qfMore=(_qfMore===b.dataset.f?null:b.dataset.f); _qfQ=''; _qfMenu=false; qfRender();
+    if(_qfMore){ const s=document.querySelector('.qfPop .qfSrch'); if(s) s.focus(); } return; }
+  if(a==='pick'){ const f=D.by[b.dataset.f]; if(f){ f.tog(b.dataset.k); RE(); } return; }   // multi-select; the popup stays open
+  if(a==='pin'){ const f=D.by[b.dataset.f]; if(f){ qfTogglePin(cat,f.id,b.dataset.k,f.vals.map(v=>v.k)); qfRender(); } return; }
+  if(a==='unpin'){ qfSetPins(cat,b.dataset.f,null); qfRender(); return; }
   const ids=qfConfig(cat,D);
   if(a==='tog'){ const S=qfOpenSet(cat,ids); S.has(b.dataset.f)?S.delete(b.dataset.f):S.add(b.dataset.f); qfSaveOpen(cat,S); qfRender(); return; }
   if(a==='rm'){ const f=D.by[b.dataset.f]; if(f) f.clr(); qfSaveCfg(cat,D,ids.filter(x=>x!==b.dataset.f)); RE(); return; }
@@ -5637,8 +5696,22 @@ document.getElementById('qfBar').addEventListener('click',e=>{
   if(a==='clr'){ Object.keys(QF_ST).forEach(k=>QF_ST[k]=new Set()); ['place','slot','sub'].forEach(id=>{ const f=D.by[id]; if(f) f.clr(); }); RE(); return; }
   if(b.dataset.f){ const f=D.by[b.dataset.f]; if(!f) return; if(b.dataset.k==='') f.clr(); else f.tog(b.dataset.k); RE(); }
 });
-document.addEventListener('mousedown',e=>{ if(_qfMenu&&!e.target.closest('.qfAddW')){ _qfMenu=false; try{ qfRender(); }catch(x){} } },true);
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&_qfMenu){ _qfMenu=false; qfRender(); } });
+document.getElementById('qfBar').addEventListener('input',e=>{ const s=e.target.closest('.qfSrch'); if(!s) return;
+  _qfQ=s.value; const pop=s.closest('.qfPop'); if(!pop) return; const id=pop.dataset.f, D=_qfD, cat=D&&CATS.find(c=>c.key===D.cat), f=D&&D.by[id];
+  if(!f||!cat) return; const q=_qfQ.trim().toLowerCase(), base=qfBaseFor(f), S=f.get();
+  const pins=qfPins(cat,id), pinSet=new Set(pins||f.vals.slice(0,QF_HEAD).map(v=>v.k));
+  const list=q?f.vals.filter(v=>v.l.toLowerCase().includes(q)):f.vals;
+  const box=pop.querySelector('.qfList'); if(!box) return;   // repaint just the list, so the caret stays in the box
+  box.innerHTML=list.length?list.map(v=>{ const n=base.filter(it=>f.test(it,v.k)).length, on=S.has(v.k), pinned=pinSet.has(v.k);
+      return '<div class="qfLi"><button type="button" class="v'+(on?' on':'')+(n===0&&!on?' zero':'')+'" data-act="pick" data-f="'+id+'" data-k="'+esc(v.k)+'">'+(on?'✓ ':'')+esc(v.l)+'<small>'+n+'</small></button>'
+        +'<button type="button" class="p'+(pinned?' on':'')+'" data-act="pin" data-f="'+id+'" data-k="'+esc(v.k)+'" title="'+(pinned?'הסר מהשורה המהירה':'הוסף לשורה המהירה')+'">📌</button></div>'; }).join('')
+    :'<span class="qfNo">אין מאפיין שמתאים לחיפוש</span>'; });
+document.addEventListener('mousedown',e=>{ let ch=false;
+  if(_qfMenu&&!e.target.closest('.qfAddW')){ _qfMenu=false; ch=true; }
+  if(_qfMore&&!e.target.closest('.qfMoreW')){ _qfMore=null; _qfQ=''; ch=true; }
+  if(ch){ try{ qfRender(); }catch(x){} } },true);
+document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return;
+  if(_qfMore){ _qfMore=null; _qfQ=''; qfRender(); } else if(_qfMenu){ _qfMenu=false; qfRender(); } });
 { const _al=afList; afList=function(){ const L=_al();
     if(_qfD&&selCats.size===1&&selCats.has(_qfD.cat)) qfOwnIds().forEach(id=>{ const f=_qfD.by[id]; if(!f) return; [...QF_ST[id]].forEach(k=>{ const v=f.vals.find(x=>x.k===k); L.push({l:f.icon+' '+f.label+': '+(v?v.l:k),rm:()=>{ QF_ST[id].delete(k); }}); }); });
     return L; }; }
@@ -5811,9 +5884,46 @@ for _f in ("mops2.json","storage.json","bedspreads.json","bedspreads2.json","bed
 #   (kept + labelled "הספק נמוך — טכנולוגיה": HT11 Colder RIO, HT15 Boston Premium, HT21 SmartAir LAVA, HT36, HT37). Everything else under 3000W is hidden
 #   (reversible: delete the id from _PH_HIDE). Remote / levels / IP are no longer mandatory, so HT14/16/18 (3000W, no remote) are visible again.
 _PH_HIDE=({"HT%d"%i for i in range(1,13)} - {"HT11"}) | {"HT28","HT30"}  # 17.11 evening: she wants a well-known firm that will not break (bad ACE mushroom-heater experience) -> hide the no-name HT28 / HT30 (reversible)
+# 21.11.2026: "תסיר תנורים שמגיעים עם עמוד ושהם פחות מ-2500" -> two independent cuts, both reversible by editing the sets below.
+#   Pole/mushroom models (she needs the two WALL power points in the pergola) and anything under 2500W.
+#   PHW3 is the CAESAR CW2 she liked — it is 2000W, so this rule hides it too. Delete "PHW3" here to bring it back.
+_PH_POLE={"HT22","HT24","HT26","HT27"}            # פטרייה / על עמוד בלבד
+_PH_UNDER2500={"PHW3","HT11"}                     # < 2500W (PHW3 = CAESAR CW2 2000W, the one she liked)
+# 21.11.2026: the 21.11 round (PHW*) re-researched models that were already on the board from 17.11 (HT*), which showed
+#   the same heater twice at two prices. Hide the older record of each pair; the PHW one carries the current price,
+#   the colour check and the glare placement. Reversible: delete the id from this set.
+_PH_DUP={"HT14":"PHW1","HT32":"PHW5","HT35":"PHW4","HT36":"PHW6","HT25":"PHW8","HT34":"PHW8"}
+_PH_HIDE |= _PH_POLE | _PH_UNDER2500 | set(_PH_DUP)
 for _d in DATA:
     if _d.get("cat")=="תנורי פרגולה" and _d["id"] in _PH_HIDE:
         _d["hidden"]=True
+
+# 21.11.2026: she asked to be able to filter heaters by הספק and by "נתלה על הקיר (לא על עמוד)".
+#   Attributes in the board ARE the item `tags`, so the cheapest way to add a facet is to stamp a consistent tag on
+#   every item in the category instead of hand-editing 36 records. Derived from the name/tags already written.
+import re as _re_ph
+_PH_WALL=r"תליי?ה|לקיר|על קיר|צמוד קיר|אינפרא לקיר|תנור תקרה|לוח תקרה"
+_PH_POLE_RE=r"פטריי|על עמוד|עמוד אינפרא|חצוב|מוט טלסקופ|טאוור|רצפתי"  # NB: not "עומד" — HT14's tags are garbled ("IP55 (עומד") and matched it
+def _ph_facets(_d):
+    _nm=_d.get("name","") or ""
+    _tg=" ".join(_d.get("tags") or [])
+    # power: the NAME is authoritative — a desc often quotes other models' wattages, so never read it first
+    _w=[int(x) for x in _re_ph.findall(r"(\d{4})\s*W",_nm)] or [int(x) for x in _re_ph.findall(r"(\d{4})\s*W",_tg)]
+    _w=max(_w) if _w else 0   # a "2×1500W" name also carries the 3000W total; the total is the model's rating
+    _pw="הספק %dW"%_w if _w else None
+    # mount: judge from the NAME/TAGS only. Descriptions mention optional stands, which is not how the unit mounts.
+    _s=_nm+" "+_tg
+    if _re_ph.search(_PH_WALL,_s): _mt="תנור תקרה" if _re_ph.search(r"תנור תקרה|לוח תקרה",_s) else "תלייה על קיר"
+    elif _re_ph.search(_PH_POLE_RE,_s): _mt="על עמוד"
+    else: _mt="תלייה על קיר"
+    return _pw,_mt
+for _d in DATA:
+    if _d.get("cat")!="תנורי פרגולה": continue
+    _pw,_mt=_ph_facets(_d)
+    _t=list(_d.get("tags") or [])
+    # drop the bare "3000W" tag the old records carry — "הספק 3000W" now says it, and two chips for one fact is noise
+    _t=[x for x in _t if not _re_ph.match(r"^הספק \d+W$",x) and not _re_ph.match(r"^\d{4}W$",x) and x not in ("תלייה על קיר","על עמוד","תנור תקרה")]
+    _d["tags"]=([_pw] if _pw else [])+[_mt]+_t
 # merge enrich for the late-loaded pergola heater files (HT13+) — the generic enrich pass runs before heaters2-5 are appended
 _phe=json.load(open(os.path.join(REPO,"enrich","pergola-heater.json"),encoding="utf-8"))
 for _d in DATA:
