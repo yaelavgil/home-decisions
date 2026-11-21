@@ -5797,9 +5797,11 @@ for _o in json.load(open(os.path.join(REPO,"heaters4.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"heaters5.json"),encoding="utf-8")):
     DATA.append(_o)
-# 20.11.2026: she has TWO HIGH POINTS in the pergola + a winter closure -> ranked by (1) is ceiling/high hanging actually allowed,
-#   (2) glare (looking up straight into the element), (3) verified price for 2 units. Includes 2000/2500W fallbacks because two
-#   3000W units draw ~26 A and one heating mushroom already trips the balcony circuit.
+# 21.11.2026: corrected brief. The pergola has TWO DEDICATED WALL power points (the tripping circuit is the UPPER balcony, a
+#   separate job), so there is no electrical ceiling and 3000W x 2 is the target. Her refined requirements: 2500-3000W,
+#   WHITE or SILVER preferred, known stores/chains or an exclusive official importer, and "will not dazzle" as a core quality
+#   requirement -> long-wave / carbon / ULG, not plain gold halogen. Ranked on those; every desc places the model on the
+#   glare-vs-felt-heat axis, because the two pull in opposite directions and no model wins both.
 for _o in json.load(open(os.path.join(REPO,"pergola-heaters-hang.json"),encoding="utf-8")):
     DATA.append(_o)
 for _f in ("mops2.json","storage.json","bedspreads.json","bedspreads2.json","bedspreads3.json"):
