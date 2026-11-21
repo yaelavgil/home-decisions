@@ -7076,7 +7076,7 @@
    ]
   },
   "K1": {
-   "t": "2026-11-21T19:55:51+02:00",
+   "t": "2026-11-21T22:01:05+02:00",
    "name": "Breville Barista Pro · BES878",
    "cat": "מכונות קפה",
    "flags": [],
@@ -7131,7 +7131,7 @@
    "live": 3142.0
   },
   "K2": {
-   "t": "2026-11-21T19:55:51+02:00",
+   "t": "2026-11-21T22:01:05+02:00",
    "name": "Breville Barista Express Impress · BES876",
    "cat": "מכונות קפה",
    "flags": [],
@@ -7186,7 +7186,7 @@
    "live": 3899.0
   },
   "K3": {
-   "t": "2026-11-21T19:55:51+02:00",
+   "t": "2026-11-21T22:01:05+02:00",
    "name": "DeLonghi La Specialista Maestro · EC9865",
    "cat": "מכונות קפה",
    "flags": [],
@@ -32416,7 +32416,7 @@
    "live": 399.0
   },
   "K4": {
-   "t": "2026-11-21T19:55:51+02:00",
+   "t": "2026-11-21T22:01:05+02:00",
    "name": "DeLonghi La Specialista Arte Evo · EC9255.M",
    "cat": "מכונות קפה",
    "flags": [],
@@ -32481,7 +32481,7 @@
    "live": 2690.0
   },
   "K5": {
-   "t": "2026-11-21T19:55:51+02:00",
+   "t": "2026-11-21T22:01:05+02:00",
    "name": "Breville Barista Express · BES875BSS",
    "cat": "מכונות קפה",
    "flags": [
@@ -32522,32 +32522,62 @@
    ]
   },
   "K6": {
-   "t": "2026-11-21T19:55:51+02:00",
+   "t": "2026-11-21T22:01:05+02:00",
    "name": "Breville Barista Touch Impress · BES881BTR",
    "cat": "מכונות קפה",
    "flags": [
     {
      "f": "blocked",
-     "k": "store:0",
+     "k": "store:1",
+     "msg": "האתר חוסם בדיקה אוטומטית — נדרש דפדפן"
+    },
+    {
+     "f": "blocked",
+     "k": "store:2",
      "msg": "האתר חוסם בדיקה אוטומטית — נדרש דפדפן"
     }
    ],
    "refs": [
     {
      "k": "store:0",
-     "url": "https://ksp.co.il/web/item/503578",
-     "status": "blocked",
-     "listed": 5595,
+     "url": "https://www.citydeal.co.il/product/%d7%9e%d7%9b%d7%95%d7%a0%d7%aa-%d7%a7%d7%a4%d7%94-%d7%97%d7%9b%d7%9e%d7%94-breville-bes881btr-barista-touch-impress-%d7%a9%d7%97%d7%95%d7%a8%d7%94-%d7%99%d7%91%d7%95%d7%90%d7%9f-%d7%a8%d7%a9%d7%9e",
+     "status": "ok",
+     "http": 200,
+     "price": 5580.0,
+     "cur": "ILS",
+     "priceNis": 5580.0,
+     "listed": 5580,
+     "delta": 0.0,
+     "avail": "in",
+     "how": "jsonld",
      "rec": true,
      "img": {
       "local": "ok",
-      "match": "unknown"
-     },
+      "match": "same",
+      "dist": 0
+     }
+    },
+    {
+     "k": "store:1",
+     "url": "https://www.zap.co.il/model.aspx?modelid=1225993",
+     "status": "blocked",
+     "http": 200,
+     "listed": 5467,
+     "rec": false,
+     "note": "האתר לא חושף מחיר לקריאה אוטומטית — המחיר בכרטיס אומת ידנית"
+    },
+    {
+     "k": "store:2",
+     "url": "https://ksp.co.il/web/item/503578",
+     "status": "blocked",
+     "listed": 5595,
+     "rec": false,
      "note": "האתר לא חושף מחיר לקריאה אוטומטית — המחיר בכרטיס אומת ידנית",
      "via": "chrome"
     }
-   ]
+   ],
+   "live": 5580.0
   }
  },
- "generated": "2026-11-21T19:55:51+02:00"
+ "generated": "2026-11-21T22:01:05+02:00"
 }

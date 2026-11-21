@@ -142,11 +142,13 @@ COFFEE=[
   "https://admin.citydeal.co.il/wp-content/uploads/2026/08/BES-875-BTR_270820250919300.jpg",
   ["הכי זולה","⚠ יבואן מקביל","טמפינג ידני"],
   "✔ יש: מטחנת קונוס 18 דרגות, PID ±1°C, 15 בר, מיכל 2 ל׳ — הבסיס של ברוויל במחיר הכי נמוך\n✘ אין: שום עזרה בטמפינג (אין Impress) · ב-KSP זה יבוא מקביל · בשרון אין מלאי בסניפים, רק משלוח ממחסן\n📐 ‎31.75×35.05×40.4 ס״מ (רוחב×עומק×גובה) · ₪2,359 ב-KSP (מקביל) מול ₪2,782 בסיטי דיל (רשמי)"),
- ("K6","Breville Barista Touch Impress · BES881BTR",5595,
-  "https://ksp.co.il/web/item/503578",
-  "https://ksp.co.il/shop/items/512/503578.jpg",
-  ["עושה הכול","הקצפה אוטומטית","⚠ יבואן מקביל"],
-  "✔ יש: Impress מלא (מינון+הידוק+תיקון אוטומטי), הקצפת חלב אוטומטית, מסך מגע ו-13 מתכונים, ThermoJet 3 שנ׳, Baratza 30 דרגות, Cold Brew\n✘ אין: יבוא רשמי — אחריות שנתיים מיבואן מקביל, בלי מעבדת אלקטרה\n📐 גובה 41.4 ס״מ (בדף KSP כתוב 33.7 — הם החליפו רוחב/גובה) · ₪5,890, ועם קופון BLACK26 ₪5,595"),
+ # 21.11.2026, second pass: the KSP parallel import turned out to be pointless here - the SAME finish
+ # (BTR) is on zap with official Electra import from 5,467, i.e. cheaper than KSP's coupon price.
+ ("K6","Breville Barista Touch Impress · BES881BTR",5580,
+  "https://www.citydeal.co.il/product/%d7%9e%d7%9b%d7%95%d7%a0%d7%aa-%d7%a7%d7%a4%d7%94-%d7%97%d7%9b%d7%9e%d7%94-breville-bes881btr-barista-touch-impress-%d7%a9%d7%97%d7%95%d7%a8%d7%94-%d7%99%d7%91%d7%95%d7%90%d7%9f-%d7%a8%d7%a9%d7%9e",
+  "https://admin.citydeal.co.il/wp-content/uploads/2026/08/19336-1_1_121120241844100.jpg",
+  ["עושה הכול","הקצפה אוטומטית","יבוא רשמי"],
+  "✔ יש: Impress מלא (מינון+הידוק 10 ק״ג+תיקון אוטומטי) **וגם** הקצפת חלב אוטומטית ללא ידיים (Auto MilQ, 8 מרקמים, גם חלב סויה/שקדים/שיבולת שועל), מסך מגע ו-13 מתכונים, ThermoJet 3 שנ׳, Baratza 30 דרגות, Cold Brew\n✘ אין: שום דרגה בין K2 לכאן — זו קפיצה של ₪1,613 בבת אחת · אחריות שנה בלבד ביבוא הרשמי (ב-KSP שנתיים, אבל מקביל)\n📐 גובה 41.4 ס״מ (בדף KSP כתוב 33.7 — הם החליפו רוחב/גובה) · ₪5,467 הזול ביותר (רשמי), ₪5,580 בסיטי דיל"),
 ]
 for k in COFFEE:
     DATA.append({"id":k[0],"cat":"מכונות קפה","type":"product","name":k[1],
