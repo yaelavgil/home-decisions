@@ -5816,6 +5816,14 @@ for _o in json.load(open(os.path.join(REPO,"drum-speakers.json"),encoding="utf-8
     for _k in ("specs","stores","pick","pickWhy","points"):
         if _k in _x: _o[_k]=_x[_k]
     DATA.append(_o)
+# 21.11.2026: the DRS* amps (₪549-1,874) are overkill — "אני מחפשת משהו זול יותר... בסביבות ה-200-400 שח".
+#   Her own constraint decides the shape of this list: "אין חיבור אלחוטי אז צריך עם כבל אבל רצוי שיהיה גם בלוטוס".
+#   A 3.5mm line-IN is the blocking requirement (Bluetooth adds 100-200 ms latency, which makes a kit unplayable),
+#   and Bluetooth is the bonus. Because the kit connects by cable in a fixed room, mains-powered 2.1 desktop sets
+#   beat portable BT speakers here: at this price only they have a subwoofer, and the kick drum lives at 50-80 Hz.
+#   drum-speakers.json is untouched — the amps stay as the pricier alternative.
+for _o in json.load(open(os.path.join(REPO,"drum-speaker-cheap.json"),encoding="utf-8")):
+    DATA.append(_o)
 # 19.11.2026: smart Samsung TV (43") for the upper balcony; enrich merged here
 _btv=json.load(open(os.path.join(REPO,"enrich","balcony-tv.json"),encoding="utf-8"))
 for _o in json.load(open(os.path.join(REPO,"balcony-tv.json"),encoding="utf-8")):
