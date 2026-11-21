@@ -7076,21 +7076,10 @@
    ]
   },
   "K1": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:47:36+02:00",
    "name": "Breville Barista Pro · BES878",
    "cat": "מכונות קפה",
-   "flags": [
-    {
-     "f": "noprice",
-     "k": "store:1",
-     "msg": "לא הצלחתי לקרוא מחיר מהעמוד"
-    },
-    {
-     "f": "price_down",
-     "k": "store:2",
-     "msg": "המחיר באתר ₪3155 לעומת ₪3382 בלוח (-7%)"
-    }
-   ],
+   "flags": [],
    "refs": [
     {
      "k": "store:0",
@@ -7100,11 +7089,11 @@
      "price": 3364.0,
      "cur": "ILS",
      "priceNis": 3364.0,
-     "listed": 3387,
-     "delta": -0.007,
+     "listed": 3364,
+     "delta": 0.0,
      "avail": "in",
      "how": "jsonld",
-     "rec": true,
+     "rec": false,
      "img": {
       "local": "ok",
       "match": "same",
@@ -7114,43 +7103,38 @@
     {
      "k": "store:1",
      "url": "https://www.electricshop.co.il/product.asp?Pid=BR0329008&Cat2Cat1ID=18&Cat2ID=65&lang=he",
-     "status": "noprice",
+     "status": "ok",
      "http": 200,
-     "listed": 3389,
-     "rec": false
+     "price": 3142.0,
+     "cur": "ILS",
+     "priceNis": 3142.0,
+     "listed": 3142,
+     "delta": 0.0,
+     "how": "itemprop",
+     "rec": true,
+     "via": "chrome"
     },
     {
      "k": "store:2",
      "url": "https://www.mabatelectric.com/product.asp?Pid=ELSBES878BSSN&Cat2Cat1ID=48&Cat2ID=0&lang=he",
      "status": "ok",
      "http": 200,
-     "price": 3155.0,
+     "price": 3143.0,
      "cur": "ILS",
-     "priceNis": 3155.0,
-     "listed": 3382,
-     "delta": -0.067,
+     "priceNis": 3143.0,
+     "listed": 3143,
+     "delta": 0.0,
      "how": "itemprop",
      "rec": false
     }
    ],
-   "live": 3364.0
+   "live": 3142.0
   },
   "K2": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:47:36+02:00",
    "name": "Breville Barista Express Impress · BES876",
    "cat": "מכונות קפה",
-   "flags": [
-    {
-     "f": "price_down",
-     "k": "store:1",
-     "msg": "המחיר באתר ₪3861 לעומת ₪3983 בלוח (-3%)"
-    },
-    {
-     "f": "noprice",
-     "k": "store:2",
-     "msg": "לא הצלחתי לקרוא מחיר מהעמוד"
-    }
-   ],
+   "flags": [],
    "refs": [
     {
      "k": "store:0",
@@ -7160,8 +7144,8 @@
      "price": 3899.0,
      "cur": "ILS",
      "priceNis": 3899.0,
-     "listed": 3988,
-     "delta": -0.022,
+     "listed": 3899,
+     "delta": 0.0,
      "avail": "in",
      "how": "jsonld",
      "rec": true,
@@ -7176,36 +7160,36 @@
      "url": "https://www.mabatelectric.com/product.asp?Pid=sku-66cdc1a464d9c&Cat2Cat1ID=48&Cat2ID=0&lang=he",
      "status": "ok",
      "http": 200,
-     "price": 3861.0,
+     "price": 3855.0,
      "cur": "ILS",
-     "priceNis": 3861.0,
-     "listed": 3983,
-     "delta": -0.031,
+     "priceNis": 3855.0,
+     "listed": 3861,
+     "delta": -0.002,
      "how": "itemprop",
      "rec": false
     },
     {
      "k": "store:2",
      "url": "https://www.electricshop.co.il/product.asp?Pid=BR0329009&Cat2Cat1ID=18&Cat2ID=65&lang=he",
-     "status": "noprice",
+     "status": "ok",
      "http": 200,
-     "listed": 3990,
-     "rec": false
+     "price": 3854.0,
+     "cur": "ILS",
+     "priceNis": 3854.0,
+     "listed": 3854,
+     "delta": 0.0,
+     "how": "itemprop",
+     "rec": false,
+     "via": "chrome"
     }
    ],
    "live": 3899.0
   },
   "K3": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:47:36+02:00",
    "name": "DeLonghi La Specialista Maestro · EC9865",
    "cat": "מכונות קפה",
-   "flags": [
-    {
-     "f": "noprice",
-     "k": "store:2",
-     "msg": "לא הצלחתי לקרוא מחיר מהעמוד"
-    }
-   ],
+   "flags": [],
    "refs": [
     {
      "k": "store:0",
@@ -7241,10 +7225,16 @@
     {
      "k": "store:2",
      "url": "https://www.vero-cafe.co.il/product.asp?Pid=8004399025103&Cat2Cat1ID=3&Cat2ID=694&lang=he",
-     "status": "noprice",
+     "status": "ok",
      "http": 200,
+     "price": 4589.0,
+     "cur": "ILS",
+     "priceNis": 4589.0,
      "listed": 4589,
-     "rec": false
+     "delta": 0.0,
+     "how": "itemprop",
+     "rec": false,
+     "via": "chrome"
     }
    ],
    "live": 4390.0
@@ -30552,7 +30542,7 @@
    "live": 239.0
   },
   "HT13": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "Electro Hanan EL-30 · קרבון 3000W · שחור · IP65 · שלט (התנור שרועי ביק",
    "cat": "תנורי פרגולה",
    "flags": [
@@ -30687,7 +30677,7 @@
    "live": 1350.0
   },
   "HT15": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "⚡הספק נמוך — טכנולוגיה · BOSTON Premium 2500W · אינפרא · לבן מט · IP65",
    "cat": "תנורי פרגולה",
    "flags": [],
@@ -30715,7 +30705,7 @@
    "live": 1519.0
   },
   "HT16": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "TITAN WIDE 3000W · אינפרא כפול 2×1500W · שחור · IP65 · 24 חודשים",
    "cat": "תנורי פרגולה",
    "flags": [
@@ -30786,7 +30776,7 @@
    "live": 749.0
   },
   "HT17": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "Volcano Top Premium 3000W · לוח תקרה אינפרא · שחור · שלט + 6 עוצמות · ",
    "cat": "תנורי פרגולה",
    "flags": [],
@@ -30814,7 +30804,7 @@
    "live": 1185.0
   },
   "HT18": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "Star Progetti VARMA 400 3000W · אינפרא איטלקי כפול · אפור פחם · IPX5 ·",
    "cat": "תנורי פרגולה",
    "flags": [],
@@ -30842,7 +30832,7 @@
    "live": 1843.0
   },
   "HT19": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "Caesar Solarium CB3 · אינפרא 3000W · חזית זכוכית שחורה · שלט + אפליקצי",
    "cat": "תנורי פרגולה",
    "flags": [],
@@ -30870,7 +30860,7 @@
    "live": 1592.0
   },
   "HT20": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "SmartAir SUNLUX Carbon 3000W · קרבון · שחור · שלט 3 דרגות · IP65 · 24 ",
    "cat": "תנורי פרגולה",
    "flags": [
@@ -30904,7 +30894,7 @@
    "live": 1121.0
   },
   "HT21": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "⚡הספק נמוך — טכנולוגיה · SmartAir LAVA Carbon RC 2500 · קרבון 2500W (ל",
    "cat": "תנורי פרגולה",
    "flags": [],
@@ -30974,7 +30964,7 @@
    "live": 475.0
   },
   "HT23": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "Electro Hanan EL-3300 · אינפרא תלייה 3000W · כסוף-אפור · שלט + טיימר ·",
    "cat": "תנורי פרגולה",
    "flags": [
@@ -31220,7 +31210,7 @@
    ]
   },
   "HT29": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "Matrix New Sun 3000W · אינפרא לקיר · שחור · שלט + טיימר · קופון NOV26",
    "cat": "תנורי פרגולה",
    "flags": [
@@ -31259,7 +31249,7 @@
    ]
   },
   "HT31": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "SmartAir Sun 3000 R.C · אינפרא לקיר · שחור · שלט · 15 מ״ר",
    "cat": "תנורי פרגולה",
    "flags": [
@@ -31349,7 +31339,7 @@
    "live": 890.0
   },
   "HT33": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "Matrix Noble 3000W · אינפרא קרבון · שחור · צג דיגיטלי + שלט · «יחידה א",
    "cat": "תנורי פרגולה",
    "flags": [
@@ -31471,7 +31461,7 @@
    "live": 1299.0
   },
   "HT37": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "⚡הספק נמוך — טכנולוגיה · SmartAir SUNLUX 2500W RC · נורת זהב · שחור · ",
    "cat": "תנורי פרגולה",
    "flags": [],
@@ -31499,7 +31489,7 @@
    "live": 809.0
   },
   "HT38": {
-   "t": "2026-11-20T19:44:31+02:00",
+   "t": "2026-11-21T17:45:56+02:00",
    "name": "Star Progetti HELIOSA 997 · 3000W (2×1500W) · איטלקי מקצועי · IPX5 · 3",
    "cat": "תנורי פרגולה",
    "flags": [
@@ -32058,7 +32048,422 @@
     }
    ],
    "live": 840.0
+  },
+  "PHW1": {
+   "t": "2026-11-21T17:45:56+02:00",
+   "name": "★ המלצה · Colder GOLD-3000 ב-לבן · 3000W · Low Glare · IP55 · 20/30 מ״",
+   "cat": "תנורי פרגולה",
+   "flags": [
+    {
+     "f": "noprice",
+     "k": "store:0",
+     "msg": "לא הצלחתי לקרוא מחיר מהעמוד"
+    },
+    {
+     "f": "img_diff",
+     "k": "store:0",
+     "msg": "התמונה בעמוד האתר נראית שונה מהתמונה בלוח"
+    },
+    {
+     "f": "price_big",
+     "k": "store:2",
+     "msg": "פער גדול: באתר ₪2690 לעומת ₪1390 בלוח — לבדוק (וריאנט / סט / מחיר אחר)"
+    }
+   ],
+   "refs": [
+    {
+     "k": "store:0",
+     "url": "https://www.zap.co.il/models.aspx?sog=e-airheater&db4529212=4529265&db27326=27871",
+     "status": "noprice",
+     "http": 200,
+     "listed": 1390,
+     "rec": true,
+     "img": {
+      "local": "ok",
+      "match": "different",
+      "dist": 88
+     }
+    },
+    {
+     "k": "store:1",
+     "url": "https://storma.co.il/product/%D7%AA%D7%A0%D7%95%D7%A8-%D7%97%D7%99%D7%9E%D7%95%D7%9D-%D7%92%D7%95%D7%9C%D7%93/",
+     "status": "ok",
+     "http": 200,
+     "price": 1350.0,
+     "cur": "ILS",
+     "priceNis": 1350.0,
+     "listed": 1350,
+     "delta": 0.0,
+     "avail": "in",
+     "how": "jsonld",
+     "rec": false
+    },
+    {
+     "k": "store:2",
+     "url": "https://colder.co.il/product/%D7%9E%D7%A7%D7%A8%D7%9F-%D7%97%D7%95%D7%9D-%D7%90%D7%99%D7%A0%D7%A4%D7%A8%D7%90-gold-3000/",
+     "status": "ok",
+     "http": 200,
+     "price": 2690.0,
+     "cur": "ILS",
+     "priceNis": 2690.0,
+     "listed": 1390,
+     "delta": 0.935,
+     "avail": "in",
+     "how": "jsonld",
+     "rec": false
+    }
+   ]
+  },
+  "PHW2": {
+   "t": "2026-11-21T17:45:56+02:00",
+   "name": "CAESAR Solarium X 2500W · צינור Golden Ultra-Low-Glare · 6 דרגות · IP6",
+   "cat": "תנורי פרגולה",
+   "flags": [
+    {
+     "f": "noprice",
+     "k": "store:0",
+     "msg": "לא הצלחתי לקרוא מחיר מהעמוד"
+    }
+   ],
+   "refs": [
+    {
+     "k": "store:0",
+     "url": "https://carmeldirect.com/caesar-solarium/ht-x/",
+     "status": "noprice",
+     "http": 200,
+     "cur": "ILS",
+     "listed": 2000,
+     "avail": "in",
+     "how": "meta",
+     "rec": true,
+     "img": {
+      "local": "ok",
+      "match": "same",
+      "dist": 0
+     }
+    }
+   ]
+  },
+  "PHW4": {
+   "t": "2026-11-21T17:45:56+02:00",
+   "name": "Havaya INFRABLACK 3200W · פאנל קורן **בלי זוהר בכלל** · 40 מ״ר · אחריו",
+   "cat": "תנורי פרגולה",
+   "flags": [],
+   "refs": [
+    {
+     "k": "store:0",
+     "url": "https://www.havaya-store.co.il/product/%d7%aa%d7%a0%d7%95%d7%a8-%d7%90%d7%99%d7%a0%d7%a4%d7%a8%d7%90-infrablack3200w/",
+     "status": "ok",
+     "http": 200,
+     "price": 2490.0,
+     "cur": "ILS",
+     "priceNis": 2490.0,
+     "listed": 2490,
+     "delta": 0.0,
+     "avail": "in",
+     "how": "jsonld",
+     "rec": true,
+     "img": {
+      "local": "ok",
+      "match": "same",
+      "dist": 0
+     }
+    },
+    {
+     "k": "store:1",
+     "url": "https://www.brandtools.co.il/products/%D7%AA%D7%A0%D7%95%D7%A8-%D7%90%D7%99%D7%A0%D7%A4%D7%A8%D7%90-%D7%90%D7%93%D7%95%D7%9D-%D7%9B%D7%95%D7%9C%D7%9C-%D7%A9%D7%9C%D7%98-3200w-%D7%A9%D7%97%D7%95%D7%A8-%D7%9E%D7%98-infrablack-3200-%D7%94%D7%97%D7%95%D7%95%D7%99%D7%94",
+     "status": "ok",
+     "http": 429,
+     "price": 2485.0,
+     "cur": "ILS",
+     "priceNis": 2485.0,
+     "listed": 2485,
+     "delta": 0.0,
+     "avail": "in",
+     "how": "jsonld",
+     "rec": false,
+     "via": "chrome"
+    }
+   ],
+   "live": 2490.0
+  },
+  "PHW5": {
+   "t": "2026-11-21T17:45:56+02:00",
+   "name": "אזל · Havaya TITAN 3000W · נירוסטה/כסוף + בוהק נמוך + 9 עוצמות — הצירו",
+   "cat": "תנורי פרגולה",
+   "flags": [
+    {
+     "f": "oos",
+     "k": "store:0",
+     "msg": "אזל מהמלאי"
+    }
+   ],
+   "refs": [
+    {
+     "k": "store:0",
+     "url": "https://www.havaya-store.co.il/product/%d7%aa%d7%a0%d7%95%d7%a8-%d7%97%d7%99%d7%9e%d7%95%d7%9d-%d7%90%d7%99%d7%a0%d7%a4%d7%a8%d7%90-titan-3000w-%d7%9e%d7%95%d7%92%d7%9f-%d7%9e%d7%99%d7%9d/",
+     "status": "ok",
+     "http": 200,
+     "price": 890.0,
+     "cur": "ILS",
+     "priceNis": 890.0,
+     "listed": 890,
+     "delta": 0.0,
+     "avail": "out",
+     "how": "jsonld",
+     "rec": true,
+     "img": {
+      "local": "ok",
+      "match": "same",
+      "dist": 0
+     }
+    }
+   ],
+   "live": 890.0
+  },
+  "PHW6": {
+   "t": "2026-11-21T17:45:56+02:00",
+   "name": "GL2500 PRIMUM 2500W · כסוף ✓ · IP65 · רפלקטור ענק · שלט · משלוח חינם ·",
+   "cat": "תנורי פרגולה",
+   "flags": [],
+   "refs": [
+    {
+     "k": "store:0",
+     "url": "https://amperel.co.il/product/%d7%aa%d7%a0%d7%95%d7%a8-%d7%94%d7%9c%d7%95%d7%92%d7%9f-%d7%90%d7%99%d7%a0%d7%a4%d7%a8%d7%90-%d7%9c%d7%aa%d7%9c%d7%99%d7%99%d7%94-gl2500-premium/",
+     "status": "ok",
+     "http": 200,
+     "price": 1299.0,
+     "cur": "ILS",
+     "priceNis": 1299.0,
+     "listed": 1299,
+     "delta": 0.0,
+     "avail": "in",
+     "how": "jsonld",
+     "rec": true,
+     "img": {
+      "local": "ok",
+      "match": "same",
+      "dist": 0
+     }
+    }
+   ],
+   "live": 1299.0,
+   "prev": {
+    "price": 177.0,
+    "t": "2026-11-21T17:04:52+02:00"
+   }
+  },
+  "PHW7": {
+   "t": "2026-11-21T17:45:56+02:00",
+   "name": "Veito Blade S 2500W · קרבון, «אינו מקרין אור אדום» · IP55 · **יש בכסוף",
+   "cat": "תנורי פרגולה",
+   "flags": [
+    {
+     "f": "noprice",
+     "k": "store:1",
+     "msg": "לא הצלחתי לקרוא מחיר מהעמוד"
+    }
+   ],
+   "refs": [
+    {
+     "k": "store:0",
+     "url": "https://amperel.co.il/product/%D7%9E%D7%A0%D7%95%D7%A8%D7%AA-%D7%97%D7%99%D7%9E%D7%95%D7%9D-%D7%90%D7%99%D7%A0%D7%A4%D7%A8%D7%90-%D7%90%D7%93%D7%95%D7%9D-%D7%A7%D7%A8%D7%91%D7%95%D7%9F-veito-blade-s-2500w-app/",
+     "status": "ok",
+     "http": 200,
+     "price": 1099.0,
+     "cur": "ILS",
+     "priceNis": 1099.0,
+     "listed": 1099,
+     "delta": 0.0,
+     "avail": "in",
+     "how": "jsonld",
+     "rec": true,
+     "img": {
+      "local": "ok",
+      "match": "same",
+      "dist": 18
+     }
+    },
+    {
+     "k": "store:1",
+     "url": "https://www.zap.co.il/model.aspx?modelid=1088684",
+     "status": "noprice",
+     "http": 200,
+     "listed": 978,
+     "rec": false
+    }
+   ],
+   "live": 1099.0
+  },
+  "PHW8": {
+   "t": "2026-11-21T17:45:56+02:00",
+   "name": "Goldsun SUPRA / AQUA Basic Double 3000W · לבן ✓ · IP55 · תעשייתי · גרס",
+   "cat": "תנורי פרגולה",
+   "flags": [
+    {
+     "f": "oos",
+     "k": "store:1",
+     "msg": "אזל מהמלאי"
+    }
+   ],
+   "refs": [
+    {
+     "k": "store:0",
+     "url": "https://amperel.co.il/product/%d7%aa%d7%a0%d7%95%d7%a8-%d7%97%d7%99%d7%9e%d7%95%d7%9d-%d7%90%d7%99%d7%a0%d7%a4%d7%a8%d7%90-%d7%90%d7%93%d7%95%d7%9d-%d7%aa%d7%a2%d7%a9%d7%99%d7%99%d7%aa%d7%99-basic-3000w/",
+     "status": "ok",
+     "http": 200,
+     "price": 1490.0,
+     "cur": "ILS",
+     "priceNis": 1490.0,
+     "listed": 1490,
+     "delta": 0.0,
+     "avail": "in",
+     "how": "jsonld",
+     "rec": true,
+     "img": {
+      "local": "ok",
+      "match": "same",
+      "dist": 38
+     }
+    },
+    {
+     "k": "store:1",
+     "url": "https://amperel.co.il/product/%d7%aa%d7%a0%d7%95%d7%a8-%d7%94%d7%9c%d7%95%d7%92%d7%9f-%d7%90%d7%99%d7%a0%d7%a4%d7%a8%d7%90/",
+     "status": "ok",
+     "http": 200,
+     "price": 2590.0,
+     "cur": "ILS",
+     "priceNis": 2590.0,
+     "listed": 2590,
+     "delta": 0.0,
+     "avail": "out",
+     "how": "jsonld",
+     "rec": false
+    }
+   ],
+   "live": 1490.0,
+   "prev": {
+    "price": 177.0,
+    "t": "2026-11-21T17:04:52+02:00"
+   }
+  },
+  "PHW9": {
+   "t": "2026-11-21T17:45:56+02:00",
+   "name": "Camptown PHW-3000R · כסוף/לבן ✓ · 3000W · שלט · ₪239 — אבל קוורץ, כלומ",
+   "cat": "תנורי פרגולה",
+   "flags": [
+    {
+     "f": "blocked",
+     "k": "store:0",
+     "msg": "האתר חוסם בדיקה אוטומטית — נדרש דפדפן"
+    }
+   ],
+   "refs": [
+    {
+     "k": "store:0",
+     "url": "https://www.brandtools.co.il/products/%D7%AA%D7%A0%D7%95%D7%A8-%D7%97%D7%99%D7%9E%D7%95%D7%9D-%D7%90%D7%99%D7%A0%D7%A4%D7%A8%D7%90-%D7%A9%D7%9C%D7%98-3000w-phw-3000r-camptown-838042",
+     "status": "blocked",
+     "http": 429,
+     "listed": 221,
+     "rec": true,
+     "note": "גם דפדפן אמיתי לא נכנס — לבדיקה ידנית",
+     "via": "chrome"
+    }
+   ]
+  },
+  "PHW10": {
+   "t": "2026-11-21T17:45:56+02:00",
+   "name": "PEERLESS PE-C51-30 3000W · ב-ACE (רשת ✓) · 25–30 מ״ר · ₪399 — אבל שחור",
+   "cat": "תנורי פרגולה",
+   "flags": [],
+   "refs": [
+    {
+     "k": "store:0",
+     "url": "https://www.ace.co.il/4489008",
+     "status": "ok",
+     "http": 200,
+     "price": 399.0,
+     "cur": "ILS",
+     "priceNis": 399.0,
+     "listed": 399,
+     "delta": 0.0,
+     "avail": "in",
+     "how": "jsonld",
+     "rec": true,
+     "img": {
+      "local": "ok",
+      "match": "same",
+      "dist": 0
+     }
+    }
+   ],
+   "live": 399.0
+  },
+  "K4": {
+   "t": "2026-11-21T17:47:36+02:00",
+   "name": "DeLonghi La Specialista Arte Evo · EC9255.M",
+   "cat": "מכונות קפה",
+   "flags": [],
+   "refs": [
+    {
+     "k": "store:0",
+     "url": "https://www.vero-cafe.co.il/product/%D7%9E%D7%9B%D7%95%D7%A0%D7%AA-%D7%A7%D7%A4%D7%94-%D7%99%D7%93%D7%A0%D7%99%D7%AA-%D7%97%D7%9B%D7%9E%D7%94-delonghi-la-specialista-arte-evo-ec9255m-%D7%93%D7%9C%D7%95%D7%A0%D7%92%D7%99",
+     "status": "ok",
+     "http": 200,
+     "price": 2690.0,
+     "cur": "ILS",
+     "priceNis": 2690.0,
+     "listed": 2690,
+     "delta": 0.0,
+     "how": "itemprop",
+     "rec": true,
+     "img": {
+      "local": "ok",
+      "match": "unknown"
+     }
+    },
+    {
+     "k": "store:1",
+     "url": "https://idgu.co.il/Delonghi-la-Specialista-EC9255",
+     "status": "ok",
+     "http": 200,
+     "price": 2599.0,
+     "cur": "ILS",
+     "priceNis": 2599.0,
+     "listed": 2599,
+     "delta": 0.0,
+     "how": "itemprop",
+     "rec": false
+    },
+    {
+     "k": "store:2",
+     "url": "https://www.coffee4u.co.il/product/coffee-machine-delonghi-ec9255m-la-specialista-arte-evo",
+     "status": "ok",
+     "http": 200,
+     "price": 2990.0,
+     "cur": "ILS",
+     "priceNis": 2990.0,
+     "listed": 2990,
+     "delta": 0.0,
+     "how": "itemprop",
+     "rec": false
+    },
+    {
+     "k": "link",
+     "url": "https://www.vero-cafe.co.il/product/מכונת-קפה-ידנית-חכמה-delonghi-la-specialista-arte-evo-ec9255m-דלונגי",
+     "status": "ok",
+     "http": 200,
+     "price": 2690.0,
+     "cur": "ILS",
+     "priceNis": 2690.0,
+     "listed": 2690,
+     "delta": 0.0,
+     "how": "itemprop",
+     "rec": false
+    }
+   ],
+   "live": 2690.0
   }
  },
- "generated": "2026-11-20T19:49:58+02:00"
+ "generated": "2026-11-21T17:47:36+02:00"
 }

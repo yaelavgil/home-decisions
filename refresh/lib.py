@@ -304,11 +304,22 @@ def fetch_chrome(url, budget=9000, hard=75):
     with _chrome_sem:
         _wait(host_of(url))
         prof = tempfile.mkdtemp(prefix="chk-")
-        try:
+
+        def run(ms):
             p = subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--user-data-dir=" + prof,
-                                "--virtual-time-budget=%d" % budget, "--dump-dom", url],
+                                "--virtual-time-budget=%d" % ms, "--dump-dom", url],
                                capture_output=True, timeout=hard)
             return p.stdout.decode("utf-8", "replace")
+        try:
+            html = run(budget)
+            # The JS+cookie interstitial sets its cookie and reloads itself. Under --dump-dom that reload
+            # often doesn't land inside the virtual-time budget, so we get the stub. Loading a second time
+            # in the SAME profile sends the cookie it just set and returns the real page.
+            if len(html) < 6000 and re.search(r"needs? JavaScript and cookies|לאפשר\s+JavaScript"
+                                              r"|<title>[^<]*(?:טוען|Loading)", html[:4000], re.I):
+                _wait(host_of(url))
+                html = run(max(budget, 15000)) or html
+            return html
         except Exception:
             return ""
         finally:
@@ -345,7 +356,14 @@ def check_url(url, listed_price=None, imgs=None):
         final = r.url
         if r.status_code in (404, 410):
             out["status"] = "dead"; return out
-        walled = r.status_code in (401, 403, 429, 503) or (r.status_code == 200 and re.search(r"cf-challenge|Just a moment|Access Denied|px-captcha", r.text[:4000], re.I))
+        walled = r.status_code in (401, 403, 429, 503) or (r.status_code == 200 and (
+            re.search(r"cf-challenge|Just a moment|Access Denied|px-captcha", r.text[:4000], re.I)
+            # JS+cookie interstitial served with 200 OK (electricshop / vero-cafe …): a stub page that
+            # sets a cookie and reloads. Without this it parses as "no price" instead of "blocked",
+            # so the browser pass never runs and the card lies with ❔ "מחיר לא נקרא".
+            or (len(r.text) < 6000 and re.search(
+                r"needs? JavaScript and cookies|enable JavaScript and cookies"
+                r"|לאפשר\s+JavaScript|<title>[^<]*(?:טוען\s*\.{0,3}|Loading)\s*(?:/|\.|<)", r.text[:4000], re.I))))
         if not walled and r.status_code >= 400:
             out["status"] = "error"; out["note"] = "HTTP %d" % r.status_code; return out
         if not walled:
