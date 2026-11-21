@@ -117,12 +117,12 @@ COFFEE=[
   "https://www.citydeal.co.il/product/מכונת-קפה-אספרסו-משולבת-מטחנה-breville-bes878-barista-pro-נירוסטה---יבואן-רשמי",
   "img/item-k1.jpg",
   ["המשתלמת ביותר","גובה 40.6 ס״מ"],
-  "✔ יש: חימום תוך 3 שניות (ThermoJet), מטחנה 30 דרגות, מקציף ידני חזק ומהיר\n✘ אין: עזרה בטמפינג (ידני לגמרי), מסך מגע, קפה קר\n📐 ‎35.4×41×40.6 ס״מ (רוחב×עומק×גובה) · 9.1 ק״ג · העמוקה מכולן"),
+  "✔ יש: חימום תוך 3 שניות (ThermoJet), מטחנה 30 דרגות, מקציף ידני חזק ומהיר\n✘ אין: עזרה בטמפינג (ידני לגמרי), מסך מגע, קפה קר\n📐 ‎33.3×35.1×40.9 ס״מ (רוחב×עומק×גובה) · 9.1 ק״ג · ממפרט breville.com, 21.11.26 — תוקן: קודם היה רשום כאן עומק 41 ס״מ וזה היה הגובה"),
  ("K2","Breville Barista Express Impress · BES876",3448,
   "https://www.citydeal.co.il/product/מכונת-אספרסו-breville-barista-express™-bes876-יבואן-רשמי",
   "img/item-k2.jpg",
   ["טמפינג מונחה","גובה 41 ס״מ"],
-  "✔ יש: טמפינג מונחה (Impress) + תיקון מינון אוטומטי — קפה עקבי לכל אחד, מטחנה 25 דרגות\n✘ אין: קפה קר, מסך מגע · חימום איטי (~60 שנ׳)\n📐 ‎33×38×41 ס״מ (רוחב×עומק×גובה) · ~11 ק״ג"),
+  "✔ יש: טמפינג מונחה (Impress) + תיקון מינון אוטומטי — קפה עקבי לכל אחד, מטחנה 25 דרגות\n✘ אין: קפה קר, מסך מגע · חימום איטי (~60 שנ׳)\n📐 ‎31×36.6×42.2 ס״מ (רוחב×עומק×גובה) · ~11 ק״ג · ממפרט breville.com, 21.11.26 — הגבוהה והעמוקה מבין הברוויל"),
  ("K3","DeLonghi La Specialista Maestro · EC9865",4390,
   "https://www.coffee4u.co.il/product/מכונת-אספרסו-la-specialista-maestro-cold-brew-metal-ec-9865m-delonghi",
   "img/item-k3.jpg",
@@ -141,14 +141,14 @@ COFFEE=[
   "https://ksp.co.il/web/item/432533",
   "https://admin.citydeal.co.il/wp-content/uploads/2026/08/BES-875-BTR_270820250919300.jpg",
   ["הכי זולה","⚠ יבואן מקביל","טמפינג ידני"],
-  "✔ יש: מטחנת קונוס 18 דרגות, PID ±1°C, 15 בר, מיכל 2 ל׳ — הבסיס של ברוויל במחיר הכי נמוך\n✘ אין: שום עזרה בטמפינג (אין Impress) · ב-KSP זה יבוא מקביל · בשרון אין מלאי בסניפים, רק משלוח ממחסן\n📐 ‎31.75×35.05×40.4 ס״מ (רוחב×עומק×גובה) · ₪2,359 ב-KSP (מקביל) מול ₪2,782 בסיטי דיל (רשמי)"),
+  "✔ יש: מטחנת קונוס 18 דרגות, PID ±1°C, 15 בר, מיכל 2 ל׳ — הבסיס של ברוויל במחיר הכי נמוך\n✘ אין: שום עזרה בטמפינג (אין Impress) · ב-KSP זה יבוא מקביל · בשרון אין מלאי בסניפים, רק משלוח ממחסן\n📐 ‎31.5×33.3×40.4 ס״מ (רוחב×עומק×גובה) · ממפרט breville.com, 21.11.26 — **הצרה והרדודה בלוח**, ולכן זו שבולטת הכי פחות מהנישה · ₪2,359 ב-KSP (מקביל) מול ₪2,782 בסיטי דיל (רשמי)"),
  # 21.11.2026, second pass: the KSP parallel import turned out to be pointless here - the SAME finish
  # (BTR) is on zap with official Electra import from 5,467, i.e. cheaper than KSP's coupon price.
  ("K6","Breville Barista Touch Impress · BES881BTR",5580,
   "https://www.citydeal.co.il/product/%d7%9e%d7%9b%d7%95%d7%a0%d7%aa-%d7%a7%d7%a4%d7%94-%d7%97%d7%9b%d7%9e%d7%94-breville-bes881btr-barista-touch-impress-%d7%a9%d7%97%d7%95%d7%a8%d7%94-%d7%99%d7%91%d7%95%d7%90%d7%9f-%d7%a8%d7%a9%d7%9e",
   "https://admin.citydeal.co.il/wp-content/uploads/2026/08/19336-1_1_121120241844100.jpg",
   ["עושה הכול","הקצפה אוטומטית","יבוא רשמי"],
-  "✔ יש: Impress מלא (מינון+הידוק 10 ק״ג+תיקון אוטומטי) **וגם** הקצפת חלב אוטומטית ללא ידיים (Auto MilQ, 8 מרקמים, גם חלב סויה/שקדים/שיבולת שועל), מסך מגע ו-13 מתכונים, ThermoJet 3 שנ׳, Baratza 30 דרגות, Cold Brew\n✘ אין: שום דרגה בין K2 לכאן — זו קפיצה של ₪1,613 בבת אחת · אחריות שנה בלבד ביבוא הרשמי (ב-KSP שנתיים, אבל מקביל)\n📐 גובה 41.4 ס״מ (בדף KSP כתוב 33.7 — הם החליפו רוחב/גובה) · ₪5,467 הזול ביותר (רשמי), ₪5,580 בסיטי דיל"),
+  "✔ יש: Impress מלא (מינון+הידוק 10 ק״ג+תיקון אוטומטי) **וגם** הקצפת חלב אוטומטית ללא ידיים (Auto MilQ, 8 מרקמים, גם חלב סויה/שקדים/שיבולת שועל), מסך מגע ו-13 מתכונים, ThermoJet 3 שנ׳, Baratza 30 דרגות, Cold Brew\n✘ אין: שום דרגה בין K2 לכאן — זו קפיצה של ₪1,613 בבת אחת · אחריות שנה בלבד ביבוא הרשמי (ב-KSP שנתיים, אבל מקביל)\n📐 ‎33.8×35.1×41.4 ס״מ (רוחב×עומק×גובה) · ממפרט breville.com, 21.11.26 (בדף KSP כתוב «רוחב 41.5, גובה 33.7» — הם החליפו) · ₪5,467 הזול ביותר (רשמי), ₪5,580 בסיטי דיל"),
 ]
 for k in COFFEE:
     DATA.append({"id":k[0],"cat":"מכונות קפה","type":"product","name":k[1],
@@ -1472,6 +1472,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"מתנות לחנוכה","label":"מתנות לחנוכה — לכל ילד","icon":"🕎","slug":"hanukkah","group":"אחר","multi":True,"subs":["גור","לילי","דני","לכולם","אחיין"]},
       {"key":"פתרונות אחסון","label":"פתרונות אחסון","icon":"🧺","slug":"storage","group":"אחר"},
       {"key":"כיסויי מיטה / כירבוליות","label":"כיסויי מיטה / כירבוליות","icon":"🛏️","slug":"bedspreads","group":"חדרי שינה וילדים"},
+      {"key":"סל כדורסל לחצר","label":"סל כדורסל עומד לחצר","icon":"🏀","slug":"yard-hoop","group":"חוץ ופרגולה","multi":True,"subs":["48 אינץ׳ — הטווח הנכון לחצר","54 אינץ׳ ומעלה — מגרש אמיתי","קטן וזול — לילדים בלבד"]},
       {"key":"משחקי חצר","label":"משחקי חצר","icon":"⚽","slug":"yard-games","group":"חוץ ופרגולה","multi":True,"subs":["טרמפולינה ריבועית / מלבנית — חצר קדמית","מתקן נינג׳ה (2×2 מ׳ עד 3×2.5 מ׳)","מתקני כושר וספורט בודדים בסגנון נינג׳ה (לגילאים שונים)","שער כדורגל עמיד / פריק / מתקפל — לחצר הקדמית"]},
       {"key":"ערסלים לגינה","label":"פינת ישיבה לגינה — ערסלים ומיטות רביצה","icon":"🛋️","slug":"garden-hammocks","group":"חוץ ופרגולה","multi":True,"subs":["פינת קפה — שולחן + 2 כסאות","כיסא תלוי / ערסל כיסא","ערסל תלייה — יחיד","ערסל זוגי","ערסל לשלושה / ספת תלייה","מיטת רביצה — טיק / עץ","מיטת רביצה — במבוק","מיטת רביצה — אלומיניום וראטן","שמשייה — הצללה לפינת הישיבה"]},
       {"key":"גלגלת צינור","label":"גלגלת צינור","icon":"🧵","slug":"hose-reel","group":"חוץ ופרגולה","multi":True,"subs":["אוטומטית מתכנסת — קיר","ידנית — מסגרת / קיר","עגלה ניידת"]},
@@ -5858,6 +5859,18 @@ _orr=json.load(open(os.path.join(REPO,"enrich","orrery.json"),encoding="utf-8"))
 for _o in json.load(open(os.path.join(REPO,"orrery.json"),encoding="utf-8")):
     _x=_orr["items"].get(_o["id"],{})
     _o["criteria"]=_orr["criteria"]
+    for _k in ("specs","stores","pick","pickWhy","points"):
+        if _k in _x: _o[_k]=_x[_k]
+    DATA.append(_o)
+# 21.11.2026: freestanding (portable) basketball hoop for the front yard at Eshel 57; enrich merged here.
+#   The deciding spec is the BASE in litres -- a light base tips over, and that is complaint number one.
+#   Second trap: "inches". Lifetime/Spalding measure board WIDTH (48" = 122 cm); Voit and the Chinese
+#   brands measure the DIAGONAL, so their "51 inch" board is 110 cm wide -- narrower than a real 48".
+#   Every price here was read off the product page itself (not a category page) on 21.11.2026.
+_yh=json.load(open(os.path.join(REPO,"enrich","yard-hoop.json"),encoding="utf-8"))
+for _o in json.load(open(os.path.join(REPO,"yard-hoop.json"),encoding="utf-8")):
+    _x=_yh["items"].get(_o["id"],{})
+    _o["criteria"]=_yh["criteria"]
     for _k in ("specs","stores","pick","pickWhy","points"):
         if _k in _x: _o[_k]=_x[_k]
     DATA.append(_o)
