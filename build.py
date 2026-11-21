@@ -135,6 +135,18 @@ COFFEE=[
   "https://www.sterns.co.il/cdn/shop/files/Delonghi_EC9255.M_La-Specialista_Arte_Evo_front.jpg?v=1780573151&width=1920",
   ["הכי זולה","הכי נמוכה — 40 ס״מ","טמפינג מונחה + קפה קר"],
   "✔ יש: «שליטה חכמה בטמפינג — מערכת Dosing & Tamping Guide», קפה קר אמיתי (Cold Extraction תוך 5 דק׳), אחריות 24 ח׳ ברימאג — כפול מהברוויל\n✘ אין: תיקון מינון אוטומטי כמו ב-K2 · מטחנה 8 דרגות בלבד (מול 25–30) · מיכל 1.7 ל׳\n📐 ‎28.5×36.5×40 ס״מ (רוחב×עומק×גובה) · 9.3 ק״ג · כסוף · הנמוכה והצרה מכולן"),
+ # 21.11.2026: the two KSP models Yael sent. Both are PARALLEL imports - the board had no field for
+ # that until now, and it is the thing that separates them from everything else here.
+ ("K5","Breville Barista Express · BES875BSS",2359,
+  "https://ksp.co.il/web/item/432533",
+  "https://admin.citydeal.co.il/wp-content/uploads/2026/08/BES-875-BTR_270820250919300.jpg",
+  ["הכי זולה","⚠ יבואן מקביל","טמפינג ידני"],
+  "✔ יש: מטחנת קונוס 18 דרגות, PID ±1°C, 15 בר, מיכל 2 ל׳ — הבסיס של ברוויל במחיר הכי נמוך\n✘ אין: שום עזרה בטמפינג (אין Impress) · ב-KSP זה יבוא מקביל · בשרון אין מלאי בסניפים, רק משלוח ממחסן\n📐 ‎31.75×35.05×40.4 ס״מ (רוחב×עומק×גובה) · ₪2,359 ב-KSP (מקביל) מול ₪2,782 בסיטי דיל (רשמי)"),
+ ("K6","Breville Barista Touch Impress · BES881BTR",5595,
+  "https://ksp.co.il/web/item/503578",
+  "https://ksp.co.il/shop/items/512/503578.jpg",
+  ["עושה הכול","הקצפה אוטומטית","⚠ יבואן מקביל"],
+  "✔ יש: Impress מלא (מינון+הידוק+תיקון אוטומטי), הקצפת חלב אוטומטית, מסך מגע ו-13 מתכונים, ThermoJet 3 שנ׳, Baratza 30 דרגות, Cold Brew\n✘ אין: יבוא רשמי — אחריות שנתיים מיבואן מקביל, בלי מעבדת אלקטרה\n📐 גובה 41.4 ס״מ (בדף KSP כתוב 33.7 — הם החליפו רוחב/גובה) · ₪5,890, ועם קופון BLACK26 ₪5,595"),
 ]
 for k in COFFEE:
     DATA.append({"id":k[0],"cat":"מכונות קפה","type":"product","name":k[1],

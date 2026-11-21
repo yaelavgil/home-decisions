@@ -22,8 +22,19 @@ FX = {"ILS": 1.0, "NIS": 1.0, "USD": 3.34, "EUR": 3.9, "GBP": 4.5}
 
 # domains that never answer plain HTTP (JS wall / bot protection) -> marked "blocked" quickly, handled by the browser pass
 JS_ONLY = ("ksp.co.il", "aliexpress.com", "amazon.com", "amazon.co.uk", "temu.com", "etsy.com")
+# Sites that render the price only in their own JS app (KSP) or are comparison listings with many
+# offers rather than one price (zap). A missing price there is the site refusing to be read, not a
+# broken product page -> report it as "blocked" (❔ "not auto-verified"), never as "price not read",
+# which reads on the card as if the price itself were doubtful.
+PRICE_HIDDEN = ("ksp.co.il", "zap.co.il", "www.zap.co.il",
+                # writes the price as a bare "&#8362; 2,000" with no JSON-LD/itemprop/meta,
+                # so nothing machine-readable is on the page
+                "carmeldirect.com", "www.carmeldirect.com")
 # per-domain politeness (seconds between requests); bpatent bans at < 6s
-DELAY = {"bpatent.co.il": 6.5, "www.bpatent.co.il": 6.5}
+DELAY = {"bpatent.co.il": 6.5, "www.bpatent.co.il": 6.5,
+         # these two serve the cookie interstitial and need two browser loads each, so several items
+         # on one host add up fast; back off or the second load gets the stub again
+         "www.electricshop.co.il": 5.0, "www.vero-cafe.co.il": 5.0}
 DEFAULT_DELAY = 1.2
 
 _lock = threading.Lock()
@@ -388,7 +399,12 @@ def check_url(url, listed_price=None, imgs=None):
     if out["price"] is not None:
         out["priceNis"] = round(out["price"] * FX.get((out["cur"] or "ILS").upper(), 1.0), 2)
     else:
-        out["status"] = "noprice"
+        h = host_of(final or url)
+        if any(h == d or h.endswith("." + d) for d in PRICE_HIDDEN):
+            out["status"] = "blocked"
+            out["note"] = "האתר לא חושף מחיר לקריאה אוטומטית — המחיר בכרטיס אומת ידנית"
+        else:
+            out["status"] = "noprice"
     if imgs is not None:
         out["img"] = check_image(imgs, info.get("image"))
     return out
