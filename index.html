@@ -1287,6 +1287,10 @@ body:has(.cmpBar:not([hidden])) .qfabs{inset-block-end:calc(14px + env(safe-area
   <div class="df"><button class="tbtn primary" onclick="savePlaceDlg()">שמירה</button><button class="tbtn" onclick="document.getElementById('placeDlg').close()">ביטול</button></div>
 </dialog>
 
+<dialog id="closeDlg" class="catdlg"><div class="dh">✅ סיימת עם הקטגוריה?</div>
+  <div class="db" id="closeBody"></div>
+  <div class="df" id="closeBtns"></div>
+</dialog>
 <dialog id="rsDlg" class="catdlg"><div class="dh">🔎 חיפוש מחדש</div>
   <div class="db" id="rsBody"></div>
   <div class="df" id="rsBtns"></div>
@@ -1968,6 +1972,7 @@ function renderCatStrip(){
   const menu=`<details class="more"><summary title="עוד פעולות בקטגוריה">⋯ עוד</summary><div class="moreBox">`
     +mi(`shareCat('${esc(cat.key)}')`,'🔗 שיתוף הקטגוריה')
     +mi(`setQpMode(${!qpMode})`,qpMode?'✓ שיוך מהיר למקומות (פעיל)':'⚡ שיוך מהיר למקומות')
+    +(stt!=='done'?mi(`closeCat('${esc(cat.key)}')`,'✅ סימון הקטגוריה כהוזמנה (סיימתי)'):'')
     +mi(`openCatSettings('${esc(cat.key)}')`,'⚙ הגדרות הקטגוריה')
     +mi(`openReorg()`,'🧩 איחוד / פיצול קטגוריות')
     +mi(`archiveCat('${esc(cat.key)}')`,'🗄 מחיקת הקטגוריה (נשמרת בארכיון)')
@@ -1979,7 +1984,7 @@ function renderCatStrip(){
     +(nImg?mi(`openDocGallery('cat_${esc(cat.key)}','${esc(cat.label)} — תוכניות ותמונות')`,`🗺 תוכניות / תמונות (${nImg})`):'')
     +`</div></details>`;
   const sl=[vc.ordered?`<button class="o" onclick="setView('ordered')">📦 הוזמן ${vc.ordered}</button>`:'',vc.toorder?`<button class="c" onclick="setView('toorder')">🛒 להזמין ${vc.toorder}</button>`:'',vc.rejected?`<button class="r" onclick="setView('rejected')">↩ הוסרו ${vc.rejected}</button>`:''].join('');
-  let h=`<div class="csrow"><span class="st">${stLab}</span>${stt==='done'?`<button type="button" class="reopen" onclick="reopenCat('${esc(cat.key)}')" title="לקנות עוד מהקטגוריה או לרענן אותה במוצרים חדשים / דגשים אחרים">↩ להחזיר להחלטה</button>`:''}<span>${goal}</span>${sl?`<span class="statline">${sl}</span>`:''}${menu}</div>`;
+  let h=`<div class="csrow"><span class="st">${stLab}</span>${(stt!=='done'&&ord.length)?`<button type="button" class="reopen" onclick="closeCat('${esc(cat.key)}')" title="אין יותר מה להזמין בקטגוריה — מעביר אותה ל'הוזמן'">✅ סיימתי — הקטגוריה הוזמנה</button>`:''}${stt==='done'?`<button type="button" class="reopen" onclick="reopenCat('${esc(cat.key)}')" title="לקנות עוד מהקטגוריה או לרענן אותה במוצרים חדשים / דגשים אחרים">↩ להחזיר להחלטה</button>`:''}<span>${goal}</span>${sl?`<span class="statline">${sl}</span>`:''}${menu}</div>`;
   h+=refreshStripHTML(cat)+researchStripHTML(cat);
   if(chosenN>1&&!cat.multi) h+=`<div class="warnB">⚠ שימי לב: נבחרו ${chosenN} פריטים בקטגוריה. אם זה מכוון (למשל כמה פריטים לאותו חלל), אפשר לאשר בהגדרות הקטגוריה — "מותר לבחור כמה".</div>`;
   el.innerHTML=h; el.style.display='flex'; renderPlaceRow();
@@ -2537,6 +2542,23 @@ function archiveCat(key){
   undoToast('🗄 "'+c.label+'" הועברה לארכיון',()=>{ setCatMeta(key,{archived:null}); renderCatMenu(); });
 }
 function restoreCat(key){ setCatMeta(key,{archived:null}); renderCatMenu(); say('↩ הקטגוריה חזרה לרשימה',2500); }
+function closeCat(key){
+  const c=CATS.find(x=>x.key===key); if(!c) return; const prev=c.closed;
+  setCatMeta(key,{closed:true}); renderCatMenu();
+  undoToast('✅ "'+c.label+'" סומנה כהוזמנה',()=>{ setCatMeta(key,{closed:prev===undefined?null:prev}); renderCatMenu(); });
+}
+/* after marking an item as ordered: if nothing in the category is still "chosen, to order", ask whether the whole category is done */
+function offerCloseCat(key){
+  const c=CATS.find(x=>x.key===key); if(!c||catState(c)==='done') return;
+  const its=ITEMS.filter(i=>i.cat===key&&!i.hidden&&!i.deleted);
+  const n=its.filter(i=>i.ordered).length; if(!n) return;
+  if(its.some(i=>!i.ordered&&i.decision==='chosen')) return;
+  const left=its.filter(i=>!i.ordered).length, k='closeAsk_'+key+'_'+n;
+  try{ if(sessionStorage.getItem(k)) return; sessionStorage.setItem(k,'1'); }catch(e){}
+  document.getElementById('closeBody').innerHTML='<p>הזמנת '+n+' '+(n===1?'פריט':'פריטים')+' מהקטגוריה <b>'+esc(c.label)+'</b>'+(left?', ונשארו '+left+' שעוד לא הוזמנו (בהתלבטות / ללא החלטה).':'.')+'</p><p>לסמן את <b>כל הקטגוריה</b> כהוזמנה? היא תעבור ל"הוזמן", והפריטים שנשארו לא יימחקו — אפשר לפתוח אותה מחדש בכל רגע.</p>';
+  document.getElementById('closeBtns').innerHTML='<button class="tbtn primary" onclick="document.getElementById(\'closeDlg\').close();closeCat(\''+esc(key)+'\')">✅ כן, הקטגוריה הוזמנה</button><button class="tbtn" onclick="document.getElementById(\'closeDlg\').close()">עוד לא</button>';
+  const d=document.getElementById('closeDlg'); if(!d.open) d.showModal();
+}
 function reopenCat(key){
   const c=CATS.find(x=>x.key===key); if(!c) return; const prev=c.closed;
   setCatMeta(key,{closed:false}); renderCatMenu();
@@ -3112,6 +3134,7 @@ function saveOrderDlg(){
   const o={ordered:true,orderedBy:document.getElementById('ordBy').value.trim()||((me&&me.name)||'מישהו'),orderedAt:at,orderLink:link||null,orderStore:document.getElementById('ordStore').value.trim()||null,paid:paid!==''?Number(paid):null,orderNote:document.getElementById('ordNote').value.trim()||null,received:!!document.getElementById('ordRecv').checked,receivedAt:(document.getElementById('ordRecv').checked&&document.getElementById('ordRecvDate').value)?new Date(document.getElementById('ordRecvDate').value+'T12:00:00').getTime():null};
   Object.assign(it,o); st.ord[id]=o; save(); fbPushOrdered(id,o);
   document.getElementById('ordDlg').close(); paint(id); tabsHTML(); RE(); if(typeof renderLbOrd==='function'&&lbId===id) renderLbOrd();
+  setTimeout(()=>offerCloseCat(it.cat),350);
 }
 function cancelOrder(){
   const id=_ordId, it=byId[id]; if(!it) return;
