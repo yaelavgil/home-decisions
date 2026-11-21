@@ -5797,6 +5797,11 @@ for _o in json.load(open(os.path.join(REPO,"heaters4.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"heaters5.json"),encoding="utf-8")):
     DATA.append(_o)
+# 20.11.2026: she has TWO HIGH POINTS in the pergola + a winter closure -> ranked by (1) is ceiling/high hanging actually allowed,
+#   (2) glare (looking up straight into the element), (3) verified price for 2 units. Includes 2000/2500W fallbacks because two
+#   3000W units draw ~26 A and one heating mushroom already trips the balcony circuit.
+for _o in json.load(open(os.path.join(REPO,"pergola-heaters-hang.json"),encoding="utf-8")):
+    DATA.append(_o)
 for _f in ("mops2.json","storage.json","bedspreads.json","bedspreads2.json","bedspreads3.json"):
     for _o in json.load(open(os.path.join(REPO,_f),encoding="utf-8")):
         DATA.append(_o)
