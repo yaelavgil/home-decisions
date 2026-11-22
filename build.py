@@ -121,7 +121,7 @@ COFFEE=[
  ("K2","Breville Barista Express Impress · BES876",3448,
   "https://www.citydeal.co.il/product/מכונת-אספרסו-breville-barista-express™-bes876-יבואן-רשמי",
   "img/item-k2.jpg",
-  ["טמפינג מונחה","גובה 41 ס״מ"],
+  ["טמפינג מונחה","גובה 42.2 ס״מ"],
   "✔ יש: טמפינג מונחה (Impress) + תיקון מינון אוטומטי — קפה עקבי לכל אחד, מטחנה 25 דרגות\n✘ אין: קפה קר, מסך מגע · חימום איטי (~60 שנ׳)\n📐 ‎31×36.6×42.2 ס״מ (רוחב×עומק×גובה) · ~11 ק״ג · ממפרט breville.com, 21.11.26 — הגבוהה והעמוקה מבין הברוויל"),
  ("K3","DeLonghi La Specialista Maestro · EC9865",4390,
   "https://www.coffee4u.co.il/product/מכונת-אספרסו-la-specialista-maestro-cold-brew-metal-ec-9865m-delonghi",
