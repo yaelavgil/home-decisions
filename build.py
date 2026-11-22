@@ -1473,6 +1473,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"פתרונות אחסון","label":"פתרונות אחסון","icon":"🧺","slug":"storage","group":"אחר"},
       {"key":"כיסויי מיטה / כירבוליות","label":"כיסויי מיטה / כירבוליות","icon":"🛏️","slug":"bedspreads","group":"חדרי שינה וילדים"},
       {"key":"סל כדורסל לחצר","label":"סל כדורסל עומד לחצר","icon":"🏀","slug":"yard-hoop","group":"חוץ ופרגולה","multi":True,"subs":["48 אינץ׳ — הטווח הנכון לחצר","54 אינץ׳ ומעלה — מגרש אמיתי","קטן וזול — לילדים בלבד"]},
+      {"key":"שערי כדורגל לגור","label":"שני שערי כדורגל לגור","icon":"⚽","slug":"football-goals","group":"חוץ ופרגולה","multi":True,"subs":["זוגות בתוך התקציב","מעל התקציב — מה ₪500 לא קונה","רשתות כלבו — מחיר טוב, מפרט ריק"]},
       {"key":"משחקי חצר","label":"משחקי חצר","icon":"⚽","slug":"yard-games","group":"חוץ ופרגולה","multi":True,"subs":["טרמפולינה ריבועית / מלבנית — חצר קדמית","מתקן נינג׳ה (2×2 מ׳ עד 3×2.5 מ׳)","מתקני כושר וספורט בודדים בסגנון נינג׳ה (לגילאים שונים)","שער כדורגל עמיד / פריק / מתקפל — לחצר הקדמית"]},
       {"key":"ערסלים לגינה","label":"פינת ישיבה לגינה — ערסלים ומיטות רביצה","icon":"🛋️","slug":"garden-hammocks","group":"חוץ ופרגולה","multi":True,"subs":["פינת קפה — שולחן + 2 כסאות","כיסא תלוי / ערסל כיסא","ערסל תלייה — יחיד","ערסל זוגי","ערסל לשלושה / ספת תלייה","מיטת רביצה — טיק / עץ","מיטת רביצה — במבוק","מיטת רביצה — אלומיניום וראטן","שמשייה — הצללה לפינת הישיבה"]},
       {"key":"גלגלת צינור","label":"גלגלת צינור","icon":"🧵","slug":"hose-reel","group":"חוץ ופרגולה","multi":True,"subs":["אוטומטית מתכנסת — קיר","ידנית — מסגרת / קיר","עגלה ניידת"]},
@@ -5867,6 +5868,19 @@ for _o in json.load(open(os.path.join(REPO,"orrery.json"),encoding="utf-8")):
 #   Second trap: "inches". Lifetime/Spalding measure board WIDTH (48" = 122 cm); Voit and the Chinese
 #   brands measure the DIAGONAL, so their "51 inch" board is 110 cm wide -- narrower than a real 48".
 #   Every price here was read off the product page itself (not a category page) on 21.11.2026.
+# 22.11.2026: two football goals for Gur (grade 4) in the front yard at Eshel 57.
+#   The blocking rule: the 400-500 NIS budget is FOR THE PAIR, not per goal. Every price in
+#   enrich specs.pair is the pair price -- a model sold singly is entered doubled, and that is
+#   what gets compared. Second finding: NO shop in this price range publishes tube wall thickness
+#   in mm, for any model. Frame material is often missing too, and KSP's own CANADA page
+#   contradicts itself (fibreglass beams in the short blurb, metal frame in the review).
+_fg=json.load(open(os.path.join(REPO,"enrich","football-goals.json"),encoding="utf-8"))
+for _o in json.load(open(os.path.join(REPO,"football-goals.json"),encoding="utf-8")):
+    _x=_fg["items"].get(_o["id"],{})
+    _o["criteria"]=_fg["criteria"]
+    for _k in ("specs","stores","pick","pickWhy","points"):
+        if _k in _x: _o[_k]=_x[_k]
+    DATA.append(_o)
 _yh=json.load(open(os.path.join(REPO,"enrich","yard-hoop.json"),encoding="utf-8"))
 for _o in json.load(open(os.path.join(REPO,"yard-hoop.json"),encoding="utf-8")):
     _x=_yh["items"].get(_o["id"],{})
