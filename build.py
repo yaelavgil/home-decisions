@@ -126,15 +126,15 @@ COFFEE=[
  ("K3","DeLonghi La Specialista Maestro · EC9865",4390,
   "https://www.coffee4u.co.il/product/מכונת-אספרסו-la-specialista-maestro-cold-brew-metal-ec-9865m-delonghi",
   "img/item-k3.jpg",
-  ["טמפינג מונחה + קפה קר","גובה ~46 ס״מ"],
-  "✔ יש: גם טמפינג מונחה וגם cold brew אמיתי, שני גופי חימום (חליטה+הקצפה ברצף), מיכל 2.5 ל׳\n✘ אין: דיוק טחינה (8 דרגות בלבד מול 25–30 בברוויל)\n📐 ‎42×37×45.5–46.5 ס״מ (רוחב×עומק×גובה) · 16 ק״ג · הגבוהה והכבדה מכולן — לתכנן מדף גבוה יותר"),
+  ["⛔ יעל הוציאה — ברוויל בלבד","טמפינג מונחה + קפה קר","גובה ~46 ס״מ"],
+  "✔ יש: גם טמפינג מונחה וגם cold brew אמיתי, שני גופי חימום (חליטה+הקצפה ברצף), מיכל 2.5 ל׳\n✘ אין: דיוק טחינה (8 דרגות בלבד מול 25–30 בברוויל)\n📐 ‎41.9×36.8×46.5 ס״מ (רוחב×עומק×גובה) · 16 ק״ג · הגבוהה, הרחבה והעמוקה מכולן\n⛔ **יעל הוציאה את DeLonghi מהמשחק ב-22.11.26** — ״אני נעולה על ברוויל כרגע״. נשארת בלוח להשוואה בלבד"),
  # added 21.11.2026 by the "רענון + חלופות" pass: the only machine found that keeps guided tamping
  # while being both the SHORTEST (40 cm) and ~900-1,250 NIS cheaper than the current pick.
  ("K4","DeLonghi La Specialista Arte Evo · EC9255.M",2690,
   "https://www.vero-cafe.co.il/product/מכונת-קפה-ידנית-חכמה-delonghi-la-specialista-arte-evo-ec9255m-דלונגי",
   "https://www.sterns.co.il/cdn/shop/files/Delonghi_EC9255.M_La-Specialista_Arte_Evo_front.jpg?v=1780573151&width=1920",
-  ["הכי זולה","הכי נמוכה — 40 ס״מ","טמפינג מונחה + קפה קר"],
-  "✔ יש: «שליטה חכמה בטמפינג — מערכת Dosing & Tamping Guide», קפה קר אמיתי (Cold Extraction תוך 5 דק׳), אחריות 24 ח׳ ברימאג — כפול מהברוויל\n✘ אין: תיקון מינון אוטומטי כמו ב-K2 · מטחנה 8 דרגות בלבד (מול 25–30) · מיכל 1.7 ל׳\n📐 ‎28.5×36.5×40 ס״מ (רוחב×עומק×גובה) · 9.3 ק״ג · כסוף · הנמוכה והצרה מכולן"),
+  ["⛔ יעל הוציאה — ברוויל בלבד","הכי זולה","הכי נמוכה — 40 ס״מ","טמפינג מונחה + קפה קר"],
+  "✔ יש: «שליטה חכמה בטמפינג — מערכת Dosing & Tamping Guide», קפה קר אמיתי (Cold Extraction תוך 5 דק׳), אחריות 24 ח׳ ברימאג — כפול מהברוויל\n✘ אין: תיקון מינון אוטומטי כמו ב-K2 · מטחנה 8 דרגות בלבד (מול 25–30) · מיכל 1.7 ל׳\n📐 ‎28.5×36.5×40 ס״מ (רוחב×עומק×גובה) · 9.3 ק״ג · כסוף · הנמוכה והצרה מכולן\n⛔ **יעל הוציאה את DeLonghi מהמשחק ב-22.11.26** — ״אני נעולה על ברוויל כרגע״. נשארת בלוח להשוואה בלבד"),
  # 21.11.2026: the two KSP models Yael sent. Both are PARALLEL imports - the board had no field for
  # that until now, and it is the thing that separates them from everything else here.
  ("K5","Breville Barista Express · BES875BSS",2359,
