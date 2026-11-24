@@ -1473,6 +1473,10 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"פתרונות אחסון","label":"פתרונות אחסון","icon":"🧺","slug":"storage","group":"אחר"},
       {"key":"כיסויי מיטה / כירבוליות","label":"כיסויי מיטה / כירבוליות","icon":"🛏️","slug":"bedspreads","group":"חדרי שינה וילדים"},
       {"key":"סל כדורסל לחצר","label":"סל כדורסל עומד לחצר","icon":"🏀","slug":"yard-hoop","group":"חוץ ופרגולה","multi":True,"subs":["48 אינץ׳ — הטווח הנכון לחצר","54 אינץ׳ ומעלה — מגרש אמיתי","קטן וזול — לילדים בלבד"]},
+      # 25.11.2026: bathroom accessories for all three bathrooms. Split by item type (subs) and by
+      # room (per-item `places` array) — Yael asked for location × item type with one item able to
+      # suit more than one room, which is exactly what `places` + the 📍 place filter already do.
+      {"key":"אביזרי רחצה","label":"אביזרי חדרי רחצה","icon":"🚽","slug":"bath-accessories","group":"אמבטיה","multi":True,"subs":["מעמד רצפתי משולב — נייר + מברשת, בלי קידוח","מברשת אסלה","פח קטן","מתלה למגבת פנים וידיים","מתלי מגבות גוף","מחזיק נייר לקיר","קולבי דלת — מגבות וחלוקים","מדפים ואביזרי כיור"]},
       {"key":"שערי כדורגל לגור","label":"שני שערי כדורגל לגור","icon":"⚽","slug":"football-goals","group":"חוץ ופרגולה","multi":True,"subs":["זוגות בתוך התקציב","מעל התקציב — מה ₪500 לא קונה","רשתות כלבו — מחיר טוב, מפרט ריק"]},
       {"key":"משחקי חצר","label":"משחקי חצר","icon":"⚽","slug":"yard-games","group":"חוץ ופרגולה","multi":True,"subs":["טרמפולינה ריבועית / מלבנית — חצר קדמית","מתקן נינג׳ה (2×2 מ׳ עד 3×2.5 מ׳)","מתקני כושר וספורט בודדים בסגנון נינג׳ה (לגילאים שונים)","שער כדורגל עמיד / פריק / מתקפל — לחצר הקדמית"]},
       {"key":"ערסלים לגינה","label":"פינת ישיבה לגינה — ערסלים ומיטות רביצה","icon":"🛋️","slug":"garden-hammocks","group":"חוץ ופרגולה","multi":True,"subs":["פינת קפה — שולחן + 2 כסאות","כיסא תלוי / ערסל כיסא","ערסל תלייה — יחיד","ערסל זוגי","ערסל לשלושה / ספת תלייה","מיטת רביצה — טיק / עץ","מיטת רביצה — במבוק","מיטת רביצה — אלומיניום וראטן","שמשייה — הצללה לפינת הישיבה"]},
@@ -5885,6 +5889,17 @@ _yh=json.load(open(os.path.join(REPO,"enrich","yard-hoop.json"),encoding="utf-8"
 for _o in json.load(open(os.path.join(REPO,"yard-hoop.json"),encoding="utf-8")):
     _x=_yh["items"].get(_o["id"],{})
     _o["criteria"]=_yh["criteria"]
+    for _k in ("specs","stores","pick","pickWhy","points"):
+        if _k in _x: _o[_k]=_x[_k]
+    DATA.append(_o)
+# 25.11.2026: bathroom accessories (brushes, bins, towel rails, paper holders, door hooks) for the
+# three bathrooms. Each item carries a `places` array, so one product can sit under several rooms in
+# the 📍 place filter and in place grouping — that is the "location × item type" split Yael asked for.
+_ba=json.load(open(os.path.join(REPO,"enrich","bath-accessories.json"),encoding="utf-8"))
+for _o in json.load(open(os.path.join(REPO,"bath-accessories.json"),encoding="utf-8")):
+    _x=_ba["items"].get(_o["id"],{})
+    _o["cat"]="אביזרי רחצה"; _o["type"]="product"
+    _o["criteria"]=_ba["criteria"]
     for _k in ("specs","stores","pick","pickWhy","points"):
         if _k in _x: _o[_k]=_x[_k]
     DATA.append(_o)
