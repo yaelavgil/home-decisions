@@ -1787,8 +1787,15 @@ function guessStore(it){
    descriptive string ("מלדן דיזיינס (bath-line.com) — דרך הקרדיט של ₪1,000"), and the same
    shop may appear with and without a seller suffix ("AliExpress" / "AliExpress · Springy…").
    Both collapse to one label here. The stored value is never changed - this is for labels only. */
+/* The same shop also turns up under a Hebrew and an English name — the lighting category
+   carries both "עלי אקספרס" (21 items) and "AliExpress" (2). Trimming cannot catch that, so
+   the few real aliases are listed. Keys are compared lowercased after trimming. */
+const STORE_ALIAS={'עלי אקספרס':'AliExpress','עליאקספרס':'AliExpress','aliexpress':'AliExpress',
+  'ali express':'AliExpress','איקאה':'IKEA','ikea':'IKEA','הום סנטר':'Home Center','home center':'Home Center'};
 function storeShort(it){ const n=guessStore(it); if(!n||n==='לא ידוע') return 'ללא חנות';
-  return String(n).replace(/\s*[(·|].*$/,'').replace(/\s*[—–-]\s+.*$/,'').trim()||'ללא חנות'; }
+  const t=String(n).replace(/\s*[(·|].*$/,'').replace(/\s*[—–-]\s+.*$/,'').trim();
+  if(!t) return 'ללא חנות';
+  return STORE_ALIAS[t.toLowerCase()]||STORE_ALIAS[t]||t; }
 function qtyOf(it){ const m=((it.orderedBy||'')+' '+(it.orderNote||'')).match(/(\d+)\s*יח|×\s*(\d+)/); return m?Number(m[1]||m[2]):1; }
 function _spend_placeholder(){}
 function lineTotal(it){ return it.paid!=null?it.paid:(it.price||0)*qtyOf(it); }
