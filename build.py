@@ -2529,6 +2529,16 @@ body.cur-mark .card .cstars .avg{margin-inline-start:0}
 .myStar{position:absolute;top:10px;inset-inline-start:10px;background:#e0a21a;color:#fff;font-weight:800;font-size:12.5px;padding:3px 9px;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.25);z-index:2}
 .pchip .ph{color:#c98c0c;font-size:11.5px}
 .curBtn.on{background:#e0a21a;border-color:#e0a21a;color:#fff}
+.cleanBar{position:fixed;inset-inline:10px;bottom:10px;z-index:60;background:#fff;border:2px solid #c0392b;border-radius:14px;padding:10px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;box-shadow:0 14px 40px -12px rgba(0,0,0,.45)}
+.cleanBar .ct{flex:1 1 100%;font-weight:800;color:#a3301f;font-size:13.5px}
+.cleanBar button{font:inherit;font-size:14px;font-weight:800;padding:9px 14px;border-radius:11px;border:1.5px solid var(--line-2,#d9ccb5);background:var(--paper);color:var(--ink);cursor:pointer}
+.cleanBar button.go{background:#c0392b;border-color:#c0392b;color:#fff}
+.cleanBar button[disabled]{opacity:.4;cursor:default}
+body.cleanMode .card{cursor:pointer}
+body.cleanMode .grid{padding-bottom:96px}
+body.cleanMode .card::after{content:"";position:absolute;inset:0;background:transparent;z-index:5}
+.card.cpick{outline:3px solid #c0392b;outline-offset:-3px}
+.card.cpick::before{content:"🗑";position:absolute;inset-block-start:8px;inset-inline-start:8px;z-index:6;background:#c0392b;color:#fff;border-radius:999px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:15px}
 .curBar{position:sticky;top:0;z-index:40;margin:12px 0 0;background:#fff7e0;border:2px solid #e0a21a;border-radius:14px;padding:10px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .curBar[hidden]{display:none}
 .curBar .ct{font-weight:800;color:#8a5a00;font-size:14px}
@@ -3906,6 +3916,69 @@ function renderPlaceRow(){
 }
 function togglePlaceF(k){ placef.has(k)?placef.delete(k):placef.add(k); renderPlaceRow(); RE(); }
 
+
+/* ---------- מצב ניקוי: לסמן כמה פריטים ולמחוק את כולם בבת אחת ----------
+   יעל: "תאפשר לי למחוק כל מה שלא מעניין אותי בקטלוג שלא יבלבל אותי".
+   מחיקה בודדת כבר הייתה — מה שחסר היה לעשות את זה על עשרים פריטים בלי עשרים לחיצות
+   ועשרים הודעות. כאן כל המחיקה היא פעולה אחת, עם ביטול אחד שמחזיר את כולם. */
+let cleanMode=false; const cleanSel=new Set();
+function toggleClean(){ cleanMode=!cleanMode; cleanSel.clear(); document.body.classList.toggle('cleanMode',cleanMode); paintClean(); renderCleanBar(); renderSubRow(); }
+function cleanPick(id){ cleanSel.has(id)?cleanSel.delete(id):cleanSel.add(id); paintClean(); renderCleanBar(); }
+function cleanAllShown(){ visible().forEach(i=>cleanSel.add(i.id)); paintClean(); renderCleanBar(); }
+function cleanNone(){ cleanSel.clear(); paintClean(); renderCleanBar(); }
+function paintClean(){ els.forEach((c,id)=>c.classList.toggle('cpick',cleanMode&&cleanSel.has(id))); }
+function renderCleanBar(){
+  let b=document.getElementById('cleanBar');
+  if(!cleanMode){ if(b) b.remove(); return; }
+  if(!b){ b=document.createElement('div'); b.id='cleanBar'; b.className='cleanBar'; document.body.appendChild(b); }
+  const n=cleanSel.size, shown=visible().length;
+  b.innerHTML='<span class="ct">🗑 מצב ניקוי — לחצי על כל פריט שלא מעניין אותך. אפשר קודם לסנן, ואז לנקות רק את מה שמוצג.</span>'
+    +`<button type="button" onclick="cleanAllShown()">סמני את כל ${shown} המוצגים</button>`
+    +(n?`<button type="button" onclick="cleanNone()">ניקוי הסימון</button>`:'')
+    +`<button type="button" class="go" ${n?'':'disabled'} onclick="cleanDelete()">מחיקת ${n} פריטים</button>`
+    +'<button type="button" onclick="toggleClean()">סיום</button>';
+}
+function cleanDelete(){
+  const ids=[...cleanSel]; if(!ids.length) return;
+  const undo=[];
+  ids.forEach(id=>{
+    const it=byId[id]; if(!it) return;
+    const builtin=BITEMS.some(b=>b.id===id);
+    const prevShared=(shared.items&&shared.items[id])?JSON.parse(JSON.stringify(shared.items[id])):null;
+    const prevLocal=(st.custom.items||[]).find(x=>x.id===id)||null;
+    const prevSt={ord:st.ord[id],dec:st.dec&&st.dec[id],s:st.s[id]};
+    const tomb=builtin?{id,deleted:true}:{id,deleted:true,cat:it.cat};
+    shared.items=shared.items||{}; shared.items[id]=builtin?{...(shared.items[id]||{}),...tomb}:tomb;
+    _pendMark(id,{deleted:true});
+    fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:builtin?'PATCH':'PUT',body:JSON.stringify(tomb)}).catch(()=>{});
+    st.custom.items=(st.custom.items||[]).filter(x=>x.id!==id); delete st.ord[id]; if(st.dec) delete st.dec[id]; delete st.s[id];
+    const c=els.get(id); if(c){ c.remove(); els.delete(id); }
+    undo.push({id,builtin,prevShared,prevLocal,prevSt});
+  });
+  save(); cleanSel.clear(); rebuild(); tabsHTML(); updateHiddenCount(); renderSubRow(); paintClean(); renderCleanBar(); RE(true);
+  undoToast('🗑 '+ids.length+' פריטים נמחקו',()=>{
+    undo.forEach(u=>{
+      _pendMark(u.id,{deleted:null});
+      if(u.builtin){ if(u.prevShared) shared.items[u.id]=u.prevShared; else delete shared.items[u.id];
+        fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(u.id)}.json`,{method:'PATCH',body:JSON.stringify({id:u.id,deleted:null})}).catch(()=>{}); }
+      else { const orig=u.prevShared||u.prevLocal; if(orig){ shared.items[u.id]=orig;
+        fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(u.id)}.json`,{method:'PUT',body:JSON.stringify(orig)}).catch(()=>{});
+        if(u.prevLocal) st.custom.items.push(u.prevLocal); } }
+      if(u.prevSt.ord!==undefined) st.ord[u.id]=u.prevSt.ord;
+      if(u.prevSt.dec!==undefined){ st.dec=st.dec||{}; st.dec[u.id]=u.prevSt.dec; }
+      if(u.prevSt.s!==undefined) st.s[u.id]=u.prevSt.s;
+    });
+    save(); rebuild(); tabsHTML(); updateHiddenCount(); buildChips(); renderSubRow(); RE(true);
+  });
+}
+/* בשלב הלכידה, כדי שלחיצה על כרטיס תסמן אותו במקום להפעיל את הכפתורים שבתוכו */
+document.addEventListener('click',e=>{ if(!cleanMode) return;
+  if(e.target.closest('.cleanBar')||e.target.closest('.undoBar')) return;
+  const c=e.target.closest('.card'); if(!c||!c.dataset.id) return;
+  /* stopImmediatePropagation ולא רק stopPropagation: מאזין הקליק שפותח כרטיס יושב
+     גם הוא על document ובאותו שלב לכידה, ומאזין על אותו צומת לא נעצר בלי זה. */
+  e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); cleanPick(c.dataset.id); },true);
+
 function toggleSubF(k){ subf.has(k)?subf.delete(k):subf.add(k); renderSubRow(); RE(); }
 function renderSubRow(){
   const el=document.getElementById('subRow'); if(!el) return;
@@ -3922,6 +3995,7 @@ function renderSubRow(){
       +(none?`<button type="button" class="warn ${subf.has('__none')?'on':''}" data-k="__none" onclick="toggleSubF(this.dataset.k)">⚠ ללא שיוך<small>${none}</small></button><button type="button" class="mgr auto" onclick="autoAssignSubs('${esc(cat.key)}')">⚡ שיוך אוטומטי</button>`:'');
   }
   h+=featBarHTML(cat,its);
+  h+=`<button type="button" class="mgr${cleanMode?' auto':''}" onclick="toggleClean()" title="לסמן כמה פריטים ולמחוק את כולם בבת אחת">${cleanMode?'✓ סיום ניקוי':'🗑 ניקוי'}</button>`;
   el.innerHTML=h; el.style.display='flex';
 }
 let _subKey=null;
