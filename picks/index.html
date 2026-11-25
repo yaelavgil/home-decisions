@@ -1784,6 +1784,12 @@ function guessStore(it){
   const st=it.stores?Object.values(it.stores):[]; if(st.length){ const r=st.find(x=>x.rec)||st[0]; if(r&&r.n) return String(r.n).replace(/\s*\(.*\)\s*$/,'').trim(); }
   const h=hostOf(it.link||''); for(const k in STORE_HOSTS) if(h===k||h.endsWith('.'+k)) return STORE_HOSTS[k]; return h?h.replace(/\.(co\.il|org\.il|com|net|shop|store|online|io)$/,'').replace(/[-_.]+/g,' ').replace(/\b[a-z]/g,m=>m.toUpperCase()):'לא ידוע';
 }
+/* 25.11.2026: short display name for a shop. `store` on an item may carry a long
+   descriptive string ("מלדן דיזיינס (bath-line.com) — דרך הקרדיט של ₪1,000"), and the same
+   shop may appear with and without a seller suffix ("AliExpress" / "AliExpress · Springy…").
+   Both collapse to one label here. The stored value is never changed - this is for labels only. */
+function storeShort(it){ const n=guessStore(it); if(!n||n==='לא ידוע') return 'ללא חנות';
+  return String(n).replace(/\s*[(·|].*$/,'').replace(/\s*[—–-]\s+.*$/,'').trim()||'ללא חנות'; }
 function qtyOf(it){ const m=((it.orderedBy||'')+' '+(it.orderNote||'')).match(/(\d+)\s*יח|×\s*(\d+)/); return m?Number(m[1]||m[2]):1; }
 function _spend_placeholder(){}
 function lineTotal(it){ return it.paid!=null?it.paid:(it.price||0)*qtyOf(it); }
@@ -3905,13 +3911,15 @@ function scoreBand(it){ const v=scoreVal(it); if(v==null) return {k:'ללא צי
 function grpKey(it,mode){
   if(mode==='sub'){ const cc=CATS.find(x=>x.key===it.cat)||{}, subs=cc.subs||[], i=subs.indexOf(it.sub); return {k:it.sub||'ללא סוג',o:it.sub?(i>=0?i:50):99}; }
   if(mode==='place'){ const names=placesList().map(p=>p.n), p=itemPlaces(it)[0]; return {k:p||'ללא מיקום',o:p?(names.indexOf(p)<0?80:names.indexOf(p)):99}; }
-  if(mode==='store') return {k:guessStore(it)||'לא ידוע',o:0};
+  if(mode==='store'){ const k=storeShort(it); return {k,o:k==='ללא חנות'?99:0}; }
   if(mode==='score') return scoreBand(it);
   return {k:'',o:0};
 }
 { const _v=visible; visible=function(){ let a=_v(); const so=(document.getElementById('sort')||{}).value;
   const by=m=>(x,y)=>{ const P=grpKey(x,m),Q=grpKey(y,m); return P.o-Q.o||P.k.localeCompare(Q.k,'he'); };
-  const cmp={sub:by('sub'),place:by('place'),store:by('store'),zscore:(x,y)=>(scoreVal(y)==null?-1:scoreVal(y))-(scoreVal(x)==null?-1:scoreVal(x))}[so];
+  const byStore=(x,y)=>{ const P=grpKey(x,'store'),Q=grpKey(y,'store');
+    return P.o-Q.o||P.k.localeCompare(Q.k,'he')||((x.price||0)-(y.price||0)); };
+  const cmp={sub:by('sub'),place:by('place'),store:byStore,zscore:(x,y)=>(scoreVal(y)==null?-1:scoreVal(y))-(scoreVal(x)==null?-1:scoreVal(x))}[so];
   if(cmp) a=a.slice().sort(cmp);
   if(groupBy){ const ks=new Map(); a.forEach((it,i)=>ks.set(it.id,[grpKey(it,groupBy),i])); a=a.slice().sort((p,q)=>{ const P=ks.get(p.id),Q=ks.get(q.id); return P[0].o-Q[0].o||P[0].k.localeCompare(Q[0].k,'he')||P[1]-Q[1]; }); }
   return a; }; }
@@ -3945,7 +3953,7 @@ function expItems(){
   if(_exp.marked) a=a.filter(it=>{ const x=S(it.id)||{}; return x.status==='yes'||x.status==='maybe'||(x.h||0)>0; });
   const so=_exp.sort;
   if(so==='price') a=a.slice().sort((x,y)=>(x.price==null)-(y.price==null)||x.price-y.price);
-  else if(so==='store') a=a.slice().sort((x,y)=>String(guessStore(x)).localeCompare(String(guessStore(y)),'he'));
+  else if(so==='store') a=a.slice().sort((x,y)=>{ const P=grpKey(x,'store'),Q=grpKey(y,'store'); return P.o-Q.o||P.k.localeCompare(Q.k,'he')||((x.price||0)-(y.price||0)); });
   else if(so==='score') a=a.slice().sort((x,y)=>(scoreVal(y)==null?-1:scoreVal(y))-(scoreVal(x)==null?-1:scoreVal(x)));
   else if(so==='name') a=a.slice().sort((x,y)=>String(x.name).localeCompare(String(y.name),'he'));
   return a;
@@ -4100,8 +4108,8 @@ function qfBuild(cat,its){
     add(own('price','💰','מחיר',bands.map(x=>({k:x[0],l:x[1]})),(it,k)=>{ const b=bands.find(x=>x[0]===k); return it.price>0&&it.price>=b[2]&&it.price<=b[3]; }));
   }
   // חנות
-  const qs=i=>{ const n=guessStore(i); return n?String(n).replace(/\s*[(·|].*$/,'').trim():''; }; const sc={}; its.forEach(i=>{ const n=qs(i); if(n) sc[n]=(sc[n]||0)+1; });
-  add(own('store','🏬','חנות',Object.keys(sc).sort((a,b)=>sc[b]-sc[a]).slice(0,12).map(k=>({k,l:k})),(it,k)=>qs(it)===k));
+  const qs=i=>storeShort(i); const sc={}; its.forEach(i=>{ const n=qs(i); if(n) sc[n]=(sc[n]||0)+1; });
+  add(own('store','🏬','חנות',Object.keys(sc).sort((a,b)=>(a==='ללא חנות')-(b==='ללא חנות')||sc[b]-sc[a]).slice(0,14).map(k=>({k,l:k})),(it,k)=>qs(it)===k));
   // סטטוס
   const stl={discuss:'🤔 בהתלבטות',chosen:'🛒 נבחר — להזמין',ordered:'📦 הוזמן'};
   add(own('status','🚦','סטטוס',Object.keys(stl).filter(k=>its.some(i=>itemStatus(i)===k)).map(k=>({k,l:stl[k]})),(it,k)=>itemStatus(it)===k));
