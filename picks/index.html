@@ -1460,6 +1460,26 @@ let ARCHIVED_CATS=[], ARCHIVED_ITEMS=[];
 let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="all", featSort=null, subf=null, placef=new Set(), slotf=new Set(), featf=null, qpMode=!!window._qp0;
 let ITEMS=[],CATS=[],byId={};
 let shared={items:{},cats:{}}; // shared catalog from Firebase (/picks/_catalog)
+/* ---- pending item writes -------------------------------------------------
+   fbPoll() replaces `shared` wholesale every 5s. A write fired a moment earlier
+   (delete, hide, rating, decision…) has not necessarily landed in the snapshot
+   the poll was already fetching, so the fresh copy still shows the OLD value and
+   the change visibly undoes itself — then re-applies on the next poll. That is
+   the "it comes back and then disappears again" flicker.
+   So every optimistic item write is remembered here and re-applied on top of each
+   polled snapshot until the server itself reports the same value (or 90s pass). */
+const _pend=new Map();
+function _pendMark(id,patch){ if(!id||!patch)return; const e=_pend.get(id)||{p:{},t:0};
+  Object.assign(e.p,patch); e.t=Date.now(); _pend.set(id,e); }
+function _pendApply(cat){ if(!_pend.size)return; const now=Date.now();
+  const eq=(a,b)=>(a==null&&b==null)||JSON.stringify(a)===JSON.stringify(b);
+  _pend.forEach((e,id)=>{
+    if(now-e.t>90000){ _pend.delete(id); return; }              // server never took it — stop fighting
+    const sv=(cat.items&&cat.items[id])||null;
+    if(sv&&Object.keys(e.p).every(k=>eq(sv[k],e.p[k]))){ _pend.delete(id); return; }  // confirmed
+    cat.items=cat.items||{}; cat.items[id]={...(cat.items[id]||{}),id,...e.p};
+  });
+}
 function modelKey(s){ if(!s)return''; const m=String(s).toUpperCase().match(/[A-Z]{2,4}-? ?\d{3}[A-Z0-9]*/); return m?m[0].replace(/[- ]/g,''):''; }
 function rebuild(){
   const im={}; BITEMS.forEach(i=>im[i.id]={...i});
@@ -1577,7 +1597,7 @@ function setDecision(id,val){
   const act=val==='rejected'?'reject':(val==='chosen'?'choose':(it.decision==='rejected'?'reject':'choose'));
   if(!canDo(it.cat,act)){ denyMsg(it.cat,act); return; }
   const o={decision:val||null,decidedBy:val?((me&&me.name)||'מישהו'):null,decidedAt:val?Date.now():null};
-  Object.assign(it,o); st.dec[id]=o; save();
+  Object.assign(it,o); st.dec[id]=o; save(); _pendMark(id,o);
   fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,...o})}).catch(()=>{});
   paint(id); tabsHTML(); RE();
   if(val==='chosen'){ const cat=CATS.find(c=>c.key===it.cat)||{}; const n=ITEMS.filter(i=>i.cat===it.cat&&!i.hidden&&!i.ordered&&i.decision==='chosen').length;
@@ -1600,7 +1620,7 @@ function renderSlotBox(){ const old=document.getElementById('slotBox'); if(old) 
   const sec=isecShell(id,'slot','🎯','ייעוד בבית',names.join(' · ')||'לא נבחר'); sec.querySelector('.isb').appendChild(box);
   const last=secs.lastElementChild; if(last&&last.dataset.k==='more') secs.insertBefore(sec,last); else secs.appendChild(sec); }
 function toggleItemSlot(id,sid){ const it=byId[id]; if(!it) return; const s=new Set(it.slots||[]); s.has(sid)?s.delete(sid):s.add(sid);
-  const ov=[...s].join(','); it.slots=[...s]; it.slotOv=ov; shared.items=shared.items||{}; shared.items[id]={...(shared.items[id]||{}),id,slotOv:ov};
+  const ov=[...s].join(','); it.slots=[...s]; it.slotOv=ov; shared.items=shared.items||{}; shared.items[id]={...(shared.items[id]||{}),id,slotOv:ov}; _pendMark(id,{slotOv:ov});
   fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,slotOv:ov})}).catch(()=>{});
   renderSlotBox(); renderSlotRow(); if(slotf.size) RE(); }
 function selToggle(id){ decChoose(id); refreshSelBar(); }
@@ -2377,7 +2397,7 @@ function addSubRow(name,count){
   d.innerHTML=`<input value="${esc(name)}" placeholder="שם תת־קטגוריה"><small>${count?count+' פריטים':''}</small><button type="button" title="מחיקה" onclick="this.parentNode.remove()">🗑</button>`;
   document.getElementById('subList').appendChild(d);
 }
-function patchItem(id,o){ shared.items=shared.items||{}; shared.items[id]={...(shared.items[id]||{}),id,...o};
+function patchItem(id,o){ shared.items=shared.items||{}; shared.items[id]={...(shared.items[id]||{}),id,...o}; _pendMark(id,o);
   fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,...o})}).catch(()=>{}); }
 function saveSubMgr(){
   const key=_subKey; const rows=[...document.querySelectorAll('#subList .subrow-e')].map(r=>({orig:r.dataset.orig,name:r.querySelector('input').value.trim()})).filter(r=>r.name||r.orig);
@@ -3174,7 +3194,7 @@ function setRating(id,n){
   fbPushRating(id,{rating:val||null,ratedBy:val?((me&&me.name)||'מישהו'):null}); paint(id);
   if(document.getElementById('sort').value==='rating')RE();
 }
-function fbPushRating(id,o){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,...o})}).catch(()=>{}); }
+function fbPushRating(id,o){ _pendMark(id,o); fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,...o})}).catch(()=>{}); }
 function shortTxt(t,max){ // one short line: first clause of a long sentence; the full text lives in the collapsed details
   max=max||84; t=String(t==null?'':t).replace(/\s+/g,' ').trim().replace(/\s*\([^)]{18,}\)/g,''); if(t.length<=max) return t;
   const ds=[' — ','; ',' · ',': ','. ',' ('], idx=ds.map(d=>t.indexOf(d,22)).filter(i=>i>0&&i<=max+14);
@@ -3402,12 +3422,14 @@ function deleteItem(id){
   const prevSt={ord:st.ord[id],dec:st.dec&&st.dec[id],s:st.s[id]};
   const tomb=builtin?{id,deleted:true}:{id,deleted:true,cat:it.cat};
   shared.items=shared.items||{}; shared.items[id]=builtin?{...(shared.items[id]||{}),...tomb}:tomb;
+  _pendMark(id,{deleted:true});
   fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:builtin?'PATCH':'PUT',body:JSON.stringify(tomb)}).catch(()=>{});
   st.custom.items=(st.custom.items||[]).filter(x=>x.id!==id); delete st.ord[id]; if(st.dec) delete st.dec[id]; delete st.s[id]; save();
   const c=els.get(id); if(c){ c.remove(); els.delete(id); }
   rebuild(); tabsHTML(); updateHiddenCount(); renderSubRow(); RE(true);
   undoToast('🗑 "'+(nm.length>34?nm.slice(0,34)+'…':nm)+'" נמחק',()=>{
     const orig=prevShared||prevLocal;
+    _pendMark(id,{deleted:null});
     if(builtin){ if(prevShared) shared.items[id]=prevShared; else delete shared.items[id]; fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,deleted:null})}).catch(()=>{}); }
     else if(orig){ shared.items[id]=orig; fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PUT',body:JSON.stringify(orig)}).catch(()=>{}); if(prevLocal) st.custom.items.push(prevLocal); }
     if(prevSt.ord!==undefined) st.ord[id]=prevSt.ord; if(prevSt.dec!==undefined){ st.dec=st.dec||{}; st.dec[id]=prevSt.dec; } if(prevSt.s!==undefined) st.s[id]=prevSt.s; save();
@@ -3423,7 +3445,7 @@ function toggleHidden(id){
   RE(true);
   if(val) undoToast('🙈 "'+(it.name.length>34?it.name.slice(0,34)+'…':it.name)+'" הוסתר',()=>{ Object.assign(it,{hidden:false}); fbPushHidden(id,false); paint(id); updateHiddenCount(); RE(true); });
 }
-function fbPushHidden(id,val){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,hidden:val})}).catch(()=>{}); }
+function fbPushHidden(id,val){ _pendMark(id,{hidden:val}); fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,hidden:val})}).catch(()=>{}); }
 function updateHiddenCount(){ const n=ITEMS.filter(i=>i.hidden).length; const el=document.getElementById('hiddenCount'); if(el){el.textContent=n||''; el.style.display=n?'inline-flex':'none';} }
 function RE(animate){
   const _y=window.scrollY; _qpC=null; ITEMS.forEach(it=>cardEl(it));
@@ -3714,12 +3736,13 @@ function fbPushAll(){ if(!me)return; const items={};
   fetch(`${DB}/picks/${me.pk}.json`,{method:'PATCH',body:JSON.stringify({name:me.name})}).catch(()=>{});
   fetch(`${DB}/picks/${me.pk}/items.json`,{method:'PATCH',body:JSON.stringify(items)}).catch(()=>{}); }
 function fbPushName(){ if(!me)return; fetch(`${DB}/picks/${me.pk}/name.json`,{method:'PUT',body:JSON.stringify(me.name)}).catch(()=>{}); }
-function fbPushCatalogItem(it){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(it.id)}.json`,{method:'PUT',body:JSON.stringify(it)}).catch(()=>{}); }
-function fbPushOrdered(id,o){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,...o})}).catch(()=>{}); }
+function fbPushCatalogItem(it){ _pendMark(it.id,it); fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(it.id)}.json`,{method:'PUT',body:JSON.stringify(it)}).catch(()=>{}); }
+function fbPushOrdered(id,o){ _pendMark(id,o); fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'PATCH',body:JSON.stringify({id,...o})}).catch(()=>{}); }
 function fbPushCatalogCat(c){ fetch(`${DB}/picks/_catalog/cats/${encodeURIComponent(c.key)}.json`,{method:'PUT',body:JSON.stringify(c)}).catch(()=>{}); }
 function fbDelCatalogItem(id){ fetch(`${DB}/picks/_catalog/items/${encodeURIComponent(id)}.json`,{method:'DELETE'}).catch(()=>{}); }
 function fbPoll(){ fetch(`${DB}/picks.json`).then(r=>r.json()).then(d=>{
   d=d||{}; const cat=d._catalog||{items:{},cats:{}}; delete d._catalog; remote=d;
+  _pendApply(cat); // keep this device's just-made changes on top until the server echoes them back
   const changed=JSON.stringify(cat)!==JSON.stringify(shared); shared=cat;
   // once the server has its own "ordered" value for an id, this device's local
   // optimistic override (from the moment of clicking, before the round-trip
