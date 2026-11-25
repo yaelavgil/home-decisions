@@ -2532,6 +2532,7 @@ body.cur-mark .card .cstars .avg{margin-inline-start:0}
 .myStar{position:absolute;top:10px;inset-inline-start:10px;background:#e0a21a;color:#fff;font-weight:800;font-size:12.5px;padding:3px 9px;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.25);z-index:2}
 .pchip .ph{color:#c98c0c;font-size:11.5px}
 .curBtn.on{background:#e0a21a;border-color:#e0a21a;color:#fff}
+.tbtn.cleanBtn.on{background:#c0392b;border-color:#c0392b;color:#fff}
 .cleanBar{position:fixed;inset-inline:10px;bottom:10px;z-index:60;background:#fff;border:2px solid #c0392b;border-radius:14px;padding:10px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;box-shadow:0 14px 40px -12px rgba(0,0,0,.45)}
 .cleanBar .ct{flex:1 1 100%;font-weight:800;color:#a3301f;font-size:13.5px}
 .cleanBar button{font:inherit;font-size:14px;font-weight:800;padding:9px 14px;border-radius:11px;border:1.5px solid var(--line-2,#d9ccb5);background:var(--paper);color:var(--ink);cursor:pointer}
@@ -2762,6 +2763,7 @@ body:has(.cmpBar:not([hidden])) .qfabs{inset-block-end:calc(14px + env(safe-area
     </select>
     <div class="featSortRow" id="featSortRow"></div>
     <button class="tbtn curBtn" id="curBtn" onclick="curStart()" title="לסמן בכוכבים מה אהבתי ולדרג — מצב עריכה">★<span class="lbl"> בחירה ודירוג</span></button>
+    <button class="tbtn cleanBtn" id="cleanBtn" onclick="toggleClean()" title="לסמן כמה פריטים ולהסתיר או למחוק את כולם בבת אחת">🧹<span class="lbl"> ניקוי</span></button>
     <button class="tbtn fbtn" id="filterBtn" onclick="toggleFilters()" title="סינון מתקדם">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M3 5h18l-7 8.2V19l-4 2v-7.8z"/></svg>סינון<span class="fbadge" id="fbadge"></span></button>
   </div>
@@ -3926,7 +3928,10 @@ function togglePlaceF(k){ placef.has(k)?placef.delete(k):placef.add(k); renderPl
    מחיקה בודדת כבר הייתה — מה שחסר היה לעשות את זה על עשרים פריטים בלי עשרים לחיצות
    ועשרים הודעות. כאן כל המחיקה היא פעולה אחת, עם ביטול אחד שמחזיר את כולם. */
 let cleanMode=false; const cleanSel=new Set();
-function toggleClean(){ cleanMode=!cleanMode; cleanSel.clear(); document.body.classList.toggle('cleanMode',cleanMode); paintClean(); renderCleanBar(); renderSubRow(); }
+function toggleClean(){ cleanMode=!cleanMode; cleanSel.clear(); document.body.classList.toggle('cleanMode',cleanMode);
+  const b=document.getElementById('cleanBtn');
+  if(b){ b.classList.toggle('on',cleanMode); b.innerHTML=cleanMode?'✓<span class="lbl"> סיום ניקוי</span>':'🧹<span class="lbl"> ניקוי</span>'; }
+  paintClean(); renderCleanBar(); renderSubRow(); }
 function cleanPick(id){ cleanSel.has(id)?cleanSel.delete(id):cleanSel.add(id); paintClean(); renderCleanBar(); }
 function cleanAllShown(){ visible().forEach(i=>cleanSel.add(i.id)); paintClean(); renderCleanBar(); }
 function cleanNone(){ cleanSel.clear(); paintClean(); renderCleanBar(); }
@@ -4021,7 +4026,6 @@ function renderSubRow(){
       +(none?`<button type="button" class="warn ${subf.has('__none')?'on':''}" data-k="__none" onclick="toggleSubF(this.dataset.k)">⚠ ללא שיוך<small>${none}</small></button><button type="button" class="mgr auto" onclick="autoAssignSubs('${esc(cat.key)}')">⚡ שיוך אוטומטי</button>`:'');
   }
   h+=featBarHTML(cat,its);
-  h+=`<button type="button" class="mgr${cleanMode?' auto':''}" onclick="toggleClean()" title="לסמן כמה פריטים ולמחוק את כולם בבת אחת">${cleanMode?'✓ סיום ניקוי':'🧹 ניקוי'}</button>`;
   el.innerHTML=h; el.style.display='flex';
 }
 let _subKey=null;
