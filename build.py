@@ -2533,6 +2533,7 @@ body.cur-mark .card .cstars .avg{margin-inline-start:0}
 .cleanBar .ct{flex:1 1 100%;font-weight:800;color:#a3301f;font-size:13.5px}
 .cleanBar button{font:inherit;font-size:14px;font-weight:800;padding:9px 14px;border-radius:11px;border:1.5px solid var(--line-2,#d9ccb5);background:var(--paper);color:var(--ink);cursor:pointer}
 .cleanBar button.go{background:#c0392b;border-color:#c0392b;color:#fff}
+.cleanBar button.hide{background:#4c6ea8;border-color:#4c6ea8;color:#fff}
 .cleanBar button[disabled]{opacity:.4;cursor:default}
 body.cleanMode .card{cursor:pointer}
 body.cleanMode .grid{padding-bottom:96px}
@@ -3932,12 +3933,34 @@ function renderCleanBar(){
   if(!cleanMode){ if(b) b.remove(); return; }
   if(!b){ b=document.createElement('div'); b.id='cleanBar'; b.className='cleanBar'; document.body.appendChild(b); }
   const n=cleanSel.size, shown=visible().length;
-  b.innerHTML='<span class="ct">🗑 מצב ניקוי — לחצי על כל פריט שלא מעניין אותך. אפשר קודם לסנן, ואז לנקות רק את מה שמוצג.</span>'
+  const sel=[...cleanSel].map(id=>byId[id]).filter(Boolean);
+  const toHide=sel.filter(i=>!i.hidden).length, toShow=sel.filter(i=>i.hidden).length;
+  b.innerHTML='<span class="ct">🧹 מצב ניקוי — לחצי על כל פריט שלא מעניין אותך. אפשר קודם לסנן, ואז לנקות רק את מה שמוצג.</span>'
     +`<button type="button" onclick="cleanAllShown()">סמני את כל ${shown} המוצגים</button>`
     +(n?`<button type="button" onclick="cleanNone()">ניקוי הסימון</button>`:'')
-    +`<button type="button" class="go" ${n?'':'disabled'} onclick="cleanDelete()">מחיקת ${n} פריטים</button>`
+    +(toHide?`<button type="button" class="hide" onclick="cleanHide()">🙈 הסתרת ${toHide}</button>`:'')
+    +(toShow?`<button type="button" onclick="cleanShow()">↩ החזרת ${toShow}</button>`:'')
+    +`<button type="button" class="go" ${n?'':'disabled'} onclick="cleanDelete()">🗑 מחיקת ${n}</button>`
     +'<button type="button" onclick="toggleClean()">סיום</button>';
 }
+
+/* הסתרה היא הפעולה ההפיכה: הפריט יורד מהעין ונשאר ב"🙈 הוסתרו", ואפשר להחזיר אותו בכל רגע.
+   יעל ביקשה את זה במפורש אחרי המחיקה — "תאפשר להחביא מוצרים שאני לא מעוניינת בהם". */
+function cleanSetHidden(val){
+  const ids=[...cleanSel].filter(id=>byId[id]&&!!byId[id].hidden!==val); if(!ids.length) return;
+  const apply=v=>ids.forEach(id=>{ const it=byId[id]; if(!it) return;
+    Object.assign(it,{hidden:v}); fbPushHidden(id,v);
+    shared.items=shared.items||{}; shared.items[id]={...(shared.items[id]||{}),id,hidden:v};
+    const c=els.get(id); if(c) paint(id); });
+  apply(val); cleanSel.clear();
+  updateHiddenCount(); paintClean(); renderCleanBar(); RE(true);
+  undoToast((val?'🙈 ':'↩ ')+ids.length+(val?' פריטים הוסתרו':' פריטים הוחזרו'),()=>{
+    apply(!val); updateHiddenCount(); paintClean(); renderCleanBar(); RE(true);
+  });
+}
+function cleanHide(){ cleanSetHidden(true); }
+function cleanShow(){ cleanSetHidden(false); }
+
 function cleanDelete(){
   const ids=[...cleanSel]; if(!ids.length) return;
   const undo=[];
@@ -3995,7 +4018,7 @@ function renderSubRow(){
       +(none?`<button type="button" class="warn ${subf.has('__none')?'on':''}" data-k="__none" onclick="toggleSubF(this.dataset.k)">⚠ ללא שיוך<small>${none}</small></button><button type="button" class="mgr auto" onclick="autoAssignSubs('${esc(cat.key)}')">⚡ שיוך אוטומטי</button>`:'');
   }
   h+=featBarHTML(cat,its);
-  h+=`<button type="button" class="mgr${cleanMode?' auto':''}" onclick="toggleClean()" title="לסמן כמה פריטים ולמחוק את כולם בבת אחת">${cleanMode?'✓ סיום ניקוי':'🗑 ניקוי'}</button>`;
+  h+=`<button type="button" class="mgr${cleanMode?' auto':''}" onclick="toggleClean()" title="לסמן כמה פריטים ולמחוק את כולם בבת אחת">${cleanMode?'✓ סיום ניקוי':'🧹 ניקוי'}</button>`;
   el.innerHTML=h; el.style.display='flex';
 }
 let _subKey=null;
