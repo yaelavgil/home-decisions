@@ -1476,7 +1476,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       # 25.11.2026: bathroom accessories for all three bathrooms. Split by item type (subs) and by
       # room (per-item `places` array) — Yael asked for location × item type with one item able to
       # suit more than one room, which is exactly what `places` + the 📍 place filter already do.
-      {"key":"אביזרי רחצה","label":"אביזרי חדרי רחצה","icon":"🚽","slug":"bath-accessories","group":"אמבטיה","multi":True,"subs":["🎁 מקטלוג מלדן — במסגרת הקרדיט של ₪1,000","מעמד רצפתי משולב — נייר + מברשת, בלי קידוח","מברשת אסלה","פח קטן","מתלה למגבת פנים וידיים","מתלי מגבות גוף","מחזיק נייר לקיר","קולבי דלת — מגבות וחלוקים","מדפים ואביזרי כיור"]},
+      {"key":"אביזרי רחצה","label":"אביזרי חדרי רחצה","icon":"🚽","slug":"bath-accessories","group":"אמבטיה","multi":True,"subs":["מברשת אסלה","פח קטן","מתלה למגבת פנים וידיים","מתלי מגבות גוף","מחזיק נייר לקיר","מעמד רצפתי משולב — נייר + מברשת, בלי קידוח","קולבי דלת — מגבות וחלוקים","מראות הגדלה","סלסלות ואחסון","מדפים ואביזרי כיור"]},
       {"key":"שערי כדורגל לגור","label":"שני שערי כדורגל לגור","icon":"⚽","slug":"football-goals","group":"חוץ ופרגולה","multi":True,"subs":["זוגות בתוך התקציב","מעל התקציב — מה ₪500 לא קונה","רשתות כלבו — מחיר טוב, מפרט ריק"]},
       {"key":"משחקי חצר","label":"משחקי חצר","icon":"⚽","slug":"yard-games","group":"חוץ ופרגולה","multi":True,"subs":["טרמפולינה ריבועית / מלבנית — חצר קדמית","מתקן נינג׳ה (2×2 מ׳ עד 3×2.5 מ׳)","מתקני כושר וספורט בודדים בסגנון נינג׳ה (לגילאים שונים)","שער כדורגל עמיד / פריק / מתקפל — לחצר הקדמית"]},
       {"key":"ערסלים לגינה","label":"פינת ישיבה לגינה — ערסלים ומיטות רביצה","icon":"🛋️","slug":"garden-hammocks","group":"חוץ ופרגולה","multi":True,"subs":["פינת קפה — שולחן + 2 כסאות","כיסא תלוי / ערסל כיסא","ערסל תלייה — יחיד","ערסל זוגי","ערסל לשלושה / ספת תלייה","מיטת רביצה — טיק / עץ","מיטת רביצה — במבוק","מיטת רביצה — אלומיניום וראטן","שמשייה — הצללה לפינת הישיבה"]},
@@ -2413,6 +2413,8 @@ body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .s
 .qfMoreW{position:relative;display:inline-block}
 .qfMore{font:inherit;font-size:12.5px;font-weight:800;border:1.5px dashed var(--line-2);background:var(--paper);color:var(--muted);border-radius:99px;padding:4px 11px;cursor:pointer;white-space:nowrap}
 .qfMore:hover{border-color:var(--brass-d);color:var(--brass-d)}
+.qfBar{overflow:visible}
+.qfPop .qfVals,.qfPop>div{max-height:min(52vh,380px);overflow:auto}
 .qfPop{position:absolute;top:calc(100% + 6px);inset-inline-start:0;z-index:60;width:290px;max-width:88vw;background:var(--paper);border:1.5px solid var(--line-2);border-radius:14px;box-shadow:0 14px 34px -10px rgba(60,40,10,.4);padding:8px;display:flex;flex-direction:column;gap:6px}
 .qfPop h5{margin:0;font-size:12px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px}
 .qfPop h5 span{margin-inline-start:auto;font-weight:600}
@@ -3088,6 +3090,10 @@ const inCats=i=>selCats.size===0||selCats.has(i.cat);
 const SITE="__BASE__", SITE_PATH=(()=>{try{return new URL(SITE).pathname;}catch(e){return '/';}})();
 function onLiveSite(){ return location.href.startsWith(SITE)&&location.pathname.indexOf(SITE_PATH+'picks/')!==0; }
 function ensureBase(){ if(!document.querySelector('base')){ const b=document.createElement('base'); b.href=SITE; document.head.prepend(b); } }
+/* הדף מוגש מ-/home-decisions/ ואז syncHash כותב מחדש את הכתובת ל-/c/<slug>/.
+   כל תמונה שה-src שלה יחסי ונקבע אחרי הכתיבה הזאת נפתרת מול הנתיב החדש ונכשלת.
+   לכן קובעים את ה-base מיד, לפני כל רינדור, ולא רק בתוך syncHash. */
+try{ if(onLiveSite()) ensureBase(); }catch(e){}
 function syncHash(){
   const slugs=CATS.filter(c=>selCats.has(c.key)).map(c=>encodeURIComponent(slugOf(c)));
   // On the live site the address bar shows /c/<slug>/ (a real static page with WhatsApp preview tags); copying it shares the category
@@ -5770,8 +5776,19 @@ function qfBuild(cat,its){
     get:()=>slotf,tog(k){ slotf.has(k)?slotf.delete(k):slotf.add(k); try{renderPlaceRow();}catch(e){} },clr(){ slotf.clear(); try{renderPlaceRow();}catch(e){} },snap:()=>[...slotf],rst(x){ slotf.clear(); x.forEach(v=>slotf.add(v)); }});
   // סוג (sub)
   const subs=[...new Set([...(cat.subs||[]),...its.map(i=>i.sub).filter(Boolean)])];
-  add({id:'sub',icon:'🗂',label:'סוג',vals:subs.map(k=>({k,l:k})).concat(its.some(i=>!i.sub)?[{k:'__none',l:'⚠ ללא שיוך'}]:[]),test:(it,k)=>k==='__none'?!it.sub:it.sub===k,
+  add({id:'sub',icon:'🗂',label:'סוג מוצר',vals:subs.map(k=>({k,l:k})).concat(its.some(i=>!i.sub)?[{k:'__none',l:'⚠ ללא שיוך'}]:[]),test:(it,k)=>k==='__none'?!it.sub:it.sub===k,
     get:()=>subf,tog(k){ subf.has(k)?subf.delete(k):subf.add(k); try{renderSubRow();}catch(e){} },clr(){ subf.clear(); try{renderSubRow();}catch(e){} },snap:()=>[...subf],rst(x){ subf.clear(); (x||[]).forEach(v=>subf.add(v)); }});
+
+  /* צבע — פאסט משלו. יעל: "מברשת אסלה או פח קטן הם סוג מוצר … כך גם לגבי צבע".
+     הגוונים נקראים מתוך תגיות הגימור הנקיות שכל פריט נושא, ולא מתוך ערימת 195 התגיות. */
+  /* רק צבעי בסיס: פריט בגימור מט נושא גם את צבע הבסיס, אז 'רוז גולד מט' כפריט נפרד
+     רק היה מפצל את אותה בחירה לשני צ׳יפים — בדיוק הבאג של 'זהב מט' מקודם. */
+  const FINS=['זהב מט','זהב זרקוניום','רוז גולד','גרפיט','לבן','שחור',
+              'ניקל','מוברש','ברונזה','במבוק','קש טבעי','סהרה'];
+  const finOf=it=>(it.tags||[]).filter(t=>FINS.includes(String(t)));
+  const finCnt={}; its.forEach(i=>finOf(i).forEach(f=>finCnt[f]=(finCnt[f]||0)+1));
+  const finVals=FINS.filter(f=>finCnt[f]).map(f=>({k:f,l:f}));
+  if(finVals.length>1) add(own('fin','🎨','צבע',finVals,(it,k)=>finOf(it).includes(k)));
   // גודל
   if(cat.key==='שולחן אוכל לפרגולה'){
     const c0=[['z','עד 169',0,169],['a','170–185 (≈180)',170,185],['b','186–215 (≈200)',186,215],['c','216 ומעלה',216,999]];
