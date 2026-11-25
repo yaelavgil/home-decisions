@@ -3001,7 +3001,7 @@ let me=JSON.parse(localStorage.getItem('ida-me')||'null'); // {pk,name}
 let remote={}; // {pk:{name,items:{id:{s,n,q}}}}
 let _psig="";
 let ARCHIVED_CATS=[], ARCHIVED_ITEMS=[];
-let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="all", featSort=null, subf=null, placef=new Set(), slotf=new Set(), featf=null, qpMode=!!window._qp0;
+let selCats=new Set(), stf=new Set(), tagf=new Set(), personf="all", viewMode="all", featSort=null, subf=new Set(), placef=new Set(), slotf=new Set(), featf=null, qpMode=!!window._qp0;
 let ITEMS=[],CATS=[],byId={};
 let shared={items:{},cats:{}}; // shared catalog from Firebase (/picks/_catalog)
 /* ---- pending item writes -------------------------------------------------
@@ -3086,7 +3086,7 @@ function applyHash(){
   const found=new Set();
   raw.split('+').forEach(part=>{
     let h; try{h=decodeURIComponent(part);}catch(e){h=part;}
-    if(h==='outdoor-lighting'){ found.add('תאורה'); subf='תאורת חוץ'; return; }
+    if(h==='outdoor-lighting'){ found.add('תאורה'); subf.clear(); subf.add('תאורת חוץ'); return; }
     const _LEG={'vanity':'danny-desk','שולחן איפור':'danny-desk','study-desks':'danny-study-desk','שולחנות מחשב ולימודים':'danny-study-desk'}; if(_LEG[h]) h=_LEG[h];
     const c=CATS.find(x=>slugOf(x)===h||x.key===h);
     if(c&&c.key!=='all') found.add(c.key);
@@ -3094,7 +3094,7 @@ function applyHash(){
   if(found.size){selCats=found;tagf.clear();}
 }
 function setCat(k){
-  subf=null; placef.clear();slotf.clear(); featf=null;
+  subf.clear(); placef.clear();slotf.clear(); featf=null;
   if(k==='all') selCats.clear();
   else if(selCats.has(k)) selCats.delete(k);
   else selCats.add(k);
@@ -3470,7 +3470,7 @@ function renderRecents(){
       <div class="mt"><span class="cat">${c.icon||''} ${esc(c.label||it.cat)}</span><span>${ST_LAB[stt]}</span><span>${ago2(ts)}</span></div>
       <div class="acts"><button type="button" class="go" onclick="rcOpen('${it.id}')">פתיחה בקטגוריה</button>${it.link?`<a class="tbtn" style="flex:none;padding:6px 10px;text-decoration:none" href="${esc(it.link)}" target="_blank" rel="noopener" title="לחנות">↗</a>`:''}</div></div></div>`; }).join('')+'</div>').join('');
 }
-function rcOpen(id){ const it=byId[id]; if(!it) return; closeRecents(); selCats=new Set([it.cat]); subf=null; placef.clear();slotf.clear(); featf=null; tagf.clear(); if(viewMode!=='all') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true);
+function rcOpen(id){ const it=byId[id]; if(!it) return; closeRecents(); selCats=new Set([it.cat]); subf.clear(); placef.clear();slotf.clear(); featf=null; tagf.clear(); if(viewMode!=='all') setView('all'); syncHash(); buildChips(); tabsHTML(); RE(true);
   setTimeout(()=>{ const c=els.get(id); if(c){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.add('flash'); setTimeout(()=>c.classList.remove('flash'),2000); } },250); }
 function recordFirstSeen(){ // custom items created straight in Firebase have no build-time stamp: remember when first loaded
   try{ const seen=(shared&&shared.seen)||{}; ITEMS.forEach(i=>{ if(!i.addedAt&&!seen[i.id]){ seen[i.id]=Date.now(); shared.seen=seen; fetch(`${DB}/picks/_catalog/seen/${encodeURIComponent(i.id)}.json`,{method:'PUT',body:String(seen[i.id])}).catch(()=>{}); } }); }catch(e){} }
@@ -3740,7 +3740,7 @@ function cycleCatPrio(key){
   setCatMeta(key,{prio:nxt}); renderCatMenu();
 }
 function pickCat(key,sub){
-  selCats=key==='all'?new Set():new Set([key]); subf=sub||null; placef.clear();slotf.clear(); tagf.clear();
+  selCats=key==='all'?new Set():new Set([key]); subf.clear(); if(sub) subf.add(sub); placef.clear();slotf.clear(); tagf.clear();
   const c=CATS.find(x=>x.key===key); if(c&&catState(c)==='done'&&viewMode==='active') setView('all');
   syncHash(); buildChips(); tabsHTML(); RE(true); toggleCatMenu(false); window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -3906,6 +3906,7 @@ function renderPlaceRow(){
 }
 function togglePlaceF(k){ placef.has(k)?placef.delete(k):placef.add(k); renderPlaceRow(); RE(); }
 
+function toggleSubF(k){ subf.has(k)?subf.delete(k):subf.add(k); renderSubRow(); RE(); }
 function renderSubRow(){
   const el=document.getElementById('subRow'); if(!el) return;
   const cat=selCats.size===1?CATS.find(c=>selCats.has(c.key)):null;
@@ -3916,9 +3917,9 @@ function renderSubRow(){
   const usedPlaces=[...new Set(its.flatMap(i=>itemPlaces(i)))];
   let h='';
   if(subs.length){
-    h+=`<button type="button" class="${!subf?'on':''}" onclick="subf=null;renderSubRow();RE()">הכל<small>${its.length}</small></button>`
-      +subs.map(k=>`<button type="button" class="${subf===k?'on':''}" onclick="subf=(subf==='${esc(k)}'?null:'${esc(k)}');renderSubRow();RE()">${esc(k)}<small>${cnt(k)}</small></button>`).join('')
-      +(none?`<button type="button" class="warn ${subf==='__none'?'on':''}" onclick="subf=(subf==='__none'?null:'__none');renderSubRow();RE()">⚠ ללא שיוך<small>${none}</small></button><button type="button" class="mgr auto" onclick="autoAssignSubs('${esc(cat.key)}')">⚡ שיוך אוטומטי</button>`:'');
+    h+=`<button type="button" class="${!subf.size?'on':''}" onclick="subf.clear();renderSubRow();RE()">הכל<small>${its.length}</small></button>`
+      +subs.map(k=>`<button type="button" class="${subf.has(k)?'on':''}" data-k="${esc(k)}" onclick="toggleSubF(this.dataset.k)">${esc(k)}<small>${cnt(k)}</small></button>`).join('')
+      +(none?`<button type="button" class="warn ${subf.has('__none')?'on':''}" data-k="__none" onclick="toggleSubF(this.dataset.k)">⚠ ללא שיוך<small>${none}</small></button><button type="button" class="mgr auto" onclick="autoAssignSubs('${esc(cat.key)}')">⚡ שיוך אוטומטי</button>`:'');
   }
   h+=featBarHTML(cat,its);
   el.innerHTML=h; el.style.display='flex';
@@ -3951,7 +3952,7 @@ function saveSubMgr(){
   const keptOrig=new Set(keep.map(r=>r.orig).filter(Boolean));
   rows.forEach(r=>{ if(r.orig&&!keptOrig.has(r.orig)) its.filter(i=>i.sub===r.orig).forEach(i=>{ i.sub=''; patchItem(i.id,{sub:''}); }); });
   setCatMeta(key,{subs:names.length?names:['__none']});
-  if(subf&&!names.includes(subf)) subf=null;
+  [...subf].forEach(k=>{ if(k!=='__none'&&!names.includes(k)) subf.delete(k); });
   document.getElementById('subDlg').close(); renderSubRow(); RE();
   its.forEach(i=>{ const e=els.get(i.id); if(e){ e.remove(); els.delete(i.id); } }); autoAssignSubs(key,true); renderSubRow(); RE();
 }
@@ -4071,7 +4072,7 @@ function reorgApply(plan){
   plan.moves.forEach(m=>{ body[m.id+'/id']=m.id; body[m.id+'/cat']=m.cat; body[m.id+'/sub']=m.sub||''; shared.items[m.id]={...(shared.items[m.id]||{}),id:m.id,cat:m.cat,sub:m.sub||''}; });
   if(plan.moves.length) fetch(`${DB}/picks/_catalog/items.json`,{method:'PATCH',body:JSON.stringify(body)}).catch(()=>{});
   const wasSel=[...selCats].some(k=>plan.archive.some(a=>a.key===k)||plan.moves.some(m=>m.oldCat===k));
-  if(wasSel){ selCats=new Set(); subf=null; syncHash(); }
+  if(wasSel){ selCats=new Set(); subf.clear(); syncHash(); }
   rebuild(); tabsHTML(); buildChips(); RE(true); renderCatMenu(); if(document.getElementById('reorgDlg').open) renderReorg();
   undoToast(plan.title,()=>reorgUndo(undo));
 }
@@ -4453,7 +4454,7 @@ function visible(){
   let a=ITEMS.filter(i=>inCats(i)
     &&(!q||i.name.includes(q))
     &&(tagf.size===0||(i.tags||[]).some(t=>tagf.has(t)))
-    &&(!subf||(subf==='__none'?!i.sub:i.sub===subf))
+    &&(!subf.size||[...subf].some(k=>k==='__none'?!i.sub:i.sub===k))
     &&(placef.size===0||[...placef].some(p=>p==='__none'?!itemPlaces(i).length:itemPlaces(i).includes(p)))
     &&(slotf.size===0||(i.slots||[]).some(x=>slotf.has(x)))
     &&passFeat(i)
@@ -5450,7 +5451,7 @@ function afList(){
   const L=[]; const qe=document.getElementById('q'), qv=((qe&&qe.value)||'').trim();
   if(qv) L.push({q:1,l:'🔍 '+qv,rm:()=>{qe.value='';}});
   if(viewMode!=='all'&&viewMode!=='toorder'&&viewMode!=='ordered'&&viewMode!=='wavering'){ const b=document.querySelector('.vbtn[data-v="'+viewMode+'"]'); L.push({l:b?_afTxt(b):viewMode,rm:()=>{viewMode='all';document.querySelectorAll('.vbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='all'));}}); }
-  if(subf) L.push({l:subf==='__none'?'⚠ ללא שיוך':subf,rm:()=>{subf=null;renderSubRow();}});
+  subf.forEach(s=>L.push({l:s==='__none'?'⚠ ללא שיוך':s,rm:()=>{subf.delete(s);renderSubRow();}}));
   if(featf){ const o=document.querySelector('#subRow select option:checked'); L.push({l:o&&o.value?o.textContent:'🏷 פיצ\'ר',rm:()=>{featf=null;renderSubRow();}}); }
   placef.forEach(p=>L.push({l:'📍 '+(p==='__none'?'ללא מיקום':p),rm:()=>{placef.delete(p);renderPlaceRow();}}));
   slotf.forEach(k=>{ let n=k; try{ const cat=[...selCats][0]; SLOTS[cat].groups.forEach(g=>g.slots.forEach(x=>{ if(x.id===k) n=x.name; })); }catch(e){} L.push({l:'🎯 '+n,rm:()=>{slotf.delete(k);renderPlaceRow();}}); });
@@ -5472,7 +5473,7 @@ function afRender(){
   updateFilterBadge();
 }
 document.getElementById('afRow').addEventListener('click',e=>{ const q=e.target.closest('.afq'); if(q){ setView(q.dataset.v); return; } if(e.target.closest('.afexp')){ openExport(); return; } const b=e.target.closest('.afc'); if(!b) return; if(b.dataset.i==='g'){ setGroup(''); return; } if(b.dataset.i==='all'){ afClearAll(); return; } const x=document.getElementById('afRow')._L[+b.dataset.i]; if(x){ x.rm(); RE(); } });
-function afClearAll(){ const qe=document.getElementById('q'); if(qe) qe.value=''; viewMode='all'; document.querySelectorAll('.vbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='all')); subf=null; featf=null; placef.clear(); slotf.clear(); personf='all'; stf.clear(); tagf.clear(); specf={}; buildChips(); RE(); }
+function afClearAll(){ const qe=document.getElementById('q'); if(qe) qe.value=''; viewMode='all'; document.querySelectorAll('.vbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='all')); subf.clear(); featf=null; placef.clear(); slotf.clear(); personf='all'; stf.clear(); tagf.clear(); specf={}; buildChips(); RE(); }
 updateFilterBadge=function(){ const n=afList().filter(x=>!x.q).length; const b=document.getElementById('fbadge'); if(b){ b.textContent=n||''; b.style.display=n?'inline-flex':'none'; } const fb=document.getElementById('filterBtn'); if(fb) fb.classList.toggle('on',n>0); };
 { const _RE=RE; RE=function(a){ _RE(a); try{ applyGroups(); afRender(); fsSync(); }catch(e){ console.warn(e); } }; }
 /* ===== sections (group by), extra sorts, export of a deliberation summary page ===== */
@@ -5661,8 +5662,8 @@ function qfBuild(cat,its){
     get:()=>slotf,tog(k){ slotf.has(k)?slotf.delete(k):slotf.add(k); try{renderPlaceRow();}catch(e){} },clr(){ slotf.clear(); try{renderPlaceRow();}catch(e){} },snap:()=>[...slotf],rst(x){ slotf.clear(); x.forEach(v=>slotf.add(v)); }});
   // סוג (sub)
   const subs=[...new Set([...(cat.subs||[]),...its.map(i=>i.sub).filter(Boolean)])];
-  add({id:'sub',icon:'🗂',label:'סוג',vals:subs.map(k=>({k,l:k})),test:(it,k)=>it.sub===k,
-    get:()=>new Set(subf?[subf]:[]),tog(k){ subf=(subf===k?null:k); try{renderSubRow();}catch(e){} },clr(){ subf=null; try{renderSubRow();}catch(e){} },snap:()=>subf,rst(x){ subf=x; }});
+  add({id:'sub',icon:'🗂',label:'סוג',vals:subs.map(k=>({k,l:k})).concat(its.some(i=>!i.sub)?[{k:'__none',l:'⚠ ללא שיוך'}]:[]),test:(it,k)=>k==='__none'?!it.sub:it.sub===k,
+    get:()=>subf,tog(k){ subf.has(k)?subf.delete(k):subf.add(k); try{renderSubRow();}catch(e){} },clr(){ subf.clear(); try{renderSubRow();}catch(e){} },snap:()=>[...subf],rst(x){ subf.clear(); (x||[]).forEach(v=>subf.add(v)); }});
   // גודל
   if(cat.key==='שולחן אוכל לפרגולה'){
     const c0=[['z','עד 169',0,169],['a','170–185 (≈180)',170,185],['b','186–215 (≈200)',186,215],['c','216 ומעלה',216,999]];
