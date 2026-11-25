@@ -1,4 +1,4 @@
-import json,os,sys,glob
+import json,os,sys,glob,hashlib
 
 REPO=os.path.dirname(os.path.abspath(__file__))
 BASE="https://yaelavgil.github.io/home-decisions/"
@@ -6715,6 +6715,10 @@ out=(tpl.replace("__DATA__",json.dumps(DATA,ensure_ascii=False))
         .replace("__SHARE__",BASE+"picks/")
         .replace("__BASE__",BASE))
 open(os.path.join(REPO,"index.html"),"w",encoding="utf-8").write(out)
+# חותמת בנייה לפי תוכן הדף. דפי /c/<slug>/ מפנים לכתובת שכוללת אותה, ולכן דפדפן
+# שמחזיק עותק ישן של index.html (ואיתו 404 שמור לתמונות חדשות) מקבל עותק טרי
+# ברגע שהתוכן משתנה — ולא נתקע על גרסה שבורה עד שינקה מטמון ידנית.
+BUILD_V=hashlib.sha256(out.encode("utf-8")).hexdigest()[:8]
 
 # Fresh-URL copy at /picks/ — never seen by WhatsApp, so it forces a clean re-scrape.
 # <base> makes relative assets (img/, favicon) resolve to the repo root; og:url is self-referential.
@@ -6876,7 +6880,7 @@ for _c in [c for c in CATS if c["key"]!="all"]:
 <meta property="og:site_name" content="הבית שלנו"><meta property="og:locale" content="he_IL">
 <meta property="og:image" content="{BASE}og/{slug}.jpg"><meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="{BASE}og/{slug}.jpg">
-<meta http-equiv="refresh" content="0;url={BASE}#{slug}"><script>location.replace("{BASE}#{slug}")</script>
+<meta http-equiv="refresh" content="0;url={BASE}?v={BUILD_V}#{slug}"><script>location.replace("{BASE}?v={BUILD_V}#{slug}")</script>
 </head><body style="font-family:Arial,sans-serif;text-align:center;padding:40px"><p><a href="{BASE}#{slug}">פתיחת הקטגוריה «{_html.escape(label)}» בלוח ההחלטות</a></p></body></html>"""
     os.makedirs(os.path.join(REPO,"c",slug),exist_ok=True)
     open(os.path.join(REPO,"c",slug,"index.html"),"w",encoding="utf-8").write(share)
