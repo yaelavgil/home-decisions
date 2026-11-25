@@ -2114,6 +2114,7 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .descToggle:hover{text-decoration:underline}
 .featBadges{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px}
 .featBadge{font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:99px;white-space:nowrap;line-height:1.3;background:#eef3ff;color:#33499e;border:1px solid #c7d3f5}
+.featBadge.credit{background:#fff3df;color:#8a5a1f;border-color:#e3b968;box-shadow:0 1px 3px rgba(138,90,31,.18)}
 .stars{display:flex;align-items:center;gap:2px;margin:0 0 9px;direction:ltr}
 .stars .star{background:none;border:0;font-size:17px;line-height:1;padding:1px;cursor:pointer;color:var(--line-2);transition:.1s}
 .stars .star.on{color:#e0a52c}
@@ -4558,7 +4559,7 @@ function cardEl(it){
   const nameEl=it.link?`<a class="name" href="${it.link}" target="_blank" rel="noopener" title="${_tt}">${it.name}</a>`:`<span class="name" title="${_tt}">${it.name}</span>`;
   const sub=it.type==='color'?`<div class="code">${it.code||''}</div>`
     :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div></div>${storeLine(it)}${chkRow(it)}`:(it.cat==='מתנות לחנוכה'?'':`<div class="price muted">המחיר בחשבון שלך בחנות</div>`))+dimsRow(it)+pairChip(it)+featChips(it)+useLabel(it);
-  const featRow=(it.featTags||[]).length?`<div class="featBadges">${(it.featTags||[]).map(t=>`<span class="featBadge">${t}</span>`).join('')}</div>`:'';
+  const featRow=(it.featTags||[]).length?`<div class="featBadges">${(it.featTags||[]).map(t=>`<span class="featBadge${String(t).startsWith('🎁')?' credit':''}">${t}</span>`).join('')}</div>`:'';
   const stars=it.type==='product'?`<div class="stars" data-id="${it.id}">${[1,2,3,4,5].map(n=>`<button type="button" class="star" data-n="${n}" onclick="event.stopPropagation();setRating('${it.id}',${n})">★</button>`).join('')}<span class="ratedBy"></span></div>`:'';
   const qty=it.type==='product'
     ?`<div class="qty"><span class="ql">כמות</span><span class="stp"><button title="הפחת" onclick="setQ('${it.id}',-1)">−</button><span class="qv">1</span><button title="הוסף" onclick="setQ('${it.id}',1)">+</button></span></div>`:'';
