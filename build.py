@@ -1454,7 +1454,7 @@ CATS=[{"key":"all","label":"הכול","icon":"✦","slug":"all"},
       {"key":"חיפוי קיר לבנים","label":"חיפוי קיר לבנים (קרן סטון)","icon":"🧱","slug":"brick-cladding","group":"סלון ומשפחה"},
       {"key":"קמין","label":"קמין","icon":"🔥","slug":"fireplace","group":"סלון ומשפחה"},
       {"key":"סל כביסה","label":"סל כביסה למסתור","icon":"🧺","slug":"laundry-hamper"},
-      {"key":"מזנון לטלוויזיה","label":"מזנון לטלוויזיה","icon":"📺","slug":"tv-console","group":"סלון ומשפחה","subs":["עומד על רגליים", "תלוי על הקיר"]},
+      {"key":"מזנון לטלוויזיה","label":"מזנון לטלוויזיה — יעד 205 ס״מ","icon":"📺","slug":"tv-console","group":"סלון ומשפחה","subs":["עומד על רגליים", "תלוי על הקיר"]},
       {"key":"אינטרקום וידאו","label":"אינטרקום וידאו לכניסות","icon":"📹","slug":"video-intercom","group":"בית חכם"},
       {"key":"מנעול חכם","label":"מנעול חכם לדלתות","icon":"🔐","slug":"smart-lock","group":"בית חכם"},
       {"key":"ספות לפינת משפחה","label":"ספות לפינת משפחה","icon":"🛋️","slug":"family-sofas"},
@@ -5632,7 +5632,7 @@ function qfBuild(cat,its){
     add(own('len1','↔️','אורך פתוח (ס״מ)',c1.map(x=>({k:x[0],l:x[1]})),(it,k)=>{ const L=qfLens(it); if(!L) return false; const b=c1.find(x=>x[0]===k); return L.open>=b[2]&&L.open<=b[3]; }));
   }
   if(cat.key==='מזנון לטלוויזיה'){
-    add(own('width','📏','רוחב המזנון (ס״מ)',[160,180,200,220,240].map(w=>({k:String(w),l:String(w)})),(it,k)=>qfWidthHas(it,+k)));
+    add(own('width','📏','רוחב המזנון (ס״מ) · היעד 205',[160,180,200,210,220,240].map(w=>({k:String(w),l:String(w)+(w===200?' ★':'')})),(it,k)=>qfWidthHas(it,+k)));
   }
   // מחיר
   const pr=its.map(i=>i.price).filter(x=>x>0).sort((a,b)=>a-b);
@@ -5924,12 +5924,27 @@ for _o in json.load(open(os.path.join(REPO,"study-desks.json"),encoding="utf-8")
     DATA.append(_o)
 for _d in DATA:  # 17.11.2026: Alice desk moved from vanity (VN23) to study desks (CD2) at Yael's request
     if _d["id"]=="VN23" or _d["id"] in tuple("VN%d"%_i for _i in range(38,56)): _d["hidden"]=True
-for _o in json.load(open(os.path.join(REPO,"tvconsole2.json"),encoding="utf-8")):
-    DATA.append(_o)
-# 15.11.2026: she decided on a 180 or 200 cm living-room sideboard (200 preferred; fits beside the fireplace) -> hide every sideboard not offered in 180/200
-_TV_NOT_180_200={"TC3","TC7","TC8","TC9","TC10","TC13"}
+# 25.11.2026: the 180-200 cap is GONE. מידות.md used to claim a 40-50 cm safety gap between the
+# sideboard and the fireplace, and that gap is what limited the sideboard to 180-200. Yael corrected it
+# on 25.11 standing in front of the lit stove: "המזנון לא דורש מרחק מהקמין, הצד של הקמין מתחמם מעט",
+# "זה קמין פלט". The old reading applied a radiant WOOD-stove rule of thumb to a PELLET stove — a
+# convection appliance with a double air jacket and a fan, so its sides stay warm-ish, not scorching.
+# Real geometry: wall run 360 (measured, beats the 330 printed on the plan) - fireplace 75 = 285,
+# minus 20 cm of corner margin = 265 cm of free field. 205 + a ~35 cm pellet bin = 240 -> 25 cm of air.
+_TV_TARGET_W=205           # the target width; the usable range is 195-215
+_tv3=json.load(open(os.path.join(REPO,"enrich","tv-console.json"),encoding="utf-8"))
+for _f in ("tvconsole2.json","tvconsole3.json"):
+    for _o in json.load(open(os.path.join(REPO,_f),encoding="utf-8")):
+        _x=_tv3["items"].get(_o["id"],{})
+        _o["criteria"]=_tv3["criteria"]
+        for _k in ("specs","stores","pick","pickWhy","points"):
+            if _k in _x: _o[_k]=_x[_k]
+        DATA.append(_o)
+# Sideboards whose widest offered size still can't reach ~200 cm stay hidden. TC3 (IKEA EKET, 210 cm)
+# came back in on 25.11: at a 265 cm free field, 210 fits with room to spare.
+_TV_TOO_NARROW={"TC7","TC8","TC9","TC10","TC13"}
 for _d in DATA:
-    if _d["id"] in _TV_NOT_180_200: _d["hidden"]=True
+    if _d["id"] in _TV_TOO_NARROW: _d["hidden"]=True
 for _o in json.load(open(os.path.join(REPO,"bathroom-heater2.json"),encoding="utf-8")):
     DATA.append(_o)
 for _o in json.load(open(os.path.join(REPO,"balcony-heater.json"),encoding="utf-8")):
