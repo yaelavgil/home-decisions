@@ -2112,6 +2112,9 @@ select:hover,.tbtn:hover{border-color:var(--faint)}
 .desc.clamped{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .descToggle{font-size:11.5px;font-weight:700;color:var(--brass-d);cursor:pointer;margin:3px 0 0;display:inline-block;background:none;border:0;padding:0}
 .descToggle:hover{text-decoration:underline}
+.catBanner{display:block;background:linear-gradient(90deg,#e8bd6b,#d9a441);color:#4a2f07;font-weight:900;font-size:11.5px;letter-spacing:.2px;text-align:center;padding:5px 8px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card:has(.catBanner){border-color:#d9a441;box-shadow:0 0 0 1px rgba(217,164,65,.35)}
+@media(prefers-color-scheme:dark){.catBanner{color:#2b1a02}}
 .featBadges{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px}
 .featBadge{font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:99px;white-space:nowrap;line-height:1.3;background:#eef3ff;color:#33499e;border:1px solid #c7d3f5}
 .featBadge.credit{background:#fff3df;color:#8a5a1f;border-color:#e3b968;box-shadow:0 1px 3px rgba(138,90,31,.18)}
@@ -4691,6 +4694,10 @@ function cardEl(it){
   const sub=it.type==='color'?`<div class="code">${it.code||''}</div>`
     :(it.price!=null?`<div class="priceRow"><div class="price">${nis(it.price)}</div></div>${storeLine(it)}${chkRow(it)}`:(it.cat==='מתנות לחנוכה'?'':`<div class="price muted">המחיר בחשבון שלך בחנות</div>`))+dimsRow(it)+pairChip(it)+featChips(it)+useLabel(it);
   const featRow=(it.featTags||[]).length?`<div class="featBadges">${(it.featTags||[]).map(t=>`<span class="featBadge${String(t).startsWith('🎁')?' credit':''}">${t}</span>`).join('')}</div>`:'';
+  /* באנר הקטלוג: .featBadges מוסתר לגמרי בתצוגת הרשת, ולכן הסימון לא נראה שם בכלל.
+     זאת רצועה נפרדת בראש הכרטיס, שמוצגת בכל התצוגות. */
+  const creditBanner=(it.featTags||[]).some(t=>String(t).startsWith('🎁'))
+    ?'<div class="catBanner">🎁 מקטלוג מלדן · בתוך הקרדיט</div>':'';
   const stars=it.type==='product'?`<div class="stars" data-id="${it.id}">${[1,2,3,4,5].map(n=>`<button type="button" class="star" data-n="${n}" onclick="event.stopPropagation();setRating('${it.id}',${n})">★</button>`).join('')}<span class="ratedBy"></span></div>`:'';
   const qty=it.type==='product'
     ?`<div class="qty"><span class="ql">כמות</span><span class="stp"><button title="הפחת" onclick="setQ('${it.id}',-1)">−</button><span class="qv">1</span><button title="הוסף" onclick="setQ('${it.id}',1)">+</button></span></div>`:'';
@@ -4708,7 +4715,7 @@ function cardEl(it){
         ${qty}
         <div class="note"><textarea placeholder="הערה: גוון / גודל / וריאציה…" oninput="setN('${it.id}',this.value)"></textarea></div>
         <div class="cardActions">${it.type==='product'?`<button class="markOrd" onclick="toggleOrdered('${it.id}')">📦 סמן כהוזמן</button>`:''}<button class="hideb" onclick="toggleHidden('${it.id}')">${it.hidden?'↩️ שחזר ללוח':'🙈 הסתר'}</button><button class="hideb" onclick="deleteItem('${it.id}')">🗑 מחיקת הפריט (לצמיתות)</button></div>`;
-  c.innerHTML=`${it.pick?'<span class="pickRibbon">⭐ ההמלצה שלנו</span>':''}<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button><button class="editb delb" title="מחיקת הפריט מהלוח" onclick="event.stopPropagation();deleteItem('${it.id}')">🗑</button>${it.type==='product'?`<button type="button" class="cmpb" title="הוסף למסמך השוואה" aria-pressed="false" onclick="event.stopPropagation();cmpToggle('${it.id}')">⚖</button>`:''}${it.type==='product'?`<button type="button" class="selb" title="סמן כנבחר להזמנה" aria-pressed="false" onclick="event.stopPropagation();selToggle('${it.id}')">✓</button>`:''}
+  c.innerHTML=`${creditBanner}${it.pick?'<span class="pickRibbon">⭐ ההמלצה שלנו</span>':''}<button class="editb" title="ערוך פריט" onclick="event.stopPropagation();editItem('${it.id}')">✎</button><button class="editb delb" title="מחיקת הפריט מהלוח" onclick="event.stopPropagation();deleteItem('${it.id}')">🗑</button>${it.type==='product'?`<button type="button" class="cmpb" title="הוסף למסמך השוואה" aria-pressed="false" onclick="event.stopPropagation();cmpToggle('${it.id}')">⚖</button>`:''}${it.type==='product'?`<button type="button" class="selb" title="סמן כנבחר להזמנה" aria-pressed="false" onclick="event.stopPropagation();selToggle('${it.id}')">✓</button>`:''}
     ${it.type==='product'?`<span class="orderb"><span class="ol">✓ הוזמן</span><span class="od"></span></span>`:''}
     ${media}
     <div class="body">
