@@ -18,7 +18,7 @@ for k,it in enumerate(items):
     if it.get("deleted"): continue  # folded into a bundle; keep the row so ids (index+1) stay stable
     _c0=it.get("cat","תאורה")
     DATA.append({"id":"l"+str(k+1),"cat":"תאורה","sub":it.get("sub") or ("תאורת חוץ" if _c0=="תאורת חוץ" else ""),"type":"product","name":it["name"],"price":it.get("price") if it.get("parts") is None else sum((p.get("p") or 0)*(p.get("q") or 1) for p in it["parts"]),
-                 "link":it.get("link",""),"img":("img/"+it["img"]) if it.get("img") else "","tags":it.get("tags") or tags(it["name"]),"loc":it.get("loc",""),**({"imgs":["img/"+x for x in it["imgs"]]} if it.get("imgs") else {}),**({"dims":it["dims"]} if it.get("dims") else {}),**({"desc":it["desc"]} if it.get("desc") and it.get("imgs") else {}),
+                 "link":it.get("link",""),"img":("img/"+it["img"]) if it.get("img") else "","tags":it.get("tags") or tags(it["name"]),"loc":it.get("loc",""),**({"places":it["places"]} if it.get("places") else {}),**({"imgs":["img/"+x for x in it["imgs"]]} if it.get("imgs") else {}),**({"dims":it["dims"]} if it.get("dims") else {}),**({"desc":it["desc"]} if it.get("desc") and it.get("imgs") else {}),
                  **({"parts":[{**p,"img":("img/"+p["img"]) if p.get("img") and not str(p["img"]).startswith(("http","img/")) else p.get("img","")} for p in it["parts"]]} if it.get("parts") else {})})
 
 # --- Kitchen handles (Domicile) — pulled from home-picks ---
@@ -2408,7 +2408,7 @@ body.cur-mark .seg,body.cur-mark .decRow,body.cur-mark .moreBtn,body.cur-mark .s
 .qfSum{margin-inline-start:auto;font-size:12px;color:var(--muted)}
 .qfClr{font:inherit;font-size:12px;font-weight:800;border:1.5px solid var(--line-2);background:var(--paper);color:var(--brass-d);border-radius:99px;padding:3px 11px;cursor:pointer}
 .qfRow{padding:8px 2px 2px;border-top:1px dashed var(--line-2);margin-top:8px}
-.qfChips{display:flex;flex-wrap:wrap;gap:6px;min-width:0;max-height:112px;overflow:auto}
+.qfChips{display:flex;flex-wrap:wrap;gap:6px;min-width:0}   /* no max-height/overflow here: they clipped the ⋯ popup (absolute child) to ~112px */
 /* 21.11.2026: "כל מאפיין שקיים לפריט" — a dropdown of EVERY value, multi-select, with pin/unpin to the quick row */
 .qfMoreW{position:relative;display:inline-block}
 .qfMore{font:inherit;font-size:12.5px;font-weight:800;border:1.5px dashed var(--line-2);background:var(--paper);color:var(--muted);border-radius:99px;padding:4px 11px;cursor:pointer;white-space:nowrap}
@@ -3871,7 +3871,7 @@ function savePartsDlg(){
   document.getElementById('partsDlg').close(); rebuild(); const c=els.get(id); if(c) paint(id); RE();
 }
 const DEFAULT_PLACES=[
- {n:'סלון'},{n:'מטבח'},{n:'פינת אוכל'},{n:'פינת משפחה'},{n:'כניסה',alias:['כניסה']},{n:'מדרגות'},{n:'מסדרון'},
+ {n:'גינה קדמית'},{n:'סלון'},{n:'מטבח'},{n:'פינת אוכל'},{n:'פינת משפחה'},{n:'כניסה',alias:['כניסה']},{n:'מדרגות'},{n:'מסדרון'},
  {n:'חדר אורחים',alias:['אורחים']},{n:'ממ״ד',alias:['ממ"ד','ממ״ד']},{n:'חדר שינה הורים',alias:['שינה הורים','חדרי שינה (הורים']},{n:'חדר ארונות הורים',alias:['ארונות הורים']},
  {n:'חדר רחצה הורים',alias:['רחצה הורים']},{n:'חדר ילדים — לילי',alias:['לילי']},{n:'חדר ילדים — דני',alias:['דני']},{n:'חדר רחצה ילדים',alias:['רחצה ילדים']},
  {n:'מקלחת אורחים'},{n:'חדר עבודה'},{n:'פרגולה'},{n:'גינה / חצר',alias:['חצר','גינה']},{n:'חזית וחניה',alias:['חניה']},{n:'מרפסת'}];
